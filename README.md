@@ -9,7 +9,7 @@
 The intention of this project is to replace Almost in the first RC of Vanilla OS.
 
 ### Read here
-This program is meant to be used with PackageKit and [apx](https://github.com/vanilla-os/apx), 
+This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
 an apt replacement for VanillaOS.
 
 ### Help
