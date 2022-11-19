@@ -15,15 +15,17 @@ an apt replacement for VanillaOS.
 ### Help
 ```
 Usage: 
-abroot [options] [command]
+	abroot [options] [command]
 
 Options:
-	--help/-h		show this message
+	--help/-h			show this message
 	--verbose/-v		show more verbosity
 	--version/-V		show version
 
 Commands:
-	enter			set the filesystem as ro or rw until reboot
-	config			show the current configuration
-	check			check whether the filesystem is read-only or read-write
+	_sync-future		sync the future root with the present root
+	_update-boot		update the boot partition
+	get					get the present or future root partition
+	shell				enter a transactional shell in the future root and switch root on next boot
+	exec				execute a command in a transactional shell in the future root and switch to it on next boot
 ```
