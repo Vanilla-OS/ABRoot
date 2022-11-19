@@ -16,16 +16,16 @@ func help(cmd *cobra.Command, args []string) {
 abroot [options] [command]
 
 Options:
-	--help/-h			show this message
+	--help/-h		show this message
 	--verbose/-v		show more verbosity
 	--version/-V		show version
 
 Commands:
 	_sync-future		sync the future root with the present root
 	_update-boot		update the boot partition
-	get					get the present or future root partition
-	shell				enter a transactional shell in the future root and switch root on next boot
-	exec				execute a command in a transactional shell in the future root and switch to it on next boot
+	get			get the present or future root partition
+	shell			enter a transactional shell in the future root and switch root on next boot
+	exec			execute a command in a transactional shell in the future root and switch to it on next boot
 `)
 }
 
