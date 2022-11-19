@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+
+export DH_GOPKG := github.com/vanilla-os/ABRoot
+
+%:
+	dh $@ --buildsystem=golang --with=golang
+	

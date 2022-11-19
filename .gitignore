@@ -1,0 +1,13 @@
+/abroot/abroot
+/overlay_test
+/abroot*.deb
+/abroot*.buildinfo
+/abroot*.changes
+/abroot*.dsc
+/abroot*.tar.xz
+/obj-x86_64-linux-gnu
+/debian/*.debhelper
+/debian/*.substvars
+/debian/debhelper-build-stamp
+/debian/abroot
+/abroot
