@@ -40,7 +40,7 @@ func AtomicRsync(src, dst string, keepUnwanted bool) error {
 	if err := RsyncDryRun(src, dst); err != nil {
 		return err
 	}
-	opts := []string{"--link-dest", dst + "/_link_dest"}
+	opts := []string{"--link-dest", dst + "/.link_dest"}
 	if !keepUnwanted {
 		opts = append(opts, "--delete")
 	}
