@@ -96,7 +96,7 @@ func MergeOverlayFS(path string) error {
 	 * Merging is done by rsyncing the overlay into the combiner, unmounting
 	 * the overlayfs, and rsyncing the combiner into the original directory.
 	 */
-	if err := AtomicRsync(combinerPath, path, false); err != nil {
+	if err := AtomicRsync(combinerPath, path, []string{"home", "dev", "proc", "sys", "media", "mnt", "boot", "tmp"}, false); err != nil {
 		return err
 	}
 
