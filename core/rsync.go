@@ -33,15 +33,14 @@ func AtomicRsync(src, dst string, keepUnwanted bool) error {
 	 * AtomicRsync executes the rsync command in an atomic-like manner.
 	 * It does so by dry-running the rsync, and if it succeeds, it runs
 	 * the rsync again with the --link-dest option which points to a path
-	 * that is the same as the destination path. If the keepUnwanted option
+	 * that is in the same as the destination path. If the keepUnwanted option
 	 * is set to true, it will omit the --delete option, so that the already
 	 * existing and unwanted files will not be deleted.
 	 */
 	if err := RsyncDryRun(src, dst); err != nil {
 		return err
 	}
-
-	opts := []string{"--link-dest", dst}
+	opts := []string{"--link-dest", dst + "/_link_dest"}
 	if !keepUnwanted {
 		opts = append(opts, "--delete")
 	}
