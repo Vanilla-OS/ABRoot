@@ -11,7 +11,7 @@ func getRootDevice(state string) (string, error) {
 	 * getRootDevice returns the device of requested root partition.
 	 * Note that the present root partition is always the current one, while
 	 * the future root partition is the next one. So, the future root partition
-	 * is detected by checking for the next label, e.g. B if dcurent is A.
+	 * is detected by checking for the next label, e.g. B if curent is A.
 	 */
 	presentLabel, err := getCurrentRootLabel()
 	if err != nil {
