@@ -145,3 +145,32 @@ func CleanupOverlayPaths() error {
 
 	return nil
 }
+
+func ChrootOverlayFS(path string, mount bool, command string) error {
+	/*
+	 * ChrootOverlayFS creates a new overlayfs and chroots into it.
+	 */
+	if mount {
+		if err := NewOverlayFS([]string{path}); err != nil {
+			return err
+		}
+	}
+
+	if command != "" {
+		command = "/bin/bash -c '" + command + "'"
+	} else {
+		command = "/bin/bash"
+	}
+
+	cmd := exec.Command("chroot", combinerPath, command)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Env = os.Environ()
+
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
