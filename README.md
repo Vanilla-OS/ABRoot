@@ -23,7 +23,6 @@ Options:
 	--version/-V		show version
 
 Commands:
-	_sync-future		sync the future root with the present root
 	_update-boot		update the boot partition
 	get			get the present or future root partition
 	shell			enter a transactional shell in the future root and switch root on next boot
