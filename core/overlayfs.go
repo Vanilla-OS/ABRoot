@@ -46,7 +46,7 @@ func NewOverlayFS(lowers []string) error {
 	// it is safe to cleanup at this point, as we know that the overlayfs
 	// is not mounted
 
-	CleanupOverlayPaths(combinerPath)
+	CleanupOverlayPaths()
 
 	err := os.Mkdir(overlayfsPath, 0755)
 	if err != nil {
@@ -110,31 +110,36 @@ already merged into the original directory, so it is safe to ignore it.`)
 	return nil
 }
 
-func CleanupOverlayPaths(path string) error {
+func CleanupOverlayPaths() error {
 	/*
 	 * CleanupOverlayPaths unmounts and removes an overlayfs plus the workdir.
 	 */
 	if isMounted(overlayfsPath) {
 		if err := unix.Unmount(overlayfsPath, 0); err != nil {
+			fmt.Printf("failed to unmount overlayfs: %s", err)
 			return err
 		}
 	}
 
 	if isMounted(combinerPath) {
 		if err := unix.Unmount(combinerPath, 0); err != nil {
+			fmt.Printf("failed to unmount combiner: %s", err)
 			return err
 		}
 	}
 
 	if err := os.RemoveAll(overlayfsPath); err != nil {
+		fmt.Printf("failed to remove overlayfs: %s", err)
 		return err
 	}
 
 	if err := os.RemoveAll(overlayfsWork); err != nil {
+		fmt.Printf("failed to remove overlayfs workdir: %s", err)
 		return err
 	}
 
 	if err := os.RemoveAll(combinerPath); err != nil {
+		fmt.Printf("failed to remove combiner: %s", err)
 		return err
 	}
 
