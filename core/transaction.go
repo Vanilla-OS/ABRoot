@@ -127,28 +127,38 @@ func ApplyTransaction() error {
 	return nil
 }
 
-func TransactionalExec(command string) error {
+func transactionalExec(command string, newTransaction bool) (out string, err error) {
 	/*
-	 * NewTransactionalShell starts a new transactional shell.
+	 * TransactionalExec runs a command in a transactional shell.
 	 * It does so by creating a new transaction, and then chrooting into the
 	 * overlayfs.
 	 */
-	if err := NewTransaction(); err != nil {
-		return err
+	if newTransaction {
+		if err := NewTransaction(); err != nil {
+			return "", err
+		}
 	}
 
-	if err := ChrootOverlayFS("", false, command); err != nil {
+	if out, err := ChrootOverlayFS("", false, command); err != nil {
 		_ = CancelTransaction
-		return err
+		return out, err
 	}
 
-	return nil
+	return "", nil
 }
 
-func NewTransactionalShell() error {
-	if err := TransactionalExec(""); err != nil {
-		return err
+func TransactionalExec(command string) (out string, err error) {
+	return transactionalExec(command, true)
+}
+
+func TransactionalExecContinue(command string) (out string, err error) {
+	return transactionalExec(command, false)
+}
+
+func NewTransactionalShell() (out string, err error) {
+	if out, err := TransactionalExec(""); err != nil {
+		return out, err
 	}
 
-	return nil
+	return "", nil
 }
