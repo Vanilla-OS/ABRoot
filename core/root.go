@@ -163,11 +163,6 @@ func UpdateRootBoot(transacting bool) error {
 		return err
 	}
 
-	futureLabel, err := GetFutureRootLabel()
-	if err != nil {
-		return err
-	}
-
 	presentUUID, err := GetPresentRootUUID()
 	if err != nil {
 		return err
@@ -183,41 +178,104 @@ func UpdateRootBoot(transacting bool) error {
 			return err
 		}
 	}
-	/* layout of /etc/grub.d/10_vanilla:
-	#!/bin/sh
-	exec tail -n +3 $0
 
-	menuentry 'State A' {
-			search --no-floppy --fs-uuid --set=root 437fd101-ef63-41d3-a177-aab12c090b9a
-			linux   /vmlinuz-5.19.0-23-generic root=UUID=ead269ee-105c-4f7e-a707-c0600b677ee0 ro  quiet splash $vt_handoff
-			initrd  /initrd.img-5.19.0-23-generic
-	}
-
-	menuentry 'State B' {
-			search --no-floppy --fs-uuid --set=root 437fd101-ef63-41d3-a177-aab12c090b9a
-			linux   /vmlinuz-5.19.0-23-generic root=UUID=eff11375-f669-436f-991d-0e3fc1955380 ro  quiet splash $vt_handoff
-			initrd  /initrd.img-5.19.0-23-generic
-	}
-	*/
 	bootHeader := "#!/bin/sh\nexec tail -n +3 $0"
 	bootEntry := `menuentry 'State %s' {
 	search --no-floppy --fs-uuid --set=root %s
-	linux   /vmlinuz-5.19.0-23-generic
-	initrd  /initrd.img-5.19.0-23-generic
+	linux   /vmlinuz-%s-generic
+	initrd  /initrd.img-%s-generic
 }`
-	bootEntryPresent := fmt.Sprintf(bootEntry, presentLabel, presentUUID)
-	bootEntryFuture := fmt.Sprintf(bootEntry, futureLabel, futureUUID)
-	bootFile := strings.Join([]string{bootHeader, bootEntryPresent, bootEntryFuture}, "\n")
 
-	if err := os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootFile), 0644); err != nil {
+	presentKernelVersion, err := getKernelVersion("present")
+	if err != nil {
+		return err
+	}
+	futureKernelVersion, err := getKernelVersion("future")
+	if err != nil {
 		return err
 	}
 
-	if err := os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootFile), 0644); err != nil {
+	bootPresent := fmt.Sprintf(bootEntry, "A", presentUUID, presentKernelVersion, presentKernelVersion)
+	bootFuture := fmt.Sprintf(bootEntry, "B", futureUUID, futureKernelVersion, futureKernelVersion)
+	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
+
+	if err := os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
 		return err
 	}
 
-	// TODO: finish this
+	if err := os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
+		return err
+	}
+
+	if err := switchBootDefault(presentLabel); err != nil {
+		return err
+	}
+
+	if err := updateGrubConfig(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getKernelVersion(state string) (string, error) {
+	/*
+	 * getKernelVersion returns the highest kernel version installed on the
+	 * requested partition.
+	 */
+	command := []string{"dpkg", "--list", "|", "grep", "linux-image", "|", "awk", "'{print $3}'", "|", "sort", "-V", "|", "tail", "-n", "1"}
+	if state == "future" {
+		command = append([]string{"chroot", "/partFuture"}, command...)
+	}
+
+	cmd := exec.Command(command[0], command[1:]...)
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return strings.Split(string(out), ".")[0], nil
+}
+
+func switchBootDefault(presentLabel string) error {
+	/*
+	 * switchBootDefault updates the GRUB_DEFAULT variable in both the present
+	 * and future root partitions. It does so by comparing the current present
+	 * root partition label. E.g. if the present root partition is labeled
+	 * "A" (0), then the future root partition is labeled "B" (1), then the
+	 * GRUB_DEFAULT variable is set to "1" in both partitions.
+	 */
+	var newGrubDefault string
+	if presentLabel == "A" {
+		newGrubDefault = "1"
+	} else {
+		newGrubDefault = "0"
+	}
+
+	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+		return err
+	}
+
+	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func updateGrubConfig() error {
+	/*
+	 * updateGrubConfig updates the grub configuration for both the future
+	 * and present root partitions.
+	 */
+	if err := exec.Command("chroot", "/partFuture", "grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
+		return err
+	}
+
+	if err := exec.Command("grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
