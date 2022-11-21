@@ -146,13 +146,13 @@ func CleanupOverlayPaths() error {
 	return nil
 }
 
-func ChrootOverlayFS(path string, mount bool, command string) error {
+func ChrootOverlayFS(path string, mount bool, command string) (out string, err error) {
 	/*
 	 * ChrootOverlayFS creates a new overlayfs and chroots into it.
 	 */
 	if mount {
 		if err := NewOverlayFS([]string{path}); err != nil {
-			return err
+			return "", err
 		}
 	}
 
@@ -168,9 +168,11 @@ func ChrootOverlayFS(path string, mount bool, command string) error {
 	cmd.Stderr = os.Stderr
 	cmd.Env = os.Environ()
 
-	if err := cmd.Run(); err != nil {
-		return err
+	if output, err := cmd.Output(); err != nil {
+		return "", err
+	} else {
+		out = string(output)
 	}
 
-	return nil
+	return out, nil
 }
