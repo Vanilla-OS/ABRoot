@@ -16,6 +16,7 @@ Usage:
 
 Options:
 	--help/-h		show this message
+	--assume-yes/-y		assume yes to all questions
 
 Examples:
 	abroot exec ls -l /
@@ -36,6 +37,19 @@ func NewExecCommand() *cobra.Command {
 func execCommand(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(true) {
 		return nil
+	}
+
+	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
+	if !assumeYes {
+		if !core.AskConfirmation(`Are you sure you want to proceed?
+Running a command in a transactional shell is meant to be used by advanced users for maintenance purposes.`) {
+			return nil
+		}
+	}
+
+	command := args[0]
+	if _, err := core.TransactionalExec(command); err != nil {
+		return err
 	}
 
 	return nil
