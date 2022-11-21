@@ -16,6 +16,7 @@ Usage:
 
 Options:
 	--help/-h		show this message
+	--assume-yes/-y		assume yes to all questions
 
 Examples:
 	abroot shell
@@ -36,6 +37,18 @@ func NewShellCommand() *cobra.Command {
 func shell(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(true) {
 		return nil
+	}
+
+	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
+	if !assumeYes {
+		if !core.AskConfirmation(`Are you sure you want to proceed?
+The transactional shell is meant to be used by advanced users for maintenance purposes.`) {
+			return nil
+		}
+	}
+
+	if _, err := core.NewTransactionalShell(); err != nil {
+		return err
 	}
 
 	return nil
