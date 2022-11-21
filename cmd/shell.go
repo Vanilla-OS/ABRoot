@@ -8,7 +8,7 @@ import (
 )
 
 func shellUsage(*cobra.Command) error {
-	fmt.Print(`Description: 
+	fmt.Print(`Description:
 	Enter a transactional shell in the future root and switch root on next boot
 
 Usage:
@@ -21,6 +21,7 @@ Options:
 Examples:
 	abroot shell
 `)
+
 	return nil
 }
 
@@ -31,6 +32,7 @@ func NewShellCommand() *cobra.Command {
 		RunE:  shell,
 	}
 	cmd.SetUsageFunc(shellUsage)
+
 	return cmd
 }
 

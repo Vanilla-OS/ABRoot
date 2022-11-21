@@ -9,13 +9,11 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// getRootDevice returns the device of requested root partition.
+// Note that the present root partition is always the current one, while
+// the future root partition is the next one. So, the future root partition
+// is detected by checking for the next label, e.g. B if current is A.
 func getRootDevice(state string) (string, error) {
-	/*
-	 * getRootDevice returns the device of requested root partition.
-	 * Note that the present root partition is always the current one, while
-	 * the future root partition is the next one. So, the future root partition
-	 * is detected by checking for the next label, e.g. B if curent is A.
-	 */
 	presentLabel, err := getCurrentRootLabel()
 	if err != nil {
 		fmt.Println(err)
@@ -25,9 +23,11 @@ func getRootDevice(state string) (string, error) {
 	if state == "present" {
 		return presentLabel, nil
 	}
+
 	if presentLabel == "B" {
 		return "A", nil
 	}
+
 	if presentLabel == "B" {
 		return "B", nil
 	}
@@ -35,12 +35,11 @@ func getRootDevice(state string) (string, error) {
 	return "", fmt.Errorf("could not detect future root partition")
 }
 
+// getCurrentRootLabel returns the label of the current root partition.
+// It does so by checking the label of the current root partition.
 func getCurrentRootLabel() (string, error) {
-	/*
-	 * getCurrentRootLabel returns the label of the current root partition.
-	 * It does so by checking the label of the current root partition.
-	 */
 	cmd := exec.Command("lsblk", "-o", "LABEL", "-n", "/")
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -49,16 +48,15 @@ func getCurrentRootLabel() (string, error) {
 	return string(out), nil
 }
 
+// getRootUUID returns the UUID of requested root partition.
 func getRootUUID(state string) (string, error) {
-	/*
-	 * getRootUUID returns the UUID of requested root partition.
-	 */
 	device, err := getRootDevice(state)
 	if err != nil {
 		return "", err
 	}
 
 	cmd := exec.Command("lsblk", "-o", "UUID", "-n", device)
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -67,16 +65,15 @@ func getRootUUID(state string) (string, error) {
 	return string(out), nil
 }
 
+// getRootLabel returns the label of requested root partition.
 func getRootLabel(state string) (string, error) {
-	/*
-	 * getRootLabel returns the label of requested root partition.
-	 */
 	device, err := getRootDevice(state)
 	if err != nil {
 		return "", err
 	}
 
 	cmd := exec.Command("lsblk", "-o", "LABEL", "-n", device)
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -85,16 +82,15 @@ func getRootLabel(state string) (string, error) {
 	return string(out), nil
 }
 
+// getRootFileSystem returns the filesystem of requested root partition.
 func getRootFileSystem(state string) (string, error) {
-	/*
-	 * getRootFileSystem returns the filesystem of requested root partition.
-	 */
 	device, err := getRootDevice(state)
 	if err != nil {
 		return "", err
 	}
 
 	cmd := exec.Command("lsblk", "-o", "FSTYPE", "-n", device)
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -103,10 +99,8 @@ func getRootFileSystem(state string) (string, error) {
 	return string(out), nil
 }
 
+// MountFutureRoot mounts the future root partition to /partB.
 func MountFutureRoot() error {
-	/*
-	 * MountFutureRoot mounts the future root partition to /partB.
-	 */
 	device, err := GetFutureRootDevice()
 	if err != nil {
 		return err
@@ -120,10 +114,10 @@ func MountFutureRoot() error {
 	if _, err := os.Stat("/partFuture"); !os.IsNotExist(err) {
 		if isMounted("/partFuture") {
 			return fmt.Errorf("future root partition is busy. Another transaction?")
-		} else {
-			if err := os.RemoveAll("/partFuture"); err != nil {
-				return err
-			}
+		}
+
+		if err := os.RemoveAll("/partFuture"); err != nil {
+			return err
 		}
 	}
 
@@ -138,10 +132,8 @@ func MountFutureRoot() error {
 	return nil
 }
 
+// UnmountFutureRoot unmounts the future root partition.
 func UnmountFutureRoot() error {
-	/*
-	 * UnmountFutureRoot unmounts the future root partition.
-	 */
 	if err := unix.Unmount("/partB", 0); err != nil {
 		return err
 	}
@@ -149,15 +141,13 @@ func UnmountFutureRoot() error {
 	return nil
 }
 
+// UpdateRootBoot updates the boot entries for the requested root partition.
+// It does so by writing the new boot entries to 10_vanilla, setting the
+// future root partition as the first entry, and then updating the boot.
+// Note that 10_vanilla is written in both the present and future root
+// partitions. If transacting is true, the future partition is not mounted
+// at /partFuture, since it should already be there.
 func UpdateRootBoot(transacting bool) error {
-	/*
-	 * UpdateRootBoot updates the boot entries for the requested root partition.
-	 * It does so by writing the new boot entries to 10_vanilla, setting the
-	 * future root partition as the first entry, and then updating the boot.
-	 * Note that 10_vanilla is written in both the present and future root
-	 * partitions. If transacting is true, the future partition is not mounted
-	 * at /partFuture, since it should already be there.
-	 */
 	presentLabel, err := GetPresentRootLabel()
 	if err != nil {
 		return err
@@ -190,6 +180,7 @@ func UpdateRootBoot(transacting bool) error {
 	if err != nil {
 		return err
 	}
+
 	futureKernelVersion, err := getKernelVersion("future")
 	if err != nil {
 		return err
@@ -218,17 +209,16 @@ func UpdateRootBoot(transacting bool) error {
 	return nil
 }
 
+// getKernelVersion returns the highest kernel version installed on the
+// requested partition.
 func getKernelVersion(state string) (string, error) {
-	/*
-	 * getKernelVersion returns the highest kernel version installed on the
-	 * requested partition.
-	 */
 	command := []string{"dpkg", "--list", "|", "grep", "linux-image", "|", "awk", "'{print $3}'", "|", "sort", "-V", "|", "tail", "-n", "1"}
 	if state == "future" {
 		command = append([]string{"chroot", "/partFuture"}, command...)
 	}
 
 	cmd := exec.Command(command[0], command[1:]...)
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -237,14 +227,12 @@ func getKernelVersion(state string) (string, error) {
 	return strings.Split(string(out), ".")[0], nil
 }
 
+// switchBootDefault updates the GRUB_DEFAULT variable in both the present
+// and future root partitions. It does so by comparing the current present
+// root partition label. E.g. if the present root partition is labeled
+// "A" (0), then the future root partition is labeled "B" (1), then the
+// GRUB_DEFAULT variable is set to "1" in both partitions.
 func switchBootDefault(presentLabel string) error {
-	/*
-	 * switchBootDefault updates the GRUB_DEFAULT variable in both the present
-	 * and future root partitions. It does so by comparing the current present
-	 * root partition label. E.g. if the present root partition is labeled
-	 * "A" (0), then the future root partition is labeled "B" (1), then the
-	 * GRUB_DEFAULT variable is set to "1" in both partitions.
-	 */
 	var newGrubDefault string
 	if presentLabel == "A" {
 		newGrubDefault = "1"
@@ -263,11 +251,9 @@ func switchBootDefault(presentLabel string) error {
 	return nil
 }
 
+// updateGrubConfig updates the grub configuration for both the future
+// and present root partitions.
 func updateGrubConfig() error {
-	/*
-	 * updateGrubConfig updates the grub configuration for both the future
-	 * and present root partitions.
-	 */
 	if err := exec.Command("chroot", "/partFuture", "grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
 		return err
 	}

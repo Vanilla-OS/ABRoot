@@ -8,7 +8,7 @@ import (
 )
 
 func execUsage(*cobra.Command) error {
-	fmt.Print(`Description: 
+	fmt.Print(`Description:
 	Execute a command in a transactional shell in the future root and switch to it on next boot.
 
 Usage:
@@ -21,6 +21,7 @@ Options:
 Examples:
 	abroot exec ls -l /
 `)
+
 	return nil
 }
 
@@ -31,6 +32,7 @@ func NewExecCommand() *cobra.Command {
 		RunE:  execCommand,
 	}
 	cmd.SetUsageFunc(execUsage)
+
 	return cmd
 }
 

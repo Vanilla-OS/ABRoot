@@ -9,7 +9,7 @@ import (
 )
 
 func updateBootUsage(*cobra.Command) error {
-	fmt.Print(`Description: 
+	fmt.Print(`Description:
 	Update the boot partition.
 
 Usage:
@@ -17,6 +17,7 @@ Usage:
 
 Options:
 	--help/-h		show this message`)
+
 	return nil
 }
 
@@ -27,6 +28,7 @@ func NewUpdateBootCommand() *cobra.Command {
 		RunE:  status,
 	}
 	cmd.SetUsageFunc(updateBootUsage)
+
 	return cmd
 }
 

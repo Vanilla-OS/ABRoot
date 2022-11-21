@@ -9,11 +9,9 @@ var (
 	lockPath = "/tmp/abroot-transactions.lock"
 )
 
+// LockTransaction locks the transactional shell.
+// It does so by creating a lock file.
 func LockTransaction() error {
-	/*
-	 * LockTransaction locks the transactional shell.
-	 * It does so by creating a lock file.
-	 */
 	if AreTransactionsLocked() {
 		return nil
 	}
@@ -22,16 +20,15 @@ func LockTransaction() error {
 	if err != nil {
 		return err
 	}
+
 	f.Close()
 
 	return nil
 }
 
+// UnlockTransaction unlocks the transactional shell.
+// It does so by removing the lock file.
 func UnlockTransaction() error {
-	/*
-	 * UnlockTransaction unlocks the transactional shell.
-	 * It does so by removing the lock file.
-	 */
 	if _, err := os.Stat(lockPath); err != nil {
 		return nil // transactions are already unlocked
 	}
@@ -45,10 +42,8 @@ func UnlockTransaction() error {
 	return nil
 }
 
+// IsLocked returns true if the transactional shell is locked.
 func AreTransactionsLocked() bool {
-	/*
-	 * IsLocked returns true if the transactional shell is locked.
-	 */
 	if _, err := os.Stat(lockPath); err != nil {
 		return false
 	}
@@ -56,12 +51,10 @@ func AreTransactionsLocked() bool {
 	return true
 }
 
+// NewTransaction starts a new transaction.
+// It does so by creating a new overlayfs with the current root as the
+// lower layer, and then locking the transactional shell.
 func NewTransaction() error {
-	/*
-	 * NewTransaction starts a new transaction.
-	 * It does so by creating a new overlayfs with the current root as the
-	 * lower layer, and then locking the transactional shell.
-	 */
 	if AreTransactionsLocked() {
 		fmt.Println("Transactions are locked, another one is already running or a reboot is required.")
 		return nil
@@ -75,18 +68,17 @@ func NewTransaction() error {
 		if err := CleanupOverlayPaths(); err != nil {
 			return err
 		}
+
 		return err
 	}
 
 	return nil
 }
 
+// CancelTransaction cancels the current transaction.
+// It does so by unlocking the transactional shell and unmounting the
+// overlayfs.
 func CancelTransaction() error {
-	/*
-	 * CancelTransaction cancels the current transaction.
-	 * It does so by unlocking the transactional shell and unmounting the
-	 * overlayfs.
-	 */
 	if err := UnlockTransaction(); err != nil {
 		return err
 	}
@@ -98,12 +90,10 @@ func CancelTransaction() error {
 	return nil
 }
 
+// ApplyTransaction applies the current transaction.
+// It does so by merging the overlayfs into the future root, and then
+// updating the boot.
 func ApplyTransaction() error {
-	/*
-	 * ApplyTransaction applies the current transaction.
-	 * It does so by merging the overlayfs into the future root, and then
-	 * updating the boot.
-	 */
 	if err := MountFutureRoot(); err != nil {
 		_ = CancelTransaction()
 		return err
@@ -117,6 +107,7 @@ func ApplyTransaction() error {
 	if err := UpdateRootBoot(true); err != nil {
 		_ = UnmountFutureRoot()
 		_ = CancelTransaction()
+
 		return err
 	}
 
@@ -127,12 +118,10 @@ func ApplyTransaction() error {
 	return nil
 }
 
+// TransactionalExec runs a command in a transactional shell.
+// It does so by creating a new transaction, and then chrooting into the
+// overlayfs.
 func transactionalExec(command string, newTransaction bool) (out string, err error) {
-	/*
-	 * TransactionalExec runs a command in a transactional shell.
-	 * It does so by creating a new transaction, and then chrooting into the
-	 * overlayfs.
-	 */
 	if newTransaction {
 		if err := NewTransaction(); err != nil {
 			return "", err
