@@ -40,8 +40,7 @@ func AtomicRsync(src, dst string, excluded []string, keepUnwanted bool) error {
 	/*
 	 * AtomicRsync executes the rsync command in an atomic-like manner.
 	 * It does so by dry-running the rsync, and if it succeeds, it runs
-	 * the rsync again with the --link-dest option which points to a path
-	 * that is in the same as the destination path. If the keepUnwanted option
+	 * the rsync again performing changes. If the keepUnwanted option
 	 * is set to true, it will omit the --delete option, so that the already
 	 * existing and unwanted files will not be deleted.
 	 */
@@ -49,7 +48,7 @@ func AtomicRsync(src, dst string, excluded []string, keepUnwanted bool) error {
 		return err
 	}
 
-	opts := []string{"--link-dest", dst + "/.link_dest"}
+	opts := []string{}
 
 	if len(excluded) > 0 {
 		for _, exclude := range excluded {
