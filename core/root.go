@@ -9,6 +9,13 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+func init() {
+	if !DoesSupportAB() {
+		fmt.Println("Your system does not support A/B root.")
+		os.Exit(1)
+	}
+}
+
 // getRootDevice returns the device of requested root partition.
 // Note that the present root partition is always the current one, while
 // the future root partition is the next one. So, the future root partition
@@ -17,7 +24,7 @@ func getRootDevice(state string) (string, error) {
 	presentLabel, err := getCurrentRootLabel()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return "", err
 	}
 
 	if state == "present" {
@@ -287,4 +294,19 @@ func GetPresentRootUUID() (string, error) {
 
 func GetFutureRootUUID() (string, error) {
 	return getRootUUID("future")
+}
+
+/* DoesSupportAB check if the current system supports A/B partitioning */
+func DoesSupportAB() bool {
+	var support bool = true
+
+	if _, err := GetPresentRootLabel(); err != nil {
+		support = false
+	}
+
+	if _, err := GetFutureRootLabel(); err != nil {
+		support = false
+	}
+
+	return support
 }
