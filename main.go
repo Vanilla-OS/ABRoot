@@ -23,8 +23,8 @@ Options:
 Commands:
 	_update-boot		update the boot partition
 	get			get the present or future root partition
-	shell			enter a transactional shell in the future root and switch root on next boot
-	exec			execute a command in a transactional shell in the future root and switch to it on next boot
+	shell			enter a transactional shell in the future root
+	exec			execute a command in a transactional shell in the future root
 `)
 }
 

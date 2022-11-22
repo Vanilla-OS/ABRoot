@@ -44,7 +44,10 @@ func execCommand(cmd *cobra.Command, args []string) error {
 	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
 	if !assumeYes {
 		if !core.AskConfirmation(`Are you sure you want to proceed?
-Running a command in a transactional shell is meant to be used by advanced users for maintenance purposes.`) {
+Changes made in the shell will be applied to the future root on next boot on
+successful.
+Running a command in a transactional shell is meant to be used by advanced users 
+for maintenance purposes.`) {
 			return nil
 		}
 	}
