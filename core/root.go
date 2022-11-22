@@ -34,9 +34,10 @@ func getRootDevice(state string) (string, error) {
 		return device, nil
 	}
 
-	if presentLabel == "B" {
-		device, err := getDeviceByLabel("A")
+	if presentLabel == "A" {
+		device, err := getDeviceByLabel("B")
 		if err != nil {
+			fmt.Println(err)
 			return "", err
 		}
 		return device, nil
@@ -45,6 +46,7 @@ func getRootDevice(state string) (string, error) {
 	if presentLabel == "B" {
 		device, err := getDeviceByLabel("A")
 		if err != nil {
+			fmt.Println(err)
 			return "", err
 		}
 		return device, nil
@@ -135,19 +137,24 @@ func getRootUUID(state string) (string, error) {
 
 // getRootLabel returns the label of requested root partition.
 func getRootLabel(state string) (string, error) {
-	device, err := getRootDevice(state)
+	presentLabel, err := getCurrentRootLabel()
 	if err != nil {
 		return "", err
 	}
 
-	cmd := exec.Command("lsblk", "-o", "LABEL", "-n", device)
-
-	out, err := cmd.Output()
-	if err != nil {
-		return "", err
+	if state == "present" {
+		return presentLabel, nil
 	}
 
-	return string(out), nil
+	if presentLabel == "A" {
+		return "B", nil
+	}
+
+	if presentLabel == "B" {
+		return "A", nil
+	}
+
+	return "", fmt.Errorf("partitions are not labeled correctly")
 }
 
 // getRootFileSystem returns the filesystem of requested root partition.
@@ -361,13 +368,15 @@ func GetFutureRootUUID() (string, error) {
 func DoesSupportAB() bool {
 	var support bool = true
 
-	if _, err := GetPresentRootLabel(); err != nil {
-		fmt.Println("Error getting present root label:", err)
+	_, err := GetPresentRootDevice()
+	if err != nil {
+		fmt.Println("Error getting present root device: ", err)
 		support = false
 	}
 
-	if _, err := GetFutureRootLabel(); err != nil {
-		fmt.Println("Error getting future root label:", err)
+	_, err = GetFutureRootDevice()
+	if err != nil {
+		fmt.Println("Error getting future root device: ", err)
 		support = false
 	}
 
