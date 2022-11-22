@@ -16,7 +16,9 @@ Usage:
 	_update-boot
 
 Options:
-	--help/-h		show this message`)
+	--help/-h		show this message
+	--assume-yes/-y		assume yes to all questions
+`)
 
 	return nil
 }
@@ -35,6 +37,19 @@ func NewUpdateBootCommand() *cobra.Command {
 func status(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(true) {
 		return nil
+	}
+
+	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
+	if !assumeYes {
+		if !core.AskConfirmation(`Are you sure you want to proceed?
+The boot partition should be updated only if a transaction succeeded. This 
+command should be used by advanced users for maintenance purposes.`) {
+			return nil
+		}
+	}
+
+	if err := core.UpdateRootBoot(false); err != nil {
+		return err
 	}
 
 	return nil
