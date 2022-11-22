@@ -11,7 +11,7 @@ import (
 var (
 	overlayfsPath = "/tmp/transactionalOverlay"
 	overlayfsWork = "/tmp/transactionalOverlayWork"
-	combinerPath  = "/usr/bin/overlayfs-combiner"
+	combinerPath  = "/tmp/overlayfs-combiner"
 )
 
 // UnmountOverlayFS unmounts an overlayfs from the requested path.
