@@ -71,6 +71,7 @@ func NewOverlayFS(lowers []string) error {
 	if err := unix.Mount(
 		"overlay", combinerPath, "overlay", 0,
 		fmt.Sprintf("lowerdir=%s,upperdir=%s,workdir=%s", lower, overlayfsPath, overlayfsWork)); err != nil {
+		CleanupOverlayPaths()
 		return err
 	}
 
@@ -154,9 +155,15 @@ func ChrootOverlayFS(path string, mount bool, command string) (out string, err e
 	}
 
 	cmd := exec.Command("chroot", combinerPath, command)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	if cmd.Stdin == nil {
+		cmd.Stdin = os.Stdin
+	}
+	if cmd.Stdout == nil {
+		cmd.Stdout = os.Stdout
+	}
+	if cmd.Stderr == nil {
+		cmd.Stderr = os.Stderr
+	}
 	cmd.Env = os.Environ()
 
 	output, err := cmd.Output()
