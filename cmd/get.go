@@ -46,7 +46,7 @@ func get(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	template := `%s root partition: %s`
+	template := "%s root partition: %s\n"
 
 	if len(args) == 0 {
 		fmt.Println("Please specify a state (present or future)")
@@ -68,7 +68,7 @@ func get(cmd *cobra.Command, args []string) error {
 		}
 		fmt.Printf(template, "Future", futureLabel)
 	default:
-		fmt.Printf("Unknown state: %s", args[0])
+		fmt.Printf("Unknown state: %s\n", args[0])
 	}
 
 	return nil
