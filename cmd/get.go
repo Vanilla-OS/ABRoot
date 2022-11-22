@@ -56,12 +56,14 @@ func get(cmd *cobra.Command, args []string) error {
 	case "present":
 		presentLabel, err := core.GetPresentRootLabel()
 		if err != nil {
+			fmt.Println("Error getting present root partition.")
 			return err
 		}
 		fmt.Printf(template, "Present", presentLabel)
 	case "future":
 		futureLabel, err := core.GetFutureRootLabel()
 		if err != nil {
+			fmt.Println("Error getting future root partition.")
 			return err
 		}
 		fmt.Printf(template, "Future", futureLabel)
