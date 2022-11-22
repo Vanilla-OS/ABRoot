@@ -164,9 +164,6 @@ func UpdateRootBoot(transacting bool) error {
 	}
 
 	if !transacting {
-		if AreTransactionsLocked() {
-			return fmt.Errorf("another transaction is in progress or a reboot is required")
-		}
 		if err := MountFutureRoot(); err != nil {
 			return err
 		}
