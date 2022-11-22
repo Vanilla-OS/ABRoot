@@ -45,7 +45,12 @@ func getRootDevice(state string) (string, error) {
 // getCurrentRootLabel returns the label of the current root partition.
 // It does so by checking the label of the current root partition.
 func getCurrentRootLabel() (string, error) {
-	cmd := exec.Command("lsblk", "-o", "LABEL", "-n", "/")
+	device, err := getDeviceByMountPoint("/")
+	if err != nil {
+		return "", err
+	}
+
+	cmd := exec.Command("lsblk", "-o", "LABEL", "-n", device)
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -53,6 +58,29 @@ func getCurrentRootLabel() (string, error) {
 	}
 
 	return string(out), nil
+}
+
+// getDeviceByMountPoint returns the device of the requested mount point.
+func getDeviceByMountPoint(mountPoint string) (string, error) {
+	cmd := exec.Command("lsblk", "-o", "MOUNTPOINT,NAME", "-n", "-r")
+
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	for _, line := range strings.Split(string(out), "\n") {
+		split := strings.Split(line, " ")
+		if len(split) != 2 {
+			continue
+		}
+
+		if split[0] == mountPoint {
+			return split[1], nil
+		}
+	}
+
+	return "", fmt.Errorf("could not find device for mount point %s", mountPoint)
 }
 
 // getRootUUID returns the UUID of requested root partition.
