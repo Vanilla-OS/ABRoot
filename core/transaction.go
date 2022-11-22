@@ -61,6 +61,9 @@ func NewTransaction() error {
 	}
 
 	if err := NewOverlayFS([]string{"/"}); err != nil {
+		if err := UnlockTransaction(); err != nil {
+			fmt.Printf("failed to unlock transactions: %s", err)
+		}
 		return err
 	}
 
