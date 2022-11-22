@@ -9,7 +9,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-func init() {
+func CheckABRequirements() {
 	if !DoesSupportAB() {
 		fmt.Println("Your system does not support A/B root.")
 		os.Exit(1)
@@ -37,7 +37,6 @@ func getRootDevice(state string) (string, error) {
 	if presentLabel == "A" {
 		device, err := getDeviceByLabel("B")
 		if err != nil {
-			fmt.Println(err)
 			return "", err
 		}
 		return device, nil
@@ -46,7 +45,6 @@ func getRootDevice(state string) (string, error) {
 	if presentLabel == "B" {
 		device, err := getDeviceByLabel("A")
 		if err != nil {
-			fmt.Println(err)
 			return "", err
 		}
 		return device, nil
@@ -67,6 +65,9 @@ func getCurrentRootLabel() (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getCurrentRootLabel: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -80,6 +81,9 @@ func getDeviceByMountPoint(mountPoint string) (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getDeviceByMountPoint: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -102,6 +106,9 @@ func getDeviceByLabel(label string) (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getDeviceByLabel: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -129,6 +136,9 @@ func getRootUUID(state string) (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getRootUUID: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -168,6 +178,9 @@ func getRootFileSystem(state string) (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getRootFileSystem: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -192,15 +205,24 @@ func MountFutureRoot() error {
 		}
 
 		if err := os.RemoveAll("/partFuture"); err != nil {
+			if Verbose {
+				fmt.Printf("err:MountFutureRoot: %s\n", err)
+			}
 			return err
 		}
 	}
 
 	if err := os.Mkdir("/partFuture", 0755); err != nil {
+		if Verbose {
+			fmt.Printf("err:MountFutureRoot: %s\n", err)
+		}
 		return err
 	}
 
 	if err := unix.Mount(device, "/partFuture", deviceFs, 0, ""); err != nil {
+		if Verbose {
+			fmt.Printf("err:MountFutureRoot: %s\n", err)
+		}
 		return err
 	}
 
@@ -210,6 +232,9 @@ func MountFutureRoot() error {
 // UnmountFutureRoot unmounts the future root partition.
 func UnmountFutureRoot() error {
 	if err := unix.Unmount("/partB", 0); err != nil {
+		if Verbose {
+			fmt.Printf("err:UnmountFutureRoot: %s\n", err)
+		}
 		return err
 	}
 
@@ -253,11 +278,17 @@ func UpdateRootBoot(transacting bool) error {
 
 	presentKernelVersion, err := getKernelVersion("present")
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:UpdateRootBoot: %s\n", err)
+		}
 		return err
 	}
 
 	futureKernelVersion, err := getKernelVersion("future")
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:UpdateRootBoot: %s\n", err)
+		}
 		return err
 	}
 
@@ -266,10 +297,16 @@ func UpdateRootBoot(transacting bool) error {
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
 
 	if err := os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
+		if Verbose {
+			fmt.Printf("err:UpdateRootBoot: %s\n", err)
+		}
 		return err
 	}
 
 	if err := os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
+		if Verbose {
+			fmt.Printf("err:UpdateRootBoot: %s\n", err)
+		}
 		return err
 	}
 
@@ -296,6 +333,9 @@ func getKernelVersion(state string) (string, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:getKernelVersion: %s\n", err)
+		}
 		return "", err
 	}
 
@@ -316,10 +356,16 @@ func switchBootDefault(presentLabel string) error {
 	}
 
 	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+		if Verbose {
+			fmt.Printf("err:switchBootDefault: %s\n", err)
+		}
 		return err
 	}
 
 	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+		if Verbose {
+			fmt.Printf("err:switchBootDefault: %s\n", err)
+		}
 		return err
 	}
 
@@ -330,10 +376,16 @@ func switchBootDefault(presentLabel string) error {
 // and present root partitions.
 func updateGrubConfig() error {
 	if err := exec.Command("chroot", "/partFuture", "grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
+		if Verbose {
+			fmt.Printf("err:updateGrubConfig: %s\n", err)
+		}
 		return err
 	}
 
 	if err := exec.Command("grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
+		if Verbose {
+			fmt.Printf("err:updateGrubConfig: %s\n", err)
+		}
 		return err
 	}
 
@@ -370,13 +422,17 @@ func DoesSupportAB() bool {
 
 	_, err := GetPresentRootDevice()
 	if err != nil {
-		fmt.Println("Error getting present root device: ", err)
+		if Verbose {
+			fmt.Printf("err:DoesSupportAB: %s\n", err)
+		}
 		support = false
 	}
 
 	_, err = GetFutureRootDevice()
 	if err != nil {
-		fmt.Println("Error getting future root device: ", err)
+		if Verbose {
+			fmt.Printf("err:DoesSupportAB: %s\n", err)
+		}
 		support = false
 	}
 

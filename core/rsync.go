@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -43,16 +44,25 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 func atomicSwap(src, dst string) error {
 	orig, err := os.Open(src)
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:atomicSwap: %s\n", err)
+		}
 		return err
 	}
 
 	new, err := os.Open(dst)
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:atomicSwap: %s\n", err)
+		}
 		return err
 	}
 
 	err = unix.Renameat2(int(orig.Fd()), src, int(new.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:atomicSwap: %s\n", err)
+		}
 		return err
 	}
 

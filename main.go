@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vanilla-os/abroot/cmd"
+	"github.com/vanilla-os/abroot/core"
 )
 
 var (
@@ -38,10 +39,16 @@ func newABRootCommand() *cobra.Command {
 
 func main() {
 	rootCmd := newABRootCommand()
+	rootCmd.PersistentFlags().Bool("verbose", false, "show more verbosity")
+
 	rootCmd.AddCommand(cmd.NewUpdateBootCommand())
 	rootCmd.AddCommand(cmd.NewGetCommand())
 	rootCmd.AddCommand(cmd.NewShellCommand())
 	rootCmd.AddCommand(cmd.NewExecCommand())
 	rootCmd.SetHelpFunc(help)
 	rootCmd.Execute()
+
+	verbose := rootCmd.Flag("verbose").Value.String() == "true"
+	core.SetVerbose(verbose)
+	core.CheckABRequirements()
 }

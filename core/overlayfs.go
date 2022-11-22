@@ -17,6 +17,9 @@ var (
 // UnmountOverlayFS unmounts an overlayfs from the requested path.
 func UnmountOverlayFS(path string) error {
 	if err := unix.Unmount(path, 0); err != nil {
+		if Verbose {
+			fmt.Printf("err:UnmountOverlayFS: %s\n", err)
+		}
 		return err
 	}
 
@@ -43,22 +46,30 @@ func NewOverlayFS(lowers []string) error {
 	// is not mounted
 	err := CleanupOverlayPaths()
 	if err != nil {
-		return err
+		if Verbose {
+			fmt.Printf("err:NewOverlayFS: %s\n", err)
+		}
 	}
 
 	err = os.Mkdir(overlayfsPath, 0755)
 	if err != nil {
-		return err
+		if Verbose {
+			fmt.Printf("err:NewOverlayFS: %s\n", err)
+		}
 	}
 
 	err = os.Mkdir(combinerPath, 0755)
 	if err != nil {
-		return err
+		if Verbose {
+			fmt.Printf("err:NewOverlayFS: %s\n", err)
+		}
 	}
 
 	err = os.Mkdir(overlayfsWork, 0755)
 	if err != nil {
-		return err
+		if Verbose {
+			fmt.Printf("err:NewOverlayFS: %s\n", err)
+		}
 	}
 
 	lower := ""
@@ -72,6 +83,9 @@ func NewOverlayFS(lowers []string) error {
 		"overlay", combinerPath, "overlay", 0,
 		fmt.Sprintf("lowerdir=%s,upperdir=%s,workdir=%s", lower, overlayfsPath, overlayfsWork)); err != nil {
 		CleanupOverlayPaths()
+		if Verbose {
+			fmt.Printf("err:NewOverlayFS: %s\n", err)
+		}
 		return err
 	}
 
@@ -82,6 +96,9 @@ func NewOverlayFS(lowers []string) error {
 func isMounted(path string) bool {
 	cmd := exec.Command("mountpoint", path)
 	if err := cmd.Run(); err != nil {
+		if Verbose {
+			fmt.Printf("err:isMounted: %s\n", err)
+		}
 		return false
 	}
 
@@ -110,30 +127,40 @@ already merged into the original directory, so it is safe to ignore it.`)
 func CleanupOverlayPaths() error {
 	if isMounted(overlayfsPath) {
 		if err := unix.Unmount(overlayfsPath, 0); err != nil {
-			fmt.Printf("failed to unmount overlayfs: %s", err)
+			if Verbose {
+				fmt.Printf("err:CleanupOverlayPaths: %s\n", err)
+			}
 			return err
 		}
 	}
 
 	if isMounted(combinerPath) {
 		if err := unix.Unmount(combinerPath, 0); err != nil {
-			fmt.Printf("failed to unmount combiner: %s", err)
+			if Verbose {
+				fmt.Printf("err:CleanupOverlayPaths: %s\n", err)
+			}
 			return err
 		}
 	}
 
 	if err := os.RemoveAll(overlayfsPath); err != nil {
-		fmt.Printf("failed to remove overlayfs: %s", err)
+		if Verbose {
+			fmt.Printf("err:CleanupOverlayPaths: %s\n", err)
+		}
 		return err
 	}
 
 	if err := os.RemoveAll(overlayfsWork); err != nil {
-		fmt.Printf("failed to remove overlayfs workdir: %s", err)
+		if Verbose {
+			fmt.Printf("err:CleanupOverlayPaths: %s\n", err)
+		}
 		return err
 	}
 
 	if err := os.RemoveAll(combinerPath); err != nil {
-		fmt.Printf("failed to remove combiner: %s", err)
+		if Verbose {
+			fmt.Printf("err:CleanupOverlayPaths: %s\n", err)
+		}
 		return err
 	}
 
@@ -168,6 +195,9 @@ func ChrootOverlayFS(path string, mount bool, command string) (out string, err e
 
 	output, err := cmd.Output()
 	if err != nil {
+		if Verbose {
+			fmt.Printf("err:ChrootOverlayFS: %s\n", err)
+		}
 		return "", err
 	}
 
