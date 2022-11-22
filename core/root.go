@@ -23,20 +23,31 @@ func init() {
 func getRootDevice(state string) (string, error) {
 	presentLabel, err := getCurrentRootLabel()
 	if err != nil {
-		fmt.Println(err)
 		return "", err
 	}
 
 	if state == "present" {
-		return presentLabel, nil
+		device, err := getDeviceByLabel(presentLabel)
+		if err != nil {
+			return "", err
+		}
+		return device, nil
 	}
 
 	if presentLabel == "B" {
-		return "A", nil
+		device, err := getDeviceByLabel("A")
+		if err != nil {
+			return "", err
+		}
+		return device, nil
 	}
 
 	if presentLabel == "B" {
-		return "B", nil
+		device, err := getDeviceByLabel("A")
+		if err != nil {
+			return "", err
+		}
+		return device, nil
 	}
 
 	return "", fmt.Errorf("could not detect future root partition")
@@ -57,12 +68,13 @@ func getCurrentRootLabel() (string, error) {
 		return "", err
 	}
 
-	return string(out), nil
+	label := strings.TrimSpace(string(out))
+	return label, nil
 }
 
 // getDeviceByMountPoint returns the device of the requested mount point.
 func getDeviceByMountPoint(mountPoint string) (string, error) {
-	cmd := exec.Command("lsblk", "-o", "MOUNTPOINT,NAME", "-n", "-r")
+	cmd := exec.Command("lsblk", "-o", "MOUNTPOINT,NAME", "-AnM", "--tree=PATH")
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -70,17 +82,38 @@ func getDeviceByMountPoint(mountPoint string) (string, error) {
 	}
 
 	for _, line := range strings.Split(string(out), "\n") {
-		split := strings.Split(line, " ")
+		split := strings.Fields(line)
 		if len(split) != 2 {
 			continue
 		}
-
 		if split[0] == mountPoint {
-			return split[1], nil
+			return "/dev/" + split[1], nil
 		}
 	}
 
 	return "", fmt.Errorf("could not find device for mount point %s", mountPoint)
+}
+
+// getDeviceByLabel returns the device of the requested label.
+func getDeviceByLabel(label string) (string, error) {
+	cmd := exec.Command("lsblk", "-o", "LABEL,NAME", "-AnM", "--tree=PATH")
+
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	for _, line := range strings.Split(string(out), "\n") {
+		split := strings.Fields(line)
+		if len(split) != 2 {
+			continue
+		}
+		if split[0] == label {
+			return "/dev/" + split[1], nil
+		}
+	}
+
+	return "", fmt.Errorf("could not find device for label %s", label)
 }
 
 // getRootUUID returns the UUID of requested root partition.
@@ -329,10 +362,12 @@ func DoesSupportAB() bool {
 	var support bool = true
 
 	if _, err := GetPresentRootLabel(); err != nil {
+		fmt.Println("Error getting present root label:", err)
 		support = false
 	}
 
 	if _, err := GetFutureRootLabel(); err != nil {
+		fmt.Println("Error getting future root label:", err)
 		support = false
 	}
 
