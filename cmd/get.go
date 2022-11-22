@@ -13,18 +13,19 @@ func getUsage(*cobra.Command) error {
 	Get the present or future root partition.
 
 Usage:
-	get [partition]
+	get [state]
 
 Options:
 	--help/-h		show this message
 
-Partition:
+States:
 	present			get the present root partition
 	future			get the future root partition
 
 Examples:
 	abroot get present
-	abroot get future`)
+	abroot get future
+`)
 
 	return nil
 }
@@ -43,6 +44,29 @@ func NewGetCommand() *cobra.Command {
 func get(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(true) {
 		return nil
+	}
+
+	template := `%s root partition: %s`
+
+	if len(args) == 0 {
+		fmt.Println("Please specify a state (present or future)")
+	}
+
+	switch args[0] {
+	case "present":
+		presentLabel, err := core.GetPresentRootLabel()
+		if err != nil {
+			return err
+		}
+		fmt.Printf(template, "Present", presentLabel)
+	case "future":
+		futureLabel, err := core.GetFutureRootLabel()
+		if err != nil {
+			return err
+		}
+		fmt.Printf(template, "Future", futureLabel)
+	default:
+		fmt.Printf("Unknown state: %s", args[0])
 	}
 
 	return nil
