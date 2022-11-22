@@ -1,4 +1,4 @@
-module github.com/vanilla-os/ABRoot
+module github.com/vanilla-os/abroot
 
 go 1.18
 

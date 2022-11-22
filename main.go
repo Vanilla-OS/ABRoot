@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/vanilla-os/ABRoot/cmd"
+	"github.com/vanilla-os/abroot/cmd"
 )
 
 var (

@@ -22,12 +22,6 @@ Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          golang-go,
-         golang-dbus-dev,
-         golang-github-spf13-cobra-dev,
-         golang-github-spf13-viper-dev,
-         golang-github-google-uuid-dev,
-         golang-github-mattn-go-sqlite3-dev,
-         golang-github-otiai10-copy-dev,
-         abroot-extras
+         golang-github-spf13-cobra-dev
 Built-Using: ${misc:Built-Using}
 Description: On-demand immutability for Vanilla OS.

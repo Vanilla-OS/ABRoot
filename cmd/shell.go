@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/vanilla-os/ABRoot/core"
+	"github.com/vanilla-os/abroot/core"
 )
 
 func shellUsage(*cobra.Command) error {
