@@ -16,12 +16,6 @@ func rsyncCmd(src, dst string, opts []string) error {
 	args = append(args, dst)
 
 	cmd := exec.Command("rsync", args...)
-	if cmd.Stdout == nil {
-		cmd.Stdout = os.Stdout
-	}
-	if cmd.Stderr == nil {
-		cmd.Stderr = os.Stderr
-	}
 
 	return cmd.Run()
 }

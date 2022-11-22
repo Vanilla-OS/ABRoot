@@ -168,7 +168,7 @@ func CleanupOverlayPaths() error {
 }
 
 // ChrootOverlayFS creates a new overlayfs and chroots into it.
-func ChrootOverlayFS(path string, mount bool, command string) (out string, err error) {
+func ChrootOverlayFS(path string, mount bool, command string, catchOut bool) (out string, err error) {
 	if mount {
 		if err := NewOverlayFS([]string{path}); err != nil {
 			return "", err
@@ -182,18 +182,24 @@ func ChrootOverlayFS(path string, mount bool, command string) (out string, err e
 	}
 
 	cmd := exec.Command("chroot", combinerPath, command)
-	if cmd.Stdin == nil {
-		cmd.Stdin = os.Stdin
-	}
-	if cmd.Stdout == nil {
-		cmd.Stdout = os.Stdout
-	}
-	if cmd.Stderr == nil {
-		cmd.Stderr = os.Stderr
-	}
 	cmd.Env = os.Environ()
+	output := []byte{}
 
-	output, err := cmd.Output()
+	if catchOut {
+		output, err = cmd.Output()
+	} else {
+		if cmd.Stdin == nil {
+			cmd.Stdin = os.Stdin
+		}
+		if cmd.Stdout == nil {
+			cmd.Stdout = os.Stdout
+		}
+		if cmd.Stderr == nil {
+			cmd.Stderr = os.Stderr
+		}
+		err = cmd.Run()
+	}
+
 	if err != nil {
 		if Verbose {
 			fmt.Printf("err:ChrootOverlayFS: %s\n", err)

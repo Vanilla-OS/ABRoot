@@ -131,7 +131,7 @@ func transactionalExec(command string, newTransaction bool) (out string, err err
 		}
 	}
 
-	if out, err := ChrootOverlayFS("", false, command); err != nil {
+	if out, err := ChrootOverlayFS("", false, command, false); err != nil {
 		_ = CancelTransaction
 		return out, err
 	}
