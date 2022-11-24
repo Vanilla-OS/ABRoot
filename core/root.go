@@ -232,10 +232,7 @@ func MountFutureRoot() error {
 	}
 
 	PrintVerbose("step:  Mount device: %s", device)
-	// if err := unix.Mount(device, "/partFuture", deviceFs, 0, ""); err != nil {
-	// the above gives an error if the device is in use by another process
-	// so we use the below instead which forces the mount by killing any
-	// other process using the device
+	// unix.Mount does not work here for some reason.
 	cmd := exec.Command("mount", device, "/partFuture")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -404,7 +401,6 @@ func switchBootDefault(presentLabel string) error {
 // updateGrubConfig updates the grub configuration for both the future
 // and present root partitions.
 func updateGrubConfig() error {
-	// umount /boot, mount on /partFuture/boot and update grub, then umount, mount on /boot again and update grub
 	bootPart, err := getDeviceByMountPoint("/boot")
 	if err != nil {
 		return err
