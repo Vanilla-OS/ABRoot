@@ -85,7 +85,6 @@ func NewOverlayFS(lowers []string) error {
 func IsMounted(path string) bool {
 	cmd := exec.Command("mountpoint", path)
 	if err := cmd.Run(); err != nil {
-		PrintVerbose("err:IsMounted: %s", err)
 		return false
 	}
 

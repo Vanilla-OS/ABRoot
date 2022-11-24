@@ -117,6 +117,13 @@ func ApplyTransaction() error {
 		return err
 	}
 
+	PrintVerbose("step:  UpdateFsTab")
+	if err := UpdateFsTab(); err != nil {
+		_ = UnmountFutureRoot()
+		_ = CancelTransaction()
+		return err
+	}
+
 	PrintVerbose("step:  CleanupOverlayPaths")
 	if err := CleanupOverlayPaths(); err != nil {
 		return err

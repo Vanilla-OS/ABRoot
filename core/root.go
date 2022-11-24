@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -336,6 +337,48 @@ func UpdateRootBoot(transacting bool) error {
 
 	PrintVerbose("step:  updateGrubConfig")
 	if err := updateGrubConfig(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateFsTab updates the fstab file to reflect the new root partition.
+func UpdateFsTab() error {
+	PrintVerbose("step:  GetPresentRootUUID")
+	presentUUID, err := GetPresentRootUUID()
+	if err != nil {
+		return err
+	}
+
+	PrintVerbose("step:  GetFutureRootUUID")
+	futureUUID, err := GetFutureRootUUID()
+	if err != nil {
+		return err
+	}
+
+	PrintVerbose("step:  ReadFile present")
+	fstab, err := os.ReadFile("/etc/fstab")
+	if err != nil {
+		PrintVerbose("err:updateFsTab: %s", err)
+		return err
+	}
+
+	PrintVerbose("step:  ReplaceAll present/future")
+	fstabFuture := fstab
+	fstabPresent := fstab
+	fstabFuture = bytes.ReplaceAll(fstabFuture, []byte(presentUUID), []byte(futureUUID))
+	fstabPresent = bytes.ReplaceAll(fstabPresent, []byte(futureUUID), []byte(presentUUID))
+
+	PrintVerbose("step:  WriteFile future")
+	if err := os.WriteFile("/partFuture/etc/fstab", fstabFuture, 0644); err != nil {
+		PrintVerbose("err:updateFsTab: %s", err)
+		return err
+	}
+
+	PrintVerbose("step:  WriteFile present")
+	if err := os.WriteFile("/etc/fstab", fstabPresent, 0644); err != nil {
+		PrintVerbose("err:updateFsTab: %s", err)
 		return err
 	}
 
