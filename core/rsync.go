@@ -45,20 +45,20 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 func atomicSwap(src, dst string) error {
 	orig, err := os.Open(src)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s\n", err)
+		PrintVerbose("err:atomicSwap: %s", err)
 		return err
 	}
 
 	new, err := os.Open(dst)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s\n", err)
+		PrintVerbose("err:atomicSwap: %s", err)
 		return err
 	}
 
 	PrintVerbose("step:  Renameat2")
 	err = unix.Renameat2(int(orig.Fd()), src, int(new.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s\n", err)
+		PrintVerbose("err:atomicSwap: %s", err)
 		return err
 	}
 

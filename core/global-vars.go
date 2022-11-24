@@ -13,5 +13,6 @@ func IsVerbose() bool {
 func PrintVerbose(msg string, args ...interface{}) {
 	if IsVerbose() {
 		fmt.Printf(msg, args...)
+		fmt.Println()
 	}
 }
