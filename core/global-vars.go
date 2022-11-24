@@ -1,11 +1,17 @@
 package core
 
-var Verbose = false
+import (
+	"fmt"
+	"os"
+)
 
-func SetVerbose(status bool) {
-	Verbose = status
+func IsVerbose() bool {
+	_, res := os.LookupEnv("ABROOT_VERBOSE")
+	return res
 }
 
-func GetVerbose() bool {
-	return Verbose
+func PrintVerbose(msg string, args ...interface{}) {
+	if IsVerbose() {
+		fmt.Printf(msg, args...)
+	}
 }

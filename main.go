@@ -18,7 +18,6 @@ abroot [options] [command]
 
 Options:
 	--help/-h		show this message
-	--verbose/-v		show more verbosity
 	--version/-V		show version
 
 Commands:
@@ -39,7 +38,6 @@ func newABRootCommand() *cobra.Command {
 
 func main() {
 	rootCmd := newABRootCommand()
-	rootCmd.PersistentFlags().Bool("verbose", false, "show more verbosity")
 
 	rootCmd.AddCommand(cmd.NewUpdateBootCommand())
 	rootCmd.AddCommand(cmd.NewGetCommand())
@@ -48,7 +46,5 @@ func main() {
 	rootCmd.SetHelpFunc(help)
 	rootCmd.Execute()
 
-	verbose := rootCmd.Flag("verbose").Value.String() == "true"
-	core.SetVerbose(verbose)
 	core.CheckABRequirements()
 }

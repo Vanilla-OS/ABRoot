@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 
@@ -16,8 +15,16 @@ func rsyncCmd(src, dst string, opts []string) error {
 	args = append(args, dst)
 
 	cmd := exec.Command("rsync", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
 
-	return cmd.Run()
+	if err != nil {
+		PrintVerbose("err:rsyncCmd: %s/n", err)
+		return err
+	}
+
+	return nil
 }
 
 // rsyncDryRun executes the rsync command with the --dry-run option.
@@ -30,7 +37,7 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 		}
 	}
 
-	return rsyncCmd(src, dst, []string{"--dry-run"})
+	return rsyncCmd(src, dst, opts)
 }
 
 // atomicSwap allows swapping 2 files or directories in-place and atomically, using
@@ -38,25 +45,20 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 func atomicSwap(src, dst string) error {
 	orig, err := os.Open(src)
 	if err != nil {
-		if Verbose {
-			fmt.Printf("err:atomicSwap: %s\n", err)
-		}
+		PrintVerbose("err:atomicSwap: %s\n", err)
 		return err
 	}
 
 	new, err := os.Open(dst)
 	if err != nil {
-		if Verbose {
-			fmt.Printf("err:atomicSwap: %s\n", err)
-		}
+		PrintVerbose("err:atomicSwap: %s\n", err)
 		return err
 	}
 
+	PrintVerbose("step:  Renameat2")
 	err = unix.Renameat2(int(orig.Fd()), src, int(new.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
-		if Verbose {
-			fmt.Printf("err:atomicSwap: %s\n", err)
-		}
+		PrintVerbose("err:atomicSwap: %s\n", err)
 		return err
 	}
 
@@ -71,12 +73,13 @@ func atomicSwap(src, dst string) error {
 // existing and unwanted files will not be deleted.
 // To ensure the changes are applied atomically, we rsync on a _new directory first,
 // and use atomicSwap to replace the _new with the dst directory.
-func AtomicRsync(src, dst string, excluded []string, keepUnwanted bool) error {
-	if err := rsyncDryRun(src, dst+"_new", excluded); err != nil {
+func AtomicRsync(src, dst string, transitionalPath string, finalPath string, excluded []string, keepUnwanted bool) error {
+	PrintVerbose("step:  rsyncDryRun")
+	if err := rsyncDryRun(src, transitionalPath, excluded); err != nil {
 		return err
 	}
 
-	opts := []string{"--link-dest", dst}
+	opts := []string{"--link-dest", dst, "--exclude", finalPath, "--exclude", transitionalPath}
 
 	if len(excluded) > 0 {
 		for _, exclude := range excluded {
@@ -88,15 +91,18 @@ func AtomicRsync(src, dst string, excluded []string, keepUnwanted bool) error {
 		opts = append(opts, "--delete")
 	}
 
-	err := rsyncCmd(src, dst+"_new", opts)
+	PrintVerbose("step:  rsyncCmd")
+	err := rsyncCmd(src, transitionalPath, opts)
 	if err != nil {
 		return err
 	}
 
-	err = atomicSwap(dst, dst+"_new")
+	PrintVerbose("step:  atomicSwap")
+	err = atomicSwap(transitionalPath, finalPath)
 	if err != nil {
 		return err
 	}
 
-	return os.RemoveAll(dst + "_new")
+	PrintVerbose("step:  RemoveAll")
+	return os.RemoveAll(transitionalPath)
 }

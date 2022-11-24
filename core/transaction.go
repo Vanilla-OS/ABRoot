@@ -97,16 +97,19 @@ func CancelTransaction() error {
 // It does so by merging the overlayfs into the future root, and then
 // updating the boot.
 func ApplyTransaction() error {
+	PrintVerbose("step:  MountFutureRoot")
 	if err := MountFutureRoot(); err != nil {
 		_ = CancelTransaction()
 		return err
 	}
 
+	PrintVerbose("step:  MergeOverlayFS")
 	if err := MergeOverlayFS("/partFuture"); err != nil {
 		_ = CancelTransaction()
 		return err
 	}
 
+	PrintVerbose("step:  UpdateRootBoot")
 	if err := UpdateRootBoot(true); err != nil {
 		_ = UnmountFutureRoot()
 		_ = CancelTransaction()
@@ -114,6 +117,7 @@ func ApplyTransaction() error {
 		return err
 	}
 
+	PrintVerbose("step:  CleanupOverlayPaths")
 	if err := CleanupOverlayPaths(); err != nil {
 		return err
 	}
@@ -136,6 +140,10 @@ func transactionalExec(command string, newTransaction bool) (out string, err err
 		return out, err
 	}
 
+	if err := ApplyTransaction(); err != nil {
+		_ = CancelTransaction()
+		return "", err
+	}
 	return "", nil
 }
 
