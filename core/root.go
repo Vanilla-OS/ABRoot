@@ -136,7 +136,8 @@ func getRootUUID(state string) (string, error) {
 		return "", err
 	}
 
-	return string(out), nil
+	uuid := strings.TrimSpace(string(out))
+	return uuid, nil
 }
 
 // GetBootUUID returns the UUID of the boot partition.
@@ -159,7 +160,8 @@ func GetBootUUID() (string, error) {
 		return "", err
 	}
 
-	return string(out), nil
+	uuid := strings.TrimSpace(string(out))
+	return uuid, nil
 }
 
 // getRootLabel returns the label of requested root partition.
@@ -293,12 +295,54 @@ func UpdateRootBoot(transacting bool) error {
 		}
 	}
 
-	bootHeader := "#!/bin/sh\nexec tail -n +3 $0"
-	bootEntry := `menuentry 'State %s' {
+	bootHeader := `#!/bin/sh
+exec tail -n +3 $0
+
+set menu_color_normal=white/black
+set menu_color_highlight=black/light-gray
+
+function gfxmode {
+	set gfxpayload="${1}"
+	if [ "${1}" = "keep" ]; then
+			set vt_handoff=vt.handoff=7
+	else
+			set vt_handoff=
+	fi
+}
+if [ "${recordfail}" != 1 ]; then
+  if [ -e ${prefix}/gfxblacklist.txt ]; then
+    if [ ${grub_platform} != pc ]; then
+      set linux_gfx_mode=keep
+    elif hwmatch ${prefix}/gfxblacklist.txt 3; then
+      if [ ${match} = 0 ]; then
+        set linux_gfx_mode=keep
+      else
+        set linux_gfx_mode=text
+      fi
+    else
+      set linux_gfx_mode=text
+    fi
+  else
+    set linux_gfx_mode=keep
+  fi
+else
+  set linux_gfx_mode=text
+fi
+export linux_gfx_mode
+`
+	bootEntry := `menuentry 'State %s' --class gnu'linux--class gnu --class os {
+	recordfail
+	load_video
+	gfxmode $linux_gfx_mode
+	insmod gzio
+	if [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi
+	insmod part_gpt
+	insmod ext2
 	search --no-floppy --fs-uuid --set=root %s
-	linux   /vmlinuz-%s  root=UUID=%s ro quiet loglevel=7 splash $vt_handoff
+	linux	/vmlinuz-%s root=UUID=%s quiet splash bgrt_disable $vt_handoff
 	initrd  /initrd.img-%s
-}`
+}
+`
 
 	PrintVerbose("step:  getKernelVersion present")
 	presentKernelVersion, err := getKernelVersion("present")
