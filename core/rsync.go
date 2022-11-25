@@ -9,7 +9,7 @@ import (
 
 // rsyncCmd executes the rsync command with the requested options.
 func rsyncCmd(src, dst string, opts []string) error {
-	args := []string{"-a"}
+	args := []string{"-avxHAX"}
 	args = append(args, opts...)
 	args = append(args, src)
 	args = append(args, dst)
