@@ -52,10 +52,15 @@ for maintenance purposes.`) {
 		}
 	}
 
+	fmt.Println(`New transaction started. This may take a while...
+Do not reboot or cancel the transaction until it is finished.`)
+
 	command := args[0]
 	if _, err := core.TransactionalExec(command); err != nil {
 		return err
 	}
+
+	fmt.Println("Transaction completed successfully. Reboot to apply changes.")
 
 	return nil
 }
