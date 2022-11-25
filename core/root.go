@@ -330,7 +330,7 @@ else
 fi
 export linux_gfx_mode
 `
-	bootEntry := `menuentry 'State %s' --class gnu'linux--class gnu --class os {
+	bootEntry := `menuentry 'State %s' --class gnu-linux--class gnu --class os {
 	recordfail
 	load_video
 	gfxmode $linux_gfx_mode
