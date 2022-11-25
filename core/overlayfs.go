@@ -115,8 +115,7 @@ func IsDeviceMounted(device string) bool {
 func MergeOverlayFS(path string) error {
 	PrintVerbose("step:  AtomicRsync")
 	if err := AtomicRsync(combinerPath+"/.system/", path+"/.system/", path+"/.system_new/", path+"/.system/",
-		[]string{"home", "dev", "proc", "sys", "media", "mnt", "boot", "tmp",
-			"partFuture", "partFuture_new", ".*/"},
+		[]string{"home", "partFuture", "partFuture_new", ".*/"},
 		false); err != nil {
 		return err
 	}
