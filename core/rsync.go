@@ -17,10 +17,12 @@ func rsyncCmd(src, dst string, opts []string) error {
 	cmd := exec.Command("rsync", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	PrintVerbose("cmd:rsyncCmd: %s", cmd.String())
 	err := cmd.Run()
 
 	if err != nil {
-		PrintVerbose("err:rsyncCmd: %s/n", err)
+		PrintVerbose("err:rsyncCmd: %s", err)
 		return err
 	}
 
@@ -74,6 +76,14 @@ func atomicSwap(src, dst string) error {
 // To ensure the changes are applied atomically, we rsync on a _new directory first,
 // and use atomicSwap to replace the _new with the dst directory.
 func AtomicRsync(src, dst string, transitionalPath string, finalPath string, excluded []string, keepUnwanted bool) error {
+	if _, err := os.Stat(transitionalPath); os.IsNotExist(err) {
+		err = os.Mkdir(transitionalPath, 0755)
+		if err != nil {
+			PrintVerbose("err:AtomicRsync: %s", err)
+			return err
+		}
+	}
+
 	PrintVerbose("step:  rsyncDryRun")
 	if err := rsyncDryRun(src, transitionalPath, excluded); err != nil {
 		return err
