@@ -264,6 +264,8 @@ func UnmountFutureRoot() error {
 // partitions. If transacting is true, the future partition is not mounted
 // at /partFuture, since it should already be there.
 func UpdateRootBoot(transacting bool) error {
+	unwanted := []string{"10_linux", "20_memtest86+"} // those files cause undesired boot entries
+
 	PrintVerbose("step:  GetPresentRootLabel")
 	presentLabel, err := GetPresentRootLabel()
 	if err != nil {
@@ -372,6 +374,16 @@ export linux_gfx_mode
 	if err := os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
 		PrintVerbose("err:UpdateRootBoot: %s", err)
 		return err
+	}
+
+	PrintVerbose("step:  Remove unwanted grub files in future")
+	for _, file := range unwanted {
+		os.Remove("/partFuture/etc/grub.d/" + file)
+	}
+
+	PrintVerbose("step:  Remove unwanted grub files in present")
+	for _, file := range unwanted {
+		os.Remove("/etc/grub.d/" + file)
 	}
 
 	PrintVerbose("step:  switchBootDefault")
