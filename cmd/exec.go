@@ -32,6 +32,7 @@ func NewExecCommand() *cobra.Command {
 		RunE:  execCommand,
 	}
 	cmd.SetUsageFunc(execUsage)
+	cmd.Flags().SetInterspersed(false)
 
 	return cmd
 }
@@ -55,7 +56,11 @@ for maintenance purposes.`) {
 	fmt.Println(`New transaction started. This may take a while...
 Do not reboot or cancel the transaction until it is finished.`)
 
-	command := args[0]
+	command := ""
+	for _, arg := range args {
+		command += arg + " "
+	}
+
 	if _, err := core.TransactionalExec(command); err != nil {
 		return err
 	}

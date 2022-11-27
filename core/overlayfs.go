@@ -177,13 +177,12 @@ func ChrootOverlayFS(path string, mount bool, command string, catchOut bool) (ou
 		}
 	}
 
+	args := []string{"chroot", combinerPath, "/bin/bash"}
 	if command != "" {
-		command = "/bin/bash -c '" + command + "'"
-	} else {
-		command = "/bin/bash"
+		args = append(args, "-c", command)
 	}
 
-	cmd := exec.Command("chroot", combinerPath, command)
+	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Env = os.Environ()
 	output := []byte{}
 
