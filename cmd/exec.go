@@ -32,6 +32,7 @@ func NewExecCommand() *cobra.Command {
 		RunE:  execCommand,
 	}
 	cmd.SetUsageFunc(execUsage)
+	cmd.Flags().BoolP("assume-yes", "y", false, "assume yes to all questions")
 	cmd.Flags().SetInterspersed(false)
 
 	return cmd

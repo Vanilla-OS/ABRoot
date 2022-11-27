@@ -32,6 +32,7 @@ func NewShellCommand() *cobra.Command {
 		RunE:  shell,
 	}
 	cmd.SetUsageFunc(shellUsage)
+	cmd.Flags().BoolP("assume-yes", "y", false, "assume yes to all questions")
 
 	return cmd
 }
