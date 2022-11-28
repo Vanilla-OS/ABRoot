@@ -36,16 +36,16 @@ func getRootDevice(state string) (string, error) {
 		return device, nil
 	}
 
-	if presentLabel == "A" {
-		device, err := getDeviceByLabel("B")
+	if presentLabel == "a" {
+		device, err := getDeviceByLabel("b")
 		if err != nil {
 			return "", err
 		}
 		return device, nil
 	}
 
-	if presentLabel == "B" {
-		device, err := getDeviceByLabel("A")
+	if presentLabel == "b" {
+		device, err := getDeviceByLabel("a")
 		if err != nil {
 			return "", err
 		}
@@ -175,12 +175,12 @@ func getRootLabel(state string) (string, error) {
 		return presentLabel, nil
 	}
 
-	if presentLabel == "A" {
-		return "B", nil
+	if presentLabel == "a" {
+		return "b", nil
 	}
 
-	if presentLabel == "B" {
-		return "A", nil
+	if presentLabel == "b" {
+		return "a", nil
 	}
 
 	return "", fmt.Errorf("partitions are not labeled correctly")
@@ -360,8 +360,8 @@ export linux_gfx_mode
 		return err
 	}
 
-	bootPresent := fmt.Sprintf(bootEntry, "A", bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
-	bootFuture := fmt.Sprintf(bootEntry, "B", bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+	bootPresent := fmt.Sprintf(bootEntry, "a", bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+	bootFuture := fmt.Sprintf(bootEntry, "b", bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
 
 	PrintVerbose("step:  WriteFile future")
@@ -466,11 +466,11 @@ func getKernelVersion(state string) (string, error) {
 // switchBootDefault updates the GRUB_DEFAULT variable in both the present
 // and future root partitions. It does so by comparing the current present
 // root partition label. E.g. if the present root partition is labeled
-// "A" (0), then the future root partition is labeled "B" (1), then the
+// "a" (0), then the future root partition is labeled "b" (1), then the
 // GRUB_DEFAULT variable is set to "1" in both partitions.
 func switchBootDefault(presentLabel string) error {
 	var newGrubDefault string
-	if presentLabel == "A" {
+	if presentLabel == "a" {
 		newGrubDefault = "1"
 	} else {
 		newGrubDefault = "0"
