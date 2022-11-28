@@ -80,7 +80,7 @@ func NewOverlayFS(lowers []string) error {
 
 	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys"}
 	for _, path := range bindPaths {
-		if err := exec.Command("mount", "--bind", path, combinerPath).Run(); err != nil {
+		if err := exec.Command("mount", "--bind", path, combinerPath+path).Run(); err != nil {
 			PrintVerbose("err:NewOverlayFS (BindMount): %s", err)
 			return err
 		}
@@ -142,19 +142,15 @@ already merged into the original directory, so it is safe to ignore it.`)
 // CleanupOverlayPaths unmounts and removes an overlayfs plus the workdir.
 func CleanupOverlayPaths() error {
 	if IsMounted(overlayfsPath) {
-		if err := unix.Unmount(overlayfsPath, 0); err != nil {
-			if IsVerbose() {
-				fmt.Printf("err:CleanupOverlayPaths: %s", err)
-			}
+		if err := exec.Command("umount", "-l", overlayfsPath).Run(); err != nil {
+			PrintVerbose("err:CleanupOverlayPaths: %s", err)
 			return err
 		}
 	}
 
 	if IsMounted(combinerPath) {
-		if err := unix.Unmount(combinerPath, 0); err != nil {
-			if IsVerbose() {
-				fmt.Printf("err:CleanupOverlayPaths: %s", err)
-			}
+		if err := exec.Command("umount", "-l", combinerPath).Run(); err != nil {
+			PrintVerbose("err:CleanupOverlayPaths: %s", err)
 			return err
 		}
 	}
