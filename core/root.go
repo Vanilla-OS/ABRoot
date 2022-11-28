@@ -164,6 +164,30 @@ func GetBootUUID() (string, error) {
 	return uuid, nil
 }
 
+// GetEfiUUID returns the UUID of the EFI partition.
+func GetEfiUUID() (string, error) {
+	device, err := getDeviceByMountPoint("/boot/efi")
+	if err != nil {
+		device, err = getDeviceByMountPoint("/partFuture/boot/efi")
+		if err != nil {
+			device, err = getDeviceByLabel("efi")
+			if err != nil {
+				return "", err
+			}
+		}
+	}
+
+	cmd := exec.Command("lsblk", "-o", "UUID", "-n", device)
+	out, err := cmd.Output()
+	if err != nil {
+		PrintVerbose("err:GetEfiUUID: %s", err)
+		return "", err
+	}
+
+	uuid := strings.TrimSpace(string(out))
+	return uuid, nil
+}
+
 // getRootLabel returns the label of requested root partition.
 func getRootLabel(state string) (string, error) {
 	presentLabel, err := getCurrentRootLabel()
@@ -497,8 +521,20 @@ func updateGrubConfig() error {
 		return err
 	}
 
+	efiPart, err := getDeviceByMountPoint("/boot/efi")
+	if err != nil {
+		return err
+	}
+
 	if IsDeviceMounted(bootPart) {
 		if err := exec.Command("umount", "-l", bootPart).Run(); err != nil {
+			PrintVerbose("err:updateGrubConfig (Unmount): %s", err)
+			return err
+		}
+	}
+
+	if IsDeviceMounted(efiPart) {
+		if err := exec.Command("umount", "-l", efiPart).Run(); err != nil {
 			PrintVerbose("err:updateGrubConfig (Unmount): %s", err)
 			return err
 		}
@@ -511,7 +547,19 @@ func updateGrubConfig() error {
 		}
 	}
 
+	if _, err := os.Stat("/partFuture/boot/efi"); os.IsNotExist(err) {
+		if err := os.Mkdir("/partFuture/boot/efi", 0755); err != nil {
+			PrintVerbose("err:updateGrubConfig (Mkdir): %s", err)
+			return err
+		}
+	}
+
 	if err := exec.Command("mount", bootPart, "/partFuture/boot").Run(); err != nil {
+		PrintVerbose("err:updateGrubConfig (Mount): %s", err)
+		return err
+	}
+
+	if err := exec.Command("mount", efiPart, "/partFuture/boot/efi").Run(); err != nil {
 		PrintVerbose("err:updateGrubConfig (Mount): %s", err)
 		return err
 	}
