@@ -83,10 +83,12 @@ func NewTransaction() error {
 // overlayfs.
 func CancelTransaction() error {
 	if err := UnlockTransaction(); err != nil {
+		PrintVerbose("err:  CancelTransaction: %s", err)
 		return err
 	}
 
 	if err := CleanupOverlayPaths(); err != nil {
+		PrintVerbose("err:  CancelTransaction: %s", err)
 		return err
 	}
 

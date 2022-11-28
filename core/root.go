@@ -223,6 +223,12 @@ func MountFutureRoot() error {
 			return fmt.Errorf("future root partition is busy. Another transaction?")
 		}
 
+		PrintVerbose("step:  SetMutablePath")
+		if err := SetMutablePath("/partFuture"); err != nil {
+			PrintVerbose("err:  MountFutureRoot: %s", err)
+			return err
+		}
+
 		if err := os.RemoveAll("/partFuture"); err != nil {
 			PrintVerbose("err:MountFutureRoot: %s", err)
 			return err
@@ -241,6 +247,12 @@ func MountFutureRoot() error {
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		PrintVerbose("err:MountFutureRoot: %s", err)
+		return err
+	}
+
+	PrintVerbose("step:  SetMutablePath")
+	if err := SetMutablePath("/partFuture"); err != nil {
+		PrintVerbose("err:  MountFutureRoot: %s", err)
 		return err
 	}
 
@@ -588,4 +600,24 @@ func DoesSupportAB() bool {
 	}
 
 	return support
+}
+
+/* SetMutablePath sets the i attribute of the given path to mutable. */
+func SetMutablePath(path string) error {
+	if err := exec.Command("chattr", "-i", path).Run(); err != nil {
+		PrintVerbose("err:SetMutablePath: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+/* SetImmutablePath sets the i attribute of the given path to immutable. */
+func SetImmutablePath(path string) error {
+	if err := exec.Command("chattr", "+i", path).Run(); err != nil {
+		PrintVerbose("err:SetImmutablePath: %s", err)
+		return err
+	}
+
+	return nil
 }
