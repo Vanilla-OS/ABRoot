@@ -78,6 +78,14 @@ func NewOverlayFS(lowers []string) error {
 		return err
 	}
 
+	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys"}
+	for _, path := range bindPaths {
+		if err := exec.Command("mount", "--bind", path, combinerPath).Run(); err != nil {
+			PrintVerbose("err:NewOverlayFS (BindMount): %s", err)
+			return err
+		}
+	}
+
 	return nil
 }
 
