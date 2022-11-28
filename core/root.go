@@ -223,12 +223,6 @@ func MountFutureRoot() error {
 			return fmt.Errorf("future root partition is busy. Another transaction?")
 		}
 
-		PrintVerbose("step:  SetMutablePath")
-		if err := SetMutablePath("/partFuture"); err != nil {
-			PrintVerbose("err:  MountFutureRoot: %s", err)
-			return err
-		}
-
 		if err := os.RemoveAll("/partFuture"); err != nil {
 			PrintVerbose("err:MountFutureRoot: %s", err)
 			return err
@@ -247,12 +241,6 @@ func MountFutureRoot() error {
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		PrintVerbose("err:MountFutureRoot: %s", err)
-		return err
-	}
-
-	PrintVerbose("step:  SetMutablePath")
-	if err := SetMutablePath("/partFuture"); err != nil {
-		PrintVerbose("err:  MountFutureRoot: %s", err)
 		return err
 	}
 
