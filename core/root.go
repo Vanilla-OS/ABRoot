@@ -296,6 +296,12 @@ func UpdateRootBoot(transacting bool) error {
 		return err
 	}
 
+	PrintVerbose("step:  GetFutureRootLabel")
+	futureLabel, err := GetFutureRootLabel()
+	if err != nil {
+		return err
+	}
+
 	PrintVerbose("step:  GetPresentRootUUID")
 	presentUUID, err := GetPresentRootUUID()
 	if err != nil {
@@ -384,8 +390,14 @@ export linux_gfx_mode
 		return err
 	}
 
-	bootPresent := fmt.Sprintf(bootEntry, "a", bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
-	bootFuture := fmt.Sprintf(bootEntry, "b", bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+	var bootPresent, bootFuture string
+	if presentLabel == "a" {
+		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+	} else {
+		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+	}
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
 
 	PrintVerbose("step:  WriteFile future")
@@ -564,7 +576,7 @@ func updateGrubConfig() error {
 		return err
 	}
 
-	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys"}
+	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys", "/run"}
 	for _, path := range bindPaths {
 		if err := exec.Command("mount", "--bind", path, "/partFuture"+path).Run(); err != nil {
 			PrintVerbose("err:updateGrubConfig (BindMount): %s", err)
