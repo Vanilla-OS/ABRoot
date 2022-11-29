@@ -576,9 +576,15 @@ func updateGrubConfig() error {
 		return err
 	}
 
-	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys", "/run"}
-	for _, path := range bindPaths {
-		if err := exec.Command("mount", "--bind", path, "/partFuture"+path).Run(); err != nil {
+	commandList := [][]string{
+		{"mount", "-t", "proc", "/proc", "/partFuture/proc"},
+		{"mount", "-t", "sysfs", "/sys", "/partFuture/sys"},
+		{"mount", "--rbind", "/dev", "/partFuture/dev"},
+		{"mount", "--rbind", "/run", "/partFuture/run"},
+		{"mount", "--rbind", "/sys/firmware/efi/efivars", "/partFuture/sys/firmware/efi/efivars"},
+	}
+	for _, command := range commandList {
+		if err := exec.Command(command[0], command[1:]...).Run(); err != nil {
 			PrintVerbose("err:updateGrubConfig (BindMount): %s", err)
 			return err
 		}
