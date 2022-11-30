@@ -395,8 +395,8 @@ export linux_gfx_mode
 		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
 		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
 	} else {
-		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
 		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
 	}
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
 
