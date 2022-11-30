@@ -72,6 +72,7 @@ func getCurrentRootLabel() (string, error) {
 	}
 
 	label := strings.TrimSpace(string(out))
+	label = strings.ToLower(label)
 	return label, nil
 }
 
@@ -375,7 +376,6 @@ export linux_gfx_mode
 	initrd  /initrd.img-%s
 }
 `
-
 	PrintVerbose("step:  getKernelVersion present")
 	presentKernelVersion, err := getKernelVersion("present")
 	if err != nil {
@@ -390,15 +390,15 @@ export linux_gfx_mode
 		return err
 	}
 
-	var bootPresent, bootFuture string
+	var boot_a, boot_b string
 	if presentLabel == "a" {
-		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
-		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
 	} else {
-		bootFuture = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
-		bootPresent = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
 	}
-	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootPresent, bootFuture)
+	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, boot_a, boot_b)
 
 	PrintVerbose("step:  WriteFile future")
 	if err := os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
