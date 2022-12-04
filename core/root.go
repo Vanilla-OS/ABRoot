@@ -423,12 +423,18 @@ export linux_gfx_mode
 	}
 
 	PrintVerbose("step:  switchBootDefault")
-	if err := switchBootDefault(presentLabel); err != nil {
+	next := "0"
+	if next, err = switchBootDefault(presentLabel); err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  updateGrubConfig")
 	if err := updateGrubConfig(); err != nil {
+		return err
+	}
+
+	PrintVerbose("step:  verifyGrubConfig")
+	if err := verifyGrubConfig(next); err != nil {
 		return err
 	}
 
@@ -504,7 +510,7 @@ func getKernelVersion(state string) (string, error) {
 // root partition label. E.g. if the present root partition is labeled
 // "a" (0), then the future root partition is labeled "b" (1), then the
 // GRUB_DEFAULT variable is set to "1" in both partitions.
-func switchBootDefault(presentLabel string) error {
+func switchBootDefault(presentLabel string) (next string, err error) {
 	var newGrubDefault string
 	if presentLabel == "a" {
 		newGrubDefault = "1"
@@ -514,12 +520,39 @@ func switchBootDefault(presentLabel string) error {
 
 	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
-		return err
+		return "", err
 	}
 
 	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
+		return "", err
+	}
+
+	return newGrubDefault, nil
+}
+
+// verifyGrubConfig verifies that the GRUB_DEFAULT variable is set to the
+// expected value, otherwise it replaces the it with the expected one.
+// This is more a workaround since mkconfig does not respect the
+// GRUB_DEFAULT variable for some reason.
+func verifyGrubConfig(expected string) error {
+	grubCfg, err := os.ReadFile("/boot/grub/grub.cfg")
+	if err != nil {
+		PrintVerbose("err:verifyGrubConfig: %s", err)
 		return err
+	}
+
+	if !bytes.Contains(grubCfg, []byte(fmt.Sprintf("set default=\"%s\"", expected))) {
+		if expected == "0" {
+			grubCfg = bytes.ReplaceAll(grubCfg, []byte("set default=\"1\""), []byte("set default=\"0\""))
+		} else {
+			grubCfg = bytes.ReplaceAll(grubCfg, []byte("set default=\"0\""), []byte("set default=\"1\""))
+		}
+
+		if err := os.WriteFile("/boot/grub/grub.cfg", grubCfg, 0644); err != nil {
+			PrintVerbose("err:verifyGrubConfig: %s", err)
+			return err
+		}
 	}
 
 	return nil
@@ -584,8 +617,14 @@ func updateGrubConfig() error {
 		{"mount", "--rbind", "/sys/firmware/efi/efivars", "/partFuture/sys/firmware/efi/efivars"},
 	}
 	for _, command := range commandList {
-		if err := exec.Command(command[0], command[1:]...).Run(); err != nil {
+		cmd := exec.Command(command[0], command[1:]...)
+		err := cmd.Run()
+		if err != nil {
+			if strings.Contains(cmd.String(), "efivars") {
+				continue // Ignore error, we are probably not on UEFI
+			}
 			PrintVerbose("err:updateGrubConfig (BindMount): %s", err)
+			PrintVerbose("err:updateGrubConfig (BindMount): command: %s", command)
 			return err
 		}
 	}
@@ -601,6 +640,11 @@ func updateGrubConfig() error {
 	}
 
 	if err := exec.Command("mount", bootPart, "/boot").Run(); err != nil {
+		PrintVerbose("err:updateGrubConfig (Mount-2): %s", err)
+		return err
+	}
+
+	if err := exec.Command("mount", efiPart, "/boot/efi").Run(); err != nil {
 		PrintVerbose("err:updateGrubConfig (Mount-2): %s", err)
 		return err
 	}
