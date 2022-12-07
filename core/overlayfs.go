@@ -128,14 +128,6 @@ func MergeOverlayFS(path string) error {
 		return err
 	}
 
-	PrintVerbose("step:  Unmount")
-	if err := unix.Unmount(combinerPath, 0); err != nil {
-		// at this point, the overlayfs is already merged into the original
-		// directory, so we can safely ignore the error
-		fmt.Printf(`an error occurred while unmounting the overlayfs, but it is
-already merged into the original directory, so it is safe to ignore it.`)
-	}
-
 	return nil
 }
 
