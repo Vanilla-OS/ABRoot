@@ -6,12 +6,7 @@ Uploaders: Mirko Brombin <send@mirko.pm>
 Build-Depends: debhelper (>= 9),
                dh-golang,
                golang-go,
-               golang-dbus-dev,
-               golang-github-spf13-cobra-dev,
-               golang-github-spf13-viper-dev,
-               golang-github-google-uuid-dev,
-               golang-github-mattn-go-sqlite3-dev,
-               golang-github-otiai10-copy-dev
+               golang-github-spf13-cobra-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/vanilla-os/ABRoot
 Vcs-Browser: https://github.com/vanilla-os/ABRoot
