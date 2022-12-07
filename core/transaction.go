@@ -57,7 +57,13 @@ func AreTransactionsLocked() bool {
 func NewTransaction() error {
 	if AreTransactionsLocked() {
 		fmt.Println("Transactions are locked, another one is already running or a reboot is required.")
-		return nil
+		os.Exit(0)
+	}
+
+	if IsMounted("/partFuture") {
+		if err := UnmountFutureRoot(); err != nil {
+			return err
+		}
 	}
 
 	if err := NewOverlayFS([]string{"/"}); err != nil {
