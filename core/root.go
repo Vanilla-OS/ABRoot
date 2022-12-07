@@ -7,8 +7,6 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
-
-	"golang.org/x/sys/unix"
 )
 
 func CheckABRequirements() {
@@ -274,7 +272,7 @@ func MountFutureRoot() error {
 
 // UnmountFutureRoot unmounts the future root partition.
 func UnmountFutureRoot() error {
-	if err := unix.Unmount("/partFuture", 0); err != nil {
+	if err := exec.Command("umount", "-l", "/partFuture").Run(); err != nil {
 		PrintVerbose("err:UnmountFutureRoot: %s", err)
 		return err
 	}
