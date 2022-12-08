@@ -14,8 +14,7 @@ an apt replacement for VanillaOS.
 
 ### Help
 ```
-Usage: 
-	abroot [options] [command]
+abroot [options] [command]
 
 Options:
 	--help/-h		show this message
@@ -24,7 +23,7 @@ Options:
 
 Commands:
 	_update-boot		update the boot partition (only for advanced users)
-	get			get the present or future root partition
+	get			get and display the present or future root partition state
 	shell			enter a transactional shell in the future root partition and switch root on the next boot
 	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
 ```
