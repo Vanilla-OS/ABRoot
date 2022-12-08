@@ -9,7 +9,7 @@ import (
 
 func shellUsage(*cobra.Command) error {
 	fmt.Print(`Description:
-	Enter a transactional shell in the future root and switch root on next boot
+	Enter a transactional shell in the future root partition and switch root on the next boot.
 
 Usage:
 	shell
@@ -28,7 +28,7 @@ Examples:
 func NewShellCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "shell",
-		Short: "Enter a transactional shell in the future root and switch root on next boot",
+		Short: "Enter a transactional shell in the future root partition and switch root on the next boot",
 		RunE:  shell,
 	}
 	cmd.SetUsageFunc(shellUsage)

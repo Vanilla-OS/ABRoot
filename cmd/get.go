@@ -10,7 +10,7 @@ import (
 
 func getUsage(*cobra.Command) error {
 	fmt.Print(`Description:
-	Get the present or future root partition.
+	Get and display the present or future root partition state (A or B).
 
 Usage:
 	get [state]
@@ -19,8 +19,8 @@ Options:
 	--help/-h		show this message
 
 States:
-	present			get the present root partition
-	future			get the future root partition
+	present			get the present root partition state
+	future			get the future root partition state
 
 Examples:
 	abroot get present
@@ -33,7 +33,7 @@ Examples:
 func NewGetCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get",
-		Short: "Get the present or future root partition",
+		Short: "Get and display the present or future root partition state",
 		RunE:  get,
 	}
 	cmd.SetUsageFunc(getUsage)

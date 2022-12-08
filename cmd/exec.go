@@ -9,7 +9,7 @@ import (
 
 func execUsage(*cobra.Command) error {
 	fmt.Print(`Description:
-	Execute a command in a transactional shell in the future root and switch to it on next boot.
+	Execute a command in a transactional shell in the future root partition and switch to it on the next boot.
 
 Usage:
 	exec [command]
@@ -20,6 +20,7 @@ Options:
 
 Examples:
 	abroot exec ls -l /
+	abroot exec apt install git 
 `)
 
 	return nil
