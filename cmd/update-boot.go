@@ -10,7 +10,7 @@ import (
 
 func updateBootUsage(*cobra.Command) error {
 	fmt.Print(`Description:
-	Update the boot partition.
+	Update the boot partition for maintenance purposes (only for advanced users).
 
 Usage:
 	_update-boot
