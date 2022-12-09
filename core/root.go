@@ -361,6 +361,7 @@ else
 fi
 export linux_gfx_mode
 `
+	// root is mounted rw since protected paths are managed by sysd and fstab
 	bootEntry := `menuentry 'State %s' --class gnu-linux --class gnu --class os {
 	recordfail
 	load_video
@@ -370,7 +371,7 @@ export linux_gfx_mode
 	insmod part_gpt
 	insmod ext2
 	search --no-floppy --fs-uuid --set=root %s
-	linux	/vmlinuz-%s root=UUID=%s quiet splash bgrt_disable $vt_handoff
+	linux	/vmlinuz-%s root=UUID=%s rw quiet splash bgrt_disable $vt_handoff
 	initrd  /initrd.img-%s
 }
 `
@@ -463,6 +464,14 @@ func UpdateFsTab() error {
 	PrintVerbose("step:  ReplaceAll future")
 	fstabFuture := fstab
 	fstabFuture = bytes.ReplaceAll(fstabFuture, []byte(presentUUID), []byte(futureUUID))
+
+	PrintVerbose("step: Configure Bind Mounts") // those are needed since symlinked directories cause issues with flatpak and snap
+	bindMounts := []string{"/var", "/opt"}
+	for _, bindMount := range bindMounts {
+		if !strings.Contains(string(fstabFuture), bindMount) {
+			fstabFuture = append(fstabFuture, []byte("\n"+"/.system"+bindMount+" "+bindMount+" none bind 0 0")...)
+		}
+	}
 
 	PrintVerbose("step:  WriteFile future")
 	if err := os.WriteFile("/partFuture/etc/fstab", fstabFuture, 0644); err != nil {
