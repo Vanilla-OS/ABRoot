@@ -22,8 +22,8 @@ Options:
 	--version/-V		show version
 
 Commands:
-	_update-boot		update the boot partition (only for advanced users)
-	get			get and display the present or future root partition state
+	_update-boot		update the boot partition (for advanced users only)
+	get			outputs the present or future root partition state
 	shell			enter a transactional shell in the future root partition and switch root on the next boot
 	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
 ```
