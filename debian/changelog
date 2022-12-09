@@ -1,5 +1,5 @@
-abroot (0.2) kinetic; urgency=critical
+abroot (0.2.1) kinetic; urgency=critical
 
-  * First Release
+  * Fix /var, /opt in combinerPath by mounting as bind
 
- -- Mirko brombin <send@mirko.pm>  Wen, 16 Sep 2022 23:26:34 +0200
+ -- Mirko brombin <send@mirko.pm>  Fri, 09 dec 2022 15:20:00 +0200
