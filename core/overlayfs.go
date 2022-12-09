@@ -86,6 +86,14 @@ func NewOverlayFS(lowers []string) error {
 		}
 	}
 
+	bindFromSysPaths := []string{"var", "opt"}
+	for _, path := range bindFromSysPaths {
+		if err := exec.Command("mount", "--bind", "/.systen/"+path, combinerPath+"/"+path).Run(); err != nil {
+			PrintVerbose("err:NewOverlayFS (BindMount (.system)): %s", err)
+			return err
+		}
+	}
+
 	return nil
 }
 
