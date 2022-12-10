@@ -80,6 +80,10 @@ func NewOverlayFS(lowers []string) error {
 
 	bindPaths := []string{"/dev", "/dev/pts", "/proc", "/sys", "/run"}
 	for _, path := range bindPaths {
+		if err := os.MkdirAll(overlayfsPath+path, 0755); err != nil {
+			PrintVerbose("err:NewOverlayFS (MkdirAll): %s", err)
+			return err
+		}
 		if err := exec.Command("mount", "--bind", path, combinerPath+path).Run(); err != nil {
 			PrintVerbose("err:NewOverlayFS (BindMount): %s", err)
 			return err
@@ -88,6 +92,10 @@ func NewOverlayFS(lowers []string) error {
 
 	bindFromSysPaths := []string{"var", "opt"}
 	for _, path := range bindFromSysPaths {
+		if err := os.MkdirAll(overlayfsPath+"/"+path, 0755); err != nil {
+			PrintVerbose("err:NewOverlayFS (MkdirAll (.system)): %s", err)
+			return err
+		}
 		if err := exec.Command("mount", "--bind", combinerPath+"/.system/"+path, combinerPath+"/"+path).Run(); err != nil {
 			PrintVerbose("err:NewOverlayFS (BindMount (.system)): %s", err)
 			return err
