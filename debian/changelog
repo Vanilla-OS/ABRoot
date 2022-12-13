@@ -1,4 +1,10 @@
-abroot (0.2.3) kinetic; urgency=critical
+abroot (0.3.0) kinetic; urgency=critical
+
+  * Make boot part of the transaction to allow kernel updates
+
+ -- Mirko brombin <send@mirko.pm>  Mon, 13 dec 2022 21:16:00 +0200
+
+ abroot (0.2.3) kinetic; urgency=critical
 
   * Fix /var, /opt in combinerPath by mounting as bind
 
