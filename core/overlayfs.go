@@ -90,6 +90,18 @@ func NewOverlayFS(lowers []string) error {
 		}
 	}
 
+	bindFromBootPaths := []string{"boot", "boot/efi"}
+	for _, path := range bindFromBootPaths {
+		if err := os.MkdirAll(overlayfsPath+"/"+path, 0755); err != nil {
+			PrintVerbose("err:NewOverlayFS (MkdirAll (boot)): %s", err)
+			return err
+		}
+		if err := exec.Command("mount", "--bind", "/"+path, combinerPath+"/"+path).Run(); err != nil {
+			PrintVerbose("err:NewOverlayFS (BindMount (.boot)): %s", err)
+			return err
+		}
+	}
+
 	bindFromSysPaths := []string{"var", "opt"}
 	for _, path := range bindFromSysPaths {
 		if err := os.MkdirAll(overlayfsPath+"/"+path, 0755); err != nil {

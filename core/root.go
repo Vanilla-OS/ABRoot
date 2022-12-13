@@ -89,7 +89,7 @@ func getDeviceByMountPoint(mountPoint string) (string, error) {
 		if len(split) != 2 {
 			continue
 		}
-		if split[0] == mountPoint {
+		if strings.HasSuffix(split[0], mountPoint) {
 			return "/dev/" + split[1], nil
 		}
 	}
@@ -568,54 +568,12 @@ func verifyGrubConfig(expected string) error {
 // updateGrubConfig updates the grub configuration for both the future
 // and present root partitions.
 func updateGrubConfig() error {
-	bootPart, err := getDeviceByMountPoint("/boot")
-	if err != nil {
-		return err
-	}
-
-	efiPart, err := getDeviceByMountPoint("/boot/efi")
-	if err != nil {
-		return err
-	}
-
-	if IsDeviceMounted(bootPart) {
-		if err := exec.Command("umount", "-l", bootPart).Run(); err != nil {
-			PrintVerbose("err:updateGrubConfig (Unmount): %s", err)
-			return err
-		}
-	}
-
-	if IsDeviceMounted(efiPart) {
-		if err := exec.Command("umount", "-l", efiPart).Run(); err != nil {
-			PrintVerbose("err:updateGrubConfig (Unmount): %s", err)
-			return err
-		}
-	}
-
-	if _, err := os.Stat("/partFuture/boot"); os.IsNotExist(err) {
-		if err := os.Mkdir("/partFuture/boot", 0755); err != nil {
-			PrintVerbose("err:updateGrubConfig (Mkdir): %s", err)
-			return err
-		}
-	}
-
-	if _, err := os.Stat("/partFuture/boot/efi"); os.IsNotExist(err) {
-		if err := os.Mkdir("/partFuture/boot/efi", 0755); err != nil {
-			PrintVerbose("err:updateGrubConfig (Mkdir): %s", err)
-			return err
-		}
-	}
-
-	if err := exec.Command("mount", bootPart, "/partFuture/boot").Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (Mount): %s", err)
-		return err
-	}
-
-	if err := exec.Command("mount", efiPart, "/partFuture/boot/efi").Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (Mount): %s", err)
-		return err
-	}
-
+	// NOTE: in this funcion we are assuming that /boot and /boot/efi are
+	// mounted. ABRoot will fail if they are not. Will need to revisit
+	// this by moving the presentUUID, futureUUID, bootUUID, efiUUID to
+	// the init function, then check remount every time we need to
+	// access them. This is not a priority, since the whole transaction
+	// will safely fail if the user unmounts them.
 	commandList := [][]string{
 		{"mount", "-t", "proc", "/proc", "/partFuture/proc"},
 		{"mount", "-t", "sysfs", "/sys", "/partFuture/sys"},
@@ -634,26 +592,6 @@ func updateGrubConfig() error {
 			PrintVerbose("err:updateGrubConfig (BindMount): command: %s", command)
 			return err
 		}
-	}
-
-	if err := exec.Command("chroot", "/partFuture", "grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (chroot): %s", err)
-		return err
-	}
-
-	if err := exec.Command("umount", "-l", bootPart).Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (Unmount-2): %s", err)
-		return err
-	}
-
-	if err := exec.Command("mount", bootPart, "/boot").Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (Mount-2): %s", err)
-		return err
-	}
-
-	if err := exec.Command("mount", efiPart, "/boot/efi").Run(); err != nil {
-		PrintVerbose("err:updateGrubConfig (Mount-2): %s", err)
-		return err
 	}
 
 	if err := exec.Command("grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
