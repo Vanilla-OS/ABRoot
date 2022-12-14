@@ -56,7 +56,7 @@ func getRootDevice(state string) (string, error) {
 // getCurrentRootLabel returns the label of the current root partition.
 // It does so by checking the label of the current root partition.
 func getCurrentRootLabel() (string, error) {
-	device, err := getDeviceByMountPoint("/")
+	device, err := GetDeviceByMountPoint("/")
 	if err != nil {
 		return "", err
 	}
@@ -74,13 +74,13 @@ func getCurrentRootLabel() (string, error) {
 	return label, nil
 }
 
-// getDeviceByMountPoint returns the device of the requested mount point.
-func getDeviceByMountPoint(mountPoint string) (string, error) {
+// GetDeviceByMountPoint returns the device of the requested mount point.
+func GetDeviceByMountPoint(mountPoint string) (string, error) {
 	cmd := exec.Command("lsblk", "-o", "MOUNTPOINT,NAME", "-AnM", "--tree=PATH")
 
 	out, err := cmd.Output()
 	if err != nil {
-		PrintVerbose("err:getDeviceByMountPoint: %s", err)
+		PrintVerbose("err:GetDeviceByMountPoint: %s", err)
 		return "", err
 	}
 
@@ -141,9 +141,9 @@ func getRootUUID(state string) (string, error) {
 
 // GetBootUUID returns the UUID of the boot partition.
 func GetBootUUID() (string, error) {
-	device, err := getDeviceByMountPoint("/boot")
+	device, err := GetDeviceByMountPoint("/boot")
 	if err != nil {
-		device, err = getDeviceByMountPoint("/partFuture/boot")
+		device, err = GetDeviceByMountPoint("/partFuture/boot")
 		if err != nil {
 			device, err = getDeviceByLabel("boot")
 			if err != nil {
@@ -165,9 +165,9 @@ func GetBootUUID() (string, error) {
 
 // GetEfiUUID returns the UUID of the EFI partition.
 func GetEfiUUID() (string, error) {
-	device, err := getDeviceByMountPoint("/boot/efi")
+	device, err := GetDeviceByMountPoint("/boot/efi")
 	if err != nil {
-		device, err = getDeviceByMountPoint("/partFuture/boot/efi")
+		device, err = GetDeviceByMountPoint("/partFuture/boot/efi")
 		if err != nil {
 			device, err = getDeviceByLabel("efi")
 			if err != nil {

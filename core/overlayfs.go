@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -114,6 +115,36 @@ func NewOverlayFS(lowers []string) error {
 		}
 	}
 
+	err = PatchMkConfig()
+	if err != nil {
+		PrintVerbose("err:NewOverlayFS: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// PatchMkConfig patches the grub-mkconfig script to support overlayfs.
+func PatchMkConfig() error {
+	mkConfigPath := "/usr/sbin/grub-mkconfig"
+	data, err := os.ReadFile(mkConfigPath)
+	if err != nil {
+		PrintVerbose("err:PatchMkConfig: %s", err)
+		return err
+	}
+
+	data = bytes.ReplaceAll(
+		data,
+		[]byte("GRUB_DEVICE=\"`$(grub_probe) --target=device /`\""),
+		[]byte("GRUB_DEVICE=${GRUB_DEVICE-\"`$(grub_probe) --target=device /`\"}"),
+	)
+
+	err = os.WriteFile(mkConfigPath, data, 0755)
+	if err != nil {
+		PrintVerbose("err:PatchMkConfig: %s", err)
+		return err
+	}
+
 	return nil
 }
 
@@ -195,6 +226,12 @@ func CleanupOverlayPaths() error {
 
 // ChrootOverlayFS creates a new overlayfs and chroots into it.
 func ChrootOverlayFS(path string, mount bool, command string, catchOut bool) (out string, err error) {
+	bootDevice, err := GetDeviceByMountPoint("/boot")
+	if err != nil {
+		PrintVerbose("err:ChrootOverlayFS: %s", err)
+		return "", err
+	}
+
 	if mount {
 		if err := NewOverlayFS([]string{path}); err != nil {
 			return "", err
@@ -208,6 +245,7 @@ func ChrootOverlayFS(path string, mount bool, command string, catchOut bool) (ou
 
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "GRUB_DEVICE="+bootDevice)
 	output := []byte{}
 
 	if catchOut {
