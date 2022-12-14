@@ -106,12 +106,10 @@ func NewOverlayFS(lowers []string) error {
 	bindFromSysPaths := []string{"var", "opt"}
 	for _, path := range bindFromSysPaths {
 		if err := os.MkdirAll(overlayfsPath+"/"+path, 0755); err != nil {
-			PrintVerbose("err:NewOverlayFS (MkdirAll (.system)): %s", err)
-			return err
+			PrintVerbose("warn:NewOverlayFS (MkdirAll (.system)): %s", err)
 		}
 		if err := exec.Command("mount", "--bind", combinerPath+"/.system/"+path, combinerPath+"/"+path).Run(); err != nil {
-			PrintVerbose("err:NewOverlayFS (BindMount (.system)): %s", err)
-			return err
+			PrintVerbose("warn:NewOverlayFS (BindMount (.system)): %s", err)
 		}
 	}
 
