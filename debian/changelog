@@ -1,4 +1,10 @@
-abroot (0.3.0) kinetic; urgency=critical
+abroot (0.3.1) kinetic; urgency=critical
+
+  * Avoid failing the transaction when /opt is not present
+
+ -- Mirko brombin <send@mirko.pm>  Thu, 14 dec 2022 22:47:00 +0200
+
+ abroot (0.3.0) kinetic; urgency=critical
 
   * Make boot part of the transaction to allow kernel updates
 
