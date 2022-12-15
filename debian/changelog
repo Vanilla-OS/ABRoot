@@ -1,4 +1,10 @@
-abroot (0.3.1) kinetic; urgency=critical
+abroot (0.3.2) kinetic; urgency=critical
+
+  * Force generate grub.cfg in /tmp during a transaction
+
+ -- Mirko brombin <send@mirko.pm>  Wed, 15 dec 2022 08:11:00 +0200
+
+ abroot (0.3.1) kinetic; urgency=critical
 
   * Avoid failing the transaction when /opt is not present
 
