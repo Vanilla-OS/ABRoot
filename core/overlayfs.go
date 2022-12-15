@@ -122,7 +122,11 @@ func NewOverlayFS(lowers []string) error {
 	return nil
 }
 
-// PatchMkConfig patches the grub-mkconfig script to support overlayfs.
+// PatchMkConfig patches the grub-mkconfig script to support variable overrides
+// for the GRUB_DEVICE and grub_cfg variables. This is needed since the boot
+// partition is not discoverable in the overlayfs and during the transaction
+// the grub.cfg is not required and must not be touched at this point, as it
+// will be updated later if the whole transaction succeeds.
 func PatchMkConfig() error {
 	mkConfigPath := "/usr/sbin/grub-mkconfig"
 	data, err := os.ReadFile(mkConfigPath)
@@ -135,6 +139,12 @@ func PatchMkConfig() error {
 		data,
 		[]byte("GRUB_DEVICE=\"`$(grub_probe) --target=device /`\""),
 		[]byte("GRUB_DEVICE=${GRUB_DEVICE-\"`$(grub_probe) --target=device /`\"}"),
+	)
+
+	data = bytes.ReplaceAll(
+		data,
+		[]byte("if [ \"x$EUID\" = \"x\" ] ; then"),
+		[]byte("if [ -n \"$GRUB_CFG\" ]; then\ngrub_cfg=\"$GRUB_CFG\"\nfi\nif [ \"x$EUID\" = \"x\" ] ; then"),
 	)
 
 	err = os.WriteFile(mkConfigPath, data, 0755)
@@ -244,6 +254,7 @@ func ChrootOverlayFS(path string, mount bool, command string, catchOut bool) (ou
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "GRUB_DEVICE="+bootDevice)
+	cmd.Env = append(cmd.Env, "GRUB_CFG=/tmp/_abroot_trashed_grub.cfg")
 	output := []byte{}
 
 	if catchOut {
