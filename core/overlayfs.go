@@ -128,7 +128,7 @@ func NewOverlayFS(lowers []string) error {
 // the grub.cfg is not required and must not be touched at this point, as it
 // will be updated later if the whole transaction succeeds.
 func PatchMkConfig() error {
-	mkConfigPath := "/usr/sbin/grub-mkconfig"
+	mkConfigPath := combinerPath + "/usr/sbin/grub-mkconfig"
 	data, err := os.ReadFile(mkConfigPath)
 	if err != nil {
 		PrintVerbose("err:PatchMkConfig: %s", err)

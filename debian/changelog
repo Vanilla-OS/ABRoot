@@ -1,4 +1,10 @@
-abroot (0.3.2) kinetic; urgency=critical
+abroot (0.3.3) kinetic; urgency=critical
+
+  * Patch mkconfig during transaction, not outside
+
+ -- Mirko brombin <send@mirko.pm>  Sat, 15 dec 2022 08:37:00 +0200
+
+ abroot (0.3.2) kinetic; urgency=critical
 
   * Force generate grub.cfg in /tmp during a transaction
 
