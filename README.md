@@ -6,7 +6,7 @@
 
 > **Note**: This is a work in progress. It is not ready for production use.
 
-> This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
+This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
 an apt replacement for VanillaOS.
 
 ### Help
