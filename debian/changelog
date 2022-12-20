@@ -1,4 +1,10 @@
-abroot (0.3.3) kinetic; urgency=critical
+abroot (0.4.0) kinetic; urgency=medium
+
+  * Add hook system to allow running custom shell scripts at start/end of the transaction
+
+ -- Mirko brombin <send@mirko.pm>  Mon, 20 dec 2022 08:20:00 +0200
+
+ abroot (0.3.3) kinetic; urgency=critical
 
   * Patch mkconfig during transaction, not outside
 
