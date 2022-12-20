@@ -1,0 +1,13 @@
+#!/bin/sh
+# This script is executed at the end of each transaction to lock
+# some binaries that will not works outside of the transaction.
+
+protected_binaries="apt apt-get dpkg"
+
+for binary in $protected_binaries; do
+    _binary="___"$binary"___"
+    if [ -f /usr/bin/$binary ]; then
+        echo "Locking $binary"
+        mv /usr/bin/$binary /usr/bin/$_binary
+    fi
+done

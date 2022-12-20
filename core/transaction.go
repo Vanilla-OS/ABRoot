@@ -3,10 +3,14 @@ package core
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var (
-	lockPath = "/tmp/abroot-transactions.lock"
+	lockPath       = "/tmp/abroot-transactions.lock"
+	startRulesPath = "/etc/abroot/start-transaction-rules.d/"
+	endRulesPath   = "/etc/abroot/end-transaction-rules.d/"
 )
 
 // LockTransaction locks the transactional shell.
@@ -55,6 +59,7 @@ func AreTransactionsLocked() bool {
 // It does so by creating a new overlayfs with the current root as the
 // lower layer, and then locking the transactional shell.
 func NewTransaction() error {
+	PrintVerbose("step:  AreTransactionsLocked")
 	if AreTransactionsLocked() {
 		fmt.Println("Transactions are locked, another one is already running or a reboot is required.")
 		os.Exit(0)
@@ -66,13 +71,19 @@ func NewTransaction() error {
 		}
 	}
 
+	PrintVerbose("step:  NewOverlayFS")
 	if err := NewOverlayFS([]string{"/"}); err != nil {
-		if err := UnlockTransaction(); err != nil {
-			fmt.Printf("failed to unlock transactions: %s", err)
-		}
+		UnlockTransaction()
 		return err
 	}
 
+	PrintVerbose("step:  RunStartRules")
+	if err := RunStartRules(); err != nil {
+		UnlockTransaction()
+		return err
+	}
+
+	PrintVerbose("step:  LockTransaction")
 	if err := LockTransaction(); err != nil {
 		if err := CleanupOverlayPaths(); err != nil {
 			return err
@@ -105,6 +116,13 @@ func CancelTransaction() error {
 // It does so by merging the overlayfs into the future root, and then
 // updating the boot.
 func ApplyTransaction() error {
+	PrintVerbose("step:  RunEndRules")
+	if err := RunEndRules(); err != nil {
+		_ = UnmountFutureRoot()
+		_ = CancelTransaction()
+		return err
+	}
+
 	PrintVerbose("step:  MountFutureRoot")
 	if err := MountFutureRoot(); err != nil {
 		_ = CancelTransaction()
@@ -176,4 +194,49 @@ func NewTransactionalShell() (out string, err error) {
 	}
 
 	return "", nil
+}
+
+// RunStartRules runs the start transaction rules defined by the distribution
+// developers in /etc/abroot/start-transaction-rules.d/.
+func RunStartRules() error {
+	files := getRulesFiles(startRulesPath)
+	for _, file := range files {
+		if _, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// RunEndRules runs the end transaction rules defined by the distribution
+// developers in /etc/abroot/end-transaction-rules.d/.
+func RunEndRules() error {
+	files := getRulesFiles(endRulesPath)
+	for _, file := range files {
+		if _, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// getRulesFiles returns a list of files in the given directory.
+func getRulesFiles(path string) []string {
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return nil
+	}
+
+	var rules []string
+	for _, file := range files {
+		if !strings.HasSuffix(file.Name(), ".rules") {
+			continue
+		}
+
+		rules = append(rules, filepath.Join(path, file.Name()))
+	}
+
+	return rules
 }

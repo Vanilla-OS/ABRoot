@@ -1,0 +1,13 @@
+#!/bin/sh
+# This script is executed at the start of each transaction to unlock
+# some binaries that are needed by the transaction, i.e. apt and dpkg.
+
+protected_binaries="apt apt-get dpkg"
+
+for binary in $protected_binaries; do
+    _binary="___"$binary"___"
+    if [ -f /usr/bin/$_binary ]; then
+        echo "Unlocking $binary"
+        mv /usr/bin/$_binary /usr/bin/$binary
+    fi
+done
