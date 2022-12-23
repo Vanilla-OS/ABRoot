@@ -6,14 +6,12 @@
 
 > **Note**: This is a work in progress. It is not ready for production use.
 
-The intention of this project is to replace Almost in the first RC of Vanilla OS.
-
-### Read here
 This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
 an apt replacement for VanillaOS.
 
 ### Help
-```
+
+```bash
 abroot [options] [command]
 
 Options:
@@ -27,3 +25,7 @@ Commands:
 	shell			enter a transactional shell in the future root partition and switch root on the next boot
 	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
 ```
+
+## Docs
+
+The official **documentation and manpage** for `abroot` are available at https://documentation.vanillaos.org/docs/ABRoot/.
