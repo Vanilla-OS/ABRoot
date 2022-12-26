@@ -1,7 +1,7 @@
 <div align="center">
   <img src="abroot-logo.svg" height="120">
   <h1 align="center">ABRoot</h1>
-  <p align="center">Provides full immutability and atomicity by transacting between 2 root partitions (A⟺B), it also allows on-demand transactions via a transactional shell.</p>
+  <p align="center">ABRoot is a utility that allow fully atomic transactions between 2 root partitions (A⟺B).</p>
 </div>
 
 > **Note**: This is a work in progress. It is not ready for production use.
