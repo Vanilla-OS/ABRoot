@@ -362,7 +362,7 @@ fi
 export linux_gfx_mode
 `
 	// root is mounted rw since protected paths are managed by sysd and fstab
-	bootEntry := `menuentry 'State %s' --class gnu-linux --class gnu --class os {
+	bootEntry := `menuentry 'Vanilla OS - Root %s' --class gnu-linux --class gnu --class os {
 	recordfail
 	load_video
 	gfxmode $linux_gfx_mode
@@ -525,12 +525,16 @@ func switchBootDefault(presentLabel string) (next string, err error) {
 		newGrubDefault = "0"
 	}
 
-	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+	grubContent := `GRUB_DEFAULT=%s
+GRUB_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT=2
+GRUB_TIMEOUT_STYLE=hidden`
+	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf(grubContent, newGrubDefault)), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
 
-	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf("GRUB_DEFAULT=%s", newGrubDefault)), 0644); err != nil {
+	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf(grubContent, newGrubDefault)), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
