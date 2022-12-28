@@ -1,6 +1,7 @@
-abroot (1.0.0) kinetic; urgency=medium
+abroot (1.0.1) kinetic; urgency=medium
 
   * Add hook system to allow running custom shell scripts at start/end of the transaction
+  * Add Manpage (man abroot)
 
  -- Mirko brombin <send@mirko.pm>  Mon, 20 dec 2022 08:20:00 +0200
 
