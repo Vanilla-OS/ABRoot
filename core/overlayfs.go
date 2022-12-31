@@ -137,14 +137,14 @@ func PatchMkConfig() error {
 
 	data = bytes.ReplaceAll(
 		data,
-		[]byte("GRUB_DEVICE=\"`$(grub_probe) --target=device /`\""),
-		[]byte("GRUB_DEVICE=${GRUB_DEVICE-\"`$(grub_probe) --target=device /`\"}"),
+		[]byte("GRUB_DEVICE=\"`${grub_probe} --target=device /`\""),
+		[]byte("GRUB_DEVICE=${GRUB_DEVICE-\"`${grub_probe} --target=device /`\"}"),
 	)
 
 	data = bytes.ReplaceAll(
 		data,
-		[]byte("if [ \"x$EUID\" = \"x\" ] ; then"),
-		[]byte("if [ -n \"$GRUB_CFG\" ]; then\ngrub_cfg=\"$GRUB_CFG\"\nfi\nif [ \"x$EUID\" = \"x\" ] ; then"),
+		[]byte("if [ \"$EUID\" != 0 ] ; then"),
+		[]byte("if [ -n \"$GRUB_CFG\" ]; then\ngrub_cfg=\"$GRUB_CFG\"\nfi\nif [ \"$EUID\" != 0 ] ; then"),
 	)
 
 	err = os.WriteFile(mkConfigPath, data, 0755)
