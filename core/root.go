@@ -371,7 +371,7 @@ export linux_gfx_mode
 	insmod part_gpt
 	insmod ext2
 	search --no-floppy --fs-uuid --set=root %s
-	linux	/vmlinuz-%s root=UUID=%s rw quiet splash bgrt_disable $vt_handoff
+	linux	/vmlinuz-%s root=UUID=%s rw quiet splash bgrt_disable loglevel=3 $vt_handoff
 	initrd  /initrd.img-%s
 }
 `
