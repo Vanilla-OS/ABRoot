@@ -67,9 +67,9 @@ func GetKargs() (string, error) {
     // Prevent accidental newline from breaking arguments
     if content[len(content)-1] == 10 {
         return string(content[:len(content)-1]), nil
-    } else {
-        return string(content), nil
     }
+
+    return string(content), nil
 }
 
 // NewTransaction starts a new transaction.
@@ -153,16 +153,16 @@ func ApplyTransaction() error {
 	}
 
 	PrintVerbose("step:  UpdateRootBoot")
-    if kargs, err := GetKargs(); err != nil {
+    kargs, err := GetKargs()
+    if err != nil {
 		_ = CancelTransaction()
 		return err
-    } else {
-        if err := UpdateRootBoot(true, kargs); err != nil {
-            _ = UnmountFutureRoot()
-            _ = CancelTransaction()
+    }
+    if err := UpdateRootBoot(true, kargs); err != nil {
+        _ = UnmountFutureRoot()
+        _ = CancelTransaction()
 
-            return err
-        }
+        return err
     }
 
 	PrintVerbose("step:  UpdateFsTab")

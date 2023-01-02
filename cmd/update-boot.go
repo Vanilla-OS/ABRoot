@@ -48,12 +48,12 @@ command should be used by advanced users for maintenance purposes.`) {
 		}
 	}
 
-    if kargs, err := core.GetKargs(); err != nil {
+    kargs, err := core.GetKargs()
+    if err != nil {
         return err
-    } else {
-        if update_err := core.UpdateRootBoot(false, kargs); update_err != nil {
-            return update_err
-        }
+    }
+    if update_err := core.UpdateRootBoot(false, kargs); update_err != nil {
+        return update_err
     }
 
 	return nil
