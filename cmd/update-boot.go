@@ -48,9 +48,13 @@ command should be used by advanced users for maintenance purposes.`) {
 		}
 	}
 
-	if err := core.UpdateRootBoot(false); err != nil {
-		return err
-	}
+    if kargs, err := core.GetKargs(); err != nil {
+        return err
+    } else {
+        if update_err := core.UpdateRootBoot(false, kargs); update_err != nil {
+            return update_err
+        }
+    }
 
 	return nil
 }
