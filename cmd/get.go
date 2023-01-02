@@ -50,6 +50,7 @@ func get(cmd *cobra.Command, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Println("Please specify a state (present or future)")
+		return nil
 	}
 
 	switch args[0] {
