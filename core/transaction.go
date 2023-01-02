@@ -10,6 +10,7 @@ import (
 var (
 	lockPath       = "/tmp/abroot-transactions.lock"
 	startRulesPath = "/etc/abroot/start-transaction-rules.d/"
+    kargsPath      = "/etc/abroot/kargs"
 	endRulesPath   = "/etc/abroot/end-transaction-rules.d/"
 )
 
@@ -53,6 +54,17 @@ func AreTransactionsLocked() bool {
 	}
 
 	return true
+}
+
+// GetKargs reads kernel arguments from file.
+func GetKargs() (string, error) {
+	PrintVerbose("step:  GetKargs")
+    content, err := os.ReadFile(kargsPath)
+    if err != nil {
+        return "", err
+    }
+
+    return string(content), nil
 }
 
 // NewTransaction starts a new transaction.
@@ -136,12 +148,17 @@ func ApplyTransaction() error {
 	}
 
 	PrintVerbose("step:  UpdateRootBoot")
-	if err := UpdateRootBoot(true); err != nil {
-		_ = UnmountFutureRoot()
+    if kargs, err := GetKargs(); err != nil {
 		_ = CancelTransaction()
-
 		return err
-	}
+    } else {
+        if err := UpdateRootBoot(true, kargs); err != nil {
+            _ = UnmountFutureRoot()
+            _ = CancelTransaction()
+
+            return err
+        }
+    }
 
 	PrintVerbose("step:  UpdateFsTab")
 	if err := UpdateFsTab(); err != nil {
