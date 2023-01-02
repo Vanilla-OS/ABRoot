@@ -8,10 +8,11 @@ import (
 )
 
 var (
-	lockPath       = "/tmp/abroot-transactions.lock"
-	startRulesPath = "/etc/abroot/start-transaction-rules.d/"
-    kargsPath      = "/etc/abroot/kargs"
-	endRulesPath   = "/etc/abroot/end-transaction-rules.d/"
+	lockPath            = "/tmp/abroot-transactions.lock"
+	startRulesPath      = "/etc/abroot/start-transaction-rules.d/"
+    kargsPath           = "/etc/abroot/kargs"
+    kargsDefaultPath    = "/etc/abroot/kargs.default"
+	endRulesPath        = "/etc/abroot/end-transaction-rules.d/"
 )
 
 // LockTransaction locks the transactional shell.
@@ -56,12 +57,18 @@ func AreTransactionsLocked() bool {
 	return true
 }
 
-// GetKargs reads kernel arguments from file.
+// GetKargs reads kernel arguments from file. If no kargs file exists,
+// it reads from kargs.default.
 func GetKargs() (string, error) {
 	PrintVerbose("step:  GetKargs")
+    content := []byte{}
     content, err := os.ReadFile(kargsPath)
     if err != nil {
-        return "", err
+        var default_err error
+        content, default_err = os.ReadFile(kargsDefaultPath)
+        if default_err != nil {
+            return "", default_err
+        }
     }
 
     // Prevent accidental newline from breaking arguments
