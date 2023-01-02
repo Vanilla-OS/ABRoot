@@ -44,11 +44,21 @@ func shell(cmd *cobra.Command, args []string) error {
 
 	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
 	if !assumeYes {
-		if !core.AskConfirmation(`Are you sure you want to proceed?
+		if !core.AskConfirmation(`
+===============================================================================
+PLEASE READ CAREFULLY BEFORE PROCEEDING
+===============================================================================
 Changes made in the shell will be applied to the future root on next boot on
 successful.
-!! The transactional shell is meant to be used by advanced users for maintenance 
-purposes.`) {
+Running a command in a transactional shell is meant to be used by advanced users 
+for maintenance purposes.
+
+If you ended up here trying to install an application, consider using 
+Flatpak/Appimage or Apx (apx install pacakge) instead.
+
+Read more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].
+
+Are you sure you want to proceed?`) {
 			return nil
 		}
 	}
