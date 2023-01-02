@@ -1,6 +1,7 @@
 package core
 
 import (
+    "bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -280,6 +281,24 @@ func UnmountFutureRoot() error {
 	return nil
 }
 
+// GetCurrentKargs reads current kernel arguments from GRUB config.
+func GetCurrentKargs() (string, error) {
+    file, err := os.Open("/etc/grub.d/10_vanilla")
+    if err != nil {
+        return "", err
+    }
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
+            splits := strings.Split(scanner.Text(), " ")
+            return strings.Join(splits[2:len(splits)-1], " "), nil
+        }
+    }
+
+    return "", nil
+}
+
 // UpdateRootBoot updates the boot entries for the requested root partition.
 // It does so by writing the new boot entries to 10_vanilla, setting the
 // future root partition as the first entry, and then updating the boot.
@@ -390,13 +409,18 @@ export linux_gfx_mode
 		return err
 	}
 
+    old_kargs, err := GetCurrentKargs()
+    if err != nil {
+        return err
+    }
+
 	var boot_a, boot_b string
 	if presentLabel == "a" {
-		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, kargs, presentKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
 		boot_b = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
 	} else {
 		boot_a = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, kargs, presentKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
 	}
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, boot_a, boot_b)
 
