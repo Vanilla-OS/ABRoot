@@ -64,7 +64,12 @@ func GetKargs() (string, error) {
         return "", err
     }
 
-    return string(content), nil
+    // Prevent accidental newline from breaking arguments
+    if content[len(content)-1] == 10 {
+        return string(content[:len(content)-1]), nil
+    } else {
+        return string(content), nil
+    }
 }
 
 // NewTransaction starts a new transaction.
