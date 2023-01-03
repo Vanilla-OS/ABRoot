@@ -190,6 +190,8 @@ func ApplyTransaction() error {
 	return nil
 }
 
+// TransactionDiff prints a list of added, modified, and removed files
+// from the lastest transaction.
 func TransactionDiff() {
 	PrintVerbose("step:  TransactionDiff")
 	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
