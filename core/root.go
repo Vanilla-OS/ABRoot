@@ -1,7 +1,7 @@
 package core
 
 import (
-    "bufio"
+	"bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -283,20 +283,20 @@ func UnmountFutureRoot() error {
 
 // GetCurrentKargs reads current kernel arguments from GRUB config.
 func GetCurrentKargs() (string, error) {
-    file, err := os.Open("/etc/grub.d/10_vanilla")
-    if err != nil {
-        return "", err
-    }
+	file, err := os.Open("/etc/grub.d/10_vanilla")
+	if err != nil {
+		return "", err
+	}
 
-    scanner := bufio.NewScanner(file)
-    for scanner.Scan() {
-        if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
-            splits := strings.Split(scanner.Text(), " ")
-            return strings.Join(splits[2:len(splits)-1], " "), nil
-        }
-    }
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
+			splits := strings.Split(scanner.Text(), " ")
+			return strings.Join(splits[2:len(splits)-1], " "), nil
+		}
+	}
 
-    return "", nil
+	return "", nil
 }
 
 // UpdateRootBoot updates the boot entries for the requested root partition.
@@ -409,10 +409,10 @@ export linux_gfx_mode
 		return err
 	}
 
-    old_kargs, err := GetCurrentKargs()
-    if err != nil {
-        return err
-    }
+	old_kargs, err := GetCurrentKargs()
+	if err != nil {
+		return err
+	}
 
 	var boot_a, boot_b string
 	if presentLabel == "a" {
