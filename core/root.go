@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -280,13 +281,32 @@ func UnmountFutureRoot() error {
 	return nil
 }
 
+// GetCurrentKargs reads current kernel arguments from GRUB config.
+func GetCurrentKargs() (string, error) {
+	file, err := os.Open("/etc/grub.d/10_vanilla")
+	if err != nil {
+		return "", err
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
+			splits := strings.Split(scanner.Text(), " ")
+			return strings.Join(splits[2:len(splits)-1], " "), nil
+		}
+	}
+
+	return "", nil
+}
+
 // UpdateRootBoot updates the boot entries for the requested root partition.
 // It does so by writing the new boot entries to 10_vanilla, setting the
 // future root partition as the first entry, and then updating the boot.
 // Note that 10_vanilla is written in both the present and future root
 // partitions. If transacting is true, the future partition is not mounted
-// at /partFuture, since it should already be there.
-func UpdateRootBoot(transacting bool) error {
+// at /partFuture, since it should already be there. kargs should be a space
+// separated list of kernel arguments to be added in both boot entries.
+func UpdateRootBoot(transacting bool, kargs string) error {
 	unwanted := []string{"10_linux", "20_memtest86+"} // those files cause undesired boot entries
 
 	PrintVerbose("step:  GetPresentRootLabel")
@@ -371,7 +391,7 @@ export linux_gfx_mode
 	insmod part_gpt
 	insmod ext2
 	search --no-floppy --fs-uuid --set=root %s
-	linux	/vmlinuz-%s root=UUID=%s rw quiet splash bgrt_disable loglevel=3 $vt_handoff
+	linux	/vmlinuz-%s root=UUID=%s %s $vt_handoff
 	initrd  /initrd.img-%s
 }
 `
@@ -389,13 +409,18 @@ export linux_gfx_mode
 		return err
 	}
 
+	old_kargs, err := GetCurrentKargs()
+	if err != nil {
+		return err
+	}
+
 	var boot_a, boot_b string
 	if presentLabel == "a" {
-		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
 	} else {
-		boot_a = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, futureKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, presentKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
 	}
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, boot_a, boot_b)
 
