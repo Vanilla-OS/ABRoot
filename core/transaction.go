@@ -263,7 +263,6 @@ func TransactionDiff() {
 			bullet_items = append(bullet_items, pterm.BulletListItem{
 				Level: 1,
 				Text:  "/" + filename,
-				// Bullet: "-",
 			})
 		}
 	}

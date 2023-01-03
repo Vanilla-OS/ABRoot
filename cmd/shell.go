@@ -66,11 +66,13 @@ Are you sure you want to proceed?`) {
 	fmt.Println(`New transaction started. This may take a while...
 Do not reboot or cancel the transaction until it is finished.`)
 
-	if _, err := core.NewTransactionalShell(); err != nil {
-		return err
-	}
+	// if _, err := core.NewTransactionalShell(); err != nil {
+	// 	return err
+	// }
+	//
+	// fmt.Println("Transaction completed successfully. Reboot to apply changes.")
 
-	fmt.Println("Transaction completed successfully. Reboot to apply changes.")
+    core.TransactionDiff()
 
 	return nil
 }
