@@ -11,7 +11,7 @@ var (
 	lockPath         = "/tmp/abroot-transactions.lock"
 	startRulesPath   = "/etc/abroot/start-transaction-rules.d/"
 	kargsPath        = "/etc/abroot/kargs"
-	kargsDefaultPath = "/etc/abroot/kargs.default"
+	kargsDefaultPath = "/etc/default/abroot_kargs"
 	endRulesPath     = "/etc/abroot/end-transaction-rules.d/"
 )
 
