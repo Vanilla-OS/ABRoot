@@ -194,6 +194,10 @@ func ApplyTransaction() error {
 // from the lastest transaction.
 func TransactionDiff() {
 	PrintVerbose("step:  TransactionDiff")
+	if !AreTransactionsLocked() {
+		pterm.Error.Println("No transaction has been made since last reboot. Nothing to diff.")
+	}
+
 	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
 
 	// force english locale because output changes based on language

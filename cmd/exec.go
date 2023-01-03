@@ -77,6 +77,8 @@ Do not reboot or cancel the transaction until it is finished.`)
 		return err
 	}
 
+	core.TransactionDiff()
+
 	fmt.Println("Transaction completed successfully. Reboot to apply changes.")
 
 	return nil
