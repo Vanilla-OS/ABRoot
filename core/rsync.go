@@ -13,7 +13,8 @@ import (
 )
 
 // rsyncCmd executes the rsync command with the requested options.
-func rsyncCmd(src, dst string, opts []string) error {
+// If should_print is false, rsync progress will not appear in stdout.
+func rsyncCmd(src, dst string, opts []string, should_print bool) error {
 	args := []string{"-avxHAX"}
 	args = append(args, opts...)
 	args = append(args, src)
@@ -24,36 +25,38 @@ func rsyncCmd(src, dst string, opts []string) error {
 
 	reader := bufio.NewReader(stdout)
 
-	count_cmd_out, _ := exec.Command(
-		"/bin/sh",
-		"-c",
-		fmt.Sprintf("echo -n $(($(rsync -avxHAX --dry-run %s %s | wc -l) - 4))", src, dst),
-	).Output()
-	total_files, _ := strconv.Atoi(string(count_cmd_out))
-
-	p, _ := pterm.DefaultProgressbar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
-
 	err := cmd.Start()
 	if err != nil {
 		return err
 	}
 
-	max_line_len := int(pterm.GetTerminalWidth() / 4)
-	pterm.Info.Println(max_line_len)
-	for i := 0; i < p.Total; i++ {
-		line, _ := reader.ReadString('\n')
-		line = strings.TrimSpace(line)
+	if should_print {
+		count_cmd_out, _ := exec.Command(
+			"/bin/sh",
+			"-c",
+			fmt.Sprintf("echo -n $(($(rsync -avxHAX --dry-run %s %s %s | wc -l) - 4))", strings.Join(opts, " "), src, dst),
+		).Output()
+		total_files, _ := strconv.Atoi(string(count_cmd_out))
 
-		if len(line) > max_line_len {
-			starting_len := len(line) - max_line_len + 1
-			line = "…" + line[starting_len:]
-		} else {
-			padding := max_line_len - len(line)
-			line = line + strings.Repeat(" ", padding)
+		p, _ := pterm.DefaultProgressbar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
+		max_line_len := int(pterm.GetTerminalWidth() / 6)
+		for i := 0; i < p.Total; i++ {
+			line, _ := reader.ReadString('\n')
+			line = strings.TrimSpace(line)
+
+			if len(line) > max_line_len {
+				starting_len := len(line) - max_line_len + 1
+				line = "…" + line[starting_len:]
+			} else {
+				padding := max_line_len - len(line)
+				line = line + strings.Repeat(" ", padding)
+			}
+
+			p.UpdateTitle("Syncing " + line)
+			p.Increment()
 		}
-
-		p.UpdateTitle("Syncing " + line)
-		p.Increment()
+	} else {
+		stdout.Close()
 	}
 
 	err = cmd.Wait()
@@ -74,7 +77,7 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 		}
 	}
 
-	return rsyncCmd(src, dst, opts)
+	return rsyncCmd(src, dst, opts, false)
 }
 
 // atomicSwap allows swapping 2 files or directories in-place and atomically, using
@@ -137,7 +140,7 @@ func AtomicRsync(src, dst string, transitionalPath string, finalPath string, exc
 	}
 
 	PrintVerbose("step:  rsyncCmd")
-	err := rsyncCmd(src, transitionalPath, opts)
+	err := rsyncCmd(src, transitionalPath, opts, true)
 	if err != nil {
 		return err
 	}
