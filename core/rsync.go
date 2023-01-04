@@ -1,9 +1,14 @@
 package core
 
 import (
+	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 
+	"github.com/pterm/pterm"
 	"golang.org/x/sys/unix"
 )
 
@@ -15,14 +20,44 @@ func rsyncCmd(src, dst string, opts []string) error {
 	args = append(args, dst)
 
 	cmd := exec.Command("rsync", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	stdout, _ := cmd.StdoutPipe()
 
-	PrintVerbose("cmd:rsyncCmd: %s", cmd.String())
-	err := cmd.Run()
+	reader := bufio.NewReader(stdout)
 
+	count_cmd_out, _ := exec.Command(
+		"/bin/sh",
+		"-c",
+		fmt.Sprintf("echo -n $(($(rsync -avxHAX --dry-run %s %s | wc -l) - 4))", src, dst),
+	).Output()
+	total_files, _ := strconv.Atoi(string(count_cmd_out))
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
+
+	err := cmd.Start()
 	if err != nil {
-		PrintVerbose("err:rsyncCmd: %s", err)
+		return err
+	}
+
+	max_line_len := int(pterm.GetTerminalWidth() / 4)
+	pterm.Info.Println(max_line_len)
+	for i := 0; i < p.Total; i++ {
+		line, _ := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+
+		if len(line) > max_line_len {
+			starting_len := len(line) - max_line_len + 1
+			line = "…" + line[starting_len:]
+		} else {
+			padding := max_line_len - len(line)
+			line = line + strings.Repeat(" ", padding)
+		}
+
+		p.UpdateTitle("Syncing " + line)
+		p.Increment()
+	}
+
+	err = cmd.Wait()
+	if err != nil {
 		return err
 	}
 
