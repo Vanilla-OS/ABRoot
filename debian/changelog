@@ -1,4 +1,10 @@
-abroot (1.2.0) kinetic; urgency=medium
+abroot (1.2.1) kinetic; urgency=critical
+
+  * Properly handle exit code
+
+ -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
+
+ abroot (1.2.0) kinetic; urgency=medium
 
   * Support custom kargs
 
