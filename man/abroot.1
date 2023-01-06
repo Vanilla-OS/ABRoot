@@ -13,7 +13,7 @@ ABRoot is a utility that allows fully atomic transactions between 2 root partiti
 .IP
 .nf
 \f[C]
-abroot [options] [command]
+abroot [flags] [command]
 \f[R]
 .fi
 .SS DESCRIPTION
@@ -21,9 +21,9 @@ abroot [options] [command]
 .nf
 \f[C]
 Usage:
-    abroot [options] [command]
+    abroot [flags] [command]
 
-Options:
+Flags:
     --help/-h       show this message
     --verbose/-v        show more verbosity
     --version/-V        show version
@@ -41,9 +41,9 @@ Commands:
 Execute a command in a transactional shell in the future root partition and switch to it on the next boot.
 
 Usage:
-    exec [command]
+    exec [command] [flags]
 
-Options:
+Flags:
     --help/-h           show this message
     --assume-yes/-y     assume yes to all questions
 
@@ -65,9 +65,9 @@ Tip: You can enclose multiple commands using \[dq]\[dq] and pass it as a single 
 Outputs the present or future root partition state (A or B).
 
 Usage:
-    get [state]
+    get [state] [flags]
 
-Options:
+Flags:
     --help/-h       show this message
 
 States:
@@ -86,9 +86,9 @@ Examples:
 Enter a transactional shell in the future root partition and switch root on the next boot.
 
 Usage:
-    shell
+    shell [flags]
 
-Options:
+Flags:
     --help/-h           show this message
     --assume-yes/-y     assume yes to all questions
 
@@ -103,9 +103,9 @@ Examples:
 Update the boot partition for maintenance purposes (for advanced users only).
 
 Usage:
-    _update-boot
+    _update-boot [flags]
 
-Options:
+Flags:
     --help/-h           show this message
     --assume-yes/-y     assume yes to all questions
 \f[R]

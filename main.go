@@ -14,9 +14,9 @@ var (
 
 func help(cmd *cobra.Command, args []string) {
 	fmt.Print(`Usage: 
-abroot [options] [command]
+abroot [flags] [command]
 
-Options:
+Flags:
 	--help/-h		show this message
 	--verbose/-v		show more verbosity
 	--version/-V		show version

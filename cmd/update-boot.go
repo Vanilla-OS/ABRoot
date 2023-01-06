@@ -13,9 +13,9 @@ func updateBootUsage(*cobra.Command) error {
 	Update the boot partition for maintenance purposes (for advanced users only).
 
 Usage:
-	_update-boot
+	_update-boot [flags]
 
-Options:
+Flags:
 	--help/-h		show this message
 	--assume-yes/-y		assume yes to all questions
 `)

@@ -13,9 +13,9 @@ func shellUsage(*cobra.Command) error {
 	Enter a transactional shell in the future root partition and switch root on the next boot.
 
 Usage:
-	shell
+	shell [flags]
 
-Options:
+Flags:
 	--help/-h		show this message
 	--assume-yes/-y		assume yes to all questions
 
