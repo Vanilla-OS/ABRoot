@@ -13,9 +13,9 @@ func getUsage(*cobra.Command) error {
 	Outputs the present or future root partition state (A or B).
 
 Usage:
-	get [state]
+	get [state] [flags]
 
-Options:
+Flags:
 	--help/-h		show this message
 
 States:
