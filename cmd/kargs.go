@@ -62,14 +62,14 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 				return err
 			}
 
-			fmt.Printf("Current partition's parameters: %s\n", kargs)
+			fmt.Printf("Current partition's parameters:\n%s\n", kargs)
 		case "future":
 			kargs, err := core.GetFutureKargs()
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("Future partition's parameters: %s\n", kargs)
+			fmt.Printf("Future partition's parameters:\n%s\n", kargs)
 		default:
 			fmt.Printf("Unknown state: %s\n", args[1])
 		}
@@ -95,6 +95,9 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 
         // Call $EDITOR on temp file
 		cmd = exec.Command(editor, "/tmp/kargs-temp")
+        cmd.Stdin = os.Stdin
+        cmd.Stdout = os.Stdout
+        cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
 			return err
 		}
