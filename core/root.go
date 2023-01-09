@@ -3,6 +3,7 @@ package core
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -281,22 +282,40 @@ func UnmountFutureRoot() error {
 	return nil
 }
 
-// GetCurrentKargs reads current kernel arguments from GRUB config.
-func GetCurrentKargs() (string, error) {
+// GetKargs reads current kernel arguments from GRUB config.
+func GetKargs(state string) (string, error) {
 	file, err := os.Open("/etc/grub.d/10_vanilla")
 	if err != nil {
 		return "", err
 	}
 
+	var kargs_lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
 			splits := strings.Split(scanner.Text(), " ")
-			return strings.Join(splits[2:len(splits)-1], " "), nil
+			kargs_lines = append(kargs_lines, strings.Join(splits[2:len(splits)-1], " "))
 		}
 	}
 
-	return "", nil
+	switch state {
+	case "present":
+		return kargs_lines[0], nil
+	case "future":
+		return kargs_lines[1], nil
+	default:
+		return "", errors.New(fmt.Sprintf("Invalid state %s", state))
+	}
+}
+
+// GetCurrentKargs reads current kernel arguments from GRUB config.
+func GetCurrentKargs() (string, error) {
+	return GetKargs("present")
+}
+
+// GetFutureKargs reads future kernel arguments from GRUB config.
+func GetFutureKargs() (string, error) {
+	return GetKargs("future")
 }
 
 // UpdateRootBoot updates the boot entries for the requested root partition.

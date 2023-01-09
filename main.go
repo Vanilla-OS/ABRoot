@@ -41,6 +41,7 @@ func main() {
 
 	rootCmd.AddCommand(cmd.NewUpdateBootCommand())
 	rootCmd.AddCommand(cmd.NewGetCommand())
+	rootCmd.AddCommand(cmd.NewKargsCommand())
 	rootCmd.AddCommand(cmd.NewShellCommand())
 	rootCmd.AddCommand(cmd.NewExecCommand())
 	rootCmd.SetHelpFunc(help)
