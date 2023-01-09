@@ -48,7 +48,7 @@ command should be used by advanced users for maintenance purposes.`) {
 		}
 	}
 
-	kargs, err := core.GetKargs()
+	kargs, err := core.ReadKargsFile()
 	if err != nil {
 		return err
 	}
