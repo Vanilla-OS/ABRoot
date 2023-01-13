@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/vanilla-os/abroot/core"
@@ -12,9 +13,9 @@ func shellUsage(*cobra.Command) error {
 	Enter a transactional shell in the future root partition and switch root on the next boot.
 
 Usage:
-	shell
+	shell [flags]
 
-Options:
+Flags:
 	--help/-h		show this message
 	--assume-yes/-y		assume yes to all questions
 
@@ -67,7 +68,8 @@ Are you sure you want to proceed?`) {
 Do not reboot or cancel the transaction until it is finished.`)
 
 	if _, err := core.NewTransactionalShell(); err != nil {
-		return err
+		fmt.Println("Failed to start transactional shell:", err)
+		os.Exit(1)
 	}
 
     core.TransactionDiff()

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/vanilla-os/abroot/core"
@@ -74,7 +75,8 @@ Do not reboot or cancel the transaction until it is finished.`)
 	}
 
 	if _, err := core.TransactionalExec(command); err != nil {
-		return err
+		fmt.Println("Failed to start transactional shell:", err)
+		os.Exit(1)
 	}
 
 	core.TransactionDiff()

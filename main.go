@@ -9,14 +9,14 @@ import (
 )
 
 var (
-	Version = "1.1.3"
+	Version = "1.2.2"
 )
 
 func help(cmd *cobra.Command, args []string) {
 	fmt.Print(`Usage: 
-abroot [options] [command]
+abroot [flags] [command]
 
-Options:
+Flags:
 	--help/-h		show this message
 	--verbose/-v		show more verbosity
 	--version/-V		show version
@@ -42,6 +42,7 @@ func main() {
 
 	rootCmd.AddCommand(cmd.NewUpdateBootCommand())
 	rootCmd.AddCommand(cmd.NewGetCommand())
+	rootCmd.AddCommand(cmd.NewKargsCommand())
 	rootCmd.AddCommand(cmd.NewShellCommand())
 	rootCmd.AddCommand(cmd.NewExecCommand())
 	rootCmd.AddCommand(cmd.NewDiffCommand())
