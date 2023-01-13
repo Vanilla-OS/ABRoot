@@ -1,75 +1,52 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
-func getUsage(*cobra.Command) error {
-	fmt.Print(`Description:
-	Outputs the present or future root partition state (A or B).
+var validArgs = []string{"present", "future"}
 
-Usage:
-	get [state] [flags]
-
-Flags:
-	--help/-h		show this message
-
-States:
-	present			get the present root partition state
-	future			get the future root partition state
-
-Examples:
-	abroot get present
-	abroot get future
-`)
-
-	return nil
-}
-
-func NewGetCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "get",
-		Short: "Outputs the present or future root partition state",
-		RunE:  get,
-	}
-	cmd.SetUsageFunc(getUsage)
-
+func NewGetCommand() *cmdr.Command {
+	cmd := cmdr.NewCommand(
+		"get <present|future>",
+		abroot.Trans("get.long"),
+		abroot.Trans("get.short"),
+		get,
+	)
+	cmd.Args = cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs)
+	cmd.Example = "abroot get present\nabroot get future"
+	cmd.ValidArgs = validArgs
 	return cmd
 }
 
 func get(cmd *cobra.Command, args []string) error {
-	if !core.RootCheck(true) {
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("get.rootRequired"))
 		return nil
 	}
 
 	template := "%s root partition: %s\n"
 
-	if len(args) == 0 {
-		fmt.Println("Please specify a state (present or future)")
-		return nil
-	}
-
 	switch args[0] {
 	case "present":
 		presentLabel, err := core.GetPresentRootLabel()
 		if err != nil {
-			fmt.Println("Error getting present root partition.")
+			cmdr.Error.Println("Error getting present root partition.")
 			return err
 		}
-		fmt.Printf(template, "Present", presentLabel)
+		cmdr.Info.Printf(template, "Present", presentLabel)
 	case "future":
 		futureLabel, err := core.GetFutureRootLabel()
 		if err != nil {
-			fmt.Println("Error getting future root partition.")
+			cmdr.Error.Println("Error getting future root partition.")
 			return err
 		}
-		fmt.Printf(template, "Future", futureLabel)
+		cmdr.Info.Printf(template, "Future", futureLabel)
 	default:
-		fmt.Printf("Unknown state: %s\n", args[0])
+		cmdr.Error.Printf("Unknown state: %s\n", args[0])
 	}
 
 	return nil

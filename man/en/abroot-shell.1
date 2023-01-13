@@ -1,0 +1,48 @@
+.nh
+.TH "abroot" "1" "Jan 2023" "VanillaOS/orchid" "abroot Manual"
+
+.SH NAME
+.PP
+abroot-shell - Enter a transactional shell
+
+
+.SH SYNOPSIS
+.PP
+\fBabroot shell [flags]\fP
+
+
+.SH DESCRIPTION
+.PP
+Enter a transactional shell in the future root partition and switch root on the next boot
+
+
+.SH OPTIONS
+.PP
+\fB-y\fP, \fB--assume-yes\fP[=false]
+	assume yes to all questions
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for shell
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.PP
+\fB-v\fP, \fB--verbose\fP[=false]
+	show more detailed output
+
+
+.SH EXAMPLE
+.PP
+.RS
+
+.nf
+abroot shell
+
+.fi
+.RE
+
+
+.SH SEE ALSO
+.PP
+\fBabroot(1)\fP
