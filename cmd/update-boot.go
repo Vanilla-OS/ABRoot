@@ -1,49 +1,45 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
-func updateBootUsage(*cobra.Command) error {
-	fmt.Print(`Description:
-	Update the boot partition for maintenance purposes (for advanced users only).
+const (
+	assumeYesFlag string = "assume-yes"
+)
 
-Usage:
-	_update-boot [flags]
-
-Flags:
-	--help/-h		show this message
-	--assume-yes/-y		assume yes to all questions
-`)
-
-	return nil
-}
-
-func NewUpdateBootCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "_update-boot",
-		Short: "Update the boot partition",
-		RunE:  status,
-	}
-	cmd.SetUsageFunc(updateBootUsage)
-
-	return cmd
+func NewUpdateBootCommand() *cmdr.Command {
+	upd := cmdr.NewCommand(
+		"_update-boot",
+		abroot.Trans("update.long"),
+		abroot.Trans("update.short"),
+		status).WithBoolFlag(
+		cmdr.NewBoolFlag(
+			assumeYesFlag,
+			"y",
+			abroot.Trans("update.assumeYesFlag"),
+			false))
+	// don't show this command in usage/help unless specified
+	upd.Hidden = true
+	return upd
 }
 
 func status(cmd *cobra.Command, args []string) error {
-	if !core.RootCheck(true) {
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("update.rootRequired"))
 		return nil
 	}
+	assumeYes := cmdr.FlagValBool(assumeYesFlag)
 
-	assumeYes, _ := cmd.Flags().GetBool("assume-yes")
 	if !assumeYes {
-		if !core.AskConfirmation(`Are you sure you want to proceed?
-The boot partition should be updated only if a transaction succeeded. This 
-command should be used by advanced users for maintenance purposes.`) {
+		b, err := cmdr.Confirm.Show(abroot.Trans("update.confirm"))
+		if err != nil {
+			return err
+		}
+		if !b {
 			return nil
 		}
 	}

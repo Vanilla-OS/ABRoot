@@ -1,0 +1,59 @@
+abroot:
+  use: "abroot"
+  long: "ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)"
+  verboseFlag: "show more detailed output"
+
+update:
+  use: "_update-boot"
+  long: "Update the boot partition for maintenance purposes (for advanced users only)"
+  short: "Update the boot partition"
+  assumeYesFlag: "assume yes to all questions"
+  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated only if a transaction succeeded. This\ncommand should be used by advanced users for maintenance purposes."
+  rootRequired: "You must be root to run this command."
+
+get:
+  use: "get"
+  long: "Outputs the present or future root partition state (A or B)"
+  short: "Outputs the present or future root partition state (A or B)"
+  rootRequired: "You must be root to run this command."
+
+kargs:
+  use: "kargs"
+  long: "Manage kernel parameters."
+  short: "Manage kernel parameters."
+  rootRequired: "You must be root to run this command."
+  nextReboot: "Kernel parameters will be applied on next boot."
+  failedTransaction: "Failed to start transactional shell:"
+  stateRequired: "Please specify a state (present or future)"
+  params: "Current partition's parameters:\n%s\n"
+  futureParams: "Future partition's parameters:\n%s\n"
+  unknownState: "Unknown state: %s\n"
+  unknownParam: "Unknown parameter: %s\n"
+
+edit:
+  use: "edit"
+  long: "edit kernel parameters."
+  short: "edit kernel parameters."
+  rootRequired: "You must be root to run this command."
+exec:
+  use: "exec"
+  long: "Execute a command in a transactional shell in the future root and switch to it on next boot"
+  short: "Execute a command in a transactional shell in the future root and switch to it on next boot"
+  rootRequired: "You must be root to run this command."
+  assumeYesFlag: "assume yes to all questions"
+  confirm: "\n===============================================================================\nPLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\nChanges made in the shell will be applied to the future root on next boot on\nsuccessful.\nRunning a command in a transactional shell is meant to be used by advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to install an application, consider using\nFlatpak/Appimage or Apx (apx install pacakge) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\nAre you sure you want to proceed?"
+  start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
+  success: "Transaction completed successfully. Reboot to apply changes."
+  failed: "Failed to start transactional shell:"
+
+shell:
+  use: "shell"
+  long: "Enter a transactional shell in the future root partition and switch root on the next boot"
+  short: "Enter a transactional shell"
+  rootRequired: "You must be root to run this command."
+  assumeYesFlag: "assume yes to all questions"
+  confirm: "\n===============================================================================\nPLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\nChanges made in the shell will be applied to the future root on next boot on\nsuccessful.\nRunning a command in a transactional shell is meant to be used by advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to install an application, consider using\nFlatpak/Appimage or Apx (apx install pacakge) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\nAre you sure you want to proceed?"
+  start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
+  success: "Transaction completed successfully. Reboot to apply changes."
+  failed: "Failed to start transactional shell:"
