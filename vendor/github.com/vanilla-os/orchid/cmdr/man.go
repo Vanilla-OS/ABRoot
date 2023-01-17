@@ -9,15 +9,14 @@ package cmdr
 */
 
 import (
-	"os"
-	"path"
+	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/cobra/doc"
-	"github.com/vanilla-os/orchid"
+	"github.com/vanilla-os/orchid/roff"
 )
 
-func NewManCommand(title string) *cobra.Command {
+func NewManCommand(a *App) *Command {
+	c := &Command{}
 	cmd := &cobra.Command{
 		Use:                   "man",
 		Short:                 "Generates manpages",
@@ -26,20 +25,22 @@ func NewManCommand(title string) *cobra.Command {
 		Hidden:                true,
 		Args:                  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			header := &doc.GenManHeader{
-				Title:   title,
-				Source:  "VanillaOS/orchid",
-				Manual:  title + " Manual",
-				Section: "1",
+
+			doc := roff.NewDocument()
+			a.rootDocs(doc)
+			doc.Section(a.Name + " subcommands")
+			for _, c := range a.RootCommand.Children() {
+				if !c.Hidden {
+					c.doc(doc)
+				}
 			}
-			manpath := path.Join("man", orchid.Locale())
-			err := os.MkdirAll(manpath, 0755)
-			if err != nil {
-				return err
-			}
-			return doc.GenManTree(cmd.Root(), header, manpath)
+
+			fmt.Println(doc.String())
+			return nil
 
 		},
 	}
-	return cmd
+	c.Command = cmd
+	return c
+
 }

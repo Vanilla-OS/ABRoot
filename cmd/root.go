@@ -12,8 +12,8 @@ const (
 	verboseFlag string = "verbose"
 )
 
-func New(fs embed.FS) *cmdr.App {
-	abroot = cmdr.NewApp("abroot", fs)
+func New(version string, fs embed.FS) *cmdr.App {
+	abroot = cmdr.NewApp("abroot", version, fs)
 	return abroot
 }
 func NewRootCommand(version string) *cmdr.Command {

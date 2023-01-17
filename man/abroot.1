@@ -1,0 +1,142 @@
+.TH ABROOT 1 "2023-01-17" "abroot" "User Manual"
+.SH NAME
+.RS 4
+abroot - ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
+.RE
+.SH SYNOPSIS
+.RS 4
+abroot [command] [flags] [arguments]
+.RE
+.SH DESCRIPTION
+.RS 4
+ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
+.RE
+.SH OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SH ABROOT COMMANDS
+.RS 4
+\fBget\fP
+.RS 4
+Outputs the present or future root partition state (A or B)
+.PP
+.RE
+\fBexec\fP
+.RS 4
+Execute a command in a transactional shell in the future root and switch to it on next boot
+.PP
+.RE
+\fBshell\fP
+.RS 4
+Enter a transactional shell
+.PP
+.RE
+\fBkargs\fP
+.RS 4
+Manage kernel parameters\&.
+.PP
+.RE
+.RE
+.SH AUTHORS
+.PP
+Written by Vanilla OS contributors\&.
+.SH REPORT BUGS TO
+.PP
+https://github\&.com/vanilla-os/abroot/issues
+.SH LICENSE
+.PP
+GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
+.SH ABROOT SUBCOMMANDS
+.SH SUBCOMMAND GET
+.RS 4
+Outputs the present or future root partition state (A or B)
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBget\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Outputs the present or future root partition state (A or B)
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot get present
+.PP
+abroot get future
+.RE
+.SH SUBCOMMAND EXEC
+.RS 4
+Execute a command in a transactional shell in the future root and switch to it on next boot
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBexec\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Execute a command in a transactional shell in the future root and switch to it on next boot
+.RE
+.SS OPTIONS
+  -y, --assume-yes   assume yes to all questions
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot exec apt-get update
+.RE
+.SH SUBCOMMAND SHELL
+.RS 4
+Enter a transactional shell
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBshell\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Enter a transactional shell in the future root partition and switch root on the next boot
+.RE
+.SS OPTIONS
+  -y, --assume-yes   assume yes to all questions
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot shell
+.RE
+.SH SUBCOMMAND KARGS
+.RS 4
+Manage kernel parameters\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBkargs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Manage kernel parameters\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot kargs edit
+.PP
+abroot kargs get future
+.RE
+

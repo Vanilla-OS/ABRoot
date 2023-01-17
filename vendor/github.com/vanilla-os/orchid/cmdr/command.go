@@ -3,6 +3,7 @@ package cmdr
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/vanilla-os/orchid/roff"
 )
 
 // Command represents a cli command which
@@ -78,5 +79,78 @@ func NewCommandCustom(cmd *cobra.Command) *Command {
 	return &Command{
 		Command:  cmd,
 		children: make([]*Command, 0),
+	}
+}
+
+func (c *Command) doc(d *roff.Document) {
+	c.docName(d)
+	c.docSynopsis(d)
+	c.docDescription(d)
+	c.docOptions(d)
+	c.docCommands(d)
+	c.docExamples(d)
+}
+
+func (c *Command) docName(d *roff.Document) {
+	d.Section("subcommand " + c.Name())
+	d.Indent(4)
+	d.Text(c.Short)
+	d.IndentEnd()
+	d.EndSection()
+}
+
+func (c *Command) docSynopsis(d *roff.Document) {
+	d.SubSection("Synopsis")
+	d.Indent(4)
+	d.TextBold(c.Name())
+	d.Text(" [command] [flags] [arguments]")
+	d.IndentEnd()
+	d.EndSection()
+}
+
+func (c *Command) docDescription(d *roff.Document) {
+	d.SubSection("Description")
+	d.Indent(4)
+	d.TaggedParagraph(4)
+	d.Text(c.Long)
+	d.IndentEnd()
+	d.EndSection()
+
+}
+
+func (c *Command) docOptions(d *roff.Document) {
+	d.SubSection("Options")
+	d.Text(c.Flags().FlagUsages())
+	d.SubSection("Global Options")
+	d.Text(c.Parent().PersistentFlags().FlagUsages())
+	d.EndSection()
+}
+func (c *Command) docExamples(d *roff.Document) {
+	if c.Example == "" {
+		return
+	}
+	d.SubSection("Examples")
+	d.Indent(4)
+	d.Text(c.Example)
+	d.IndentEnd()
+	d.EndSection()
+
+}
+
+func (c *Command) docCommands(d *roff.Document) {
+	if len(c.children) == 0 {
+		return
+	}
+	for _, child := range c.Children() {
+		if child.Hidden {
+			continue
+		}
+
+		d.Section(child.Name())
+
+		d.Indent(4)
+
+		d.Text(child.Short + "\n")
+		d.IndentEnd()
 	}
 }

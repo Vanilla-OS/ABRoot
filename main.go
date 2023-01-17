@@ -17,7 +17,7 @@ var abroot *cmdr.App
 
 func main() {
 
-	abroot = cmd.New(fs)
+	abroot = cmd.New(Version, fs)
 
 	// root command
 	root := cmd.NewRootCommand(Version)
