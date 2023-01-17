@@ -11,3 +11,9 @@ for binary in $protected_binaries; do
         mv /usr/bin/$_binary /usr/bin/$binary
     fi
 done
+
+
+# here we divert /usr/sbin/grub-mkconfig to prevent it from being
+# updated during the transaction by a package that depends on it
+# (e.g. grub-pc)
+dpkg-divert --no-rename --add /usr/sbin/grub-mkconfig

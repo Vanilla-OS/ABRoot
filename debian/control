@@ -5,8 +5,7 @@ Maintainer: Mirko Brombin <send@mirko.pm>
 Uploaders: Mirko Brombin <send@mirko.pm>
 Build-Depends: debhelper (>= 9),
                dh-golang,
-               golang-go,
-               golang-github-spf13-cobra-dev
+               golang-go
 Standards-Version: 3.9.6
 Homepage: https://github.com/vanilla-os/ABRoot
 Vcs-Browser: https://github.com/vanilla-os/ABRoot
@@ -16,7 +15,6 @@ Package: abroot
 Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         golang-go,
-         golang-github-spf13-cobra-dev
+         golang-go
 Built-Using: ${misc:Built-Using}
 Description: On-demand immutability for Vanilla OS.
