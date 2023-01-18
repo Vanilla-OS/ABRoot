@@ -7,7 +7,7 @@
 </a>
 
 <a href="https://codecov.io/gh/atomicgo/keyboard" target="_blank">
-<img src="https://img.shields.io/github/workflow/status/atomicgo/keyboard/Go?label=tests&style=flat-square" alt="Tests">
+<img src="https://img.shields.io/github/actions/workflow/status/atomicgo/keyboard/go.yml?style=flat-square" alt="Tests">
 </a>
 
 <a href="https://codecov.io/gh/atomicgo/keyboard" target="_blank">

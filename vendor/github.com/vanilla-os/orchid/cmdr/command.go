@@ -59,13 +59,35 @@ func (c *Command) WithPersistentStringFlag(f BoolFlag) *Command {
 	return c
 }
 
-// NewCommand returns a new Command with the provided inputs
+// NewCommand returns a new Command with the provided inputs. Alias for
+// NewCommandRunE.
 func NewCommand(use, long, short string, runE func(cmd *cobra.Command, args []string) error) *Command {
+	return NewCommandRunE(use, long, short, runE)
+}
+
+// NewCommandRunE returns a new Command with the provided inputs. The runE function
+// is used for commands that return an error.
+func NewCommandRunE(use, long, short string, runE func(cmd *cobra.Command, args []string) error) *Command {
 	cmd := &cobra.Command{
 		Use:   use,
 		Short: short,
 		Long:  long,
 		RunE:  runE,
+	}
+	return &Command{
+		Command:  cmd,
+		children: make([]*Command, 0),
+	}
+}
+
+// NewCommandRun returns a new Command with the provided inputs. The run function
+// is used for commands that do not return an error.
+func NewCommandRun(use, long, short string, run func(cmd *cobra.Command, args []string)) *Command {
+	cmd := &cobra.Command{
+		Use:   use,
+		Short: short,
+		Long:  long,
+		Run:   run,
 	}
 	return &Command{
 		Command:  cmd,

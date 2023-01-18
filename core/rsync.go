@@ -8,13 +8,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pterm/pterm"
+	"github.com/vanilla-os/orchid/cmdr"
 	"golang.org/x/sys/unix"
 )
 
 // rsyncCmd executes the rsync command with the requested options.
-// If should_print is false, rsync progress will not appear in stdout.
-func rsyncCmd(src, dst string, opts []string, should_print bool) error {
+// If silent is true, rsync progress will not appear in stdout.
+func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	args := []string{"-avxHAX"}
 	args = append(args, opts...)
 	args = append(args, src)
@@ -30,7 +30,9 @@ func rsyncCmd(src, dst string, opts []string, should_print bool) error {
 		return err
 	}
 
-	if should_print {
+	if !silent {
+		verbose := IsVerbose()
+
 		count_cmd_out, _ := exec.Command(
 			"/bin/sh",
 			"-c",
@@ -38,11 +40,15 @@ func rsyncCmd(src, dst string, opts []string, should_print bool) error {
 		).Output()
 		total_files, _ := strconv.Atoi(string(count_cmd_out))
 
-		p, _ := pterm.DefaultProgressbar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
-		max_line_len := int(pterm.GetTerminalWidth() / 6)
+		p, _ := cmdr.ProgressBar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
+		max_line_len := int(cmdr.TerminalWidth() / 6)
 		for i := 0; i < p.Total; i++ {
 			line, _ := reader.ReadString('\n')
 			line = strings.TrimSpace(line)
+
+			if verbose {
+				cmdr.Info.Println(line + " synced")
+			}
 
 			if len(line) > max_line_len {
 				starting_len := len(line) - max_line_len + 1

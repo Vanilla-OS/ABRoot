@@ -154,6 +154,9 @@ var sequences = map[string]keys.Key{
 var hexCodes = map[string]keys.Key{
 	"1b0d": {Code: keys.Enter, AltPressed: true},
 	"1b7f": {Code: keys.Backspace, AltPressed: true},
+	// support other backspace variants
+	"1b08": {Code: keys.Backspace, AltPressed: true},
+	"08":   {Code: keys.Backspace},
 
 	// Powershell
 	"1b4f41": {Code: keys.Up, AltPressed: false},
