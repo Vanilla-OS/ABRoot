@@ -1,8 +1,11 @@
 package core
 
 import (
+	"bufio"
 	"fmt"
+	"github.com/vanilla-os/orchid/cmdr"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -185,6 +188,92 @@ func ApplyTransaction() error {
 	}
 
 	return nil
+}
+
+// TransactionDiff prints a list of added, modified, and removed files
+// from the lastest transaction.
+func TransactionDiff() {
+	PrintVerbose("step:  TransactionDiff")
+	if !AreTransactionsLocked() {
+		cmdr.Warning.Println("No transaction has been made since last reboot. Nothing to diff.")
+		return
+	}
+
+	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
+
+	// force english locale because output changes based on language
+	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "LANG=en_US.UTF-8")
+
+	diff, _ := cmd.Output()
+	scanner := bufio.NewScanner(strings.NewReader(string(diff)))
+
+	var only_present []string
+	var only_future []string
+	var differ []string
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.HasPrefix(line, "Only in /.system") {
+			only_present = append(only_present, line)
+		} else {
+			if strings.HasPrefix(line, "Only in /partFuture") {
+				only_future = append(only_future, line)
+			} else {
+				differ = append(differ, line)
+			}
+		}
+	}
+
+	var bullet_items []cmdr.BulletListItem
+	style := cmdr.NewStyle(cmdr.Bold, cmdr.FgRed)
+	style.Println("Removed:")
+	for i := 0; i < len(only_present); i++ {
+		filename := strings.Join(strings.Split(only_present[i], "/")[2:], "/")
+		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
+
+		if !strings.HasPrefix(filename, "boot/") {
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
+				Level: 1,
+				Text:  "/" + filename,
+			})
+		}
+	}
+	cmdr.BulletList.WithItems(bullet_items).Render()
+	fmt.Print("\n")
+
+	bullet_items = []cmdr.BulletListItem{}
+	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgGreen)
+	style.Println("Added:")
+	for i := 0; i < len(only_future); i++ {
+		filename := strings.Join(strings.Split(only_future[i], "/")[2:], "/")
+		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
+
+		if filename != "" {
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
+				Level: 1,
+				Text:  "/" + filename,
+			})
+		}
+	}
+	cmdr.BulletList.WithItems(bullet_items).Render()
+	fmt.Print("\n")
+
+	bullet_items = []cmdr.BulletListItem{}
+	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgYellow)
+	style.Println("Modified:")
+	for i := 0; i < len(differ); i++ {
+		filename := strings.Join(strings.Split(differ[i], "/")[2:], "/")
+		filename = strings.Split(filename, " and")[0]
+
+		if filename != "" {
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
+				Level: 1,
+				Text:  "/" + filename,
+			})
+		}
+	}
+	cmdr.BulletList.WithItems(bullet_items).Render()
 }
 
 // TransactionalExec runs a command in a transactional shell.

@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/spf13/cobra v1.6.1
-	github.com/vanilla-os/orchid v0.3.1
+	github.com/vanilla-os/orchid v0.3.2
 	golang.org/x/sys v0.4.0
 )
 

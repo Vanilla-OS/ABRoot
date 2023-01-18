@@ -23,6 +23,7 @@ Commands:
 	get			outputs the present or future root partition state
 	shell			enter a transactional shell in the future root partition and switch root on the next boot
 	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
+	diff			list modifications made to the filesystem in the latest transaction
 ```
 
 ## Docs

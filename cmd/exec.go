@@ -54,7 +54,9 @@ func execCommand(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("exec.failed"), err)
 		os.Exit(1)
 	}
+	core.TransactionDiff()
 
 	cmdr.Success.Println(abroot.Trans("exec.success"))
+
 	return nil
 }

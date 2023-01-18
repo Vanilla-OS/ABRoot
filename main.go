@@ -39,6 +39,9 @@ func main() {
 	kargsCmd := cmd.NewKargsCommand()
 	root.AddCommand(kargsCmd)
 
+	diffCmd := cmd.NewDiffCommand()
+	root.AddCommand(diffCmd)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {

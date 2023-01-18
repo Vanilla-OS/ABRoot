@@ -57,3 +57,9 @@ shell:
   start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
   success: "Transaction completed successfully. Reboot to apply changes."
   failed: "Failed to start transactional shell:"
+
+diff:
+  use: "diff"
+  long: "List modifications made to the filesystem in the latest transiction"
+  short: "Show modifications from latest transaction."
+  rootRequired: "You must be root to run this command."
