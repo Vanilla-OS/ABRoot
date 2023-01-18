@@ -23,6 +23,16 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	cmd := exec.Command("rsync", args...)
 	stdout, _ := cmd.StdoutPipe()
 
+	var total_files int
+	if !silent {
+		count_cmd_out, _ := exec.Command(
+			"/bin/sh",
+			"-c",
+			fmt.Sprintf("echo -n $(($(rsync --dry-run %s | wc -l) - 4))", strings.Join(args, " ")),
+		).Output()
+		total_files, _ = strconv.Atoi(string(count_cmd_out))
+	}
+
 	reader := bufio.NewReader(stdout)
 
 	err := cmd.Start()
@@ -33,15 +43,8 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	if !silent {
 		verbose := IsVerbose()
 
-		count_cmd_out, _ := exec.Command(
-			"/bin/sh",
-			"-c",
-			fmt.Sprintf("echo -n $(($(rsync -avxHAX --dry-run %s %s %s | wc -l) - 4))", strings.Join(opts, " "), src, dst),
-		).Output()
-		total_files, _ := strconv.Atoi(string(count_cmd_out))
-
-		p, _ := cmdr.ProgressBar.WithTotal(int(total_files)).WithTitle("Sync in progress").Start()
-		max_line_len := int(cmdr.TerminalWidth() / 6)
+		p, _ := cmdr.ProgressBar.WithTotal(int(total_files)).WithTitle("Sync in progress").WithMaxWidth(120).Start()
+		max_line_len := int(cmdr.TerminalWidth() / 4)
 		for i := 0; i < p.Total; i++ {
 			line, _ := reader.ReadString('\n')
 			line = strings.TrimSpace(line)
@@ -52,7 +55,7 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 
 			if len(line) > max_line_len {
 				starting_len := len(line) - max_line_len + 1
-				line = "…" + line[starting_len:]
+				line = "<" + line[starting_len:]
 			} else {
 				padding := max_line_len - len(line)
 				line = line + strings.Repeat(" ", padding)
