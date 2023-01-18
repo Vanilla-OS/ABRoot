@@ -13,9 +13,10 @@ type Key struct {
 // (e.g. "a", "B", "alt+a", "enter", "ctrl+c", "shift-down", etc.)
 //
 // Example:
-//  k := keys.Key{Code: keys.Enter}
-//  fmt.Println(k)
-//  // Output: enter
+//
+//	k := keys.Key{Code: keys.Enter}
+//	fmt.Println(k)
+//	// Output: enter
 func (k Key) String() (str string) {
 	if k.AltPressed {
 		str += "alt+"
@@ -37,14 +38,15 @@ func (k Key) String() (str string) {
 // All other keys are represented by a rune and have the KeyCode: RuneKey.
 //
 // Example:
-//  k := Key{Code: RuneKey, Runes: []rune{'x'}, AltPressed: true}
-//  if k.Code == RuneKey {
-//      fmt.Println(k.Runes)
-//      // Output: x
 //
-//      fmt.Println(k.String())
-//      // Output: alt+x
-//  }
+//	k := Key{Code: RuneKey, Runes: []rune{'x'}, AltPressed: true}
+//	if k.Code == RuneKey {
+//	    fmt.Println(k.Runes)
+//	    // Output: x
+//
+//	    fmt.Println(k.String())
+//	    // Output: alt+x
+//	}
 type KeyCode int
 
 func (k KeyCode) String() (str string) {

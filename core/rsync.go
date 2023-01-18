@@ -1,28 +1,75 @@
 package core
 
 import (
+	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 
+	"github.com/vanilla-os/orchid/cmdr"
 	"golang.org/x/sys/unix"
 )
 
 // rsyncCmd executes the rsync command with the requested options.
-func rsyncCmd(src, dst string, opts []string) error {
+// If silent is true, rsync progress will not appear in stdout.
+func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	args := []string{"-avxHAX"}
 	args = append(args, opts...)
 	args = append(args, src)
 	args = append(args, dst)
 
 	cmd := exec.Command("rsync", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	stdout, _ := cmd.StdoutPipe()
 
-	PrintVerbose("cmd:rsyncCmd: %s", cmd.String())
-	err := cmd.Run()
+	var total_files int
+	if !silent {
+		count_cmd_out, _ := exec.Command(
+			"/bin/sh",
+			"-c",
+			fmt.Sprintf("echo -n $(($(rsync --dry-run %s | wc -l) - 4))", strings.Join(args, " ")),
+		).Output()
+		total_files, _ = strconv.Atoi(string(count_cmd_out))
+	}
 
+	reader := bufio.NewReader(stdout)
+
+	err := cmd.Start()
 	if err != nil {
-		PrintVerbose("err:rsyncCmd: %s", err)
+		return err
+	}
+
+	if !silent {
+		verbose := IsVerbose()
+
+		p, _ := cmdr.ProgressBar.WithTotal(int(total_files)).WithTitle("Sync in progress").WithMaxWidth(120).Start()
+		max_line_len := int(cmdr.TerminalWidth() / 4)
+		for i := 0; i < p.Total; i++ {
+			line, _ := reader.ReadString('\n')
+			line = strings.TrimSpace(line)
+
+			if verbose {
+				cmdr.Info.Println(line + " synced")
+			}
+
+			if len(line) > max_line_len {
+				starting_len := len(line) - max_line_len + 1
+				line = "<" + line[starting_len:]
+			} else {
+				padding := max_line_len - len(line)
+				line = line + strings.Repeat(" ", padding)
+			}
+
+			p.UpdateTitle("Syncing " + line)
+			p.Increment()
+		}
+	} else {
+		stdout.Close()
+	}
+
+	err = cmd.Wait()
+	if err != nil {
 		return err
 	}
 
@@ -39,7 +86,7 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 		}
 	}
 
-	return rsyncCmd(src, dst, opts)
+	return rsyncCmd(src, dst, opts, false)
 }
 
 // atomicSwap allows swapping 2 files or directories in-place and atomically, using
@@ -102,7 +149,7 @@ func AtomicRsync(src, dst string, transitionalPath string, finalPath string, exc
 	}
 
 	PrintVerbose("step:  rsyncCmd")
-	err := rsyncCmd(src, transitionalPath, opts)
+	err := rsyncCmd(src, transitionalPath, opts, true)
 	if err != nil {
 		return err
 	}

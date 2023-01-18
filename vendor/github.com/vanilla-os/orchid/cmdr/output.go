@@ -6,6 +6,8 @@ var (
 	Info, Warning, Success, Fatal, Debug, Description, Error pterm.PrefixPrinter
 	Spinner                                                  pterm.SpinnerPrinter
 	ProgressBar                                              pterm.ProgressbarPrinter
+	TerminalSize                                             func() (int, int, error)
+	TerminalWidth, TerminalHeight                            func() int
 )
 
 func init() {
@@ -18,4 +20,7 @@ func init() {
 	Description = pterm.Description
 	Spinner = pterm.DefaultSpinner
 	ProgressBar = pterm.DefaultProgressbar
+	TerminalSize = pterm.GetTerminalSize
+	TerminalWidth = pterm.GetTerminalWidth
+	TerminalHeight = pterm.GetTerminalHeight
 }

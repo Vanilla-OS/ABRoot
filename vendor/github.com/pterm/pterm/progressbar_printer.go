@@ -250,18 +250,21 @@ func (p *ProgressbarPrinter) Add(count int) *ProgressbarPrinter {
 	p.Current += count
 	p.updateProgress()
 
-	if p.Current == p.Total {
+	if p.Current >= p.Total {
 		p.Stop()
 	}
 	return p
 }
 
 // Start the ProgressbarPrinter.
-func (p ProgressbarPrinter) Start() (*ProgressbarPrinter, error) {
+func (p ProgressbarPrinter) Start(title ...interface{}) (*ProgressbarPrinter, error) {
 	if RawOutput && p.ShowTitle {
 		Fprintln(p.Writer, p.Title)
 	}
 	p.IsActive = true
+	if len(title) != 0 {
+		p.Title = Sprint(title...)
+	}
 	ActiveProgressBarPrinters = append(ActiveProgressBarPrinters, &p)
 	p.startedAt = time.Now()
 

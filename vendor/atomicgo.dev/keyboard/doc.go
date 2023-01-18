@@ -15,7 +15,6 @@ Works nicely with https://atomicgo.dev/cursor
 		return false, nil // Return false to continue listening
 	})
 
-
 ## Advanced Usage
 
 	// Stop keyboard listener on Escape key press or CTRL+C.
@@ -39,26 +38,25 @@ Works nicely with https://atomicgo.dev/cursor
 		return false, nil // Return false to continue listening
 	})
 
-
 ## Simulate Key Presses (for mocking in tests)
 
-	go func() {
-		keyboard.SimulateKeyPress("Hello")             // Simulate key press for every letter in string
-		keyboard.SimulateKeyPress(keys.Enter)          // Simulate key press for Enter
-		keyboard.SimulateKeyPress(keys.CtrlShiftRight) // Simulate key press for Ctrl+Shift+Right
-		keyboard.SimulateKeyPress('x')                 // Simulate key press for a single rune
-        keyboard.SimulateKeyPress('x', keys.Down, 'a') // Simulate key presses for multiple inputs
+		go func() {
+			keyboard.SimulateKeyPress("Hello")             // Simulate key press for every letter in string
+			keyboard.SimulateKeyPress(keys.Enter)          // Simulate key press for Enter
+			keyboard.SimulateKeyPress(keys.CtrlShiftRight) // Simulate key press for Ctrl+Shift+Right
+			keyboard.SimulateKeyPress('x')                 // Simulate key press for a single rune
+	        keyboard.SimulateKeyPress('x', keys.Down, 'a') // Simulate key presses for multiple inputs
 
-		keyboard.SimulateKeyPress(keys.Escape) // Simulate key press for Escape, which quits the program
-	}()
+			keyboard.SimulateKeyPress(keys.Escape) // Simulate key press for Escape, which quits the program
+		}()
 
-	keyboard.Listen(func(key keys.Key) (stop bool, err error) {
-		if key.Code == keys.Escape || key.Code == keys.CtrlC {
-			os.Exit(0) // Exit program on Escape
-		}
+		keyboard.Listen(func(key keys.Key) (stop bool, err error) {
+			if key.Code == keys.Escape || key.Code == keys.CtrlC {
+				os.Exit(0) // Exit program on Escape
+			}
 
-		fmt.Println("\r" + key.String()) // Print every key press
-		return false, nil                // Return false to continue listening
-	})
+			fmt.Println("\r" + key.String()) // Print every key press
+			return false, nil                // Return false to continue listening
+		})
 */
 package keyboard

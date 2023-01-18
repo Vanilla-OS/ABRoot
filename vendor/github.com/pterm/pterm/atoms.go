@@ -1,5 +1,11 @@
 package pterm
 
+// Checkmark is used in the interactive multiselect printer.
+type Checkmark struct {
+	Checked   string
+	Unchecked string
+}
+
 // Bars is used to display multiple Bar.
 type Bars []Bar
 
