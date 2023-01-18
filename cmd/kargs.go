@@ -1,55 +1,28 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 
 	"github.com/spf13/cobra"
 	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
-func kargsUsage(*cobra.Command) error {
-	fmt.Print(`Description:
-	Manage kernel parameters.
+func NewKargsCommand() *cmdr.Command {
 
-Usage:
-	kargs [action]
-
-Options:
-	--help/-h				show this message
-
-Actions:
-	get [present|future] 	get present/future root partition parameters
-	edit
-
-Examples:
-	abroot kargs edit
-	abroot kargs get future
-`)
-
-	return nil
-}
-
-func NewKargsCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "kargs",
-		Short: "Manage kernel parameters.",
-		RunE:  kargsCommand,
-	}
-	cmd.SetUsageFunc(kargsUsage)
-	cmd.Flags().SetInterspersed(false)
-
-	return cmd
+	kargs := cmdr.NewCommand("kargs [edit|get] <partition>", abroot.Trans("kargs.long"), abroot.Trans("kargs.short"), kargsCommand)
+	kargs.Example = "abroot kargs edit\nabroot kargs get future"
+	return kargs
 }
 
 func kargsCommand(cmd *cobra.Command, args []string) error {
-	if !core.RootCheck(true) {
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("kargs.rootRequired"))
 		return nil
 	}
-
 	if args[0] == "get" && len(args) == 1 {
-		fmt.Println("Please specify a state (present or future)")
+		cmdr.Error.Println(abroot.Trans("kargs.stateRequired"))
 		return nil
 	}
 
@@ -62,21 +35,21 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 				return err
 			}
 
-			fmt.Printf("Current partition's parameters:\n%s\n", kargs)
+			cmdr.Info.Printf(abroot.Trans("kargs.params"), kargs)
 		case "future":
 			kargs, err := core.GetFutureKargs()
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("Future partition's parameters:\n%s\n", kargs)
+			cmdr.Info.Printf(abroot.Trans("kargs.futureParams"), kargs)
 		default:
-			fmt.Printf("Unknown state: %s\n", args[1])
+			cmdr.Error.Printf(abroot.Trans("kargs.unknownState"), args[1])
 		}
 	case "edit":
 		kargs_edit()
 	default:
-		fmt.Printf("Unknown parameter: %s\n", args[0])
+		cmdr.Error.Printf(abroot.Trans("kargs.unknownParam"), args[0])
 	}
 
 	return nil
@@ -119,10 +92,10 @@ func kargs_edit() error {
 
 	// Run something just to trigger a transaction
 	if _, err := core.TransactionalExec("echo"); err != nil {
-		fmt.Println("Failed to start transactional shell:", err)
+		cmdr.Error.Println(abroot.Trans("kargs.failedTransaction"), err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Kernel parameters will be applied on next boot.")
+	cmdr.Info.Println(abroot.Trans("kargs.nextReboot"))
 	return nil
 }

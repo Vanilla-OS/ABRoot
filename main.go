@@ -1,42 +1,54 @@
 package main
 
 import (
-	"fmt"
+	"embed"
 
-	"github.com/spf13/cobra"
 	"github.com/vanilla-os/abroot/cmd"
-	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
 var (
-	Version = "1.2.2"
+	Version = "1.2.3"
 )
 
-func help(cmd *cobra.Command, args []string) {
-	fmt.Print(`Usage: 
-abroot [flags] [command]
+//go:embed locales/*.yml
+var fs embed.FS
+var abroot *cmdr.App
 
-Flags:
-	--help/-h		show this message
-	--verbose/-v		show more verbosity
-	--version/-V		show version
+func main() {
 
-Commands:
-	get			outputs the present or future root partition state
-	shell			enter a transactional shell in the future root partition and switch root on the next boot
-	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
-	diff			list modifications made to the filesystem in the latest transaction
-`)
-}
+	abroot = cmd.New(Version, fs)
 
-func newABRootCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:     "abroot",
-		Short:   "ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B).",
-		Version: Version,
+	// root command
+	root := cmd.NewRootCommand(Version)
+	abroot.CreateRootCommand(root)
+
+	// update-boot command
+	updateBoot := cmd.NewUpdateBootCommand()
+	root.AddCommand(updateBoot)
+
+	get := cmd.NewGetCommand()
+	root.AddCommand(get)
+
+	execCmd := cmd.NewExecCommand()
+	root.AddCommand(execCmd)
+
+	shellCmd := cmd.NewShellCommand()
+	root.AddCommand(shellCmd)
+
+	kargsCmd := cmd.NewKargsCommand()
+	root.AddCommand(kargsCmd)
+
+	// run the app
+	err := abroot.Run()
+	if err != nil {
+		cmdr.Error.Println(err)
+
 	}
+
 }
 
+/*
 func main() {
 	rootCmd := newABRootCommand()
 
@@ -45,9 +57,9 @@ func main() {
 	rootCmd.AddCommand(cmd.NewKargsCommand())
 	rootCmd.AddCommand(cmd.NewShellCommand())
 	rootCmd.AddCommand(cmd.NewExecCommand())
-	rootCmd.AddCommand(cmd.NewDiffCommand())
 	rootCmd.SetHelpFunc(help)
 	rootCmd.Execute()
 
 	core.CheckABRequirements()
 }
+*/
