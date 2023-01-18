@@ -196,6 +196,7 @@ func TransactionDiff() {
 	PrintVerbose("step:  TransactionDiff")
 	if !AreTransactionsLocked() {
 		cmdr.Warning.Println("No transaction has been made since last reboot. Nothing to diff.")
+		return
 	}
 
 	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
