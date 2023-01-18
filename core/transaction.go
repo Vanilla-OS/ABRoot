@@ -238,7 +238,7 @@ func TransactionDiff() {
 			})
 		}
 	}
-	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.BulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
 
 	bullet_items = []cmdr.BulletListItem{}
@@ -255,7 +255,7 @@ func TransactionDiff() {
 			})
 		}
 	}
-	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.BulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
 
 	bullet_items = []cmdr.BulletListItem{}
@@ -272,7 +272,7 @@ func TransactionDiff() {
 			})
 		}
 	}
-	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.BulletList.WithItems(bullet_items).Render()
 }
 
 // TransactionalExec runs a command in a transactional shell.

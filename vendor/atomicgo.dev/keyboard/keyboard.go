@@ -57,14 +57,15 @@ func stopListener() error {
 // Listen calls a callback function when a key is pressed.
 //
 // Simple example:
-//  keyboard.Listen(func(key keys.Key) (stop bool, err error) {
-//  	if key.Code == keys.CtrlC {
-//  		return true, nil // Stop listener by returning true on Ctrl+C
-//  	}
 //
-//  	fmt.Println("\r" + key.String()) // Print every key press
-//  	return false, nil // Return false to continue listening
-//  })
+//	keyboard.Listen(func(key keys.Key) (stop bool, err error) {
+//		if key.Code == keys.CtrlC {
+//			return true, nil // Stop listener by returning true on Ctrl+C
+//		}
+//
+//		fmt.Println("\r" + key.String()) // Print every key press
+//		return false, nil // Return false to continue listening
+//	})
 func Listen(onKeyPress func(key keys.Key) (stop bool, err error)) error {
 	cancel := make(chan bool)
 	stopRoutine := false
@@ -129,13 +130,14 @@ func Listen(onKeyPress func(key keys.Key) (stop bool, err error)) error {
 // SimulateKeyPress simulate a key press. It can be used to mock user stdin and test your application.
 //
 // Example:
-//  go func() {
-//  	keyboard.SimulateKeyPress("Hello")             // Simulate key press for every letter in string
-//  	keyboard.SimulateKeyPress(keys.Enter)          // Simulate key press for Enter
-//  	keyboard.SimulateKeyPress(keys.CtrlShiftRight) // Simulate key press for Ctrl+Shift+Right
-//  	keyboard.SimulateKeyPress('x')                 // Simulate key press for a single rune
-//  	keyboard.SimulateKeyPress('x', keys.Down, 'a') // Simulate key presses for multiple inputs
-//  }()
+//
+//	go func() {
+//		keyboard.SimulateKeyPress("Hello")             // Simulate key press for every letter in string
+//		keyboard.SimulateKeyPress(keys.Enter)          // Simulate key press for Enter
+//		keyboard.SimulateKeyPress(keys.CtrlShiftRight) // Simulate key press for Ctrl+Shift+Right
+//		keyboard.SimulateKeyPress('x')                 // Simulate key press for a single rune
+//		keyboard.SimulateKeyPress('x', keys.Down, 'a') // Simulate key presses for multiple inputs
+//	}()
 func SimulateKeyPress(input ...interface{}) error {
 	for _, key := range input {
 		// Check if key is a keys.Key
