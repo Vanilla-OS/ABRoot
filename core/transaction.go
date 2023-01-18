@@ -3,11 +3,11 @@ package core
 import (
 	"bufio"
 	"fmt"
-	"github.com/pterm/pterm"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
 var (
@@ -195,7 +195,7 @@ func ApplyTransaction() error {
 func TransactionDiff() {
 	PrintVerbose("step:  TransactionDiff")
 	if !AreTransactionsLocked() {
-		pterm.Error.Println("No transaction has been made since last reboot. Nothing to diff.")
+		cmdr.Warning.Println("No transaction has been made since last reboot. Nothing to diff.")
 	}
 
 	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
@@ -224,55 +224,55 @@ func TransactionDiff() {
 		}
 	}
 
-	var bullet_items []pterm.BulletListItem
-	style := pterm.NewStyle(pterm.Bold, pterm.FgRed)
+	var bullet_items []cmdr.BulletListItem
+	style := cmdr.NewStyle(cmdr.Bold, cmdr.FgRed)
 	style.Println("Removed:")
 	for i := 0; i < len(only_present); i++ {
 		filename := strings.Join(strings.Split(only_present[i], "/")[2:], "/")
 		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
 
 		if !strings.HasPrefix(filename, "boot/") {
-			bullet_items = append(bullet_items, pterm.BulletListItem{
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
 				Level: 1,
 				Text:  "/" + filename,
 			})
 		}
 	}
-	pterm.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
 
-	bullet_items = []pterm.BulletListItem{}
-	style = pterm.NewStyle(pterm.Bold, pterm.FgGreen)
+	bullet_items = []cmdr.BulletListItem{}
+	style = cmdr.NewStyle(pterm.Bold, pterm.FgGreen)
 	style.Println("Added:")
 	for i := 0; i < len(only_future); i++ {
 		filename := strings.Join(strings.Split(only_future[i], "/")[2:], "/")
 		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
 
 		if filename != "" {
-			bullet_items = append(bullet_items, pterm.BulletListItem{
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
 				Level: 1,
 				Text:  "/" + filename,
 			})
 		}
 	}
-	pterm.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
 
-	bullet_items = []pterm.BulletListItem{}
-	style = pterm.NewStyle(pterm.Bold, pterm.FgYellow)
+	bullet_items = []cmdr.BulletListItem{}
+	style = cmdr.NewStyle(pterm.Bold, pterm.FgYellow)
 	style.Println("Modified:")
 	for i := 0; i < len(differ); i++ {
 		filename := strings.Join(strings.Split(differ[i], "/")[2:], "/")
 		filename = strings.Split(filename, " and")[0]
 
 		if filename != "" {
-			bullet_items = append(bullet_items, pterm.BulletListItem{
+			bullet_items = append(bullet_items, cmdr.BulletListItem{
 				Level: 1,
 				Text:  "/" + filename,
 			})
 		}
 	}
-	pterm.DefaultBulletList.WithItems(bullet_items).Render()
+	cmdr.DefaultBulletList.WithItems(bullet_items).Render()
 }
 
 // TransactionalExec runs a command in a transactional shell.
