@@ -3,11 +3,11 @@ package core
 import (
 	"bufio"
 	"fmt"
+	"github.com/vanilla-os/orchid/cmdr"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"github.com/vanilla-os/orchid/cmdr"
 )
 
 var (
@@ -242,7 +242,7 @@ func TransactionDiff() {
 	fmt.Print("\n")
 
 	bullet_items = []cmdr.BulletListItem{}
-	style = cmdr.NewStyle(pterm.Bold, pterm.FgGreen)
+	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgGreen)
 	style.Println("Added:")
 	for i := 0; i < len(only_future); i++ {
 		filename := strings.Join(strings.Split(only_future[i], "/")[2:], "/")
@@ -259,7 +259,7 @@ func TransactionDiff() {
 	fmt.Print("\n")
 
 	bullet_items = []cmdr.BulletListItem{}
-	style = cmdr.NewStyle(pterm.Bold, pterm.FgYellow)
+	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgYellow)
 	style.Println("Modified:")
 	for i := 0; i < len(differ); i++ {
 		filename := strings.Join(strings.Split(differ[i], "/")[2:], "/")
