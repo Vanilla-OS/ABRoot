@@ -401,7 +401,7 @@ fi
 export linux_gfx_mode
 `
 	// root is mounted rw since protected paths are managed by sysd and fstab
-	bootEntry := `menuentry 'Vanilla OS - Root %s' --class gnu-linux --class gnu --class os {
+	bootEntry := `menuentry 'Vanilla OS - Root %s (%s)' --class gnu-linux --class gnu --class os {
 	recordfail
 	load_video
 	gfxmode $linux_gfx_mode
@@ -435,11 +435,11 @@ export linux_gfx_mode
 
 	var boot_a, boot_b string
 	if presentLabel == "a" {
-		boot_a = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
 	} else {
-		boot_a = fmt.Sprintf(bootEntry, futureLabel, bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, presentLabel, bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
+		boot_a = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
+		boot_b = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
 	}
 	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, boot_a, boot_b)
 
