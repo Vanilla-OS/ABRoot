@@ -17,10 +17,6 @@ func NewKargsCommand() *cmdr.Command {
 }
 
 func kargsCommand(cmd *cobra.Command, args []string) error {
-	if !core.RootCheck(false) {
-		cmdr.Error.Println(abroot.Trans("kargs.rootRequired"))
-		return nil
-	}
 	if args[0] == "get" && len(args) == 1 {
 		cmdr.Error.Println(abroot.Trans("kargs.stateRequired"))
 		return nil
@@ -56,6 +52,16 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 }
 
 func kargs_edit() error {
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("kargs.rootRequired"))
+		return nil
+	}
+
+	if core.AreTransactionsLocked() {
+		cmdr.Error.Printf(abroot.Trans("kargs.transactionsLocked"))
+		return nil
+	}
+
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
 		editor = "nano"
