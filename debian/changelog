@@ -1,3 +1,12 @@
+abroot (1.3.0) kinetic; urgency=critical
+
+  * New transaction UI
+  * New diff command to see changes for the latest transaction
+  * Improved GRUB labels
+  * Move to orchid
+
+ -- Mirko brombin <send@mirko.pm>  Fri, 20 Jan 2023 09:35:00 +0200
+
 abroot (1.2.3) kinetic; urgency=critical
 
   * Use vendor path
@@ -10,51 +19,51 @@ abroot (1.2.2) kinetic; urgency=critical
 
  -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
 
- abroot (1.2.0) kinetic; urgency=medium
+abroot (1.2.0) kinetic; urgency=medium
 
   * Support custom kargs
 
  -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
 
- abroot (1.1.3) kinetic; urgency=medium
+abroot (1.1.3) kinetic; urgency=medium
 
   * Improve logs, avoid panic
   * Improve disclaimer notice
 
  -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
 
- abroot (1.1.1) kinetic; urgency=medium
+abroot (1.1.1) kinetic; urgency=medium
 
   * Add hook system to allow running custom shell scripts at start/end of the transaction
   * Add Manpage (man abroot)
 
  -- Mirko brombin <send@mirko.pm>  Mon, 20 dec 2022 08:20:00 +0200
 
- abroot (0.3.3) kinetic; urgency=critical
+abroot (0.3.3) kinetic; urgency=critical
 
   * Patch mkconfig during transaction, not outside
 
  -- Mirko brombin <send@mirko.pm>  Sat, 15 dec 2022 08:37:00 +0200
 
- abroot (0.3.2) kinetic; urgency=critical
+abroot (0.3.2) kinetic; urgency=critical
 
   * Force generate grub.cfg in /tmp during a transaction
 
  -- Mirko brombin <send@mirko.pm>  Wed, 15 dec 2022 08:11:00 +0200
 
- abroot (0.3.1) kinetic; urgency=critical
+abroot (0.3.1) kinetic; urgency=critical
 
   * Avoid failing the transaction when /opt is not present
 
  -- Mirko brombin <send@mirko.pm>  Thu, 14 dec 2022 22:47:00 +0200
 
- abroot (0.3.0) kinetic; urgency=critical
+abroot (0.3.0) kinetic; urgency=critical
 
   * Make boot part of the transaction to allow kernel updates
 
  -- Mirko brombin <send@mirko.pm>  Mon, 13 dec 2022 21:16:00 +0200
 
- abroot (0.2.3) kinetic; urgency=critical
+abroot (0.2.3) kinetic; urgency=critical
 
   * Fix /var, /opt in combinerPath by mounting as bind
 
