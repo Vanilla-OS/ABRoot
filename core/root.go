@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
+
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
 func CheckABRequirements() {
@@ -298,11 +300,24 @@ func GetKargs(state string) (string, error) {
 		}
 	}
 
+	presentLabel, err := GetPresentRootLabel()
+    if err != nil {
+        return "", err
+    }
+
 	switch state {
 	case "present":
-		return kargs_lines[0], nil
+        if presentLabel == "a" {
+		    return kargs_lines[0], nil
+        } else {
+		    return kargs_lines[1], nil
+        }
 	case "future":
-		return kargs_lines[1], nil
+        if presentLabel == "a" {
+		    return kargs_lines[1], nil
+        } else {
+		    return kargs_lines[0], nil
+        }
 	default:
 		return "", errors.New(fmt.Sprintf("Invalid state %s", state))
 	}
@@ -708,6 +723,78 @@ func SetImmutablePath(path string) error {
 	if err := exec.Command("chattr", "+i", path).Run(); err != nil {
 		PrintVerbose("err:SetImmutablePath: %s", err)
 		return err
+	}
+
+	return nil
+}
+
+// getGrubMarkedRoot obtains the root name ("a", "b") of the entry marked as state ("current", "previous")
+func getGRUBMarkedRoot(state string) (string, error) {
+	file, err := os.Open("/etc/grub.d/10_vanilla")
+	if err != nil {
+		return "", err
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		if strings.Contains(scanner.Text(), "("+state+")") {
+			splits := strings.Split(scanner.Text(), " ")
+			return splits[5], nil
+		}
+	}
+
+	return "", errors.New(fmt.Sprintf("No partition found for state %s", state))
+}
+
+// Rollback switches back to the previous root.
+func Rollback() error {
+	// Root marked as "current" by ABroot
+	current_root, err := getGRUBMarkedRoot("current")
+	if err != nil {
+		return err
+	}
+
+	// Root we're booted into
+	currently_booted_root, err := getCurrentRootLabel()
+	if err != nil {
+		return err
+	}
+
+	var previous_root string
+	if current_root == "a" {
+		previous_root = "b"
+	} else {
+		previous_root = "a"
+	}
+
+    var rollback_kargs string
+    if current_root == currently_booted_root {
+        rollback_kargs, err = GetFutureKargs()
+        if err != nil {
+            return err
+        }
+    } else {
+        rollback_kargs, err = GetCurrentKargs()
+        if err != nil {
+            return err
+        }
+    }
+
+	message := fmt.Sprintf(`
+        You are currently in partition %s
+        Your "present" partition is %s
+
+        This command will make %s the present partition again. Any changes made to B will be lost.
+        Continue?
+    `, strings.ToUpper(currently_booted_root), strings.ToUpper(current_root), strings.ToLower(previous_root))
+
+	confirmation, err := cmdr.Confirm.Show(message)
+	if err != nil {
+		return err
+	}
+
+	if confirmation {
+        UpdateRootBoot(false, rollback_kargs)
 	}
 
 	return nil
