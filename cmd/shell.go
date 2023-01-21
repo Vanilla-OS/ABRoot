@@ -15,9 +15,9 @@ func NewShellCommand() *cmdr.Command {
 		abroot.Trans("shell.short"),
 		shell).WithBoolFlag(
 		cmdr.NewBoolFlag(
-			assumeYesFlag,
-			"y",
-			abroot.Trans("shell.assumeYesFlag"),
+			"force-open",
+			"f",
+			abroot.Trans("shell.forceOpenFlag"),
 			false))
 	shell.Example = "abroot shell"
 	return shell
@@ -28,8 +28,8 @@ func shell(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("shell.rootRequired"))
 		return nil
 	}
-	assumeYes := cmdr.FlagValBool(assumeYesFlag)
-	if !assumeYes {
+	forceOpen := cmdr.FlagValBool("force-open")
+	if !forceOpen {
 		b, err := cmdr.Confirm.Show(abroot.Trans("shell.confirm"))
 		if err != nil {
 			return err
@@ -45,7 +45,7 @@ func shell(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("shell.failed"), err)
 		os.Exit(1)
 	}
-    core.TransactionDiff()
+	core.TransactionDiff()
 
 	cmdr.Success.Println(abroot.Trans("shell.success"))
 

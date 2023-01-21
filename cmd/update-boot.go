@@ -7,10 +7,6 @@ import (
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
-const (
-	assumeYesFlag string = "assume-yes"
-)
-
 func NewUpdateBootCommand() *cmdr.Command {
 	upd := cmdr.NewCommand(
 		"_update-boot",
@@ -18,9 +14,9 @@ func NewUpdateBootCommand() *cmdr.Command {
 		abroot.Trans("update.short"),
 		status).WithBoolFlag(
 		cmdr.NewBoolFlag(
-			assumeYesFlag,
-			"y",
-			abroot.Trans("update.assumeYesFlag"),
+			"force-update",
+			"f",
+			abroot.Trans("update.forceUpdateFlag"),
 			false))
 	// don't show this command in usage/help unless specified
 	upd.Hidden = true
@@ -32,9 +28,9 @@ func status(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("update.rootRequired"))
 		return nil
 	}
-	assumeYes := cmdr.FlagValBool(assumeYesFlag)
+	forceUpdate := cmdr.FlagValBool("force-update")
 
-	if !assumeYes {
+	if !forceUpdate {
 		b, err := cmdr.Confirm.Show(abroot.Trans("update.confirm"))
 		if err != nil {
 			return err

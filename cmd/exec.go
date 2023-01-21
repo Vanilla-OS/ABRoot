@@ -16,9 +16,9 @@ func NewExecCommand() *cmdr.Command {
 		execCommand,
 	).WithBoolFlag(
 		cmdr.NewBoolFlag(
-			assumeYesFlag,
-			"y",
-			abroot.Trans("exec.assumeYesFlag"),
+			"force-run",
+			"f",
+			abroot.Trans("exec.forceRunFlag"),
 			false))
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.Example = "abroot exec apt-get update"
@@ -32,8 +32,8 @@ func execCommand(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	assumeYes := cmdr.FlagValBool(assumeYesFlag)
-	if !assumeYes {
+	forceRun := cmdr.FlagValBool("force-run")
+	if !forceRun {
 		b, err := cmdr.Confirm.Show(abroot.Trans("exec.confirm"))
 		if err != nil {
 			return err
