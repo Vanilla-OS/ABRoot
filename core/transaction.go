@@ -18,6 +18,10 @@ var (
 	endRulesPath     = "/etc/abroot/end-transaction-rules.d/"
 )
 
+var (
+	diff_ignore = []string{".cache", "/var"}
+)
+
 // LockTransaction locks the transactional shell.
 // It does so by creating a lock file.
 func LockTransaction() error {
@@ -200,7 +204,7 @@ func TransactionDiff() {
 	}
 
 	spinner, _ := cmdr.Spinner.Start("Gathering changes made by transaction...")
-	cmd := exec.Command("diff", "-qr", "/.system", "/partFuture")
+	cmd := exec.Command("rsync", "-avxHAXSn", "--delete", "--out-format=%i%n", "/.system", "/partFuture")
 
 	// force english locale because output changes based on language
 	cmd.Env = os.Environ()
@@ -214,15 +218,29 @@ func TransactionDiff() {
 	var differ []string
 	for scanner.Scan() {
 		line := scanner.Text()
+		if line == "" {
+			break
+		}
 
-		if strings.HasPrefix(line, "Only in /.system") {
-			only_present = append(only_present, line)
-		} else {
-			if strings.HasPrefix(line, "Only in /partFuture") {
-				only_future = append(only_future, line)
-			} else {
-				differ = append(differ, line)
+		args := line[:12]
+		filename := line[11:]
+
+		skip := false
+		for i := 0; i < len(diff_ignore); i++ {
+			if strings.Contains(filename, diff_ignore[i]) || filename[len(filename)-1] == '/' {
+				skip = true
 			}
+		}
+		if skip {
+			continue
+		}
+
+		if args[2] == '+' {
+			only_present = append(only_present, strings.Join(strings.Split(filename, "/")[1:], "/"))
+		} else if args[0] == '>' {
+			differ = append(differ, strings.Join(strings.Split(filename, "/")[1:], "/"))
+		} else if args[0] == '*' {
+			only_future = append(only_future, strings.Join(strings.Split(filename, "/")[1:], "/"))
 		}
 	}
 	spinner.Success()
@@ -231,8 +249,7 @@ func TransactionDiff() {
 	style := cmdr.NewStyle(cmdr.Bold, cmdr.FgRed)
 	style.Println("Removed:")
 	for i := 0; i < len(only_present); i++ {
-		filename := strings.Join(strings.Split(only_present[i], "/")[2:], "/")
-		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
+		filename := only_present[i]
 
 		if !strings.HasPrefix(filename, "boot/") {
 			bullet_items = append(bullet_items, cmdr.BulletListItem{
@@ -248,8 +265,7 @@ func TransactionDiff() {
 	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgGreen)
 	style.Println("Added:")
 	for i := 0; i < len(only_future); i++ {
-		filename := strings.Join(strings.Split(only_future[i], "/")[2:], "/")
-		filename = strings.Join(strings.SplitN(filename, ": ", 2), "/")
+		filename := only_future[i]
 
 		if filename != "" {
 			bullet_items = append(bullet_items, cmdr.BulletListItem{
@@ -265,8 +281,7 @@ func TransactionDiff() {
 	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgYellow)
 	style.Println("Modified:")
 	for i := 0; i < len(differ); i++ {
-		filename := strings.Join(strings.Split(differ[i], "/")[2:], "/")
-		filename = strings.Split(filename, " and")[0]
+		filename := differ[i]
 
 		if filename != "" {
 			bullet_items = append(bullet_items, cmdr.BulletListItem{
