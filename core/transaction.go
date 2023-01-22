@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	diff_ignore = []string{".cache", "/var"}
+	diff_ignore = []string{".cache", "/var", "boot/"}
 )
 
 // LockTransaction locks the transactional shell.
@@ -251,12 +251,10 @@ func TransactionDiff() {
 	for i := 0; i < len(only_present); i++ {
 		filename := only_present[i]
 
-		if !strings.HasPrefix(filename, "boot/") {
-			bullet_items = append(bullet_items, cmdr.BulletListItem{
-				Level: 1,
-				Text:  "/" + filename,
-			})
-		}
+		bullet_items = append(bullet_items, cmdr.BulletListItem{
+			Level: 1,
+			Text:  "/" + filename,
+		})
 	}
 	cmdr.BulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
@@ -267,12 +265,10 @@ func TransactionDiff() {
 	for i := 0; i < len(only_future); i++ {
 		filename := only_future[i]
 
-		if filename != "" {
-			bullet_items = append(bullet_items, cmdr.BulletListItem{
-				Level: 1,
-				Text:  "/" + filename,
-			})
-		}
+		bullet_items = append(bullet_items, cmdr.BulletListItem{
+			Level: 1,
+			Text:  "/" + filename,
+		})
 	}
 	cmdr.BulletList.WithItems(bullet_items).Render()
 	fmt.Print("\n")
@@ -283,12 +279,10 @@ func TransactionDiff() {
 	for i := 0; i < len(differ); i++ {
 		filename := differ[i]
 
-		if filename != "" {
-			bullet_items = append(bullet_items, cmdr.BulletListItem{
-				Level: 1,
-				Text:  "/" + filename,
-			})
-		}
+		bullet_items = append(bullet_items, cmdr.BulletListItem{
+			Level: 1,
+			Text:  "/" + filename,
+		})
 	}
 	cmdr.BulletList.WithItems(bullet_items).Render()
 }
