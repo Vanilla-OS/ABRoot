@@ -13,7 +13,8 @@ func NewShellCommand() *cmdr.Command {
 		"shell",
 		abroot.Trans("shell.long"),
 		abroot.Trans("shell.short"),
-		shell).WithBoolFlag(
+		shell,
+	).WithBoolFlag(
 		cmdr.NewBoolFlag(
 			"force-open",
 			"f",

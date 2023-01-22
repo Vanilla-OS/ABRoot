@@ -43,6 +43,7 @@ exec:
   long: "Execute a command in a transactional shell in the future root and switch to it on next boot"
   short: "Execute a command in a transactional shell in the future root and switch to it on next boot"
   rootRequired: "You must be root to run this command."
+  skipDiffFlag: "Skip the diff check at the end of the transaction"
   forceRunFlag: "Force run the command without asking for confirmation"
   confirm: "\n===============================================================================\nPLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\nChanges made in the shell will be applied to the future root on next boot on\nsuccessful.\nRunning a command in a transactional shell is meant to be used by advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to install an application, consider using\nFlatpak/Appimage or Apx (apx install pacakge) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\nAre you sure you want to proceed?"
   start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
