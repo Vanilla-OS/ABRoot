@@ -309,15 +309,13 @@ func GetKargs(state string) (string, error) {
 	case "present":
 		if presentLabel == "a" {
 			return kargs_lines[0], nil
-		} else {
-			return kargs_lines[1], nil
 		}
+		return kargs_lines[1], nil
 	case "future":
 		if presentLabel == "a" {
 			return kargs_lines[1], nil
-		} else {
-			return kargs_lines[0], nil
 		}
+		return kargs_lines[0], nil
 	default:
 		return "", errors.New(fmt.Sprintf("Invalid state %s", state))
 	}
