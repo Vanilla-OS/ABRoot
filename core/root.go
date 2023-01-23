@@ -767,26 +767,37 @@ func Rollback() error {
 		previous_root = "a"
 	}
 
+	bold := cmdr.Bold.Sprint
+	red := cmdr.Red
+	green := cmdr.Green
+
+	var currently_booted_root_colored string
 	var rollback_kargs string
 	if current_root == currently_booted_root {
 		rollback_kargs, err = GetFutureKargs()
 		if err != nil {
 			return err
 		}
+		currently_booted_root_colored = red(strings.ToUpper(currently_booted_root))
 	} else {
 		rollback_kargs, err = GetCurrentKargs()
 		if err != nil {
 			return err
 		}
+		currently_booted_root_colored = green(strings.ToUpper(currently_booted_root))
 	}
 
 	message := fmt.Sprintf(`
-        You are currently in partition %s
-        Your "present" partition is %s
+You are currently in partition %s
+Your "present" partition is %s
 
-        This command will make %s the present partition again. Any changes made to %s will be lost.
-        Continue?
-    `, strings.ToUpper(currently_booted_root), strings.ToUpper(current_root), strings.ToLower(previous_root), strings.ToLower(current_root))
+This command will make %s the present partition again. Any changes made to %s will be lost.
+Continue?`,
+		bold(currently_booted_root_colored),
+		bold(red(strings.ToUpper(current_root))),
+		bold(green(strings.ToUpper(previous_root))),
+		bold(red(strings.ToUpper(current_root))),
+	)
 
 	confirmation, err := cmdr.Confirm.Show(message)
 	if err != nil {
@@ -795,6 +806,7 @@ func Rollback() error {
 
 	if confirmation {
 		UpdateRootBoot(false, rollback_kargs)
+		cmdr.Success.Println("Rollback complete. Reboot your system to apply changes.")
 	}
 
 	return nil
