@@ -14,12 +14,22 @@ func NewExecCommand() *cmdr.Command {
 		abroot.Trans("exec.long"),
 		abroot.Trans("exec.short"),
 		execCommand,
-	).WithBoolFlag(
+	)
+
+	cmd.WithBoolFlag(
 		cmdr.NewBoolFlag(
-			assumeYesFlag,
-			"y",
-			abroot.Trans("exec.assumeYesFlag"),
+			"skip-diff",
+			"s",
+			abroot.Trans("exec.skipDiffFlag"),
 			false))
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"force-run",
+			"f",
+			abroot.Trans("exec.forceRunFlag"),
+			false))
+
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.Example = "abroot exec apt-get update"
 	cmd.Flags().SetInterspersed(false)
@@ -32,8 +42,8 @@ func execCommand(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	assumeYes := cmdr.FlagValBool(assumeYesFlag)
-	if !assumeYes {
+	forceRun := cmdr.FlagValBool("force-run")
+	if !forceRun {
 		b, err := cmdr.Confirm.Show(abroot.Trans("exec.confirm"))
 		if err != nil {
 			return err
@@ -54,7 +64,11 @@ func execCommand(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("exec.failed"), err)
 		os.Exit(1)
 	}
-	core.TransactionDiff()
+
+	skipDiff := cmdr.FlagValBool("skip-diff")
+	if !skipDiff {
+		core.TransactionDiff()
+	}
 
 	cmdr.Success.Println(abroot.Trans("exec.success"))
 

@@ -26,7 +26,7 @@ Golang下的命令行色彩使用库, 拥有丰富的色彩(16/256/True)渲染�
   - 使用简单方便
   - 支持丰富的颜色输出, 16色(4bit)，256色(8bit)，RGB色彩(24bit, RGB)
     - 16色(4bit)是最常用和支持最广的，支持Windows `cmd.exe`
-    - 自 `v1.2.4` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
+    - 自 `v1.3.0` 起 **256色(8bit)，RGB色彩(24bit)均支持Windows CMD和PowerShell终端**
     - 请查看 [this gist](https://gist.github.com/XVilka/8346728) 了解支持RGB色彩的终端
   - 支持转换 `HEX` `HSL` 等为RGB色彩
   - 提供通用的API方法：`Print` `Printf` `Println` `Sprint` `Sprintf`
@@ -227,7 +227,7 @@ Run demo: `go run ./_examples/theme_block.go`
 
 ## 256 色彩使用
 
-> 256色彩在 `v1.2.4` 后支持Windows CMD,PowerShell 环境
+> 256色彩在 `v1.3.0` 后支持Windows CMD,PowerShell 环境
 
 ### 使用前景或后景色
  
@@ -271,7 +271,7 @@ s.Printf("style with %s\n", "options")
 
 ## RGB/True色彩使用
 
-> RGB色彩在 `v1.2.4` 后支持 Windows `CMD`, `PowerShell` 环境
+> RGB色彩在 `v1.3.0` 后支持 Windows `CMD`, `PowerShell` 环境
 
 **效果预览:**
 

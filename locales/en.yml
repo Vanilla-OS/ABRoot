@@ -8,7 +8,7 @@ update:
   use: "_update-boot"
   long: "Update the boot partition for maintenance purposes (for advanced users only)"
   short: "Update the boot partition"
-  assumeYesFlag: "assume yes to all questions"
+  forceUpdateFlag: "force update the boot partition without asking for confirmation"
   confirm: "Are you sure you want to proceed?\nThe boot partition should be updated only if a transaction succeeded. This\ncommand should be used by advanced users for maintenance purposes."
   rootRequired: "You must be root to run this command."
 
@@ -30,18 +30,21 @@ kargs:
   futureParams: "Future partition's parameters:\n%s\n"
   unknownState: "Unknown state: %s\n"
   unknownParam: "Unknown parameter: %s\n"
+  transactionsLocked: "Another transaction has already been executed, you must reboot your system before starting a new transaction."
 
 edit:
   use: "edit"
   long: "edit kernel parameters."
   short: "edit kernel parameters."
   rootRequired: "You must be root to run this command."
+
 exec:
   use: "exec"
   long: "Execute a command in a transactional shell in the future root and switch to it on next boot"
   short: "Execute a command in a transactional shell in the future root and switch to it on next boot"
   rootRequired: "You must be root to run this command."
-  assumeYesFlag: "assume yes to all questions"
+  skipDiffFlag: "Skip the diff check at the end of the transaction"
+  forceRunFlag: "Force run the command without asking for confirmation"
   confirm: "\n===============================================================================\nPLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\nChanges made in the shell will be applied to the future root on next boot on\nsuccessful.\nRunning a command in a transactional shell is meant to be used by advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to install an application, consider using\nFlatpak/Appimage or Apx (apx install package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\nAre you sure you want to proceed?"
   start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
   success: "Transaction completed successfully. Reboot to apply changes."
@@ -52,7 +55,7 @@ shell:
   long: "Enter a transactional shell in the future root partition and switch root on the next boot"
   short: "Enter a transactional shell"
   rootRequired: "You must be root to run this command."
-  assumeYesFlag: "assume yes to all questions"
+  forceOpenFlag: "Force open the shell without asking for confirmation"
   confirm: "\n===============================================================================\nPLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\nChanges made in the shell will be applied to the future root on next boot on\nsuccessful.\nRunning a command in a transactional shell is meant to be used by advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to install an application, consider using\nFlatpak/Appimage or Apx (apx install package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\nAre you sure you want to proceed?"
   start: "New transaction started. This may take a while...\nDo not reboot or cancel the transaction until it is finished."
   success: "Transaction completed successfully. Reboot to apply changes."
