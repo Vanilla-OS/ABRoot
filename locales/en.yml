@@ -66,3 +66,9 @@ diff:
   long: "List modifications made to the filesystem in the latest transiction"
   short: "Show modifications from latest transaction."
   rootRequired: "You must be root to run this command."
+
+rollback:
+  use: "rollback"
+  long: "Executes a system rollback, discarding changes made to the present root."
+  short: "Return the system to a previous state."
+  rootRequired: "You must be root to run this command."

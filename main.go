@@ -42,6 +42,9 @@ func main() {
 	diffCmd := cmd.NewDiffCommand()
 	root.AddCommand(diffCmd)
 
+	rollbackCmd := cmd.NewRollbackCommand()
+	root.AddCommand(rollbackCmd)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {
