@@ -715,7 +715,6 @@ func updateGrubConfig() error {
 		{"mount", "-t", "proc", "/proc", "/partFuture/proc"},
 		{"mount", "-t", "sysfs", "/sys", "/partFuture/sys"},
 		{"mount", "--rbind", "/dev", "/partFuture/dev"},
-		{"mount", "--rbind", "/run", "/partFuture/run"},
 		{"mount", "--rbind", "/sys/firmware/efi/efivars", "/partFuture/sys/firmware/efi/efivars"},
 	}
 	for _, command := range commandList {
