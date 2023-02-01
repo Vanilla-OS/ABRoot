@@ -21,6 +21,7 @@ func NewShellCommand() *cmdr.Command {
 			abroot.Trans("shell.forceOpenFlag"),
 			false))
 	shell.Example = "abroot shell"
+
 	return shell
 }
 
@@ -29,12 +30,15 @@ func shell(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("shell.rootRequired"))
 		return nil
 	}
+
 	forceOpen := cmdr.FlagValBool("force-open")
 	if !forceOpen {
 		b, err := cmdr.Confirm.Show(abroot.Trans("shell.confirm"))
+
 		if err != nil {
 			return err
 		}
+
 		if !b {
 			return nil
 		}
@@ -46,6 +50,7 @@ func shell(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("shell.failed"), err)
 		os.Exit(1)
 	}
+
 	core.TransactionDiff()
 
 	cmdr.Success.Println(abroot.Trans("shell.success"))

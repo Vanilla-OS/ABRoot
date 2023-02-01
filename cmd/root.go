@@ -29,5 +29,6 @@ func NewRootCommand(version string) *cmdr.Command {
 				abroot.Trans("abroot.verboseFlag"),
 				false))
 	root.Version = version
+
 	return root
 }

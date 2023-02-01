@@ -16,7 +16,6 @@ var fs embed.FS
 var abroot *cmdr.App
 
 func main() {
-
 	abroot = cmd.New(Version, fs)
 
 	// root command
@@ -49,9 +48,7 @@ func main() {
 	err := abroot.Run()
 	if err != nil {
 		cmdr.Error.Println(err)
-
 	}
-
 }
 
 /*

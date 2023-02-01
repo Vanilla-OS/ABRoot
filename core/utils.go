@@ -14,7 +14,8 @@ func init() {
 	}
 
 	if _, err := os.Stat(abrootDir); os.IsNotExist(err) {
-		if err := os.Mkdir(abrootDir, 0755); err != nil {
+		err := os.Mkdir(abrootDir, 0755)
+		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
