@@ -582,16 +582,33 @@ func switchBootDefault(presentLabel string) (next string, err error) {
 		newGrubDefault = "0"
 	}
 
-	grubContent := `GRUB_DEFAULT=%s
-GRUB_TIMEOUT=0
-GRUB_HIDDEN_TIMEOUT=2
-GRUB_TIMEOUT_STYLE=hidden`
-	if err := os.WriteFile("/etc/default/grub", []byte(fmt.Sprintf(grubContent, newGrubDefault)), 0644); err != nil {
+	file, err := os.Open("/etc/default/grub")
+	if err != nil {
+		return "", err
+	}
+
+	var grubContent strings.Builder
+	line_modified := false
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "GRUB_DEFAULT=") {
+			line_modified = true
+			grubContent.WriteString(fmt.Sprintf("GRUB_DEFAULT=%s\n", newGrubDefault))
+		} else {
+			grubContent.WriteString(line + "\n")
+		}
+	}
+	if !line_modified {
+		grubContent.WriteString(fmt.Sprintf("GRUB_DEFAULT=%s\n", newGrubDefault))
+	}
+
+	if err := os.WriteFile("/etc/default/grub", []byte(grubContent.String()), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
 
-	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(fmt.Sprintf(grubContent, newGrubDefault)), 0644); err != nil {
+	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(grubContent.String()), 0644); err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
