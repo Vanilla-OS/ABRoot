@@ -12,6 +12,9 @@ for binary in $protected_binaries; do
     fi
 done
 
+# setting DEBIAN_FRONTEND=noninteractive to prevent the user from
+# being asked questions during the transaction
+export DEBIAN_FRONTEND=noninteractive
 
 # here we divert /usr/sbin/grub-mkconfig to prevent it from being
 # updated during the transaction by a package that depends on it
