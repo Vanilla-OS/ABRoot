@@ -15,6 +15,7 @@ func NewDiffCommand() *cmdr.Command {
 	)
 	cmd.Example = "abroot diff"
 	cmd.Flags().SetInterspersed(false)
+
 	return cmd
 }
 

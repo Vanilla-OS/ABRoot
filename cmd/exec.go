@@ -33,6 +33,7 @@ func NewExecCommand() *cmdr.Command {
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.Example = "abroot exec apt-get update"
 	cmd.Flags().SetInterspersed(false)
+
 	return cmd
 }
 
@@ -45,9 +46,11 @@ func execCommand(cmd *cobra.Command, args []string) error {
 	forceRun := cmdr.FlagValBool("force-run")
 	if !forceRun {
 		b, err := cmdr.Confirm.Show(abroot.Trans("exec.confirm"))
+
 		if err != nil {
 			return err
 		}
+
 		if !b {
 			return nil
 		}

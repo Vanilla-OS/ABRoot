@@ -20,6 +20,7 @@ func NewUpdateBootCommand() *cmdr.Command {
 			false))
 	// don't show this command in usage/help unless specified
 	upd.Hidden = true
+
 	return upd
 }
 
@@ -28,13 +29,14 @@ func status(cmd *cobra.Command, args []string) error {
 		cmdr.Error.Println(abroot.Trans("update.rootRequired"))
 		return nil
 	}
-	forceUpdate := cmdr.FlagValBool("force-update")
 
+	forceUpdate := cmdr.FlagValBool("force-update")
 	if !forceUpdate {
 		b, err := cmdr.Confirm.Show(abroot.Trans("update.confirm"))
 		if err != nil {
 			return err
 		}
+
 		if !b {
 			return nil
 		}
@@ -44,8 +46,9 @@ func status(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if update_err := core.UpdateRootBoot(false, kargs); update_err != nil {
-		return update_err
+
+	if updateErr := core.UpdateRootBoot(false, kargs); updateErr != nil {
+		return updateErr
 	}
 
 	return nil

@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	diff_ignore = []string{".cache", "/var", "boot/"}
+	diffIgnore = []string{".cache", "/var", "boot/"}
 )
 
 // LockTransaction locks the transactional shell.
@@ -42,11 +42,12 @@ func LockTransaction() error {
 // UnlockTransaction unlocks the transactional shell.
 // It does so by removing the lock file.
 func UnlockTransaction() error {
-	if _, err := os.Stat(lockPath); err != nil {
+	_, err := os.Stat(lockPath)
+	if err != nil {
 		return nil // transactions are already unlocked
 	}
 
-	err := os.Remove(lockPath)
+	err = os.Remove(lockPath)
 	if err != nil {
 		fmt.Printf("failed to remove lock file: %s", err)
 		return err
@@ -57,24 +58,24 @@ func UnlockTransaction() error {
 
 // IsLocked returns true if the transactional shell is locked.
 func AreTransactionsLocked() bool {
-	if _, err := os.Stat(lockPath); err != nil {
-		return false
-	}
-
-	return true
+	_, err := os.Stat(lockPath)
+	return err == nil
 }
 
 // ReadKargsFile reads kernel arguments from file. If no kargs file exists,
 // it reads from kargs.default.
 func ReadKargsFile() (string, error) {
 	PrintVerbose("step:  GetKargs")
+
 	content := []byte{}
+
 	content, err := os.ReadFile(KargsPath)
 	if err != nil {
-		var default_err error
-		content, default_err = os.ReadFile(KargsDefaultPath)
-		if default_err != nil {
-			return "", default_err
+		var defaultErr error
+
+		content, defaultErr = os.ReadFile(KargsDefaultPath)
+		if defaultErr != nil {
+			return "", defaultErr
 		}
 	}
 
@@ -91,35 +92,40 @@ func ReadKargsFile() (string, error) {
 // lower layer, and then locking the transactional shell.
 func NewTransaction() error {
 	PrintVerbose("step:  AreTransactionsLocked")
+
 	if AreTransactionsLocked() {
 		fmt.Println("Transactions are locked, another one is already running or a reboot is required.")
 		os.Exit(0)
 	}
 
 	if IsMounted("/partFuture") {
-		if err := UnmountFutureRoot(); err != nil {
+		err := UnmountFutureRoot()
+		if err != nil {
 			return err
 		}
 	}
 
 	PrintVerbose("step:  NewOverlayFS")
-	if err := NewOverlayFS([]string{"/"}); err != nil {
-		UnlockTransaction()
+
+	err := NewOverlayFS([]string{"/"})
+	if err != nil {
+		_ = UnlockTransaction()
 		return err
 	}
 
 	PrintVerbose("step:  RunStartRules")
-	if err := RunStartRules(); err != nil {
-		UnlockTransaction()
+
+	err = RunStartRules()
+	if err != nil {
+		_ = UnlockTransaction()
 		return err
 	}
 
 	PrintVerbose("step:  LockTransaction")
-	if err := LockTransaction(); err != nil {
-		if err := CleanupOverlayPaths(); err != nil {
-			return err
-		}
 
+	err = LockTransaction()
+	if err != nil {
+		_ = CleanupOverlayPaths()
 		return err
 	}
 
@@ -130,12 +136,14 @@ func NewTransaction() error {
 // It does so by unlocking the transactional shell and unmounting the
 // overlayfs.
 func CancelTransaction() error {
-	if err := UnlockTransaction(); err != nil {
+	err := UnlockTransaction()
+	if err != nil {
 		PrintVerbose("err:  CancelTransaction: %s", err)
 		return err
 	}
 
-	if err := CleanupOverlayPaths(); err != nil {
+	err = CleanupOverlayPaths()
+	if err != nil {
 		PrintVerbose("err:  CancelTransaction: %s", err)
 		return err
 	}
@@ -148,31 +156,41 @@ func CancelTransaction() error {
 // updating the boot.
 func ApplyTransaction() error {
 	PrintVerbose("step:  RunEndRules")
-	if err := RunEndRules(); err != nil {
+
+	err := RunEndRules()
+	if err != nil {
 		_ = UnmountFutureRoot()
 		_ = CancelTransaction()
+
 		return err
 	}
 
 	PrintVerbose("step:  MountFutureRoot")
-	if err := MountFutureRoot(); err != nil {
+
+	err = MountFutureRoot()
+	if err != nil {
 		_ = CancelTransaction()
 		return err
 	}
 
 	PrintVerbose("step:  MergeOverlayFS")
-	if err := MergeOverlayFS("/partFuture"); err != nil {
+
+	err = MergeOverlayFS("/partFuture")
+	if err != nil {
 		_ = CancelTransaction()
 		return err
 	}
 
 	PrintVerbose("step:  UpdateRootBoot")
+
 	kargs, err := ReadKargsFile()
 	if err != nil {
 		_ = CancelTransaction()
 		return err
 	}
-	if err := UpdateRootBoot(true, kargs); err != nil {
+
+	err = UpdateRootBoot(true, kargs)
+	if err != nil {
 		_ = UnmountFutureRoot()
 		_ = CancelTransaction()
 
@@ -180,14 +198,19 @@ func ApplyTransaction() error {
 	}
 
 	PrintVerbose("step:  UpdateFsTab")
-	if err := UpdateFsTab(); err != nil {
+
+	err = UpdateFsTab()
+	if err != nil {
 		_ = UnmountFutureRoot()
 		_ = CancelTransaction()
+
 		return err
 	}
 
 	PrintVerbose("step:  CleanupOverlayPaths")
-	if err := CleanupOverlayPaths(); err != nil {
+
+	err = CleanupOverlayPaths()
+	if err != nil {
 		return err
 	}
 
@@ -198,6 +221,7 @@ func ApplyTransaction() error {
 // from the lastest transaction.
 func TransactionDiff() {
 	PrintVerbose("step:  TransactionDiff")
+
 	if !AreTransactionsLocked() {
 		cmdr.Warning.Println("No transaction has been made since last reboot. Nothing to diff.")
 		return
@@ -213,9 +237,12 @@ func TransactionDiff() {
 	diff, _ := cmd.Output()
 	scanner := bufio.NewScanner(strings.NewReader(string(diff)))
 
-	var only_present []string
-	var only_future []string
+	var onlyPresent []string
+
+	var onlyFuture []string
+
 	var differ []string
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		if line == "" {
@@ -226,65 +253,90 @@ func TransactionDiff() {
 		filename := line[11:]
 
 		skip := false
-		for i := 0; i < len(diff_ignore); i++ {
-			if strings.Contains(filename, diff_ignore[i]) || filename[len(filename)-1] == '/' {
+
+		for i := 0; i < len(diffIgnore); i++ {
+			if strings.Contains(filename, diffIgnore[i]) || filename[len(filename)-1] == '/' {
 				skip = true
 			}
 		}
+
 		if skip {
 			continue
 		}
 
 		if args[2] == '+' {
-			only_present = append(only_present, strings.Join(strings.Split(filename, "/")[1:], "/"))
+			onlyPresent = append(onlyPresent, strings.Join(strings.Split(filename, "/")[1:], "/"))
 		} else if args[0] == '>' {
 			differ = append(differ, strings.Join(strings.Split(filename, "/")[1:], "/"))
 		} else if args[0] == '*' {
-			only_future = append(only_future, strings.Join(strings.Split(filename, "/")[1:], "/"))
+			onlyFuture = append(onlyFuture, strings.Join(strings.Split(filename, "/")[1:], "/"))
 		}
 	}
 	spinner.Success()
 
-	var bullet_items []cmdr.BulletListItem
+	var bulletItems []cmdr.BulletListItem
+
 	style := cmdr.NewStyle(cmdr.Bold, cmdr.FgRed)
 	style.Println("Removed:")
-	for i := 0; i < len(only_present); i++ {
-		filename := only_present[i]
 
-		bullet_items = append(bullet_items, cmdr.BulletListItem{
+	for i := 0; i < len(onlyPresent); i++ {
+		filename := onlyPresent[i]
+
+		bulletItems = append(bulletItems, cmdr.BulletListItem{
 			Level: 1,
 			Text:  "/" + filename,
 		})
 	}
-	cmdr.BulletList.WithItems(bullet_items).Render()
+
+	err := cmdr.BulletList.WithItems(bulletItems).Render()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return
+	}
+
 	fmt.Print("\n")
 
-	bullet_items = []cmdr.BulletListItem{}
+	bulletItems = []cmdr.BulletListItem{}
+
 	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgGreen)
 	style.Println("Added:")
-	for i := 0; i < len(only_future); i++ {
-		filename := only_future[i]
 
-		bullet_items = append(bullet_items, cmdr.BulletListItem{
+	for i := 0; i < len(onlyFuture); i++ {
+		filename := onlyFuture[i]
+
+		bulletItems = append(bulletItems, cmdr.BulletListItem{
 			Level: 1,
 			Text:  "/" + filename,
 		})
 	}
-	cmdr.BulletList.WithItems(bullet_items).Render()
+
+	err = cmdr.BulletList.WithItems(bulletItems).Render()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return
+	}
+
 	fmt.Print("\n")
 
-	bullet_items = []cmdr.BulletListItem{}
+	bulletItems = []cmdr.BulletListItem{}
+
 	style = cmdr.NewStyle(cmdr.Bold, cmdr.FgYellow)
 	style.Println("Modified:")
+
 	for i := 0; i < len(differ); i++ {
 		filename := differ[i]
 
-		bullet_items = append(bullet_items, cmdr.BulletListItem{
+		bulletItems = append(bulletItems, cmdr.BulletListItem{
 			Level: 1,
 			Text:  "/" + filename,
 		})
 	}
-	cmdr.BulletList.WithItems(bullet_items).Render()
+
+	err = cmdr.BulletList.WithItems(bulletItems).Render()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return
+	}
 }
 
 // TransactionalExec runs a command in a transactional shell.
@@ -292,20 +344,24 @@ func TransactionDiff() {
 // overlayfs.
 func transactionalExec(command string, newTransaction bool) (out string, err error) {
 	if newTransaction {
-		if err := NewTransaction(); err != nil {
+		err = NewTransaction()
+		if err != nil {
 			return "", err
 		}
 	}
 
-	if out, err := ChrootOverlayFS("", false, command, false); err != nil {
+	out, err = ChrootOverlayFS("", false, command, false)
+	if err != nil {
 		_ = CancelTransaction()
 		return out, err
 	}
 
-	if err := ApplyTransaction(); err != nil {
+	err = ApplyTransaction()
+	if err != nil {
 		_ = CancelTransaction()
 		return "", err
 	}
+
 	return "", nil
 }
 
@@ -318,7 +374,8 @@ func TransactionalExecContinue(command string) (out string, err error) {
 }
 
 func NewTransactionalShell() (out string, err error) {
-	if out, err := TransactionalExec(""); err != nil {
+	out, err = TransactionalExec("")
+	if err != nil {
 		return out, err
 	}
 
@@ -330,7 +387,8 @@ func NewTransactionalShell() (out string, err error) {
 func RunStartRules() error {
 	files := getRulesFiles(startRulesPath)
 	for _, file := range files {
-		if _, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false); err != nil {
+		_, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false)
+		if err != nil {
 			return err
 		}
 	}
@@ -343,7 +401,8 @@ func RunStartRules() error {
 func RunEndRules() error {
 	files := getRulesFiles(endRulesPath)
 	for _, file := range files {
-		if _, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false); err != nil {
+		_, err := ChrootOverlayFS("", false, fmt.Sprintf("/bin/sh %s", file), false)
+		if err != nil {
 			return err
 		}
 	}
@@ -359,6 +418,7 @@ func getRulesFiles(path string) []string {
 	}
 
 	var rules []string
+
 	for _, file := range files {
 		if !strings.HasSuffix(file.Name(), ".rules") {
 			continue

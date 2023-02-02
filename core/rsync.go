@@ -23,14 +23,15 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	cmd := exec.Command("rsync", args...)
 	stdout, _ := cmd.StdoutPipe()
 
-	var total_files int
+	var totalFiles int
+
 	if !silent {
-		count_cmd_out, _ := exec.Command(
+		countCmdOut, _ := exec.Command(
 			"/bin/sh",
 			"-c",
 			fmt.Sprintf("echo -n $(($(rsync --dry-run %s | wc -l) - 4))", strings.Join(args, " ")),
 		).Output()
-		total_files, _ = strconv.Atoi(string(count_cmd_out))
+		totalFiles, _ = strconv.Atoi(string(countCmdOut))
 	}
 
 	reader := bufio.NewReader(stdout)
@@ -43,8 +44,9 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 	if !silent {
 		verbose := IsVerbose()
 
-		p, _ := cmdr.ProgressBar.WithTotal(int(total_files)).WithTitle("Sync in progress").WithMaxWidth(120).Start()
-		max_line_len := int(cmdr.TerminalWidth() / 4)
+		p, _ := cmdr.ProgressBar.WithTotal(totalFiles).WithTitle("Sync in progress").WithMaxWidth(120).Start()
+		maxLineLen := cmdr.TerminalWidth() / 4
+
 		for i := 0; i < p.Total; i++ {
 			line, _ := reader.ReadString('\n')
 			line = strings.TrimSpace(line)
@@ -53,12 +55,12 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 				cmdr.Info.Println(line + " synced")
 			}
 
-			if len(line) > max_line_len {
-				starting_len := len(line) - max_line_len + 1
-				line = "<" + line[starting_len:]
+			if len(line) > maxLineLen {
+				startingLen := len(line) - maxLineLen + 1
+				line = "<" + line[startingLen:]
 			} else {
-				padding := max_line_len - len(line)
-				line = line + strings.Repeat(" ", padding)
+				padding := maxLineLen - len(line)
+				line += strings.Repeat(" ", padding)
 			}
 
 			p.UpdateTitle("Syncing " + line)
@@ -98,14 +100,15 @@ func atomicSwap(src, dst string) error {
 		return err
 	}
 
-	new, err := os.Open(dst)
+	newfile, err := os.Open(dst)
 	if err != nil {
 		PrintVerbose("err:atomicSwap: %s", err)
 		return err
 	}
 
 	PrintVerbose("step:  Renameat2")
-	err = unix.Renameat2(int(orig.Fd()), src, int(new.Fd()), dst, unix.RENAME_EXCHANGE)
+
+	err = unix.Renameat2(int(orig.Fd()), src, int(newfile.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
 		PrintVerbose("err:atomicSwap: %s", err)
 		return err
@@ -132,7 +135,9 @@ func AtomicRsync(src, dst string, transitionalPath string, finalPath string, exc
 	}
 
 	PrintVerbose("step:  rsyncDryRun")
-	if err := rsyncDryRun(src, transitionalPath, excluded); err != nil {
+
+	err := rsyncDryRun(src, transitionalPath, excluded)
+	if err != nil {
 		return err
 	}
 
@@ -149,17 +154,20 @@ func AtomicRsync(src, dst string, transitionalPath string, finalPath string, exc
 	}
 
 	PrintVerbose("step:  rsyncCmd")
-	err := rsyncCmd(src, transitionalPath, opts, true)
+
+	err = rsyncCmd(src, transitionalPath, opts, true)
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  atomicSwap")
+
 	err = atomicSwap(transitionalPath, finalPath)
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  RemoveAll")
+
 	return os.RemoveAll(transitionalPath)
 }

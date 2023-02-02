@@ -10,9 +10,9 @@ import (
 )
 
 func NewKargsCommand() *cmdr.Command {
-
 	kargs := cmdr.NewCommand("kargs [edit|get] <partition>", abroot.Trans("kargs.long"), abroot.Trans("kargs.short"), kargsCommand)
 	kargs.Example = "abroot kargs edit\nabroot kargs get future"
+
 	return kargs
 }
 
@@ -43,7 +43,10 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 			cmdr.Error.Printf(abroot.Trans("kargs.unknownState"), args[1])
 		}
 	case "edit":
-		kargs_edit()
+		err := kargsEdit()
+		if err != nil {
+			return nil
+		}
 	default:
 		cmdr.Error.Printf(abroot.Trans("kargs.unknownParam"), args[0])
 	}
@@ -51,7 +54,7 @@ func kargsCommand(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func kargs_edit() error {
+func kargsEdit() error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println(abroot.Trans("kargs.rootRequired"))
 		return nil
@@ -70,14 +73,18 @@ func kargs_edit() error {
 	// Create custom kargs file if non-existent
 	if _, err := os.Stat(core.KargsPath); os.IsNotExist(err) {
 		cmd := exec.Command("cp", core.KargsDefaultPath, core.KargsPath)
-		if err := cmd.Run(); err != nil {
+
+		err := cmd.Run()
+		if err != nil {
 			return err
 		}
 	}
 
 	// Open a temporary file, so editors installed via apx can also be used
 	cmd := exec.Command("cp", core.KargsPath, "/tmp/kargs-temp")
-	if err := cmd.Run(); err != nil {
+
+	err := cmd.Run()
+	if err != nil {
 		return err
 	}
 
@@ -86,13 +93,17 @@ func kargs_edit() error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
+
+	err = cmd.Run()
+	if err != nil {
 		return err
 	}
 
 	// Copy temp file back to /etc
 	cmd = exec.Command("cp", "/tmp/kargs-temp", core.KargsPath)
-	if err := cmd.Run(); err != nil {
+
+	err = cmd.Run()
+	if err != nil {
 		return err
 	}
 
@@ -103,5 +114,6 @@ func kargs_edit() error {
 	}
 
 	cmdr.Info.Println(abroot.Trans("kargs.nextReboot"))
+
 	return nil
 }

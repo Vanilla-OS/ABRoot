@@ -3,7 +3,6 @@ package core
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -35,6 +34,7 @@ func getRootDevice(state string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
 		return device, nil
 	}
 
@@ -43,6 +43,7 @@ func getRootDevice(state string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
 		return device, nil
 	}
 
@@ -51,6 +52,7 @@ func getRootDevice(state string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
 		return device, nil
 	}
 
@@ -75,6 +77,7 @@ func getCurrentRootLabel() (string, error) {
 
 	label := strings.TrimSpace(string(out))
 	label = strings.ToLower(label)
+
 	return label, nil
 }
 
@@ -93,6 +96,7 @@ func GetDeviceByMountPoint(mountPoint string) (string, error) {
 		if len(split) != 2 {
 			continue
 		}
+
 		if strings.HasSuffix(split[0], mountPoint) {
 			return "/dev/" + split[1], nil
 		}
@@ -116,6 +120,7 @@ func getDeviceByLabel(label string) (string, error) {
 		if len(split) != 2 {
 			continue
 		}
+
 		if split[0] == label {
 			return "/dev/" + split[1], nil
 		}
@@ -140,6 +145,7 @@ func getRootUUID(state string) (string, error) {
 	}
 
 	uuid := strings.TrimSpace(string(out))
+
 	return uuid, nil
 }
 
@@ -157,6 +163,7 @@ func GetBootUUID() (string, error) {
 	}
 
 	cmd := exec.Command("lsblk", "-o", "UUID", "-n", device)
+
 	out, err := cmd.Output()
 	if err != nil {
 		PrintVerbose("err:GetBootUUID: %s", err)
@@ -164,6 +171,7 @@ func GetBootUUID() (string, error) {
 	}
 
 	uuid := strings.TrimSpace(string(out))
+
 	return uuid, nil
 }
 
@@ -181,6 +189,7 @@ func GetEfiUUID() (string, error) {
 	}
 
 	cmd := exec.Command("lsblk", "-o", "UUID", "-n", device)
+
 	out, err := cmd.Output()
 	if err != nil {
 		PrintVerbose("err:GetEfiUUID: %s", err)
@@ -188,6 +197,7 @@ func GetEfiUUID() (string, error) {
 	}
 
 	uuid := strings.TrimSpace(string(out))
+
 	return uuid, nil
 }
 
@@ -234,29 +244,31 @@ func getRootFileSystem(state string) (string, error) {
 // MountFutureRoot mounts the future root partition to /partB.
 func MountFutureRoot() error {
 	PrintVerbose("step:  GetFutureRootDevice")
+
 	device, err := GetFutureRootDevice()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  getRootFileSystem")
-	if err != nil {
-		return err
-	}
 
-	if _, err := os.Stat("/partFuture"); !os.IsNotExist(err) {
+	_, err = os.Stat("/partFuture")
+	if !os.IsNotExist(err) {
 		PrintVerbose("step:  IsMounted")
+
 		if IsMounted("/partFuture") {
 			return fmt.Errorf("future root partition is busy. Another transaction?")
 		}
 
-		if err := os.RemoveAll("/partFuture"); err != nil {
+		err = os.RemoveAll("/partFuture")
+		if err != nil {
 			PrintVerbose("err:MountFutureRoot: %s", err)
 			return err
 		}
 	}
 
-	if err := os.Mkdir("/partFuture", 0755); err != nil {
+	err = os.Mkdir("/partFuture", 0755)
+	if err != nil {
 		PrintVerbose("err:MountFutureRoot: %s", err)
 		return err
 	}
@@ -266,7 +278,9 @@ func MountFutureRoot() error {
 	cmd := exec.Command("mount", device, "/partFuture")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
+
+	err = cmd.Run()
+	if err != nil {
 		PrintVerbose("err:MountFutureRoot: %s", err)
 		return err
 	}
@@ -276,7 +290,8 @@ func MountFutureRoot() error {
 
 // UnmountFutureRoot unmounts the future root partition.
 func UnmountFutureRoot() error {
-	if err := exec.Command("umount", "-l", "/partFuture").Run(); err != nil {
+	err := exec.Command("umount", "-l", "/partFuture").Run()
+	if err != nil {
 		PrintVerbose("err:UnmountFutureRoot: %s", err)
 		return err
 	}
@@ -291,12 +306,13 @@ func GetKargs(state string) (string, error) {
 		return "", err
 	}
 
-	var kargs_lines []string
+	var kargsLines []string
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), "linux\t/vmlinuz") {
 			splits := strings.Split(scanner.Text(), " ")
-			kargs_lines = append(kargs_lines, strings.Join(splits[2:len(splits)-1], " "))
+			kargsLines = append(kargsLines, strings.Join(splits[2:len(splits)-1], " "))
 		}
 	}
 
@@ -308,16 +324,18 @@ func GetKargs(state string) (string, error) {
 	switch state {
 	case "present":
 		if presentLabel == "a" {
-			return kargs_lines[0], nil
+			return kargsLines[0], nil
 		}
-		return kargs_lines[1], nil
+
+		return kargsLines[1], nil
 	case "future":
 		if presentLabel == "a" {
-			return kargs_lines[1], nil
+			return kargsLines[1], nil
 		}
-		return kargs_lines[0], nil
+
+		return kargsLines[0], nil
 	default:
-		return "", errors.New(fmt.Sprintf("Invalid state %s", state))
+		return "", fmt.Errorf("Invalid state %s", state)
 	}
 }
 
@@ -342,30 +360,35 @@ func UpdateRootBoot(transacting bool, kargs string) error {
 	unwanted := []string{"10_linux", "20_memtest86+"} // those files cause undesired boot entries
 
 	PrintVerbose("step:  GetPresentRootLabel")
+
 	presentLabel, err := GetPresentRootLabel()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  GetFutureRootLabel")
+
 	futureLabel, err := GetFutureRootLabel()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  GetPresentRootUUID")
+
 	presentUUID, err := GetPresentRootUUID()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  GetFutureRootUUID")
+
 	futureUUID, err := GetFutureRootUUID()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  GetBootUUID")
+
 	bootUUID, err := GetBootUUID()
 	if err != nil {
 		return err
@@ -373,7 +396,9 @@ func UpdateRootBoot(transacting bool, kargs string) error {
 
 	if !transacting {
 		PrintVerbose("step:  MountFutureRoot")
-		if err := MountFutureRoot(); err != nil {
+
+		err = MountFutureRoot()
+		if err != nil {
 			return err
 		}
 	}
@@ -427,7 +452,9 @@ export linux_gfx_mode
 	initrd  /initrd.img-%s
 }
 `
+
 	PrintVerbose("step:  getKernelVersion present")
+
 	presentKernelVersion, err := getKernelVersion("present")
 	if err != nil {
 		PrintVerbose("err:UpdateRootBoot: %s", err)
@@ -435,62 +462,77 @@ export linux_gfx_mode
 	}
 
 	PrintVerbose("step:  getKernelVersion future")
+
 	futureKernelVersion, err := getKernelVersion("future")
 	if err != nil {
 		PrintVerbose("err:UpdateRootBoot: %s", err)
 		return err
 	}
 
-	old_kargs, err := GetCurrentKargs()
+	oldKargs, err := GetCurrentKargs()
 	if err != nil {
 		return err
 	}
 
-	var boot_a, boot_b string
+	var bootA, bootB string
 	if presentLabel == "a" {
-		boot_a = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
+		bootA = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, oldKargs, presentKernelVersion)
+		bootB = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
 	} else {
-		boot_a = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
-		boot_b = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, old_kargs, presentKernelVersion)
+		bootA = fmt.Sprintf(bootEntry, futureLabel, "current", bootUUID, futureKernelVersion, futureUUID, kargs, futureKernelVersion)
+		bootB = fmt.Sprintf(bootEntry, presentLabel, "previous", bootUUID, presentKernelVersion, presentUUID, oldKargs, presentKernelVersion)
 	}
-	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, boot_a, boot_b)
+
+	bootTemplate := fmt.Sprintf("%s\n%s\n%s", bootHeader, bootA, bootB)
 
 	PrintVerbose("step:  WriteFile future")
-	if err := os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
+
+	err = os.WriteFile("/partFuture/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755)
+	if err != nil {
 		PrintVerbose("err:UpdateRootBoot: %s", err)
 		return err
 	}
 
 	PrintVerbose("step:  WriteFile present")
-	if err := os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755); err != nil {
+
+	err = os.WriteFile("/etc/grub.d/10_vanilla", []byte(bootTemplate), 0755)
+	if err != nil {
 		PrintVerbose("err:UpdateRootBoot: %s", err)
 		return err
 	}
 
 	PrintVerbose("step:  Remove unwanted grub files in future")
+
 	for _, file := range unwanted {
 		os.Remove("/partFuture/etc/grub.d/" + file)
 	}
 
 	PrintVerbose("step:  Remove unwanted grub files in present")
+
 	for _, file := range unwanted {
 		os.Remove("/etc/grub.d/" + file)
 	}
 
 	PrintVerbose("step:  switchBootDefault")
+
 	next := "0"
-	if next, err = switchBootDefault(presentLabel); err != nil {
+
+	next, err = switchBootDefault(presentLabel)
+	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  updateGrubConfig")
-	if err := updateGrubConfig(); err != nil {
+
+	err = updateGrubConfig()
+	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  verifyGrubConfig")
-	if err := verifyGrubConfig(next); err != nil {
+
+	err = verifyGrubConfig(next)
+	if err != nil {
 		return err
 	}
 
@@ -500,18 +542,21 @@ export linux_gfx_mode
 // UpdateFsTab updates the fstab file to reflect the new root partition.
 func UpdateFsTab() error {
 	PrintVerbose("step:  GetPresentRootUUID")
+
 	presentUUID, err := GetPresentRootUUID()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  GetFutureRootUUID")
+
 	futureUUID, err := GetFutureRootUUID()
 	if err != nil {
 		return err
 	}
 
 	PrintVerbose("step:  ReadFile present")
+
 	fstab, err := os.ReadFile("/etc/fstab")
 	if err != nil {
 		PrintVerbose("err:updateFsTab: %s", err)
@@ -519,10 +564,12 @@ func UpdateFsTab() error {
 	}
 
 	PrintVerbose("step:  ReplaceAll future")
+
 	fstabFuture := fstab
 	fstabFuture = bytes.ReplaceAll(fstabFuture, []byte(presentUUID), []byte(futureUUID))
 
 	PrintVerbose("step: Configure Bind Mounts") // those are needed since symlinked directories cause issues with flatpak and snap
+
 	bindMounts := []string{"/var", "/opt"}
 	for _, bindMount := range bindMounts {
 		if !strings.Contains(string(fstabFuture), bindMount) {
@@ -531,7 +578,9 @@ func UpdateFsTab() error {
 	}
 
 	PrintVerbose("step:  WriteFile future")
-	if err := os.WriteFile("/partFuture/etc/fstab", fstabFuture, 0644); err != nil {
+
+	err = os.WriteFile("/partFuture/etc/fstab", fstabFuture, 0644)
+	if err != nil {
 		PrintVerbose("err:updateFsTab: %s", err)
 		return err
 	}
@@ -558,6 +607,7 @@ func getKernelVersion(state string) (string, error) {
 	}
 
 	var versions []string
+
 	for _, file := range files {
 		if file.IsDir() {
 			versions = append(versions, file.Name())
@@ -566,6 +616,7 @@ func getKernelVersion(state string) (string, error) {
 
 	sort.Strings(versions)
 	res := versions[len(versions)-1]
+
 	return res, nil
 }
 
@@ -588,27 +639,34 @@ func switchBootDefault(presentLabel string) (next string, err error) {
 	}
 
 	var grubContent strings.Builder
-	line_modified := false
+
+	lineModified := false
 	scanner := bufio.NewScanner(file)
+
 	for scanner.Scan() {
 		line := scanner.Text()
+
 		if strings.HasPrefix(line, "GRUB_DEFAULT=") {
-			line_modified = true
+			lineModified = true
+
 			grubContent.WriteString(fmt.Sprintf("GRUB_DEFAULT=%s\n", newGrubDefault))
 		} else {
 			grubContent.WriteString(line + "\n")
 		}
 	}
-	if !line_modified {
+
+	if !lineModified {
 		grubContent.WriteString(fmt.Sprintf("GRUB_DEFAULT=%s\n", newGrubDefault))
 	}
 
-	if err := os.WriteFile("/etc/default/grub", []byte(grubContent.String()), 0644); err != nil {
+	err = os.WriteFile("/etc/default/grub", []byte(grubContent.String()), 0644)
+	if err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
 
-	if err := os.WriteFile("/partFuture/etc/default/grub", []byte(grubContent.String()), 0644); err != nil {
+	err = os.WriteFile("/partFuture/etc/default/grub", []byte(grubContent.String()), 0644)
+	if err != nil {
 		PrintVerbose("err:switchBootDefault: %s", err)
 		return "", err
 	}
@@ -634,7 +692,8 @@ func verifyGrubConfig(expected string) error {
 			grubCfg = bytes.ReplaceAll(grubCfg, []byte("set default=\"0\""), []byte("set default=\"1\""))
 		}
 
-		if err := os.WriteFile("/boot/grub/grub.cfg", grubCfg, 0644); err != nil {
+		err := os.WriteFile("/boot/grub/grub.cfg", grubCfg, 0644)
+		if err != nil {
 			PrintVerbose("err:verifyGrubConfig: %s", err)
 			return err
 		}
@@ -656,23 +715,26 @@ func updateGrubConfig() error {
 		{"mount", "-t", "proc", "/proc", "/partFuture/proc"},
 		{"mount", "-t", "sysfs", "/sys", "/partFuture/sys"},
 		{"mount", "--rbind", "/dev", "/partFuture/dev"},
-		{"mount", "--rbind", "/run", "/partFuture/run"},
 		{"mount", "--rbind", "/sys/firmware/efi/efivars", "/partFuture/sys/firmware/efi/efivars"},
 	}
 	for _, command := range commandList {
 		cmd := exec.Command(command[0], command[1:]...)
+
 		err := cmd.Run()
 		if err != nil {
 			if strings.Contains(cmd.String(), "efivars") {
 				continue // Ignore error, we are probably not on UEFI
 			}
+
 			PrintVerbose("err:updateGrubConfig (BindMount): %s", err)
 			PrintVerbose("err:updateGrubConfig (BindMount): command: %s", command)
+
 			return err
 		}
 	}
 
-	if err := exec.Command("grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run(); err != nil {
+	err := exec.Command("grub-mkconfig", "-o", "/boot/grub/grub.cfg").Run()
+	if err != nil {
 		PrintVerbose("err:updateGrubConfig: %s", err)
 		return err
 	}
@@ -706,17 +768,19 @@ func GetFutureRootUUID() (string, error) {
 
 /* DoesSupportAB check if the current system supports A/B partitioning */
 func DoesSupportAB() bool {
-	var support bool = true
+	support := true
 
 	_, err := GetPresentRootDevice()
 	if err != nil {
 		PrintVerbose("err:DoesSupportAB: %s", err)
+
 		support = false
 	}
 
 	_, err = GetFutureRootDevice()
 	if err != nil {
 		PrintVerbose("err:DoesSupportAB: %s", err)
+
 		support = false
 	}
 
@@ -725,7 +789,8 @@ func DoesSupportAB() bool {
 
 /* SetMutablePath sets the i attribute of the given path to mutable. */
 func SetMutablePath(path string) error {
-	if err := exec.Command("chattr", "-i", path).Run(); err != nil {
+	err := exec.Command("chattr", "-i", path).Run()
+	if err != nil {
 		PrintVerbose("err:SetMutablePath: %s", err)
 		return err
 	}
@@ -735,7 +800,8 @@ func SetMutablePath(path string) error {
 
 /* SetImmutablePath sets the i attribute of the given path to immutable. */
 func SetImmutablePath(path string) error {
-	if err := exec.Command("chattr", "+i", path).Run(); err != nil {
+	err := exec.Command("chattr", "+i", path).Run()
+	if err != nil {
 		PrintVerbose("err:SetImmutablePath: %s", err)
 		return err
 	}
@@ -758,48 +824,50 @@ func getGRUBMarkedRoot(state string) (string, error) {
 		}
 	}
 
-	return "", errors.New(fmt.Sprintf("No partition found for state %s", state))
+	return "", fmt.Errorf("No partition found for state %s", state)
 }
 
 // Rollback switches back to the previous root.
 func Rollback() error {
 	// Root marked as "current" by ABroot
-	current_root, err := getGRUBMarkedRoot("current")
+	currentRoot, err := getGRUBMarkedRoot("current")
 	if err != nil {
 		return err
 	}
 
 	// Root we're booted into
-	currently_booted_root, err := getCurrentRootLabel()
+	currentlyBootedRoot, err := getCurrentRootLabel()
 	if err != nil {
 		return err
 	}
 
-	var previous_root string
-	if current_root == "a" {
-		previous_root = "b"
+	var previousRoot string
+	if currentRoot == "a" {
+		previousRoot = "b"
 	} else {
-		previous_root = "a"
+		previousRoot = "a"
 	}
 
 	bold := cmdr.Bold.Sprint
 	red := cmdr.Red
 	green := cmdr.Green
 
-	var currently_booted_root_colored string
-	var rollback_kargs string
-	if current_root == currently_booted_root {
-		rollback_kargs, err = GetFutureKargs()
+	var currentlyBootedRootColored, rollbackKargs string
+
+	if currentRoot == currentlyBootedRoot {
+		rollbackKargs, err = GetFutureKargs()
 		if err != nil {
 			return err
 		}
-		currently_booted_root_colored = red(strings.ToUpper(currently_booted_root))
+
+		currentlyBootedRootColored = red(strings.ToUpper(currentlyBootedRoot))
 	} else {
-		rollback_kargs, err = GetCurrentKargs()
+		rollbackKargs, err = GetCurrentKargs()
 		if err != nil {
 			return err
 		}
-		currently_booted_root_colored = green(strings.ToUpper(currently_booted_root))
+
+		currentlyBootedRootColored = green(strings.ToUpper(currentlyBootedRoot))
 	}
 
 	message := fmt.Sprintf(`
@@ -808,10 +876,10 @@ Your "present" partition is %s
 
 This command will make %s the present partition again. Any changes made to %s will be lost.
 Continue?`,
-		bold(currently_booted_root_colored),
-		bold(red(strings.ToUpper(current_root))),
-		bold(green(strings.ToUpper(previous_root))),
-		bold(red(strings.ToUpper(current_root))),
+		bold(currentlyBootedRootColored),
+		bold(red(strings.ToUpper(currentRoot))),
+		bold(green(strings.ToUpper(previousRoot))),
+		bold(red(strings.ToUpper(currentRoot))),
 	)
 
 	confirmation, err := cmdr.Confirm.Show(message)
@@ -820,7 +888,7 @@ Continue?`,
 	}
 
 	if confirmation {
-		UpdateRootBoot(false, rollback_kargs)
+		UpdateRootBoot(false, rollbackKargs)
 		cmdr.Success.Println("Rollback complete. Reboot your system to apply changes.")
 	}
 
