@@ -1,3 +1,12 @@
+abroot (1.4.1) kinetic; urgency=critical
+
+  * Do not require user interaction for transactions using DEBIAN_FRONTEND=noninteractive
+  * Respect modifications in /etc/default/grub
+  * Divert /etc/default/grub to avoid conflicts
+  * Fix apt/systemd problems in chroot
+
+ -- Mirko brombin <send@mirko.pm>  Sun, 05 Feb 2023 09:05:00 +0200
+
 abroot (1.4.0) kinetic; urgency=critical
 
   * New rollback command to switch to the previous root partition
