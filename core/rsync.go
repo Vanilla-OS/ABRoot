@@ -72,7 +72,11 @@ func rsyncCmd(src, dst string, opts []string, silent bool) error {
 
 	err = cmd.Wait()
 	if err != nil {
-		return err
+		// exit status 24 is a warning, not an error, we don't care about it
+		// since rsync is going to be removed in the OCI version
+		if !strings.Contains(err.Error(), "exit status 24") {
+			return err
+		}
 	}
 
 	return nil
