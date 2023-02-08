@@ -1,3 +1,9 @@
+abroot (1.4.2) kinetic; urgency=critical
+
+  * Ignore "exit status 24" in rsync
+
+ -- Mirko brombin <send@mirko.pm>  Wed, 08 Feb 2023 09:23:00 +0200
+
 abroot (1.4.1) kinetic; urgency=critical
 
   * Do not require user interaction for transactions using DEBIAN_FRONTEND=noninteractive
