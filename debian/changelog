@@ -1,4 +1,4 @@
-abroot (1.4.2) kinetic; urgency=critical
+abroot (1.4.2-1) kinetic; urgency=critical
 
   * Ignore "exit status 24" in rsync
 
