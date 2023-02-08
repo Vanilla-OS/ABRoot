@@ -206,7 +206,7 @@ func MergeOverlayFS(path string) error {
 	PrintVerbose("step:  AtomicRsync")
 
 	err := AtomicRsync(combinerPath+"/.system/", path+"/.system/", path+"/.system_new/", path+"/.system/",
-		[]string{"home", "partFuture", "partFuture_new", ".*/", "tmp", "var/log", "var/tmp", "var/spool", "var/mail"},
+		[]string{"home", "partFuture", "partFuture_new", ".*/", "tmp"},
 		false)
 	if err != nil {
 		return err
