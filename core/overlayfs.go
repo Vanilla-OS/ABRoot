@@ -101,7 +101,10 @@ func NewOverlayFS(lowers []string) error {
 		}
 	}
 
-	bindFromBootPaths := []string{"boot", "boot/efi"}
+	bindFromBootPaths := []string{"boot"}
+	if IsSystemUEFI() {
+		bindFromBootPaths = append(bindFromBootPaths, "boot/efi")
+	}
 	for _, path := range bindFromBootPaths {
 		err := os.MkdirAll(overlayfsPath+"/"+path, 0755)
 		if err != nil {
