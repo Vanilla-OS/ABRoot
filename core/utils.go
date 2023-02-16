@@ -34,6 +34,20 @@ func RootCheck(display bool) bool {
 	return true
 }
 
+func IsSystemUEFI() bool {
+	_, err := os.Stat("/sys/firmware/efi")
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	if err != nil {
+		fmt.Printf("Error checking for EFI files: %s", err)
+		os.Exit(1)
+	}
+
+	return true
+}
+
 func AskConfirmation(s string) bool {
 	var response string
 
