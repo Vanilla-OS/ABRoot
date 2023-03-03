@@ -1,4 +1,4 @@
-.TH ABROOT 1 "2023-01-17" "abroot" "User Manual"
+.TH ABROOT 1 "2023-03-03" "abroot" "User Manual"
 .SH NAME
 .RS 4
 abroot - ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
@@ -34,6 +34,16 @@ Enter a transactional shell
 \fBkargs\fP
 .RS 4
 Manage kernel parameters\&.
+.PP
+.RE
+\fBdiff\fP
+.RS 4
+Show modifications from latest transaction\&.
+.PP
+.RE
+\fBrollback\fP
+.RS 4
+Return the system to a previous state\&.
 .PP
 .RE
 .RE
@@ -84,7 +94,9 @@ Execute a command in a transactional shell in the future root and switch to it o
 Execute a command in a transactional shell in the future root and switch to it on next boot
 .RE
 .SS OPTIONS
-  -f, --force-run   force run the command without asking for confirmation
+  -f, --force-run   Force run the command without asking for confirmation
+.PP
+  -s, --skip-diff   Skip the diff check at the end of the transaction
 .PP
 .SS GLOBAL OPTIONS
   -v, --verbose   show more detailed output
@@ -107,7 +119,7 @@ Enter a transactional shell
 Enter a transactional shell in the future root partition and switch root on the next boot
 .RE
 .SS OPTIONS
-  -f, --force-open   force open the transactional shell without asking for confirmation
+  -f, --force-open   Force open the shell without asking for confirmation
 .PP
 .SS GLOBAL OPTIONS
   -v, --verbose   show more detailed output
@@ -138,5 +150,47 @@ Manage kernel parameters\&.
 abroot kargs edit
 .PP
 abroot kargs get future
+.RE
+.SH SUBCOMMAND DIFF
+.RS 4
+Show modifications from latest transaction\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBdiff\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+List modifications made to the filesystem in the latest transiction
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot diff
+.RE
+.SH SUBCOMMAND ROLLBACK
+.RS 4
+Return the system to a previous state\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBrollback\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Executes a system rollback, discarding changes made to the present root\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot rollback
 .RE
 
