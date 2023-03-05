@@ -1,4 +1,4 @@
-abroot (1.4.4) lunar; urgency=critical
+abroot (1.4.4) unstable; urgency=critical
 
   * Check system is in UEFI mode before mounting EFI
 
