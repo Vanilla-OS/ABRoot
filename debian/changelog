@@ -1,8 +1,8 @@
-abroot (1.4.3-1) lunar; urgency=critical
+abroot (1.4.4) lunar; urgency=critical
 
   * Check system is in UEFI mode before mounting EFI
 
- -- Mateus Melchiades <matbme@duck.com>  Thu, 16 Feb 2023 12:59:00 -0300
+ -- Mirko Brombin <send@mirko.pm>  Thu, 16 Feb 2023 12:59:00 -0300
 
 abroot (1.4.3) kinetic; urgency=critical
 
