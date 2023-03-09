@@ -1,0 +1,74 @@
+abroot:
+  use: "abroot"
+  long: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rootpartitioner (A<->B)""
+  short: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rotpartitioner (A<->B)""
+  verboseFlag: "visa mer detaljerad utdata"
+
+update:
+  use: "_update-boot"
+  long: "Uppdatera uppstartspartitionen i underhållssyfte (endast för avancerade användare)"
+  short: "Uppdatera uppstartspartitionen"
+  forceUpdateFlag: "tvinga uppdatering av uppstartspartitionen utan att be om bekräftelse"
+  confirm: "Är du säker på att du vill fortsätta?\Uppstartspartitionen bör endast uppdateras om en transaktion lyckades. Detta kommando bör endast användas av avancerade användare i underhållssyfte."
+  rootRequired: "Du måste vara root för att köra detta kommando."
+
+get:
+  use: "get"
+  long: "Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)"
+  short: "Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)"
+  rootRequired: "Du måste vara root för att köra detta kommando."
+
+kargs:
+  use: "kargs"
+  long: "Hantera kärnparametrar."
+  short: "Hantera kärnparametrar."
+  rootRequired: "Du måste vara root för att köra detta kommando."
+  nextReboot: "Kärnparametrar kommer att tillämpas vid nästa start."
+  failedTransaction: "Misslyckades att starta transaktionsskalet"
+  stateRequired: "Vänligen ange ett tillstånd (nuvarande eller framtida)"
+  params: "Nuvarande partitions parametrar:\n%s\n"
+  futureParams: "Framtida partitions parametrar:\n%s\n"
+  unknownState: "Okänt tillstånd: %s\n"
+  unknownParam: "Okänd parameter: %s\n"
+  transactionsLocked: "En annan transaktion har redan utförts, du måste starta om ditt system innan du startar en ny transaktion."
+
+edit:
+  use: "edit"
+  long: "Redigera kärnparametrar."
+  short: "Redigera kärnparametrar."
+  rootRequired: "Du måste vara root för att köra detta kommando."
+
+exec:
+  use: "exec"
+  long: "Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart"
+  short: "Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart"
+  rootRequired: "Du måste vara root för att köra detta kommando."
+  skipDiffFlag: "Hoppa över diffkontrollen i slutet av transaktionen"
+  forceRunFlag: "Tvinga kommandot att köras utan att be om bekräftelse"
+  confirm: "\n===============================================================================\nPLÄS NOGGRANT INNAN DU FORTSÄTTER\n========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida rooten på nästa uppstart på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är det tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
+  start: "Ny transaktion startade. Detta kan ta ett tag...\Starta inte om eller avbryt inte transaktionen förrän den är klar."
+  success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
+  failed: "Misslyckades att starta transaktionsskalet:"
+
+shell:
+  use: "shell"
+  long: "Gå med i ett transaktionsskal i den framtida rootpartitionen och byt root vid nästa uppstart
+  short: "Gå med i ett transaktionsskal"
+  rootRequired: "Du måste vara root för att köra detta kommando."
+  forceOpenFlag: "Tvinga öppnande av skalet utan att be om bekräftelse"
+  confirm: "\n===============================================================================\nLÄS NOGGRANT INNAN DU FORTSÄTTER\n=========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida roten på nästa start på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
+  start: "Ny transaktion startade. Detta kan ta ett tag...\Starta inte om eller avbryt inte transaktionen förrän den är klar."
+  success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
+  failed: "Misslyckades att starta transaktionsskalet:"
+
+diff:
+  use: "diff"
+  long: "Lista modifikationer som gjorts i filsystemet i den senaste transaktionen"
+  short: "Visa modifikationer från senaste transaktionen."
+  rootRequired: "Du måste vara root för att köra detta kommando."
+
+rollback:
+  use: "rollback"
+  long: "Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande rooten."
+  short: "Återställ systemet till ett tidigare tillstånd."
+  rootRequired: "Du måste vara root för att köra detta kommando."
