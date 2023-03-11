@@ -37,9 +37,13 @@ Use "abroot [command] --help" for more information about a command.
 
 ## Documentation
 
-The official **documentation and manpage** for `abroot` are available at https://documentation.vanillaos.org/docs/ABRoot/.
+The official **documentation and manpage** for `abroot` are available at <https://documentation.vanillaos.org/docs/ABRoot>.
+
+## Porting ABRoot to your Distribution
+
+Learn how to port ABRoot to your distribution at <https://documentation.vanillaos.org/docs/ABRoot/porting>.
 
 ## Generating man pages for translations
 
-- Copy the `en.yml` file under the `locales` directory and rename it to your language code then translate it the strings.
-- Once the translation is completed perform `go build` then execute this command `LANG=<language_code> ./abroot man > man/<language_code>/abroot.1`. If the man page is generated without any errors, open a PR here for it here.
+- Copy the `en.yml` file under the `locales` directory, rename it to your language code then translate the strings.
+- Once the translation is complete, perform `go build` and execute this command `LANG=<language_code> ./abroot man > man/<language_code>/abroot.1`. If the man page gets generated without errors, open a PR here.
