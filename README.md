@@ -9,23 +9,37 @@
 This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
 an apt replacement for VanillaOS.
 
-### Help
+## Help
 
 ```bash
-abroot [flags] [command]
+ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
+
+Usage:
+  abroot [command]
+
+Available Commands:
+  completion   Generate the autocompletion script for the specified shell
+  diff         Show modifications from latest transaction.
+  exec         Execute a command in a transactional shell in the future root and switch to it on next boot
+  get          Outputs the present or future root partition state (A or B)
+  help         Help about any command
+  kargs        Manage kernel parameters.
+  rollback     Return the system to a previous state.
+  shell        Enter a transactional shell
 
 Flags:
-	--help/-h		show this message
-	--verbose/-v		show more verbosity
-	--version/-V		show version
+  -h, --help      help for abroot
+  -v, --verbose   show more detailed output
+      --version   version for abroot
 
-Commands:
-	get			outputs the present or future root partition state
-	shell			enter a transactional shell in the future root partition and switch root on the next boot
-	exec			execute a command in a transactional shell in the future root partition and switch to it on the next boot
-	diff			list modifications made to the filesystem in the latest transaction
+Use "abroot [command] --help" for more information about a command.
 ```
 
-## Docs
+## Documentation
 
 The official **documentation and manpage** for `abroot` are available at https://documentation.vanillaos.org/docs/ABRoot/.
+
+## Generating man pages for translations
+
+- Copy the `en.yml` file under the `locales` directory and rename it to your language code then translate it the strings.
+- Once the translation is completed perform `go build` then execute this command `LANG=<language_code> ./abroot man > man/<language_code>/abroot.1`. If the man page is generated without any errors, open a PR here for it here.
