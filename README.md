@@ -4,8 +4,6 @@
   <p align="center">ABRoot is a utility that allow fully atomic transactions between 2 root partitions (A⟺B).</p>
 </div>
 
-> **Note**: This is a work in progress. It is not ready for production use.
-
 This program is meant to be used with [apx](https://github.com/vanilla-os/apx), 
 an apt replacement for VanillaOS.
 
