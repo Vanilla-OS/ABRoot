@@ -1,0 +1,196 @@
+.TH ABROOT 1 "2023-03-13" "abroot" "User Manual"
+.SH NAME
+.RS 4
+abroot - ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rotpartitioner (A<->B)
+.RE
+.SH SYNOPSIS
+.RS 4
+abroot [command] [flags] [arguments]
+.RE
+.SH DESCRIPTION
+.RS 4
+ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rootpartitioner (A<->B)
+.RE
+.SH OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SH ABROOT COMMANDS
+.RS 4
+\fBget\fP
+.RS 4
+Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)
+.PP
+.RE
+\fBexec\fP
+.RS 4
+Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart
+.PP
+.RE
+\fBshell\fP
+.RS 4
+Gå med i ett transaktionsskal
+.PP
+.RE
+\fBkargs\fP
+.RS 4
+Hantera kärnparametrar\&.
+.PP
+.RE
+\fBdiff\fP
+.RS 4
+Visa modifikationer från senaste transaktionen\&.
+.PP
+.RE
+\fBrollback\fP
+.RS 4
+Återställ systemet till ett tidigare tillstånd\&.
+.PP
+.RE
+.RE
+.SH AUTHORS
+.PP
+Written by Vanilla OS contributors\&.
+.SH REPORT BUGS TO
+.PP
+https://github\&.com/vanilla-os/abroot/issues
+.SH LICENSE
+.PP
+GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
+.SH ABROOT SUBCOMMANDS
+.SH SUBCOMMAND GET
+.RS 4
+Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBget\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot get present
+.PP
+abroot get future
+.RE
+.SH SUBCOMMAND EXEC
+.RS 4
+Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBexec\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart
+.RE
+.SS OPTIONS
+  -f, --force-run   Tvinga kommandot att köras utan att be om bekräftelse
+.PP
+  -s, --skip-diff   Hoppa över diffkontrollen i slutet av transaktionen
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot exec apt-get update
+.RE
+.SH SUBCOMMAND SHELL
+.RS 4
+Gå med i ett transaktionsskal
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBshell\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Gå med i ett transaktionsskal i den framtida rootpartitionen och byt root vid nästa uppstart
+.RE
+.SS OPTIONS
+  -f, --force-open   Tvinga öppnande av skalet utan att be om bekräftelse
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot shell
+.RE
+.SH SUBCOMMAND KARGS
+.RS 4
+Hantera kärnparametrar\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBkargs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Hantera kärnparametrar\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot kargs edit
+.PP
+abroot kargs get future
+.RE
+.SH SUBCOMMAND DIFF
+.RS 4
+Visa modifikationer från senaste transaktionen\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBdiff\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Lista modifikationer som gjorts i filsystemet i den senaste transaktionen
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot diff
+.RE
+.SH SUBCOMMAND ROLLBACK
+.RS 4
+Återställ systemet till ett tidigare tillstånd\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBrollback\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande rooten\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   visa mer detaljerad utdata
+.PP
+.SS EXAMPLES
+.RS 4
+abroot rollback
+.RE
+

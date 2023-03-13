@@ -1,7 +1,7 @@
 abroot:
   use: "abroot"
-  long: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rootpartitioner (A<->B)""
-  short: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rotpartitioner (A<->B)""
+  long: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rootpartitioner (A<->B)"
+  short: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rotpartitioner (A<->B)"
   verboseFlag: "visa mer detaljerad utdata"
 
 update:
@@ -9,7 +9,7 @@ update:
   long: "Uppdatera uppstartspartitionen i underhållssyfte (endast för avancerade användare)"
   short: "Uppdatera uppstartspartitionen"
   forceUpdateFlag: "tvinga uppdatering av uppstartspartitionen utan att be om bekräftelse"
-  confirm: "Är du säker på att du vill fortsätta?\Uppstartspartitionen bör endast uppdateras om en transaktion lyckades. Detta kommando bör endast användas av avancerade användare i underhållssyfte."
+  confirm: "Är du säker på att du vill fortsätta?\nUppstartspartitionen bör endast uppdateras om en transaktion lyckades. Detta\nkommando bör endast användas av avancerade användare i underhållssyfte."
   rootRequired: "Du måste vara root för att köra detta kommando."
 
 get:
@@ -46,18 +46,18 @@ exec:
   skipDiffFlag: "Hoppa över diffkontrollen i slutet av transaktionen"
   forceRunFlag: "Tvinga kommandot att köras utan att be om bekräftelse"
   confirm: "\n===============================================================================\nPLÄS NOGGRANT INNAN DU FORTSÄTTER\n========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida rooten på nästa uppstart på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är det tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
-  start: "Ny transaktion startade. Detta kan ta ett tag...\Starta inte om eller avbryt inte transaktionen förrän den är klar."
+  start: "Ny transaktion startade. Detta kan ta ett tag...\nStarta inte om eller avbryt inte transaktionen förrän den är klar."
   success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
   failed: "Misslyckades att starta transaktionsskalet:"
 
 shell:
   use: "shell"
-  long: "Gå med i ett transaktionsskal i den framtida rootpartitionen och byt root vid nästa uppstart
+  long: "Gå med i ett transaktionsskal i den framtida rootpartitionen och byt root vid nästa uppstart"
   short: "Gå med i ett transaktionsskal"
   rootRequired: "Du måste vara root för att köra detta kommando."
   forceOpenFlag: "Tvinga öppnande av skalet utan att be om bekräftelse"
   confirm: "\n===============================================================================\nLÄS NOGGRANT INNAN DU FORTSÄTTER\n=========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida roten på nästa start på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
-  start: "Ny transaktion startade. Detta kan ta ett tag...\Starta inte om eller avbryt inte transaktionen förrän den är klar."
+  start: "Ny transaktion startade. Detta kan ta ett tag...\nStarta inte om eller avbryt inte transaktionen förrän den är klar."
   success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
   failed: "Misslyckades att starta transaktionsskalet:"
 
