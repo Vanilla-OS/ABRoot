@@ -26,7 +26,7 @@ Now, 256 colors and RGB colors have also been supported to work in Windows CMD a
   - Simple to use, zero dependencies
   - Supports rich color output: 16-color (4-bit), 256-color (8-bit), true color (24-bit, RGB)
     - 16-color output is the most commonly used and most widely supported, working on any Windows version
-    - Since `v1.3.0` **the 256-color (8-bit), true color (24-bit) support windows CMD and PowerShell**
+    - Since `v1.2.4` **the 256-color (8-bit), true color (24-bit) support windows CMD and PowerShell**
     - See [this gist](https://gist.github.com/XVilka/8346728) for information on true color support
   - Support converts `HEX` `HSL` value to RGB color
   - Generic API methods: `Print`, `Printf`, `Println`, `Sprint`, `Sprintf`
@@ -216,7 +216,7 @@ Run demo: `go run ./_examples/theme_block.go`
 
 ## 256-color usage
 
-> 256 colors support Windows CMD, PowerShell environment after `v1.3.0`
+> 256 colors support Windows CMD, PowerShell environment after `v1.2.4`
 
 ### Set the foreground or background color
 
@@ -260,7 +260,7 @@ Run demo: `go run ./_examples/color_256.go`
 
 ## RGB/True color
 
-> RGB colors support Windows `CMD`, `PowerShell` environment after `v1.3.0`
+> RGB colors support Windows `CMD`, `PowerShell` environment after `v1.2.4`
 
 **Preview:**
 
