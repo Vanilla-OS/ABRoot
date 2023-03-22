@@ -1,6 +1,17 @@
 <div align="center">
   <img src="abroot-logo.svg" height="120">
   <h1 align="center">ABRoot</h1>
+  
+[![Build status][github-actions-image]][github-actions-url]
+[![Translation Status][weblate-image]][weblate-url]
+
+  
+[github-actions-url]: https://github.com/Vanilla-OS/ABRoot/actions/workflows/go.yml
+[github-actions-image]: https://github.com/Vanilla-OS/ABRoot/actions/workflows/go.yml/badge.svg
+[weblate-url]: https://hosted.weblate.org/engage/vanilla-os
+[weblate-image]: https://hosted.weblate.org/widgets/vanilla-os/-/abroot/svg-badge.svg
+[weblate-status-image]: https://hosted.weblate.org/widgets/vanilla-os/-/abroot/multi-auto.svg
+
   <p align="center">ABRoot is a utility that allow fully atomic transactions between 2 root partitions (A⟺B).</p>
 </div>
 
@@ -41,7 +52,12 @@ The official **documentation and manpage** for `abroot` are available at <https:
 
 Learn how to port ABRoot to your distribution at <https://documentation.vanillaos.org/docs/ABRoot/porting>.
 
-## Generating man pages for translations
+## Translations
 
-- Copy the `en.yml` file under the `locales` directory, rename it to your language code then translate the strings.
-- Once the translation is complete, perform `go build` and execute this command `LANG=<language_code> ./abroot man > man/<language_code>/abroot.1`. If the man page gets generated without errors, open a PR here.
+- Contribute translations for the manpage and help page in [Weblate](https://hosted.weblate.org/projects/vanilla-os/abroot).
+
+[![Translation Status][weblate-status-image]][weblate-url]
+
+### Generating man pages for translations
+
+- Once the translation is complete in Weblate and the changes committed, clone the repository using `git` and perform `go build`, create a directory using the `mkdir man/<language_code>` command, and execute this command `LANG=<language_code> ./abroot man > man/<language_code>/abroot.1`. Open a PR for the generated manpage here.
