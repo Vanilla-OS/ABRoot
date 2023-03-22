@@ -1,0 +1,196 @@
+.TH ABROOT 1 "2023-03-22" "abroot" "User Manual"
+.SH NAME
+.RS 4
+abroot - ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții între 2 partiții rădăcină (A<->B)
+.RE
+.SH SYNOPSIS
+.RS 4
+abroot [command] [flags] [arguments]
+.RE
+.SH DESCRIPTION
+.RS 4
+ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții între 2 partiții rădăcină (A<->B)
+.RE
+.SH OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SH ABROOT COMMANDS
+.RS 4
+\fBget\fP
+.RS 4
+Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)
+.PP
+.RE
+\fBexec\fP
+.RS 4
+Executați o comandă într-un shell tranzacțional în rădăcina viitoare și comutați la ea la următoarea pornire
+.PP
+.RE
+\fBshell\fP
+.RS 4
+Introduceți un shell tranzacțional
+.PP
+.RE
+\fBkargs\fP
+.RS 4
+Gestionați parametrii kernelului\&.
+.PP
+.RE
+\fBdiff\fP
+.RS 4
+Afișează modificările din ultima tranzacție\&.
+.PP
+.RE
+\fBrollback\fP
+.RS 4
+Readuceți sistemul la o stare anterioară\&.
+.PP
+.RE
+.RE
+.SH AUTHORS
+.PP
+Written by Vanilla OS contributors\&.
+.SH REPORT BUGS TO
+.PP
+https://github\&.com/vanilla-os/abroot/issues
+.SH LICENSE
+.PP
+GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
+.SH ABROOT SUBCOMMANDS
+.SH SUBCOMMAND GET
+.RS 4
+Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBget\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot get present
+.PP
+abroot get future
+.RE
+.SH SUBCOMMAND EXEC
+.RS 4
+Executați o comandă într-un shell tranzacțional în rădăcina viitoare și comutați la ea la următoarea pornire
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBexec\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Executați o comandă într-un shell tranzacțional în rădăcina viitoare și comutați la ea la următoarea pornire
+.RE
+.SS OPTIONS
+  -f, --force-run   Executați comanda forțat fără a cere confirmare
+.PP
+  -s, --skip-diff   Omiteți verificarea diferențelor la sfârșitul tranzacției
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot exec apt-get update
+.RE
+.SH SUBCOMMAND SHELL
+.RS 4
+Introduceți un shell tranzacțional
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBshell\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Intrați într-un shell tranzacțional în viitoarea partiție rădăcină și comutați rădăcina le următoarea pornire
+.RE
+.SS OPTIONS
+  -f, --force-open   Deschiderea forțată a shell-ului fără a cere confirmare
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot shell
+.RE
+.SH SUBCOMMAND KARGS
+.RS 4
+Gestionați parametrii kernelului\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBkargs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Gestionați parametrii kernelului\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot kargs edit
+.PP
+abroot kargs get future
+.RE
+.SH SUBCOMMAND DIFF
+.RS 4
+Afișează modificările din ultima tranzacție\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBdiff\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Listează modificările aduse sistemului de fișiere în cea mai recentă tranziție
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot diff
+.RE
+.SH SUBCOMMAND ROLLBACK
+.RS 4
+Readuceți sistemul la o stare anterioară\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBrollback\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Execută un rollback al sistemului, eliminând modificările făcute la rădăcina actuală\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   afișează rezultate mai detaliate
+.PP
+.SS EXAMPLES
+.RS 4
+abroot rollback
+.RE
+
