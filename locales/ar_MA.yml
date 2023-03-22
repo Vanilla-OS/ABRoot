@@ -1,0 +1,74 @@
+abroot:
+  use: ""
+  long: ""
+  short: ""
+  verboseFlag: ""
+
+update:
+  use: ""
+  long: ""
+  short: ""
+  forceUpdateFlag: ""
+  confirm: ""
+  rootRequired: ""
+
+get:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+
+kargs:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+  nextReboot: ""
+  failedTransaction: ""
+  stateRequired: ""
+  params: ""
+  futureParams: ""
+  unknownState: ""
+  unknownParam: ""
+  transactionsLocked: ""
+
+edit:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+
+exec:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+  skipDiffFlag: ""
+  forceRunFlag: ""
+  confirm: ""
+  start: ""
+  success: ""
+  failed: ""
+
+shell:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+  forceOpenFlag: ""
+  confirm: ""
+  start: ""
+  success: ""
+  failed: ""
+
+diff:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+
+rollback:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
