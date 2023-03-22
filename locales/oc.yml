@@ -14,7 +14,7 @@ update:
   confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
     \ only if a transaction succeeded. This\ncommand should be used by advanced users\
     \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  rootRequired: "Vos cal èsser root per executar aquesta comanda."
 
 get:
   use: "get"
