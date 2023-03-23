@@ -1,0 +1,196 @@
+.TH ABROOT 1 "2023-03-23" "abroot" "User Manual"
+.SH NAME
+.RS 4
+abroot - ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties uit te voeren tussen 2 root-partities (A<->B)
+.RE
+.SH SYNOPSIS
+.RS 4
+abroot [command] [flags] [arguments]
+.RE
+.SH DESCRIPTION
+.RS 4
+ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties uit te voeren tussen 2 root-partities (A<->B)
+.RE
+.SH OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SH ABROOT COMMANDS
+.RS 4
+\fBget\fP
+.RS 4
+Toont de huidige of toekomstige status van de rootpartitie (A of B)
+.PP
+.RE
+\fBexec\fP
+.RS 4
+Opdracht uitvoeren in een transactionele shell in de toekomstige root en ernaar overschakelen bij de volgende opstart
+.PP
+.RE
+\fBshell\fP
+.RS 4
+Transactionele shell binnengaan
+.PP
+.RE
+\fBkargs\fP
+.RS 4
+Kernel-parameters beheren
+.PP
+.RE
+\fBdiff\fP
+.RS 4
+Wijzigingen van de laatste transactie tonen
+.PP
+.RE
+\fBrollback\fP
+.RS 4
+Systeem terugbrengen naar vorige toestand
+.PP
+.RE
+.RE
+.SH AUTHORS
+.PP
+Written by Vanilla OS contributors\&.
+.SH REPORT BUGS TO
+.PP
+https://github\&.com/vanilla-os/abroot/issues
+.SH LICENSE
+.PP
+GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
+.SH ABROOT SUBCOMMANDS
+.SH SUBCOMMAND GET
+.RS 4
+Toont de huidige of toekomstige status van de rootpartitie (A of B)
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBget\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Toont de huidige of toekomstige status van de rootpartitie (A of B)
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot get present
+.PP
+abroot get future
+.RE
+.SH SUBCOMMAND EXEC
+.RS 4
+Opdracht uitvoeren in een transactionele shell in de toekomstige root en ernaar overschakelen bij de volgende opstart
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBexec\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Opdracht uitvoeren in een transactionele shell in de toekomstige root en ernaar overschakelen bij de volgende opstart
+.RE
+.SS OPTIONS
+  -f, --force-run   De opdracht geforceerd uitvoeren zonder om bevestiging te vragen
+.PP
+  -s, --skip-diff   De diff-controle aan het eind van de transactie overslaan
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot exec apt-get update
+.RE
+.SH SUBCOMMAND SHELL
+.RS 4
+Transactionele shell binnengaan
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBshell\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Transactionele shell in de toekomstige rootpartitie binnengaan en hiernaar wisselen bij de volgende opstart
+.RE
+.SS OPTIONS
+  -f, --force-open   Shell geforceerd openen zonder om bevestiging te vragen
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot shell
+.RE
+.SH SUBCOMMAND KARGS
+.RS 4
+Kernel-parameters beheren
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBkargs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Kernel-parameters beheren
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot kargs edit
+.PP
+abroot kargs get future
+.RE
+.SH SUBCOMMAND DIFF
+.RS 4
+Wijzigingen van de laatste transactie tonen
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBdiff\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Lijst tonen van wijzigingen aan het bestandssysteem in de laatste transactie
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot diff
+.RE
+.SH SUBCOMMAND ROLLBACK
+.RS 4
+Systeem terugbrengen naar vorige toestand
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBrollback\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Voert een systeem-rollback uit, waarbij wijzigingen in de huidige root worden verwijderd
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   Gedetailleerdere uitvoer tonen
+.PP
+.SS EXAMPLES
+.RS 4
+abroot rollback
+.RE
+

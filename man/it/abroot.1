@@ -1,0 +1,196 @@
+.TH ABROOT 1 "2023-03-23" "abroot" "User Manual"
+.SH NAME
+.RS 4
+abroot - ABRoot fornisce piena immutabilità e atomicità eseguendo transazioni tra 2 partizioni root (A<->B)
+.RE
+.SH SYNOPSIS
+.RS 4
+abroot [command] [flags] [arguments]
+.RE
+.SH DESCRIPTION
+.RS 4
+ABRoot fornisce piena immutabilità e atomicità eseguendo transazioni tra 2 partizioni root (A<->B)
+.RE
+.SH OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SH ABROOT COMMANDS
+.RS 4
+\fBget\fP
+.RS 4
+Emette lo stato attuale o futuro della partizione root (A o B)
+.PP
+.RE
+\fBexec\fP
+.RS 4
+Esegui un comando in una shell transazionale nella root futura e passare ad essa all'avvio successivo
+.PP
+.RE
+\fBshell\fP
+.RS 4
+Entra in una shell transazionale
+.PP
+.RE
+\fBkargs\fP
+.RS 4
+Gestisci i parametri del kernel\&.
+.PP
+.RE
+\fBdiff\fP
+.RS 4
+Mostra le modifiche dell'ultima transazione\&.
+.PP
+.RE
+\fBrollback\fP
+.RS 4
+Riporta il sistema a uno stato precedente\&.
+.PP
+.RE
+.RE
+.SH AUTHORS
+.PP
+Written by Vanilla OS contributors\&.
+.SH REPORT BUGS TO
+.PP
+https://github\&.com/vanilla-os/abroot/issues
+.SH LICENSE
+.PP
+GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
+.SH ABROOT SUBCOMMANDS
+.SH SUBCOMMAND GET
+.RS 4
+Emette lo stato attuale o futuro della partizione root (A o B)
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBget\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Emette lo stato attuale o futuro della partizione root (A o B)
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot get present
+.PP
+abroot get future
+.RE
+.SH SUBCOMMAND EXEC
+.RS 4
+Esegui un comando in una shell transazionale nella root futura e passare ad essa all'avvio successivo
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBexec\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Esegui un comando in una shell transazionale nella root futura e passare ad essa all'avvio successivo
+.RE
+.SS OPTIONS
+  -f, --force-run   Esegui forzatamente il comando senza chiedere conferma
+.PP
+  -s, --skip-diff   Salta il controllo differenziale alla fine della transazione
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot exec apt-get update
+.RE
+.SH SUBCOMMAND SHELL
+.RS 4
+Entra in una shell transazionale
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBshell\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Entra in una shell transazionale nella futura partizione root e passare a root all'avvio successivo
+.RE
+.SS OPTIONS
+  -f, --force-open   Forza l'apertura della shell senza chiedere conferma
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot shell
+.RE
+.SH SUBCOMMAND KARGS
+.RS 4
+Gestisci i parametri del kernel\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBkargs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Gestisci i parametri del kernel\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot kargs edit
+.PP
+abroot kargs get future
+.RE
+.SH SUBCOMMAND DIFF
+.RS 4
+Mostra le modifiche dell'ultima transazione\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBdiff\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Elenco delle modifiche apportate al filesystem nell'ultima transizione
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot diff
+.RE
+.SH SUBCOMMAND ROLLBACK
+.RS 4
+Riporta il sistema a uno stato precedente\&.
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBrollback\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Esegue un rollback del sistema, scartando le modifiche apportate alla root attuale\&.
+.RE
+.SS OPTIONS
+.SS GLOBAL OPTIONS
+  -v, --verbose   mostra un output più dettagliato
+.PP
+.SS EXAMPLES
+.RS 4
+abroot rollback
+.RE
+
