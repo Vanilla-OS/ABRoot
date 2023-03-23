@@ -18,7 +18,7 @@ update:
   rootRequired: "Trebuie să fiți root pentru a executa această comandă."
 
 get:
-  use: "obțineți"
+  use: "get"
   long: "Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)"
   short: "Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)"
   rootRequired: "Trebuie să fiți root pentru a executa această comandă."
@@ -39,7 +39,7 @@ kargs:
     \ sistemul înainte de a începe o nouă tranzacție."
 
 edit:
-  use: "editează"
+  use: "edit"
   long: "editați parametrii kernelului."
   short: "editați parametrii kernelului."
   rootRequired: "Trebuie să fiți root pentru a executa această comandă."
@@ -90,12 +90,12 @@ shell:
 
 diff:
   use: "diff"
-  long: "Listează modificările aduse sistemului de fișiere în cea mai recentă tranziție"
+  long: "Listează modificările aduse sistemului de fișiere în cea mai recentă tranzacție"
   short: "Afișează modificările din ultima tranzacție."
   rootRequired: "Trebuie să fiți root pentru a executa această comandă."
 
 rollback:
-  use: "revenire"
+  use: "rollback"
   long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina\
     \ actuală."
   short: "Readuceți sistemul la o stare anterioară."
