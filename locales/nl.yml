@@ -54,7 +54,14 @@ exec:
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
   skipDiffFlag: "De diff-controle aan het eind van de transactie overslaan"
   forceRunFlag: "De opdracht geforceerd uitvoeren zonder om bevestiging te vragen"
-  confirm: ""
+  confirm: "\n===============================================================================\n\
+    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
+    Changes made in the shell will be applied to the future root on next boot on\n\
+    successful.\nRunning a command in a transactional shell is meant to be used by\
+    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
+    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
+    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nAre you sure you want to proceed?"
   start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
     \ transactie niet totdat deze klaar is."
   success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
@@ -67,7 +74,14 @@ shell:
   short: "Transactionele shell binnengaan"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
   forceOpenFlag: "Shell geforceerd openen zonder om bevestiging te vragen"
-  confirm: ""
+  confirm: "\n===============================================================================\n\
+    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
+    Changes made in the shell will be applied to the future root on next boot on\n\
+    successful.\nRunning a command in a transactional shell is meant to be used by\
+    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
+    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
+    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nAre you sure you want to proceed?"
   start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
     \ transactie niet totdat deze klaar is."
   success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
