@@ -55,13 +55,14 @@ exec:
   skipDiffFlag: "De diff-controle aan het eind van de transactie overslaan"
   forceRunFlag: "De opdracht geforceerd uitvoeren zonder om bevestiging te vragen"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
+    LEES AANDACHTIG ALVORENS VERDER TE GAAN\n===============================================================================\n\
+    Wijzigingen die succesvol in de shell zijn aangebracht, worden bij de volgende\
+    \ opstart toegepast op de toekomstige root.\nHet uitvoeren van een commando in\
+    \ een transactionele shell is bedoeld voor geavanceerde gebruikers voor onderhoudsdoeleinden.\n\
+    \nAls u hier terecht bent gekomen terwijl u een app probeerde te installeren,\
+    \ overweeg dan om Flatpak, AppImage, of Apx (apx install package) te gebruiken.\n\
+    \nLees meer over ABRoot op [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nWeet u zeker dat u verder wilt gaan?"
   start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
     \ transactie niet totdat deze klaar is."
   success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
@@ -75,13 +76,14 @@ shell:
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
   forceOpenFlag: "Shell geforceerd openen zonder om bevestiging te vragen"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
+    LEES AANDACHTIG ALVORENS VERDER TE GAAN\n===============================================================================\n\
+    Wijzigingen die succesvol in de shell zijn aangebracht, worden bij de volgende\
+    \ opstart toegepast op de toekomstige root.\nHet uitvoeren van een commando in\
+    \ een transactionele shell is bedoeld voor geavanceerde gebruikers voor onderhoudsdoeleinden.\n\
+    \nAls u hier terecht bent gekomen terwijl u een app probeerde te installeren,\
+    \ overweeg dan om Flatpak, AppImage, of Apx (apx install package) te gebruiken.\n\
+    \nLees meer over ABRoot op [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nWeet u zeker dat u verder wilt gaan?"
   start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
     \ transactie niet totdat deze klaar is."
   success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
