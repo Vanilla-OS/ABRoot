@@ -2,5 +2,7 @@ start-transaction-rules.d/ /etc/abroot
 end-transaction-rules.d/ /etc/abroot
 abroot_kargs /etc/default
 man/abroot.1 /usr/share/man/man1
+man/it/abroot.1 /usr/share/man/it/man1
+man/nl/abroot.1 /usr/share/man/nl/man1
 man/ro/abroot.1 /usr/share/man/ro/man1
 man/sv/abroot.1 /usr/share/man/sv/man1
