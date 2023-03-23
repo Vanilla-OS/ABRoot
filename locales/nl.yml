@@ -1,98 +1,87 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties\
+    \ uit te voeren tussen 2 root-partities (A<->B)"
+  short: "ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties\
+    \ uit te voeren tussen 2 root-partities (A<->B)"
+  verboseFlag: "Gedetailleerdere uitvoer tonen"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  long: "De opstartpartitie bijwerken voor onderhoudsdoeleinden (alleen voor geavanceerde\
+    \ gebruikers)"
+  short: "Opstartpartitie bijwerken"
+  forceUpdateFlag: "Opstartpartitie geforceerd bijwerken zonder om bevestiging te\
+    \ vragen"
+  confirm: "Weet u zeker dat u wilt doorgaan?\nDe opstartpartitie wordt normaal gesproken\
+    \ alleen worden bijgewerkt als een transactie is geslaagd. Deze opdracht is bedoeld\
+    \ voor geavanceerde gebruikers voor onderhoudsdoeleinden."
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
 
 get:
   use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
+  long: "Toont de huidige of toekomstige status van de rootpartitie (A of B)"
+  short: "Toont de huidige of toekomstige status van de rootpartitie (A of B)"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  long: "Kernel-parameters beheren"
+  short: "Kernel-parameters beheren"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
+  nextReboot: "Kernel-parameters worden toegepast bij de volgende opstart"
+  failedTransaction: "Transactionele shell starten mislukt:"
+  stateRequired: "Geef een toestand aan (huidig of toekomstig)"
+  params: "Parameters van huidige partitie:\n%s\n"
+  futureParams: "Parameters van toekomstige partitie:\n%s\n"
+  unknownState: "Onbekende toestand: %s\n"
+  unknownParam: "Onbekende parameter: %s\n"
+  transactionsLocked: "Er is al een andere transactie uitgevoerd, u moet uw systeem\
+    \ opnieuw opstarten voordat u een nieuwe transactie start."
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "Kernel-parameters bewerken"
+  short: "Kernel-parameters bewerken"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
-  confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+  long: "Opdracht uitvoeren in een transactionele shell in de toekomstige root en\
+    \ ernaar overschakelen bij de volgende opstart"
+  short: "Opdracht uitvoeren in een transactionele shell in de toekomstige root en\
+    \ ernaar overschakelen bij de volgende opstart"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
+  skipDiffFlag: "De diff-controle aan het eind van de transactie overslaan"
+  forceRunFlag: "De opdracht geforceerd uitvoeren zonder om bevestiging te vragen"
+  confirm: ""
+  start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
+    \ transactie niet totdat deze klaar is."
+  success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
+  failed: "Transactionele shell starten mislukt:"
 
 shell:
   use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
-  confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+  long: "Transactionele shell in de toekomstige rootpartitie binnengaan en hiernaar\
+    \ wisselen bij de volgende opstart"
+  short: "Transactionele shell binnengaan"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
+  forceOpenFlag: "Shell geforceerd openen zonder om bevestiging te vragen"
+  confirm: ""
+  start: "Nieuwe transactie gestart. Dit kan even duren…\nHerstart of annuleer de\
+    \ transactie niet totdat deze klaar is."
+  success: "Transactie succesvol afgerond. Herstart om wijzigingen toe te passen."
+  failed: "Transactionele shell starten mislukt:"
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
+  long: "Lijst tonen van wijzigingen aan het bestandssysteem in de laatste transactie"
+  short: "Wijzigingen van de laatste transactie tonen"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Voert een systeem-rollback uit, waarbij wijzigingen in de huidige root worden\
+    \ verwijderd"
+  short: "Systeem terugbrengen naar vorige toestand"
+  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
