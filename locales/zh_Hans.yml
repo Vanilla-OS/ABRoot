@@ -1,98 +1,82 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot 藉由在两个根分区（A<->B）间执行事务以提供完全的不变性及原子性"
+  short: "ABRoot 藉由在两个根分区（A<->B）间执行事务以提供完全的不变性及原子性"
+  verboseFlag: "显示更详细的输出"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  long: "出于维护目的更新引导分区（仅适用于高级用户）"
+  short: "更新引导分区"
+  forceUpdateFlag: "强制更新引导分区而不要求确认"
+  confirm: "您确定要继续吗？\n引导分区仅应当在事务成功执行时更新。\n此命令仅应由高级用户出于维护目的执行。"
+  rootRequired: "必须是 root 用户才能运行此命令。"
 
 get:
   use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
+  long: "输出当前或将来（A或B）根分区的状态"
+  short: "输出当前或将来（A或B）根分区的状态"
+  rootRequired: "必须是 root 用户才能运行此命令。"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  long: "管理内核参数。"
+  short: "管理内核参数。"
+  rootRequired: "必须是 root 用户才能运行此命令。"
+  nextReboot: "内核参数将在下次启动时应用。"
+  failedTransaction: "无法启动事务 shell："
+  stateRequired: "请指定状态（当前或将来）"
+  params: "当前分区的参数：\n%s\n"
+  futureParams: "将来分区的参数：\n%s\n"
+  unknownState: "未知的状态：%s\n"
+  unknownParam: "未知的参数：%s\n"
+  transactionsLocked: "另一个事务已经执行，您必须重新启动系统才能开始新事务。"
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "编辑内核参数。"
+  short: "编辑内核参数。"
+  rootRequired: "必须是 root 用户才能运行此命令。"
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
+  long: "在将来根分区的事务 shell 中执行命令，并在下次启动时切换到该分区"
+  short: "在将来根分区的事务 shell 中执行命令，并在下次启动时切换到该分区"
+  rootRequired: "必须是 root 用户才能运行此命令。"
+  skipDiffFlag: "跳过事务结束时的差异检查"
+  forceRunFlag: "强制运行命令而不要求确认"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    请在继续操作前仔细阅读！\n===============================================================================\n\
+    在 shell 内执行的更改将会在事务成功时在下一次启动时应用至将来根分区。\n\n在事务 shell 内执行命令只应出于维护目的由高级用户执行。\n\n\
+    若您接下来的操作只是想安装程序，请考虑使用 Flatpak/Appimage\n或者Apx（只需执行 apx install <包名>）。\n\n更多有关ABRoot的信息，参见\
+    \ [https://documentation.vanillaos.org/docs/ABRoot/]。\n\n您确定要继续吗？"
+  start: "新事务已开始。这可能需要一些时间…\n在事务结束前，请勿重新启动或取消事务。"
+  success: "事务成功完成。重新启动以应用更改。"
+  failed: "无法启动事务 shell："
 
 shell:
   use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
+  long: "进入将来根分区的事务 shell，并在下次启动时切换根分区"
+  short: "进入事务 shell"
+  rootRequired: "必须是 root 用户才能运行此命令。"
+  forceOpenFlag: "强制打开 shell 而不要求确认"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    请在继续操作前仔细阅读！\n===============================================================================\n\
+    在 shell 内执行的更改将会在事务成功时在下一次启动时应用至将来根分区。\n\n在事务 shell 内执行命令只应出于维护目的由高级用户执行。\n\n\
+    若您接下来的操作只是想安装程序，请考虑使用 Flatpak/Appimage\n或者Apx（只需执行 apx install <包名>）。\n\n更多有关ABRoot的信息，参见\
+    \ [https://documentation.vanillaos.org/docs/ABRoot/]。\n\n您确定要继续吗？"
+  start: "新事务已开始。这可能需要一些时间…\n在事务结束前，请勿重新启动或取消事务。"
+  success: "事务成功完成。重新启动以应用更改。"
+  failed: "无法启动事务 shell："
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
+  long: "列出最近一次事务对文件系统做出的修改"
+  short: "显示最近一次事务的修改。"
+  rootRequired: "必须是 root 用户才能运行此命令。"
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "执行系统回滚，丢弃对当前根分区的修改。"
+  short: "将系统恢复到先前的状态。"
+  rootRequired: "必须是 root 用户才能运行此命令。"
