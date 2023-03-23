@@ -90,7 +90,7 @@ shell:
 
 diff:
   use: "diff"
-  long: "Listează modificările aduse sistemului de fișiere în cea mai recentă tranziție"
+  long: "Listează modificările aduse sistemului de fișiere în cea mai recentă tranzacție"
   short: "Afișează modificările din ultima tranzacție."
   rootRequired: "Trebuie să fiți root pentru a executa această comandă."
 
