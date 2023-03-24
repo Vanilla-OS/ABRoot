@@ -1,98 +1,101 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik\
+    \ ve atomiklik sağlar"
+  short: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik\
+    \ ve atomiklik sağlar"
+  verboseFlag: "daha ayrıntılı çıktı göster"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  long: "Bakım amacıyla önyükleme bölümünü güncelleme (yalnızca ileri düzey kullanıcılar\
+    \ için)"
+  short: "Önyükleme bölümünü güncelleyin"
+  forceUpdateFlag: "Onay istemeden önyükleme bölümünü güncellemeye zorla"
+  confirm: "Devam etmek istediğinizden emin misiniz?\nÖnyükleme bölümü yalnızca bir\
+    \ işlem başarılı olduğunda güncellenmelidir. Bu\nkomutu ileri düzey kullanıcılar\
+    \ tarafından bakım amacıyla kullanılmalıdır."
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 
 get:
   use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
+  long: "Mevcut veya gelecekteki kök bölüm durumunu (A veya B) çıktısını verir"
+  short: "Mevcut veya gelecekteki kök bölüm durumunu (A veya B) çıktısını verir"
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  long: "Çekirdek parametrelerini yönetin."
+  short: "Çekirdek parametrelerini yönetin."
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
+  nextReboot: "Çekirdek parametreleri bir sonraki açılışta uygulanacaktır."
+  failedTransaction: "İşlemsel kabuk başlatılamadı:"
+  stateRequired: "Lütfen bir durum belirtin (mevcut veya gelecek)"
+  params: "Geçerli bölümün parametreleri:\n%s\n"
+  futureParams: "Gelecek bölümün parametreleri:\n%s\n"
+  unknownState: "Bilinmeyen durum: %s\n"
+  unknownParam: "Bilinmeyen parametre: %s\n"
+  transactionsLocked: "Başka bir işlem zaten çalıştırıldı, yeni bir işlem başlatmadan\
+    \ önce sisteminizi yeniden başlatmanız gerekiyor."
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "Çekirdek parametrelerini düzenleyin."
+  short: "Çekirdek parametrelerini düzenleyin."
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
+  long: "Gelecekteki kökde, işlem kabuğunda bir komut çalıştır ve bir sonraki açılışta\
+    \ buna geç"
+  short: "Gelecekteki kökde, işlem kabuğunda bir komut çalıştır ve bir sonraki açılışta\
+    \ buna geç"
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
+  skipDiffFlag: "İşlemin sonundaki, fark kontrolüne atlayın"
+  forceRunFlag: "Onay istemeden komutu çalıştırmaya zorla"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    LÜTFEN DEVAM ETMEDEN ÖNCE DİKKATLİCE OKUYUN\n===============================================================================\n\
+    Kabukta yapılan değişiklikler bir sonraki açılışta gelecekteki kök dizinine uygulanacaktır.\n\
+    başarılı.\nİşlem kabuğunda bir komut çalıştırmak, ileri düzey kullanıcılar tarafından\
+    \ kullanılmak üzere tasarlanmıştır\nbakım amaçları için.\n\nEğer buraya bir uygulama\
+    \ yüklemeye çalışırken geldiyseniz, dikkatlice düşünün\nFlatpak/Appimage veya\
+    \ Apx (apx yükleme paketi) Bunun yerine.\n\nABRoot hakkında daha fazla bilgiyi\
+    \ [https://documentation.vanillaos.org/docs/ABRoot/] adresinde bulabilirsiniz.\n\
+    \nDevam etmek istediğinizden emin misiniz ?"
+  start: "Yeni işlem başlatıldı. Bu biraz zaman alabilir...\nİşlem bitene kadar yeniden\
+    \ başlatmayın veya işlemi iptal etmeyin."
+  success: "İşlem başarıyla tamamlandı. Değişiklikleri uygulamak için yeniden başlatın."
+  failed: "İşlemsel kabuk başlatılamadı:"
 
 shell:
   use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
+  long: "Gelecekteki kök bölümüne bir işlem kabuğu girin ve bir sonraki açılışta kök\
+    \ dizine geçin"
+  short: "İşlemsel bir kabuk girin"
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
+  forceOpenFlag: "Onay istemeden kabuğu açmaya zorla"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    LÜTFEN DEVAM ETMEDEN ÖNCE DİKKATLİCE OKUYUN\n===============================================================================\n\
+    Kabukta yapılan değişiklikler bir sonraki açılışta gelecekteki kök dizinine uygulanacaktır.\n\
+    başarılı.\nİşlem kabuğunda bir komut çalıştırmak, ileri düzey kullanıcılar tarafından\
+    \ kullanılmak üzere tasarlanmıştır\nbakım amaçları için.\n\nEğer buraya bir uygulama\
+    \ yüklemeye çalışırken geldiyseniz, dikkatlice düşünün\nFlatpak/Appimage veya\
+    \ Apx (apx yükleme paketi) Bunun yerine.\n\nABRoot hakkında daha fazla bilgiyi\
+    \ [https://documentation.vanillaos.org/docs/ABRoot/] adresinde bulabilirsiniz.\n\
+    \nDevam etmek istediğinizden emin misiniz ?"
+  start: "Yeni işlem başlatıldı. Bu biraz zaman alabilir...\nİşlem bitene kadar yeniden\
+    \ başlatmayın veya işlemi iptal etmeyin."
+  success: "İşlem başarıyla tamamlandı. Değişiklikleri uygulamak için yeniden başlatın."
+  failed: "İşlemsel kabuk başlatılamadı:"
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
+  long: "En son aktarımda, dosya sisteminde yapılan değişiklikleri listele"
+  short: "Son işlemden itibaren yapılan değişiklikleri göster."
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Mevcut kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
+  short: "Sistemi önceki duruma döndür."
+  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."

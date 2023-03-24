@@ -1,40 +1,39 @@
 abroot:
   use: "abroot"
-  long: "Az ABRoot teljes változtathatatlanságot és atomicitást biztosít azáltal,\
-    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)."
-  short: "Az ABRoot teljes változtathatatlanságot és atomicitást biztosít azáltal,\
-    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)."
-  verboseFlag: "részletesebb kimenet megjelenítése"
+  long: "ABRoot provides full immutability and atomicity by performing transactions\
+    \ between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions\
+    \ between 2 root partitions (A<->B)"
+  verboseFlag: "show more detailed output"
 
 update:
   use: "_update-boot"
-  long: "A rendszerindító partíció frissítése karbantartás céljából (csak haladó felhasználók\
-    \ számára)"
-  short: "A boot partíció frissítése"
-  forceUpdateFlag: "a boot partíció kényszerfrissítése megerősítés kérése nélkül"
-  confirm: "Biztos, hogy folytatni akarja?\nA bootpartíciót csak akkor kell frissíteni,\
-    \ ha a tranzakció sikeres volt. Ezt a\nparancsot haladó csak felhasználóknak érdemes\
-    \ használniuk karbantartási célokra."
-  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  long: "Update the boot partition for maintenance purposes (for advanced users only)"
+  short: "Update the boot partition"
+  forceUpdateFlag: "force update the boot partition without asking for confirmation"
+  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
+    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
+    \ for maintenance purposes."
+  rootRequired: "You must be root to run this command."
 
 get:
   use: "get"
-  long: "A gyökérpartíció jelenlegi vagy jövőbeli állapotának (A vagy B) kimenete"
-  short: "A gyökérpartíció jelenlegi vagy jövőbeli állapotának (A vagy B) kimenete"
-  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  long: "Outputs the present or future root partition state (A or B)"
+  short: "Outputs the present or future root partition state (A or B)"
+  rootRequired: "You must be root to run this command."
 
 kargs:
   use: "kargs"
-  long: "A rendszermag paramétereinek kezelése."
-  short: "A rendszermag paramétereinek kezelése."
-  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
-  nextReboot: "A rendszermag paraméterei a következő rendszerindításkor kerülnek alkalmazásra."
-  failedTransaction: "Nem sikerült elindítani a tranzakciós héjat:"
-  stateRequired: "Kérjük, adjon meg egy állapotot (jelenlegi vagy jövőbeli)"
-  params: "Az aktuális partíció paraméterei:\n%s\n"
-  futureParams: "A jövőbeli partíció paraméterei:\n%s\n"
-  unknownState: "Ismeretlen állapot: %s\n"
-  unknownParam: "Ismeretlen paraméter: %s\n"
+  long: "Manage kernel parameters."
+  short: "Manage kernel parameters."
+  rootRequired: "You must be root to run this command."
+  nextReboot: "Kernel parameters will be applied on next boot."
+  failedTransaction: "Failed to start transactional shell:"
+  stateRequired: "Please specify a state (present or future)"
+  params: "Current partition's parameters:\n%s\n"
+  futureParams: "Future partition's parameters:\n%s\n"
+  unknownState: "Unknown state: %s\n"
+  unknownParam: "Unknown parameter: %s\n"
   transactionsLocked: "Another transaction has already been executed, you must reboot\
     \ your system before starting a new transaction."
 
@@ -88,7 +87,7 @@ shell:
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
+  long: "List modifications made to the filesystem in the latest transaction"
   short: "Show modifications from latest transaction."
   rootRequired: "You must be root to run this command."
 
