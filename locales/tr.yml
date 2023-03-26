@@ -8,7 +8,7 @@ abroot:
 
 update:
   use: "_update-boot"
-  long: "Bakım amacıyla önyükleme bölümünü güncelleme (yalnızca ileri düzey kullanıcılar\
+  long: "Bakım amacıyla önyükleme bölümünü güncelle (yalnızca ileri düzey kullanıcılar\
     \ için)"
   short: "Önyükleme bölümünü güncelleyin"
   forceUpdateFlag: "Onay istemeden önyükleme bölümünü güncellemeye zorla"
