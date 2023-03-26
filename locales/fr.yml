@@ -1,19 +1,19 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
+  long: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des\
+    \ transactions entre 2 partitions racine (A<->B)"
+  short: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des\
+    \ transactions entre 2 partitions racine (A<->B)"
   verboseFlag: "show more detailed output"
 
 update:
   use: "_update-boot"
   long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
+  short: "Mise à jour de la partition de démarrage"
   forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
+  confirm: "Êtes-vous sûr de vouloir continuer ?\nLa partition de démarrage ne doit\
+    \ être mise à jour que si une transaction a réussi. Cette commande\ndoit être\
+    \ utilisée par des utilisateurs expérimentés à des fins de maintenance."
   rootRequired: "You must be root to run this command."
 
 get:
@@ -24,42 +24,43 @@ get:
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
+  long: "Gérer les paramètres du noyau."
+  short: "Gérer les paramètres du noyau."
   rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
+  nextReboot: "Les paramètres du noyau seront appliqués au prochain démarrage."
   failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
+  stateRequired: "Veuillez spécifier un état (actuel ou futur)"
   params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  futureParams: "Paramètres de la future partition :\n%s\n"
+  unknownState: "État inconnu : %s\n"
+  unknownParam: "Paramètre inconnu : %s\n"
+  transactionsLocked: "Une autre transaction a déjà été exécutée, vous devez redémarrer\
+    \ votre système avant de commencer une nouvelle transaction."
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "éditer les paramètres du noyau."
+  short: "éditer les paramètres du noyau."
+  rootRequired: "Vous devez être root pour exécuter cette commande."
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
+  long: "Exécuter une commande dans un shell transactionnel dans la future racine\
+    \ et basculer vers celle-ci au prochain démarrage."
+  short: "Exécuter une commande dans un shell transactionnel dans la future racine\
+    \ et basculer vers celle-ci au prochain démarrage"
+  rootRequired: "Vous devez être root pour exécuter cette commande."
+  skipDiffFlag: "Sauter le contrôle des différences à la fin de la transaction"
+  forceRunFlag: "Forcer l'exécution de la commande sans demander de confirmation"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
+    VEUILLEZ LIRE ATTENTIVEMENT AVANT DE POURSUIVRE\n===============================================================================\n\
+    Les changements effectués dans l'interpréteur de commandes seront appliqués à\
+    \ la future racine lors du prochain démarrage sur\navec succès.\nL'exécution d'une\
+    \ commande dans un shell transactionnel est destinée aux utilisateurs avancés\n\
+    à des fins de maintenance.\n\nSi vous vous êtes retrouvé ici en essayant d'installer\
+    \ une application, envisagez d'utiliser\nFlatpak/Appimage ou Apx (apx install\
+    \ package).\n\nPour en savoir plus sur ABRoot, consultez le site [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nÊtes-vous sûr de vouloir continuer ?"
   start: "New transaction started. This may take a while...\nDo not reboot or cancel\
     \ the transaction until it is finished."
   success: "Transaction completed successfully. Reboot to apply changes."
