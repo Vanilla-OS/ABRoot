@@ -1,24 +1,25 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
+  long: "ABRoot обеспечивает полную неизменяемость и атомарность, выполняя транзакции\
+    \ между двумя корневыми разделами (A<->B)"
   short: "ABRoot provides full immutability and atomicity by performing transactions\
     \ between 2 root partitions (A<->B)"
   verboseFlag: "show more detailed output"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
+  long: "Обновление загрузочного раздела в целях обслуживания (только для опытных\
+    \ пользователей)"
   short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  forceUpdateFlag: "Принудительное обновление загрузочного раздела без запроса подтверждения"
+  confirm: "Вы уверены, что хотите продолжить?\nЗагрузочный раздел должен быть обновлен\
+    \ только в том случае, если транзакция прошла успешно. Эта\nкоманда должна использоваться\
+    \ опытными пользователями в целях обслуживания."
+  rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
 
 get:
   use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
+  long: "Выводит настоящее или будущее состояние корневого раздела (A или B)"
   short: "Outputs the present or future root partition state (A or B)"
   rootRequired: "You must be root to run this command."
 
