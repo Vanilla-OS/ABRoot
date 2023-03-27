@@ -1,9 +1,9 @@
 abroot:
   use: "abroot"
   long: "Az ABRoot teljes változtathatatlanságot és atomicitást biztosít azáltal,\
-    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)."
+    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)"
   short: "Az ABRoot teljes változtathatatlanságot és atomicitást biztosít azáltal,\
-    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)."
+    \ hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)"
   verboseFlag: "részletesebb kimenet megjelenítése"
 
 update:
@@ -35,65 +35,66 @@ kargs:
   futureParams: "A jövőbeli partíció paraméterei:\n%s\n"
   unknownState: "Ismeretlen állapot: %s\n"
   unknownParam: "Ismeretlen paraméter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  transactionsLocked: "Egy másik tranzakció már végrehajtásra került, az új tranzakció\
+    \ indítása előtt újra kell indítania a rendszert."
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "kernel paraméterek szerkesztése."
+  short: "kernel paraméterek szerkesztése."
+  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
+  long: "Parancs végrehajtása egy tranzakciós héjban a jövőbeli gyökérben, és a következő\
+    \ indításkor átváltás erre a parancsra"
+  short: "Parancs végrehajtása egy tranzakciós héjban a jövőbeli gyökérben, és a következő\
+    \ indításkor átváltás erre a parancsra"
+  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  skipDiffFlag: "A tranzakció végén a diff ellenőrzés kihagyása"
+  forceRunFlag: "A parancs megerősítés kérése nélküli kényszerfuttatása"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    KÉRJÜK, OLVASSA EL FIGYELMESEN, MIELŐTT TOVÁBBLÉPNE\n===============================================================================\n\
+    A héjban végrehajtott változtatások a következő indításkor a következő root-ra\
+    \ lesznek sikeresen\nalkalmazva.\nA tranzakciós héjban történő parancsfuttatást\
+    \ haladó felhasználóknak szántuk\nkarbantartási célokra.\n\nHa ide jutott, amikor\
+    \ egy alkalmazást próbált telepíteni, fontolja meg a következők egyikének használatát\n\
+    Flatpak/Appimage vagy Apx (apx telepítőcsomag).\n\nAz ABRootról bővebben a [https://documentation.vanillaos.org/docs/ABRoot/]\
+    \ oldalon olvashat.\n\nBiztos, hogy folytatni szeretné?"
+  start: "Új tranzakció indult. Ez eltarthat egy darabig...\nNe indítsa újra, vagy\
+    \ ne törölje a tranzakciót, amíg az be nem fejeződött."
+  success: "A tranzakció sikeresen befejeződött. Újraindítás a változások alkalmazásához."
+  failed: "Nem sikerült elindítani a tranzakciós héjat:"
 
 shell:
   use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
+  long: "Lépjen be egy tranzakciós héjba a jövőbeli root partícióban, és váltson rootot\
+    \ a következő indításkor"
+  short: "Belépés a tranzakciós héjba"
+  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  forceOpenFlag: "Mindenképp nyissa meg a héjat megerősítés kérése nélkül"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    KÉRJÜK, OLVASSA EL FIGYELMESEN, MIELŐTT TOVÁBBLÉPNE\n===============================================================================\n\
+    A héjban végrehajtott változtatások a következő indításkor a következő root-ra\
+    \ lesznek sikeresen\nalkalmazva.\nA tranzakciós héjban történő parancsfuttatást\
+    \ haladó felhasználóknak szántuk\nkarbantartási célokra.\n\nHa ide jutott, amikor\
+    \ egy alkalmazást próbált telepíteni, fontolja meg a következők egyikének használatát\n\
+    Flatpak/Appimage vagy Apx (apx telepítőcsomag).\n\nAz ABRootról bővebben a [https://documentation.vanillaos.org/docs/ABRoot/]\
+    \ oldalon olvashat.\n\nBiztos, hogy folytatni szeretné?"
+  start: "Új tranzakció indult. Ez eltarthat egy darabig...\nNe indítsa újra, vagy\
+    \ ne törölje a tranzakciót, amíg az be nem fejeződött."
+  success: "A tranzakció sikeresen befejeződött. Újraindítás a változások alkalmazásához."
+  failed: "Nem sikerült elindítani a tranzakciós héjat:"
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
+  long: "A fájlrendszerben a legutóbbi átvitel során végrehajtott módosítások listája"
+  short: "A legutóbbi tranzakció módosításainak megjelenítése."
+  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Rendszer-visszaállítás végrehajtása, a jelenlegi gyökérben végrehajtott változtatások\
+    \ elvetésével."
+  short: "Visszaállítja a rendszert egy korábbi állapotra."
+  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
