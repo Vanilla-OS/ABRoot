@@ -10,7 +10,7 @@ update:
   use: "_update-boot"
   long: "Bakım amacıyla önyükleme bölümünü güncelle (yalnızca ileri düzey kullanıcılar\
     \ için)"
-  short: "Önyükleme bölümünü güncelleyin"
+  short: "Önyükleme bölümünü güncelle"
   forceUpdateFlag: "Onay istemeden önyükleme bölümünü güncellemeye zorla"
   confirm: "Devam etmek istediğinizden emin misiniz?\nÖnyükleme bölümü yalnızca bir\
     \ işlem başarılı olduğunda güncellenmelidir. Bu\nkomutu ileri düzey kullanıcılar\
