@@ -8,7 +8,8 @@ abroot:
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
+  long: "Ενημέρωση του διαμερίσματος εκκίνησης για λόγους συντήρησης (μόνο για προχωρημένους\
+    \ χρήστες)"
   short: "Update the boot partition"
   forceUpdateFlag: "force update the boot partition without asking for confirmation"
   confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
