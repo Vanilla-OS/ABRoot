@@ -2,8 +2,8 @@ abroot:
   use: "abroot"
   long: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações entre\
     \ 2 partições raiz (A<->B)"
-  short: "O ABRoot oferece total imutabilidade e atomicidade ao realizar transações\
-    \ entre 2 partições raiz (A<->B)"
+  short: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações\
+    \ entre 2 partições raízes (A<->B)"
   verboseFlag: "mostrar saída mais detalhada"
 
 update:
@@ -71,20 +71,19 @@ shell:
   use: "shell"
   long: "Insira um shell transacional na futura partição raiz e troque a raiz na próxima\
     \ inicialização"
-  short: "Inserir um shell transacional"
+  short: "Insira um shell transacional"
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
   forceOpenFlag: "Forçar a abertura do shell sem pedir confirmação"
   confirm: "\n===============================================================================\n\
-    POR FAVOR, LEIA ATENTAMENTE ANTES DE PROSSEGUIR\n===============================================================================\n\
-    As alterações feitas no shell serão aplicadas à raiz futura na próxima inicialização\n\
-    bem-sucedida.\nA execução de um comando em um shell transacional destina-se a\
-    \ ser usada por usuários avançados\npara fins de manutenção.\n\nSe você acabou\
-    \ aqui tentando instalar um aplicativo, considere usar\npacotes Flatpak/Appimage\
-    \ ou Apx (apx install package) em vez disso.\n\nLeia mais sobre o utilitário ABRoot\
-    \ em [https://documentation.vanillaos.org/docs/ABRoot/].\n\nTem certeza de que\
-    \ deseja prosseguir?"
-  start: "Nova transação iniciada. Isso pode demorar um pouco...\nNão reinicie ou\
-    \ cancele a transação até que ela seja concluída."
+    POR FAVOR, LEIA COM ATENÇÃO ANTES DE PROSSEGUIR\n===============================================================================\n\
+    As alterações feitas na casca serão aplicadas à futura raiz no próximo boot em\n\
+    sucesso.\nA execução de um comando em uma shell transacional é destinada a ser\
+    \ usada por usuários avançados\npara fins de manutenção.\n\nSe você acabou aqui\
+    \ tentando instalar um aplicativo, considere o uso de\nFlatpak/Appimage ou Apx\
+    \ (apx install package) em seu lugar.\n\nLeia mais sobre a ABRoot em [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nVocê tem certeza de que quer prosseguir?"
+  start: "Começou uma nova transação. Isto pode demorar um pouco...\nNão reinicie\
+    \ ou cancele a transação até que ela esteja concluída."
   success: "Transação concluída com sucesso. Reinicie o sistema para aplicar as alterações."
   failed: "Falha em iniciar o shell transacional:"
 
