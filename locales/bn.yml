@@ -1,20 +1,22 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot ২টি রুট (A<->B) পার্টিশনের মধ্যে অদলবদল করার মাধ্যমে সম্পূর্ণ অপরিবর্তনীয়তা\
+    \ এবং পারমাণবিকতা প্রদান করে"
+  short: "ABRoot ২টি রুট (A<->B) পার্টিশনের মধ্যে অদলবদল করার মাধ্যমে সম্পূর্ণ অপরিবর্তনীয়তা\
+    \ এবং পারমাণবিকতা প্রদান করে"
+  verboseFlag: "আরো বিস্তারিত আউটপুট দেখান"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  long: "রক্ষণাবেক্ষণের উদ্দেশ্যে বুট পার্টিশন আপডেট করুন (শুধুমাত্র অভিজ্ঞ ব্যবহারকারীদের\
+    \ জন্য)"
+  short: "বুট পার্টিশন আপডেট করুন"
+  forceUpdateFlag: "নিশ্চিতকরণের জন্য জিজ্ঞাসা ছাড়াই জোরপূর্বক বুট পার্টিশন আপডেট\
+    \ করুন"
+  confirm: "আপনি কি নিশ্চিত আপনি সামনে এগুতে চান?\nশুধুমাত্র একটি লেনদেন সফল হলেই\
+    \ তবে বুট পার্টিশন আপডেট করা উচিত। এই\nকমান্ডটি রক্ষণাবেক্ষণের উদ্দেশ্যে অভিজ্ঞ\
+    \ ব্যবহারকারীদের দ্বারা ব্যবহার করা উচিত।"
+  rootRequired: "এই কমান্ডটি চালানোর জন্য আপনাকে অবশ্যই রুট হতে হবে।"
 
 get:
   use: "get"
