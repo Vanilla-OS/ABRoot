@@ -1,112 +1,112 @@
 abroot (1.4.4) unstable; urgency=critical
 
-  * Check system is in UEFI mode before mounting EFI
+* Check system is in UEFI mode before mounting EFI
 
- -- Mirko Brombin <send@mirko.pm>  Thu, 16 Feb 2023 12:59:00 -0300
+-- Mirko Brombin <send@mirko.pm>   Thu, 16 Feb 2023 12:59:00 -0300
 
 abroot (1.4.3) kinetic; urgency=critical
 
-  * Check system is in UEFI mode before mounting EFI
+* Check system is in UEFI mode before mounting EFI
 
- -- Mateus Melchiades <matbme@duck.com>  Thu, 16 Feb 2023 12:59:00 -0300
+-- Mateus Melchiades <matbme@duck.com>  Thu, 16 Feb 2023 12:59:00 -0300
 
 abroot (1.4.2-1) kinetic; urgency=critical
 
-  * Ignore "exit status 24" in rsync
+* Ignore "exit status 24" in rsync
 
- -- Mirko brombin <send@mirko.pm>  Wed, 08 Feb 2023 09:23:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Wed, 08 Feb 2023 09:23:00 +0200
 
 abroot (1.4.1) kinetic; urgency=critical
 
-  * Do not require user interaction for transactions using DEBIAN_FRONTEND=noninteractive
-  * Respect modifications in /etc/default/grub
-  * Divert /etc/default/grub to avoid conflicts
-  * Fix apt/systemd problems in chroot
+* Do not require user interaction for transactions using DEBIAN_FRONTEND=noninteractive
+* Respect modifications in /etc/default/grub
+* Divert /etc/default/grub to avoid conflicts
+* Fix apt/systemd problems in chroot
 
- -- Mirko brombin <send@mirko.pm>  Sun, 05 Feb 2023 09:05:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Sun, 05 Feb 2023 09:05:00 +0200
 
 abroot (1.4.0) kinetic; urgency=critical
 
-  * New rollback command to switch to the previous root partition
-  * Fix spelling
+* New rollback command to switch to the previous root partition
+* Fix spelling
 
- -- Mirko brombin <send@mirko.pm>  Sun, 29 Jan 2023 16:02:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Sun, 29 Jan 2023 16:02:00 +0200
 
 abroot (1.3.3) kinetic; urgency=critical
 
-  * diff rewrite to be faster
+* diff rewrite to be faster
 
- -- Mirko brombin <send@mirko.pm>  Fri, 20 Jan 2023 09:35:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Fri, 20 Jan 2023 09:35:00 +0200
 
 abroot (1.3.2) kinetic; urgency=critical
 
-  * New transaction UI
-  * New diff command to see changes for the latest transaction
-  * Improved GRUB labels
-  * Move to orchid
-  * Use specific flags instead of --assume-yes
-  * Ability to skip diff check with --skip-diff
+* New transaction UI
+* New diff command to see changes for the latest transaction
+* Improved GRUB labels
+* Move to orchid
+* Use specific flags instead of --assume-yes
+* Ability to skip diff check with --skip-diff
 
- -- Mirko brombin <send@mirko.pm>  Fri, 20 Jan 2023 09:35:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Fri, 20 Jan 2023 09:35:00 +0200
 
 abroot (1.2.3) kinetic; urgency=critical
 
-  * Use vendor path
+* Use vendor path
 
- -- Mirko brombin <send@mirko.pm>  Wed, 11 Jan 2023 21:29:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Wed, 11 Jan 2023 21:29:00 +0200
 
 abroot (1.2.2) kinetic; urgency=critical
 
-  * Properly handle exit code
+* Properly handle exit code
 
- -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Mon, 02 Jan 2022 11:17:00 +0200
 
 abroot (1.2.0) kinetic; urgency=medium
 
-  * Support custom kargs
+* Support custom kargs
 
- -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Mon, 02 Jan 2022 11:17:00 +0200
 
 abroot (1.1.3) kinetic; urgency=medium
 
-  * Improve logs, avoid panic
-  * Improve disclaimer notice
+* Improve logs, avoid panic
+* Improve disclaimer notice
 
- -- Mirko brombin <send@mirko.pm>  Mon, 02 Jan 2022 11:17:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Mon, 02 Jan 2022 11:17:00 +0200
 
 abroot (1.1.1) kinetic; urgency=medium
 
-  * Add hook system to allow running custom shell scripts at start/end of the transaction
-  * Add Manpage (man abroot)
+* Add hook system to allow running custom shell scripts at start/end of the transaction
+* Add Manpage (man abroot)
 
- -- Mirko brombin <send@mirko.pm>  Mon, 20 dec 2022 08:20:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Mon, 20 dec 2022 08:20:00 +0200
 
 abroot (0.3.3) kinetic; urgency=critical
 
-  * Patch mkconfig during transaction, not outside
+* Patch mkconfig during transaction, not outside
 
- -- Mirko brombin <send@mirko.pm>  Sat, 15 dec 2022 08:37:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Sat, 15 dec 2022 08:37:00 +0200
 
 abroot (0.3.2) kinetic; urgency=critical
 
-  * Force generate grub.cfg in /tmp during a transaction
+* Force generate grub.cfg in /tmp during a transaction
 
- -- Mirko brombin <send@mirko.pm>  Wed, 15 dec 2022 08:11:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Wed, 15 dec 2022 08:11:00 +0200
 
 abroot (0.3.1) kinetic; urgency=critical
 
-  * Avoid failing the transaction when /opt is not present
+* Avoid failing the transaction when /opt is not present
 
- -- Mirko brombin <send@mirko.pm>  Thu, 14 dec 2022 22:47:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Thu, 14 dec 2022 22:47:00 +0200
 
 abroot (0.3.0) kinetic; urgency=critical
 
-  * Make boot part of the transaction to allow kernel updates
+* Make boot part of the transaction to allow kernel updates
 
- -- Mirko brombin <send@mirko.pm>  Mon, 13 dec 2022 21:16:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Mon, 13 dec 2022 21:16:00 +0200
 
 abroot (0.2.3) kinetic; urgency=critical
 
-  * Fix /var, /opt in combinerPath by mounting as bind
+* Fix /var, /opt in combinerPath by mounting as bind
 
- -- Mirko brombin <send@mirko.pm>  Fri, 09 dec 2022 15:20:00 +0200
+-- Mirko Brombin <send@mirko.pm>   Fri, 09 dec 2022 15:20:00 +0200

@@ -1,5 +1,18 @@
 package main
 
+/*	License: GPLv3
+	Authors:
+		Mirko Brombin <mirko@fabricators.ltd>
+		Vanilla OS Contributors <https://github.com/vanilla-os/>
+	Copyright: 2023
+	Description:
+		ABRoot is utility which provides full immutability and
+		atomicity to a Linux system, by transacting between
+		two root filesystems. Updates are performed using OCI
+		images, to ensure that the system is always in a
+		consistent state.
+*/
+
 import (
 	"embed"
 
@@ -8,7 +21,7 @@ import (
 )
 
 var (
-	Version = "1.4.4"
+	Version = "2.0.0-alpha.1"
 )
 
 //go:embed locales/*.yml
@@ -22,27 +35,17 @@ func main() {
 	root := cmd.NewRootCommand(Version)
 	abroot.CreateRootCommand(root)
 
-	// update-boot command
-	updateBoot := cmd.NewUpdateBootCommand()
-	root.AddCommand(updateBoot)
+	upgrade := cmd.NewUpgradeCommand()
+	root.AddCommand(upgrade)
 
-	get := cmd.NewGetCommand()
-	root.AddCommand(get)
+	kargs := cmd.NewKargsCommand()
+	root.AddCommand(kargs)
 
-	execCmd := cmd.NewExecCommand()
-	root.AddCommand(execCmd)
+	pkg := cmd.NewPkgCommand()
+	root.AddCommand(pkg)
 
-	shellCmd := cmd.NewShellCommand()
-	root.AddCommand(shellCmd)
-
-	kargsCmd := cmd.NewKargsCommand()
-	root.AddCommand(kargsCmd)
-
-	diffCmd := cmd.NewDiffCommand()
-	root.AddCommand(diffCmd)
-
-	rollbackCmd := cmd.NewRollbackCommand()
-	root.AddCommand(rollbackCmd)
+	rollback := cmd.NewRollbackCommand()
+	root.AddCommand(rollback)
 
 	// run the app
 	err := abroot.Run()
@@ -50,19 +53,3 @@ func main() {
 		cmdr.Error.Println(err)
 	}
 }
-
-/*
-func main() {
-	rootCmd := newABRootCommand()
-
-	rootCmd.AddCommand(cmd.NewUpdateBootCommand())
-	rootCmd.AddCommand(cmd.NewGetCommand())
-	rootCmd.AddCommand(cmd.NewKargsCommand())
-	rootCmd.AddCommand(cmd.NewShellCommand())
-	rootCmd.AddCommand(cmd.NewExecCommand())
-	rootCmd.SetHelpFunc(help)
-	rootCmd.Execute()
-
-	core.CheckABRequirements()
-}
-*/
