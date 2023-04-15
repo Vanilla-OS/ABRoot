@@ -47,6 +47,9 @@ func main() {
 	rollback := cmd.NewRollbackCommand()
 	root.AddCommand(rollback)
 
+	status := cmd.NewStatusCommand()
+	root.AddCommand(status)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {
