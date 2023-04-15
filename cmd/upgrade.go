@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -47,16 +49,46 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	// }
 
 	// NOTE: This is just a test, to see if the code works
-	p := core.NewPodman()
-	cf := p.NewContainerFile(
-		"docker.io/library/alpine:latest",
-		map[string]string{
-			"LABEL": "test",
-		},
-		map[string]string{},
-		`RUN echo "test" > /test.txt`,
-	)
-	p.GenerateRootfs("testing", cf, "test")
+	// p := core.NewPodman()
+	// cf := p.NewContainerFile(
+	// 	"docker.io/library/alpine:latest",
+	// 	map[string]string{
+	// 		"LABEL": "test",
+	// 	},
+	// 	map[string]string{},
+	// 	`RUN echo "test" > /test.txt`,
+	// )
+	// p.GenerateRootfs("testing", cf, "test")
+
+	// diskM := core.NewDiskManager()
+	// disk, err := diskM.GetDisk("nvme0n1")
+	// if err != nil {
+	// 	return err
+	// }
+	// for _, partition := range disk.Partitions {
+	// 	fmt.Println(partition.Label)
+	// }
+
+	// a := core.NewABRootManager()
+	// present, err := a.GetPresent()
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Println("present:", present.Label)
+
+	// future, err := a.GetFuture()
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Println("future:", future.Label)
+
+	c := core.NewChecks()
+	err := c.PerformAllChecks()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("done")
 
 	return nil
 }
