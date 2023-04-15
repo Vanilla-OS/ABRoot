@@ -34,6 +34,7 @@ require (
 	github.com/fitv/go-i18n v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/google/go-containerregistry v0.14.0
+	github.com/google/uuid v1.3.0
 	github.com/gookit/color v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

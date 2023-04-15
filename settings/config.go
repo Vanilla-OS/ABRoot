@@ -20,9 +20,10 @@ import (
 )
 
 type Config struct {
-	Registry string `json:"registry"`
-	Name     string `json:"name"`
-	Tag      string `json:"tag"`
+	Registry  string `json:"registry"`
+	Name      string `json:"name"`
+	Tag       string `json:"tag"`
+	HooksPath string `json:"hooksPath"`
 }
 
 var Cnf *Config
@@ -40,8 +41,9 @@ func init() {
 	}
 
 	Cnf = &Config{
-		Registry: viper.GetString("registry"),
-		Name:     viper.GetString("name"),
-		Tag:      viper.GetString("tag"),
+		Registry:  viper.GetString("registry"),
+		Name:      viper.GetString("name"),
+		Tag:       viper.GetString("tag"),
+		HooksPath: viper.GetString("hooksPath"),
 	}
 }
