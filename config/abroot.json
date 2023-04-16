@@ -2,5 +2,7 @@
     "registry": "registry.vanillaos.org",
     "name": "vanillaos/desktop",
     "tag": "main",
-    "hooksPath": "example-hooks"
+    "hooksPath": "example-hooks",
+    "iPkgMngAdd": "apt install",
+    "iPkgMngRm": "apt remove"
 }
