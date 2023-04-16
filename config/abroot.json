@@ -3,6 +3,6 @@
     "name": "vanillaos/desktop",
     "tag": "main",
     "hooksPath": "example-hooks",
-    "iPkgMngAdd": "apt install",
-    "iPkgMngRm": "apt remove"
+    "iPkgMngAdd": "apt install -y",
+    "iPkgMngRm": "apt remove -y"
 }
