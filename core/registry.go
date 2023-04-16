@@ -1,7 +1,5 @@
 package core
 
-// NOTE: replaced by podman.go, here as reference
-
 /*	License: GPLv3
 	Authors:
 		Mirko Brombin <mirko@fabricators.ltd>
@@ -14,153 +12,98 @@ package core
 		images, to ensure that the system is always in a
 		consistent state.
 */
-
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
+	"io/ioutil"
+	"net/http"
 
-	"github.com/google/go-containerregistry/pkg/crane"
 	"github.com/vanilla-os/abroot/settings"
 )
 
-// Registry is the main struct for the registry
+// Registry struct
 type Registry struct {
-	Registry string
-	Name     string
-	Tag      string
-	Image    *Image
+	API string
 }
 
-// NewRegistry creates a new registry
-func NewRegistry() *Registry {
-	r := &Registry{
-		Registry: settings.Cnf.Registry,
-		Name:     settings.Cnf.Name,
-		Tag:      settings.Cnf.Tag,
-		Image:    nil,
-	}
-
-	r.Image, _ = r.GetManifest()
-	return r
-}
-
-type Image struct {
+// Manifest struct
+type Manifest struct {
 	Manifest []byte
 	Digest   string
 	Layers   []string
 }
 
+// NewRegistry returns a new Registry struct
+func NewRegistry() *Registry {
+	return &Registry{
+		API: settings.Cnf.Registry,
+	}
+}
+
+// HasUpdate checks if the image/tag from the registry has a different digest
+func (r *Registry) HasUpdate(digest string) bool {
+	PrintVerbose("Checking for updates ...")
+
+	manifest, err := r.GetManifest()
+	if err != nil {
+		PrintVerbose("HasUpdate:error: %s", err)
+		return false
+	}
+
+	if manifest.Digest == digest {
+		PrintVerbose("HasUpdate: no update available")
+		return false
+	}
+
+	PrintVerbose("HasUpdate: update available")
+	return true
+}
+
 // GetManifest returns the manifest of the image
-func (r *Registry) GetManifest() (*Image, error) {
-	fmt.Printf("Getting manifest for %s/%s:%s ...\n", r.Registry, r.Name, r.Tag)
+func (r *Registry) GetManifest() (*Manifest, error) {
+	PrintVerbose("Getting manifest for %s/%s:%s ...", r.API, settings.Cnf.Name, settings.Cnf.Tag)
 
-	ref := fmt.Sprintf("%s/%s:%s", r.Registry, r.Name, r.Tag)
-	manifest, err := crane.Manifest(ref)
+	url := fmt.Sprintf("%s/v2/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		PrintVerbose("GetManifest:error: %s", err)
 		return nil, err
 	}
 
-	// convert manifest from []byte to json
+	req.Header.Set("Accept", "application/vnd.docker.distribution.manifest.v2+json")
+	req.Header.Set("User-Agent", "abroot")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		PrintVerbose("GetManifest(2):error: %s", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		PrintVerbose("GetManifest(3):error: %s", err)
+		return nil, err
+	}
+
 	m := make(map[string]interface{})
-	err = json.Unmarshal(manifest, &m)
+	err = json.Unmarshal(body, &m)
 	if err != nil {
+		PrintVerbose("GetManifest(4):error: %s", err)
 		return nil, err
 	}
 
-	digest, err := crane.Digest(ref)
-	if err != nil {
-		return nil, err
+	digest := resp.Header.Get("Docker-Content-Digest")
+	layers := m["layers"].([]interface{})
+	var layerDigests []string
+	for _, layer := range layers {
+		layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
 	}
 
-	layers := []string{}
-	for _, layer := range m["layers"].([]interface{}) {
-		layers = append(layers, layer.(map[string]interface{})["digest"].(string))
-	}
-
-	return &Image{
-		Manifest: manifest,
+	PrintVerbose("GetManifest: success")
+	return &Manifest{
+		Manifest: body,
 		Digest:   digest,
-		Layers:   layers,
+		Layers:   layerDigests,
 	}, nil
-}
-
-// MakeRootfs creates a new rootfs from the image
-// by extracting the layers to the destination
-func (r *Registry) MakeRootfs(dest string) error {
-	options := []crane.Option{}
-	layers := r.Image.Layers
-
-	dest = fmt.Sprintf("%s/%s", dest, r.Image.Digest)
-
-	// Create destination directory
-	err := os.MkdirAll(dest, 0755)
-	if err != nil {
-		return fmt.Errorf("creating directory %s: %w", dest, err)
-	}
-
-	// Download layers
-	for n, layer := range layers {
-		src := fmt.Sprintf("%s/%s@%s", r.Registry, r.Name, layer)
-
-		layer, err := crane.PullLayer(src, options...)
-		if err != nil {
-			return fmt.Errorf("pulling layer %s: %w", src, err)
-		}
-
-		blob, err := layer.Uncompressed()
-		if err != nil {
-			return fmt.Errorf("fetching blob %s: %w", src, err)
-		}
-
-		tarPath := filepath.Join(dest, fmt.Sprintf("%d.tar", n))
-		blobTar, err := os.Create(tarPath)
-		if err != nil {
-			return fmt.Errorf("creating tar %s: %w", tarPath, err)
-		}
-
-		_, err = io.Copy(blobTar, blob)
-		if err != nil {
-			return fmt.Errorf("writing tar %s: %w", tarPath, err)
-		}
-
-		err = blobTar.Close()
-		if err != nil {
-			return fmt.Errorf("closing tar %s: %w", tarPath, err)
-		}
-
-		err = blob.Close()
-		if err != nil {
-			return fmt.Errorf("closing blob %s: %w", src, err)
-		}
-
-		fmt.Printf("Fetched layer: %s\n", layer)
-	}
-
-	// Extract layers in dest merging them
-	for n := len(layers) - 1; n >= 0; n-- {
-		tarPath := filepath.Join(dest, fmt.Sprintf("%d.tar", n))
-		err := extractTar(tarPath, dest)
-		if err != nil {
-			return fmt.Errorf("extracting tar %s: %w", tarPath, err)
-		}
-
-		fmt.Printf("Extracted layer: %d\n", n)
-	}
-
-	return nil
-}
-
-// extractTar extracts a tar file to the destination
-func extractTar(src, dest string) error {
-	cmd := exec.Command("tar", "-xvf", src, "-C", dest)
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("extracting tar %s: %w", src, err)
-	}
-
-	return nil
 }
