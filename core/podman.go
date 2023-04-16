@@ -36,7 +36,7 @@ type ContainerFile struct {
 	Content string
 }
 
-type Manifest struct {
+type PodmanManifest struct {
 	Config   string   `json:"Config"`
 	RepoTags []string `json:"RepoTags"`
 	Layers   []string `json:"Layers"`
@@ -216,7 +216,7 @@ func ExtractLayers(image string, dest string) error {
 	}
 	defer m.Close()
 
-	var manifest []Manifest
+	var manifest []PodmanManifest
 	err = json.NewDecoder(m).Decode(&manifest)
 	if err != nil {
 		fmt.Println("decode_manifest:", err)
