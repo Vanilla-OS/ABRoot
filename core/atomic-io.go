@@ -22,7 +22,7 @@ import (
 
 // atomicSwap allows swapping 2 files or directories in-place and atomically, using
 // the renameat2 syscall.
-func atomicSwap(src, dst string) error {
+func AtomicSwap(src, dst string) error {
 	orig, err := os.Open(src)
 	if err != nil {
 		PrintVerbose("err:atomicSwap: %s", err)
