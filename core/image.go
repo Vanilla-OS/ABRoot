@@ -15,7 +15,6 @@ package core
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -69,7 +68,7 @@ func (a *ABImage) WriteTo(dest string) error {
 		return err
 	}
 
-	imageName := fmt.Sprintf("abimage.abr")
+	imageName := "abimage.abr"
 	imagePath := filepath.Join(dir, imageName)
 
 	abimage, err := json.Marshal(a)

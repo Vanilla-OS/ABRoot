@@ -83,7 +83,7 @@ func (h *Hooks) getHooks() {
 }
 
 // finalScript creates the final script according to the requested event
-func (h *Hooks) finalScript(event string) string {
+func (h *Hooks) FinalScript(event string) string {
 	var hooks []Hook
 	switch event {
 	case "pre":
