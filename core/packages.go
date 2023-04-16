@@ -32,6 +32,53 @@ const (
 	PackagesRemoveFile = "packages.remove"
 )
 
+// init creates the base files and directories
+func init() {
+	PrintVerbose("PackageManager:init: running...")
+
+	err := os.MkdirAll(PackagesAddFile, 0755)
+	if err != nil {
+		PrintVerbose("PackageManager:init:error: " + err.Error())
+		panic(err)
+	}
+
+	err = os.MkdirAll(PackagesRemoveFile, 0755)
+	if err != nil {
+		PrintVerbose("PackageManager:init:error: " + err.Error())
+		panic(err)
+	}
+
+	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesAddFile))
+	if err != nil {
+		PrintVerbose("PackageManager:init:error: " + err.Error())
+		err = ioutil.WriteFile(
+			filepath.Join(PackagesBaseDir, PackagesAddFile),
+			[]byte(""),
+			0644,
+		)
+		if err != nil {
+			PrintVerbose("PackageManager:init:error: " + err.Error())
+			panic(err)
+		}
+	}
+
+	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesRemoveFile))
+	if err != nil {
+		PrintVerbose("PackageManager:init:error: " + err.Error())
+		err = ioutil.WriteFile(
+			filepath.Join(PackagesBaseDir, PackagesRemoveFile),
+			[]byte(""),
+			0644,
+		)
+		if err != nil {
+			PrintVerbose("PackageManager:init:error: " + err.Error())
+			panic(err)
+		}
+	}
+
+	PrintVerbose("PackageManager:init: done")
+}
+
 // NewPackageManager returns a new PackageManager struct
 func NewPackageManager() *PackageManager {
 	return &PackageManager{}
