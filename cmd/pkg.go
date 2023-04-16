@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -30,7 +32,7 @@ func NewPkgCommand() *cmdr.Command {
 		pkg,
 	)
 
-	cmd.Args = cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs)
+	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.ValidArgs = validPkgArgs
 	cmd.Example = "abroot pkg add <pkg>"
 
@@ -40,6 +42,52 @@ func NewPkgCommand() *cmdr.Command {
 func pkg(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println(abroot.Trans("pkg.rootRequired"))
+		return nil
+	}
+
+	pkgM := core.NewPackageManager()
+
+	switch args[0] {
+	case "add":
+		err := pkgM.Add(args[1])
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		} else {
+			cmdr.Info.Printf("Package %s added\n", args[1])
+		}
+	case "remove":
+		err := pkgM.Remove(args[1])
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		} else {
+			cmdr.Info.Printf("Package %s removed\n", args[1])
+		}
+	case "list":
+		added, err := pkgM.GetAddPackages()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+
+		removed, err := pkgM.GetRemovePackages()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+
+		addedStr := ""
+		for _, pkg := range added {
+			addedStr += fmt.Sprintf("%s\n", pkg)
+		}
+
+		removedStr := ""
+		for _, pkg := range removed {
+			removedStr += fmt.Sprintf("%s\n", pkg)
+		}
+
+		cmdr.Info.Printf("Added packages:\n%s\nRemoved packages:\n%s\n", addedStr, removedStr)
 		return nil
 	}
 
