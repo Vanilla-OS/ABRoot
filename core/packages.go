@@ -146,6 +146,32 @@ func (p *PackageManager) GetRemovePackages() ([]string, error) {
 	return p.getPackages(PackagesRemoveFile)
 }
 
+// GetAddPackages returns the packages in the packages.add file as string
+func (p *PackageManager) GetAddPackagesString(sep string) (string, error) {
+	PrintVerbose("PackageManager:GetAddPackagesString: running...")
+	pkgs, err := p.GetAddPackages()
+	if err != nil {
+		PrintVerbose("PackageManager:GetAddPackagesString:error: " + err.Error())
+		return "", err
+	}
+
+	PrintVerbose("PackageManager:GetAddPackagesString: done")
+	return strings.Join(pkgs, sep), nil
+}
+
+// GetRemovePackages returns the packages in the packages.remove file as string
+func (p *PackageManager) GetRemovePackagesString(sep string) (string, error) {
+	PrintVerbose("PackageManager:GetRemovePackagesString: running...")
+	pkgs, err := p.GetRemovePackages()
+	if err != nil {
+		PrintVerbose("PackageManager:GetRemovePackagesString:error: " + err.Error())
+		return "", err
+	}
+
+	PrintVerbose("PackageManager:GetRemovePackagesString: done")
+	return strings.Join(pkgs, sep), nil
+}
+
 func (p *PackageManager) getPackages(file string) ([]string, error) {
 	PrintVerbose("PackageManager:getPackages: running...")
 
@@ -225,13 +251,13 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 func (p *PackageManager) GetFinalCmd() string {
 	PrintVerbose("PackageManager:GetFinalCmd: running...")
 
-	addPkgs, err := p.GetAddPackages()
+	addPkgs, err := p.GetAddPackagesString(" ")
 	if err != nil {
 		PrintVerbose("PackageManager:GetFinalCmd:error: " + err.Error())
 		return ""
 	}
 
-	removePkgs, err := p.GetRemovePackages()
+	removePkgs, err := p.GetRemovePackagesString(" ")
 	if err != nil {
 		PrintVerbose("PackageManager:GetFinalCmd:error(2): " + err.Error())
 		return ""
@@ -239,8 +265,8 @@ func (p *PackageManager) GetFinalCmd() string {
 
 	cmd := fmt.Sprintf(
 		"%s %s && %s %s",
-		settings.Cnf.IPkgMngAdd, strings.Join(addPkgs, " "),
-		settings.Cnf.IPkgMngRm, strings.Join(removePkgs, " "),
+		settings.Cnf.IPkgMngAdd, addPkgs,
+		settings.Cnf.IPkgMngRm, removePkgs,
 	)
 	PrintVerbose("PackageManager:GetFinalCmd: returning cmd: " + cmd)
 	return cmd

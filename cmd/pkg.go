@@ -14,8 +14,6 @@ package cmd
 */
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -65,29 +63,19 @@ func pkg(cmd *cobra.Command, args []string) error {
 			cmdr.Info.Printf("Package %s removed\n", args[1])
 		}
 	case "list":
-		added, err := pkgM.GetAddPackages()
+		added, err := pkgM.GetAddPackagesString("\n")
 		if err != nil {
 			cmdr.Error.Println(err)
 			return err
 		}
 
-		removed, err := pkgM.GetRemovePackages()
+		removed, err := pkgM.GetRemovePackagesString("\n")
 		if err != nil {
 			cmdr.Error.Println(err)
 			return err
 		}
 
-		addedStr := ""
-		for _, pkg := range added {
-			addedStr += fmt.Sprintf("%s\n", pkg)
-		}
-
-		removedStr := ""
-		for _, pkg := range removed {
-			removedStr += fmt.Sprintf("%s\n", pkg)
-		}
-
-		cmdr.Info.Printf("Added packages:\n%s\nRemoved packages:\n%s\n", addedStr, removedStr)
+		cmdr.Info.Printf("Added packages:\n%s\nRemoved packages:\n%s\n", added, removed)
 		return nil
 	}
 
