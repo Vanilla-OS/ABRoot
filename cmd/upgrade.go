@@ -14,8 +14,6 @@ package cmd
 */
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -43,10 +41,31 @@ func NewUpgradeCommand() *cmdr.Command {
 }
 
 func upgrade(cmd *cobra.Command, args []string) error {
-	// if !core.RootCheck(false) {
-	// 	cmdr.Error.Println(abroot.Trans("upgrade.rootRequired"))
-	// 	return nil
-	// }
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("upgrade.rootRequired"))
+		return nil
+	}
+
+	checkOnly, err := cmd.Flags().GetBool("check-only")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	aBsys, err := core.NewABSystem()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	if checkOnly {
+		if aBsys.CheckUpdate() {
+			cmdr.Info.Println(abroot.Trans("upgrade.updateAvailable"))
+		} else {
+			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
+		}
+		return nil
+	}
 
 	// NOTE: This is just a test, to see if the code works
 	// p := core.NewPodman()
@@ -82,13 +101,11 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	// }
 	// fmt.Println("future:", future.Label)
 
-	c := core.NewChecks()
-	err := c.PerformAllChecks()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println("done")
+	// c := core.NewChecks()
+	// err := c.PerformAllChecks()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	return nil
 }
