@@ -1,5 +1,7 @@
 package core
 
+import "errors"
+
 /*	License: GPLv3
 	Authors:
 		Mirko Brombin <mirko@fabricators.ltd>
@@ -56,5 +58,14 @@ func (s *ABSystem) CheckUpdate() bool {
 
 // Upgrade upgrades the system
 func (s *ABSystem) Upgrade() error {
+	if !s.CheckUpdate() {
+		return errors.New("no update available")
+	}
+
+	_, err := s.RootM.GetFuture()
+	if err != nil {
+		return err
+	}
+
 	return nil // TODO
 }
