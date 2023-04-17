@@ -15,7 +15,7 @@ package core
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -47,10 +47,14 @@ func NewDiskManager() *DiskManager {
 
 // GetDisk gets a disk by device
 func (d *DiskManager) GetDisk(device string) (Disk, error) {
+	PrintVerbose("DiskManager.GetDisk: running...")
 	partitions, err := d.getPartitions(device)
 	if err != nil {
+		PrintVerbose("DiskManager.GetDisk:error: %s", err)
 		return Disk{}, err
 	}
+
+	PrintVerbose("DiskManager.GetDisk: successfully got disk %s", device)
 
 	return Disk{
 		Device:     device,
@@ -60,19 +64,28 @@ func (d *DiskManager) GetDisk(device string) (Disk, error) {
 
 // GetDiskByPartition gets a disk by partition
 func (d *DiskManager) GetDiskByPartition(partition string) (Disk, error) {
+	PrintVerbose("DiskManager.GetDiskByPartition: running...")
+
 	output, err := exec.Command("lsblk", "-n", "-o", "PKNAME", "/dev/"+partition).Output()
 	if err != nil {
+		PrintVerbose("DiskManager.GetDiskByPartition:error: %s", err)
 		return Disk{}, err
 	}
 
 	device := strings.TrimSpace(string(output))
+
+	PrintVerbose("DiskManager.GetDiskByPartition: successfully got disk %s", device)
+
 	return d.GetDisk(device)
 }
 
 // GetCurrentDisk gets the current disk
 func (d *DiskManager) GetCurrentDisk() (Disk, error) {
+	PrintVerbose("DiskManager.GetCurrentDisk: running...")
+
 	root, err := os.Getwd()
 	if err != nil {
+		PrintVerbose("DiskManager.GetCurrentDisk:error: %s", err)
 		return Disk{}, err
 	}
 
@@ -80,32 +93,44 @@ func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	// in case of weird setups
 	root, err = filepath.EvalSymlinks(root)
 	if err != nil {
+		PrintVerbose("DiskManager.GetCurrentDisk:error(2): %s", err)
 		return Disk{}, err
 	}
 
 	output, err := exec.Command("df", "-P", root).Output()
 	if err != nil {
+		PrintVerbose("DiskManager.GetCurrentDisk:error(3): %s", err)
 		return Disk{}, err
 	}
 
 	lines := strings.Split(string(output), "\n")
 	if len(lines) < 2 {
-		return Disk{}, fmt.Errorf("could not determine device name for %s", root)
+		err := errors.New("could not determine device name for " + root)
+		PrintVerbose("DiskManager.GetCurrentDisk:error(4): %s", err)
+		return Disk{}, err
 	}
 
 	fields := strings.Fields(lines[1])
 	if len(fields) < 6 {
-		return Disk{}, fmt.Errorf("could not determine device name for %s", root)
+		err := errors.New("could not determine device name for " + root)
+		PrintVerbose("DiskManager.GetCurrentDisk:error(5): %s", err)
+		return Disk{}, err
 	}
 
 	device := filepath.Base(fields[0])
+
+	PrintVerbose("DiskManager.GetCurrentDisk: successfully got disk %s", device)
+
 	return d.GetDiskByPartition(device)
 }
 
 // getPartitions gets a disk's partitions
 func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
+	PrintVerbose("DiskManager.getPartitions: running...")
+
 	output, err := exec.Command("lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID").Output()
 	if err != nil {
+		PrintVerbose("DiskManager.getPartitions:error: %s", err)
 		return nil, err
 	}
 
@@ -126,6 +151,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	}
 
 	if err := json.Unmarshal(output, &partitions); err != nil {
+		PrintVerbose("DiskManager.getPartitions:error(2): %s", err)
 		return nil, err
 	}
 
@@ -145,6 +171,8 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 			})
 		}
 	}
+
+	PrintVerbose("DiskManager.getPartitions: successfully got partitions for disk %s", device)
 
 	return result, nil
 }

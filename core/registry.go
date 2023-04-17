@@ -35,6 +35,7 @@ type Manifest struct {
 
 // NewRegistry returns a new Registry struct
 func NewRegistry() *Registry {
+	PrintVerbose("NewRegistry: running...")
 	return &Registry{
 		API: fmt.Sprintf("https://%s/%s", settings.Cnf.Registry, settings.Cnf.RegistryAPIVersion),
 	}
@@ -42,31 +43,33 @@ func NewRegistry() *Registry {
 
 // HasUpdate checks if the image/tag from the registry has a different digest
 func (r *Registry) HasUpdate(digest string) bool {
-	PrintVerbose("Checking for updates ...")
+	PrintVerbose("Registry.HasUpdate: Checking for updates ...")
 
 	manifest, err := r.GetManifest()
 	if err != nil {
-		PrintVerbose("HasUpdate:error: %s", err)
+		PrintVerbose("Registry.HasUpdate:error: %s", err)
 		return false
 	}
 
 	if manifest.Digest == digest {
-		PrintVerbose("HasUpdate: no update available")
+		PrintVerbose("Registry.HasUpdate: no update available")
 		return false
 	}
 
-	PrintVerbose("HasUpdate: update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
+	PrintVerbose("Registry.HasUpdate: update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
 	return true
 }
 
 // GetManifest returns the manifest of the image
 func (r *Registry) GetManifest() (*Manifest, error) {
+	PrintVerbose("Registry.GetManifest: running...")
+
 	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
-	PrintVerbose("Getting manifest for: %s", manifestAPIUrl)
+	PrintVerbose("Registry.GetManifest: call uri is %s", manifestAPIUrl)
 
 	req, err := http.NewRequest("GET", manifestAPIUrl, nil)
 	if err != nil {
-		PrintVerbose("GetManifest:error: %s", err)
+		PrintVerbose("Registry.GetManifest:error: %s", err)
 		return nil, err
 	}
 
@@ -74,21 +77,21 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		PrintVerbose("GetManifest(2):error: %s", err)
+		PrintVerbose("Registry.GetManifest:error(2): %s", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("GetManifest(3):error: %s", err)
+		PrintVerbose("Registry.GetManifest:error(3): %s", err)
 		return nil, err
 	}
 
 	m := make(map[string]interface{})
 	err = json.Unmarshal(body, &m)
 	if err != nil {
-		PrintVerbose("GetManifest(4):error: %s", err)
+		PrintVerbose("Registry.GetManifest(:error4): %s", err)
 		return nil, err
 	}
 
@@ -99,7 +102,7 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 		layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
 	}
 
-	PrintVerbose("GetManifest: success")
+	PrintVerbose("Registry.GetManifest: success")
 	return &Manifest{
 		Manifest: body,
 		Digest:   digest,

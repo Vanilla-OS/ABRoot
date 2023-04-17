@@ -35,16 +35,22 @@ type ABRootPartition struct {
 
 // NewABRootManager creates a new ABRootManager
 func NewABRootManager() *ABRootManager {
+	PrintVerbose("NewABRootManager: running...")
+
 	a := &ABRootManager{}
 	a.GetRootPartitions()
+
 	return a
 }
 
 // GetRootPartitions gets the root partitions from the current device
 func (a *ABRootManager) GetRootPartitions() error {
+	PrintVerbose("ABRootManager.GetRootPartitions: running...")
+
 	diskM := NewDiskManager()
 	disk, err := diskM.GetCurrentDisk()
 	if err != nil {
+		PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
 		return err
 	}
 
@@ -52,6 +58,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 		if partition.Label == "a" || partition.Label == "b" {
 			identifier, err := a.IdentifyPartition(partition)
 			if err != nil {
+				PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
 				return err
 			}
 
@@ -67,40 +74,58 @@ func (a *ABRootManager) GetRootPartitions() error {
 		}
 	}
 
+	PrintVerbose("ABRootManager.GetRootPartitions: successfully got root partitions")
+
 	return nil
 }
 
 // IdentifyPartition identifies a partition
 func (a *ABRootManager) IdentifyPartition(partition Partition) (identifiedAs string, err error) {
+	PrintVerbose("ABRootManager.IdentifyPartition: running...")
+
 	if partition.Label == "a" || partition.Label == "b" {
 		if partition.MountPoint == "/" {
+			PrintVerbose("ABRootManager.IdentifyPartition: partition is present")
 			return "present", nil
 		}
 
+		PrintVerbose("ABRootManager.IdentifyPartition: partition is future")
 		return "future", nil
 	}
 
-	return "", errors.New("partition is not managed by ABRoot")
+	err = errors.New("partition is not managed by ABRoot")
+	PrintVerbose("ABRootManager.IdentifyPartition: error: %s", err)
+	return "", err
 }
 
 // GetPresent gets the present partition
 func (a *ABRootManager) GetPresent() (partition ABRootPartition, err error) {
+	PrintVerbose("ABRootManager.GetPresent: running...")
+
 	for _, partition := range a.Partitions {
 		if partition.IdentifiedAs == "present" {
+			PrintVerbose("ABRootManager.GetPresent: successfully got present partition")
 			return partition, nil
 		}
 	}
 
-	return ABRootPartition{}, errors.New("present partition not found")
+	err = errors.New("present partition not found")
+	PrintVerbose("ABRootManager.GetPresent: error: %s", err)
+	return ABRootPartition{}, err
 }
 
 // GetFuture gets the future partition
 func (a *ABRootManager) GetFuture() (partition ABRootPartition, err error) {
+	PrintVerbose("ABRootManager.GetFuture: running...")
+
 	for _, partition := range a.Partitions {
 		if partition.IdentifiedAs == "future" {
+			PrintVerbose("ABRootManager.GetFuture: successfully got future partition")
 			return partition, nil
 		}
 	}
 
-	return ABRootPartition{}, errors.New("future partition not found")
+	err = errors.New("future partition not found")
+	PrintVerbose("ABRootManager.GetFuture: error: %s", err)
+	return ABRootPartition{}, err
 }

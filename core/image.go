@@ -60,11 +60,11 @@ func NewABImageFromRoot() (*ABImage, error) {
 
 // WriteTo writes the json to a dest path
 func (a *ABImage) WriteTo(dest string) error {
-	PrintVerbose("WriteTo: running...")
+	PrintVerbose("ABImage.WriteTo: running...")
 
 	dir := filepath.Dir(dest)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		PrintVerbose("WriteTo:error: " + err.Error())
+		PrintVerbose("ABImage.WriteTo:error: " + err.Error())
 		return err
 	}
 
@@ -73,13 +73,13 @@ func (a *ABImage) WriteTo(dest string) error {
 
 	abimage, err := json.Marshal(a)
 	if err != nil {
-		PrintVerbose("WriteTo:error(2): " + err.Error())
+		PrintVerbose("ABImage.WriteTo:error(2): " + err.Error())
 		return err
 	}
 
 	err = ioutil.WriteFile(imagePath, abimage, 0644)
 	if err != nil {
-		PrintVerbose("WriteTo:error(3): " + err.Error())
+		PrintVerbose("ABImage.WriteTo:error(3): " + err.Error())
 		return err
 	}
 

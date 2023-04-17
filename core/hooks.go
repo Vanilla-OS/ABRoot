@@ -48,17 +48,24 @@ func NewHooks() *Hooks {
 
 // getHooks populates the Hooks struct with the hooks
 func (h *Hooks) getHooks() {
+	PrintVerbose("Hooks.getHooks: Getting hooks ...")
+
 	hooksPath := filepath.Join(h.HooksPath, "abroot-hooks")
 	preHooksPath := filepath.Join(hooksPath, "pre")
-	preHooks, err := ioutil.ReadDir(preHooksPath)
-	if err != nil {
-		fmt.Println(err)
+	preHooks, err1 := ioutil.ReadDir(preHooksPath)
+	if err1 != nil {
+		PrintVerbose("Hooks.getHooks:warning: no pre hooks found")
 	}
 
 	postHooksPath := filepath.Join(hooksPath, "post")
-	postHooks, err := ioutil.ReadDir(postHooksPath)
-	if err != nil {
-		fmt.Println(err)
+	postHooks, err2 := ioutil.ReadDir(postHooksPath)
+	if err2 != nil {
+		PrintVerbose("Hooks.getHooks:warning: no post hooks found")
+	}
+
+	if err1 != nil && err2 != nil {
+		PrintVerbose("Hooks.getHooks:warn(2): no hooks to load")
+		return
 	}
 
 	sort.Slice(preHooks, func(i, j int) bool {
@@ -80,10 +87,15 @@ func (h *Hooks) getHooks() {
 			Path: filepath.Join(postHooksPath, hook.Name()),
 		})
 	}
+
+	PrintVerbose("Hooks.getHooks: %d pre hooks loaded", len(h.Pre))
+	PrintVerbose("Hooks.getHooks: %d post hooks loaded", len(h.Post))
 }
 
 // finalScript creates the final script according to the requested event
-func (h *Hooks) FinalScript(event string) string {
+func (h *Hooks) FinalScript(event string) (string, error) {
+	PrintVerbose("Hooks.FinalScript: Creating final script for %s hooks ...", event)
+
 	var hooks []Hook
 	switch event {
 	case "pre":
@@ -94,13 +106,15 @@ func (h *Hooks) FinalScript(event string) string {
 
 	tmpDir, err := ioutil.TempDir("", "")
 	if err != nil {
-		fmt.Println(err)
+		PrintVerbose("Hooks.FinalScript:error: %s", err)
+		return "", err
 	}
 
 	finalScriptPath := filepath.Join(tmpDir, fmt.Sprintf("abh-%s-%s.sh", event, uuid.New()))
 	finalScript, err := os.Create(finalScriptPath)
 	if err != nil {
-		fmt.Println(err)
+		PrintVerbose("Hooks.FinalScript:error: %s", err)
+		return "", err
 	}
 	defer finalScript.Close()
 
@@ -108,5 +122,7 @@ func (h *Hooks) FinalScript(event string) string {
 		finalScript.WriteString(fmt.Sprintf("source %s\n", hook.Path))
 	}
 
-	return finalScriptPath
+	PrintVerbose("Hooks.FinalScript: Final script created at %s", finalScriptPath)
+
+	return finalScriptPath, nil
 }

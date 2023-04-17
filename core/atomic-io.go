@@ -24,23 +24,23 @@ import (
 // using the renameat2 syscall. This should be used instead of os.Rename,
 // which is not atomic at all.
 func AtomicSwap(src, dst string) error {
+	PrintVerbose("AtomicSwap: %s -> %s", src, dst)
+
 	orig, err := os.Open(src)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s", err)
+		PrintVerbose("AtomicSwap:error: %s", err)
 		return err
 	}
 
 	newfile, err := os.Open(dst)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s", err)
+		PrintVerbose("AtomicSwap:error(2): %s", err)
 		return err
 	}
 
-	PrintVerbose("step:  Renameat2")
-
 	err = unix.Renameat2(int(orig.Fd()), src, int(newfile.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
-		PrintVerbose("err:atomicSwap: %s", err)
+		PrintVerbose("AtomicSwap:error(3): %s", err)
 		return err
 	}
 

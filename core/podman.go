@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 const (
@@ -43,12 +44,15 @@ type PodmanManifest struct {
 }
 
 func NewPodman() *Podman {
+	PrintVerbose("NewPodman: running...")
 	return &Podman{
 		Root: podmanStorageRoot,
 	}
 }
 
 func (p *Podman) Run(args []string) error {
+	PrintVerbose("Podman.Run: running %s", strings.Join(args, " "))
+
 	// add root flag to args
 	args = append([]string{"--root", p.Root}, args...)
 
@@ -57,22 +61,34 @@ func (p *Podman) Run(args []string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
-	return cmd.Run()
+
+	err := cmd.Run()
+	if err != nil {
+		PrintVerbose("Podman.Run:error: %s", err)
+		return err
+	}
+
+	PrintVerbose("Podman.Run: successfully ran.")
+	return nil
 }
 
 func (p *Podman) Pull(image string) error {
+	PrintVerbose("Podman.Pull: running...")
 	return p.Run([]string{"pull", image})
 }
 
 func (p *Podman) Save(image string, dest string) error {
+	PrintVerbose("Podman.Save: running...")
 	return p.Run([]string{"save", image, "-o", dest})
 }
 
 func (p *Podman) BuildImage(image string, containerFile string) error {
+	PrintVerbose("Podman.BuildImage: running...")
 	return p.Run([]string{"build", "-t", image, "-f", containerFile, "."})
 }
 
 func (p *Podman) NewContainerFile(image string, labels map[string]string, args map[string]string, content string) *ContainerFile {
+	PrintVerbose("Podman.NewContainerFile: running...")
 	return &ContainerFile{
 		From:    image,
 		Labels:  labels,
@@ -82,10 +98,12 @@ func (p *Podman) NewContainerFile(image string, labels map[string]string, args m
 }
 
 func (c *ContainerFile) Write(path string) error {
+	PrintVerbose("ContainerFile.Write: running...")
+
 	// create file
 	file, err := os.Create(path)
 	if err != nil {
-		fmt.Println(err)
+		PrintVerbose("ContainerFile.Write:error: %s", err)
 		return err
 	}
 	defer file.Close()
@@ -93,7 +111,7 @@ func (c *ContainerFile) Write(path string) error {
 	// write from
 	_, err = file.WriteString(fmt.Sprintf("FROM %s\n", c.From))
 	if err != nil {
-		fmt.Println(err)
+		PrintVerbose("ContainerFile.Write:error(2): %s", err)
 		return err
 	}
 
@@ -101,7 +119,7 @@ func (c *ContainerFile) Write(path string) error {
 	for key, value := range c.Labels {
 		_, err = file.WriteString(fmt.Sprintf("LABEL %s=%s\n", key, value))
 		if err != nil {
-			fmt.Println(err)
+			PrintVerbose("ContainerFile.Write:error(3): %s", err)
 			return err
 		}
 	}
@@ -110,7 +128,7 @@ func (c *ContainerFile) Write(path string) error {
 	for key, value := range c.Args {
 		_, err = file.WriteString(fmt.Sprintf("ARG %s=%s\n", key, value))
 		if err != nil {
-			fmt.Println(err)
+			PrintVerbose("ContainerFile.Write:error(4): %s", err)
 			return err
 		}
 	}
@@ -118,83 +136,90 @@ func (c *ContainerFile) Write(path string) error {
 	// write content
 	_, err = file.WriteString(c.Content)
 	if err != nil {
-		fmt.Println(err)
+		PrintVerbose("ContainerFile.Write:error(5): %s", err)
 		return err
 	}
 
+	PrintVerbose("ContainerFile.Write: successfully wrote.")
 	return nil
 }
 
 func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest string) error {
+	PrintVerbose("Podman.GenerateRootfs: running...")
+
 	rootfs := filepath.Join(dest, "abroot_trans")
 
 	// create rootfs dir
 	err := os.MkdirAll(rootfs, 0755)
 	if err != nil {
-		fmt.Println("create_rootfs_dir:", err)
+		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
 		return err
 	}
 
 	// create containerfile
 	err = containerFile.Write(filepath.Join(rootfs, "Containerfile"))
 	if err != nil {
-		fmt.Println("create_containerfile:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(2): %s", err)
 		return err
 	}
 
 	// build image
 	err = p.BuildImage(image, filepath.Join(rootfs, "Containerfile"))
 	if err != nil {
-		fmt.Println("build_image:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(3): %s", err)
 		return err
 	}
 
 	// save image
 	err = p.Save(image, filepath.Join(rootfs, "image.tar"))
 	if err != nil {
-		fmt.Println("save_image:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(4): %s", err)
 		return err
 	}
 
 	// extract layers
 	err = ExtractLayers(filepath.Join(rootfs, "image.tar"), rootfs)
 	if err != nil {
-		fmt.Println("extract_layers:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(5): %s", err)
 		return err
 	}
 
 	// move rootfs
 	err = os.Rename(filepath.Join(rootfs, "rootfs"), filepath.Join(dest, "rootfs"))
 	if err != nil {
-		fmt.Println("move_rootfs:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
 		return err
 	}
 
 	// remove trans dir
 	err = os.RemoveAll(rootfs)
 	if err != nil {
-		fmt.Println("remove_trans_dir:", err)
+		PrintVerbose("Podman.GenerateRootfs:error(7): %s", err)
 		return err
 	}
+
+	PrintVerbose("Podman.GenerateRootfs: successfully generated.")
 
 	return nil
 }
 
 func ExtractLayers(image string, dest string) error {
+	PrintVerbose("ExtractLayers: running...")
+
 	imageExDest := filepath.Join(dest, "image")
 	rootfsDest := filepath.Join(dest, "rootfs")
 
 	// create image dir
 	err := os.MkdirAll(imageExDest, 0755)
 	if err != nil {
-		fmt.Println("create_image_dir:", err)
+		PrintVerbose("ExtractLayers:error: %s", err)
 		return err
 	}
 
 	// create layers dir
 	err = os.MkdirAll(rootfsDest, 0755)
 	if err != nil {
-		fmt.Println("create_rootfs_dir:", err)
+		PrintVerbose("ExtractLayers:error(2): %s", err)
 		return err
 	}
 
@@ -204,14 +229,14 @@ func ExtractLayers(image string, dest string) error {
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
-		fmt.Println("extract_image:", err)
+		PrintVerbose("ExtractLayers:error(3): %s", err)
 		return err
 	}
 
 	// read manifest
 	m, err := os.Open(filepath.Join(imageExDest, "manifest.json"))
 	if err != nil {
-		fmt.Println("open_manifest:", err)
+		PrintVerbose("ExtractLayers:error(4): %s", err)
 		return err
 	}
 	defer m.Close()
@@ -219,7 +244,7 @@ func ExtractLayers(image string, dest string) error {
 	var manifest []PodmanManifest
 	err = json.NewDecoder(m).Decode(&manifest)
 	if err != nil {
-		fmt.Println("decode_manifest:", err)
+		PrintVerbose("ExtractLayers:error(5): %s", err)
 		return err
 	}
 
@@ -230,10 +255,11 @@ func ExtractLayers(image string, dest string) error {
 		cmd.Stderr = os.Stderr
 		err = cmd.Run()
 		if err != nil {
-			fmt.Println("extract_layer:", err)
+			PrintVerbose("ExtractLayers:error(6): %s", err)
 			return err
 		}
 	}
 
+	PrintVerbose("ExtractLayers: successfully extracted.")
 	return nil
 }
