@@ -1,5 +1,6 @@
 {
     "registry": "registry.vanillaos.org",
+    "registryAPIVersion": "v2",
     "name": "vanillaos/desktop",
     "tag": "main",
     "hooksPath": "example-hooks",

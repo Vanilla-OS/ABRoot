@@ -20,12 +20,13 @@ import (
 )
 
 type Config struct {
-	Registry   string `json:"registry"`
-	Name       string `json:"name"`
-	Tag        string `json:"tag"`
-	HooksPath  string `json:"hooksPath"`
-	IPkgMngAdd string `json:"iPkgMngAdd"`
-	IPkgMngRm  string `json:"iPkgMngRm"`
+	Registry           string `json:"registry"`
+	RegistryAPIVersion string `json:"registryAPIVersion"`
+	Name               string `json:"name"`
+	Tag                string `json:"tag"`
+	HooksPath          string `json:"hooksPath"`
+	IPkgMngAdd         string `json:"iPkgMngAdd"`
+	IPkgMngRm          string `json:"iPkgMngRm"`
 }
 
 var Cnf *Config
@@ -43,11 +44,12 @@ func init() {
 	}
 
 	Cnf = &Config{
-		Registry:   viper.GetString("registry"),
-		Name:       viper.GetString("name"),
-		Tag:        viper.GetString("tag"),
-		HooksPath:  viper.GetString("hooksPath"),
-		IPkgMngAdd: viper.GetString("iPkgMngAdd"),
-		IPkgMngRm:  viper.GetString("iPkgMngRm"),
+		Registry:           viper.GetString("registry"),
+		RegistryAPIVersion: viper.GetString("registryAPIVersion"),
+		Name:               viper.GetString("name"),
+		Tag:                viper.GetString("tag"),
+		HooksPath:          viper.GetString("hooksPath"),
+		IPkgMngAdd:         viper.GetString("iPkgMngAdd"),
+		IPkgMngRm:          viper.GetString("iPkgMngRm"),
 	}
 }
