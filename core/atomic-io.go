@@ -20,8 +20,9 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// atomicSwap allows swapping 2 files or directories in-place and atomically, using
-// the renameat2 syscall.
+// atomicSwap allows swapping 2 files or directories in-place and atomically,
+// using the renameat2 syscall. This should be used instead of os.Rename,
+// which is not atomic at all.
 func AtomicSwap(src, dst string) error {
 	orig, err := os.Open(src)
 	if err != nil {
