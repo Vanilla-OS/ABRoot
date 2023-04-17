@@ -36,7 +36,7 @@ type Manifest struct {
 // NewRegistry returns a new Registry struct
 func NewRegistry() *Registry {
 	return &Registry{
-		API: settings.Cnf.Registry,
+		API: fmt.Sprintf("https://%s/%s", settings.Cnf.Registry, settings.Cnf.RegistryAPIVersion),
 	}
 }
 
@@ -55,22 +55,21 @@ func (r *Registry) HasUpdate(digest string) bool {
 		return false
 	}
 
-	PrintVerbose("HasUpdate: update available")
+	PrintVerbose("HasUpdate: update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
 	return true
 }
 
 // GetManifest returns the manifest of the image
 func (r *Registry) GetManifest() (*Manifest, error) {
-	PrintVerbose("Getting manifest for %s/%s:%s ...", r.API, settings.Cnf.Name, settings.Cnf.Tag)
+	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
+	PrintVerbose("Getting manifest for: %s", manifestAPIUrl)
 
-	url := fmt.Sprintf("%s/v2/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", manifestAPIUrl, nil)
 	if err != nil {
 		PrintVerbose("GetManifest:error: %s", err)
 		return nil, err
 	}
 
-	req.Header.Set("Accept", "application/vnd.docker.distribution.manifest.v2+json")
 	req.Header.Set("User-Agent", "abroot")
 
 	resp, err := http.DefaultClient.Do(req)
