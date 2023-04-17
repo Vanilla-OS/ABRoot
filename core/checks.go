@@ -20,7 +20,8 @@ import (
 	"runtime"
 )
 
-// Checks struct
+// Represents a Checks struct which contains all the checks which can
+// be performed one by one or all at once using PerformAllChecks()
 type Checks struct{}
 
 // NewChecks returns a new Checks struct
