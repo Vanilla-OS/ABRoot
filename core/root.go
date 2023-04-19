@@ -15,6 +15,8 @@ package core
 
 import (
 	"errors"
+
+	"github.com/vanilla-os/abroot/settings"
 )
 
 // ABRootManager represents the ABRoot manager
@@ -27,6 +29,7 @@ type ABRootPartition struct {
 	Label        string // a,b
 	IdentifiedAs string // present,future
 	Device       string
+	Partition    Partition
 	MountPoint   string
 	MountOptions string
 	Uuid         string
@@ -55,7 +58,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 	}
 
 	for _, partition := range disk.Partitions {
-		if partition.Label == "a" || partition.Label == "b" {
+		if partition.Label == settings.Cnf.PartLabelA || partition.Label == settings.Cnf.PartLabelB {
 			identifier, err := a.IdentifyPartition(partition)
 			if err != nil {
 				PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
@@ -66,6 +69,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 				Label:        partition.Label,
 				IdentifiedAs: identifier,
 				Device:       disk.Device,
+				Partition:    partition,
 				MountPoint:   partition.MountPoint,
 				MountOptions: partition.MountOptions,
 				Uuid:         partition.Uuid,
@@ -83,7 +87,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 func (a *ABRootManager) IdentifyPartition(partition Partition) (identifiedAs string, err error) {
 	PrintVerbose("ABRootManager.IdentifyPartition: running...")
 
-	if partition.Label == "a" || partition.Label == "b" {
+	if partition.Label == settings.Cnf.PartLabelA || partition.Label == settings.Cnf.PartLabelB {
 		if partition.MountPoint == "/" {
 			PrintVerbose("ABRootManager.IdentifyPartition: partition is present")
 			return "present", nil
@@ -128,4 +132,27 @@ func (a *ABRootManager) GetFuture() (partition ABRootPartition, err error) {
 	err = errors.New("future partition not found")
 	PrintVerbose("ABRootManager.GetFuture: error: %s", err)
 	return ABRootPartition{}, err
+}
+
+// GetBoot gets the boot partition from the current device
+func (a *ABRootManager) GetBoot() (partition Partition, err error) {
+	PrintVerbose("ABRootManager.GetBoot: running...")
+
+	diskM := NewDiskManager()
+	disk, err := diskM.GetCurrentDisk()
+	if err != nil {
+		PrintVerbose("ABRootManager.GetBoot: error: %s", err)
+		return Partition{}, err
+	}
+
+	for _, partition := range disk.Partitions {
+		if partition.Label == settings.Cnf.PartLabelBoot {
+			PrintVerbose("ABRootManager.GetBoot: successfully got boot partition")
+			return partition, nil
+		}
+	}
+
+	err = errors.New("boot partition not found")
+	PrintVerbose("ABRootManager.GetBoot: error: %s", err)
+	return Partition{}, err
 }
