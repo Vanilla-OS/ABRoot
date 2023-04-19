@@ -59,7 +59,7 @@ func NewABImageFromRoot() (*ABImage, error) {
 }
 
 // WriteTo writes the json to a dest path
-func (a *ABImage) WriteTo(dest string) error {
+func (a *ABImage) WriteTo(dest string, suffix string) error {
 	PrintVerbose("ABImage.WriteTo: running...")
 
 	dir := filepath.Dir(dest)
@@ -68,7 +68,10 @@ func (a *ABImage) WriteTo(dest string) error {
 		return err
 	}
 
-	imageName := "abimage.abr"
+	if suffix != "" {
+		suffix = "-" + suffix
+	}
+	imageName := "abimage" + suffix + ".abr"
 	imagePath := filepath.Join(dir, imageName)
 
 	abimage, err := json.Marshal(a)
