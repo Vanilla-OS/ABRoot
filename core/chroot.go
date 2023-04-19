@@ -21,7 +21,7 @@ func ChrootExecute(root string, cmd string, args []string) error {
 	cmd = filepath.Join(root, cmd)
 	cmd = strings.Join(append([]string{cmd}, args...), " ")
 	PrintVerbose("ChrootExecute: running command: " + cmd)
-	c := exec.Command("/bin/sh", "-c", cmd)
+	c := exec.Command("chroot", root, "/bin/sh", "-c", cmd)
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin
@@ -42,7 +42,7 @@ func ChrootExecuteCmds(root string, cmds []string) error {
 
 	// run commands
 	for _, cmd := range cmds {
-		err := ChrootExecute(root, "/bin/sh", []string{"-c", cmd})
+		err := ChrootExecute(root, cmd, []string{})
 		if err != nil {
 			PrintVerbose("ChrootExecuteCmds:error: " + err.Error())
 			return err
