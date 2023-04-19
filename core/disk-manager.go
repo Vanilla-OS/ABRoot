@@ -176,3 +176,19 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 
 	return result, nil
 }
+
+// Mount mounts a partition to a directory
+func (p *Partition) Mount(destination string) error {
+	PrintVerbose("Partition.Mount: running...")
+
+	cmd := exec.Command("mount", "-U", p.Uuid, destination)
+	err := cmd.Run()
+	if err != nil {
+		PrintVerbose("Partition.Mount: error: %s", err)
+		return err
+	}
+
+	p.MountPoint = destination
+	PrintVerbose("Partition.Mount: successfully mounted partition")
+	return nil
+}
