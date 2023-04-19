@@ -43,6 +43,11 @@ type PodmanManifest struct {
 	Layers   []string `json:"Layers"`
 }
 
+type PodmanImage struct {
+	Digest string
+	Image  string
+}
+
 func NewPodman() *Podman {
 	PrintVerbose("NewPodman: running...")
 	return &Podman{
@@ -50,6 +55,7 @@ func NewPodman() *Podman {
 	}
 }
 
+// Run runs a podman command
 func (p *Podman) Run(args []string) error {
 	PrintVerbose("Podman.Run: running %s", strings.Join(args, " "))
 
@@ -72,21 +78,76 @@ func (p *Podman) Run(args []string) error {
 	return nil
 }
 
-func (p *Podman) Pull(image string) error {
-	PrintVerbose("Podman.Pull: running...")
-	return p.Run([]string{"pull", image})
+// RunOutput runs a podman command and returns the output
+func (p *Podman) RunOutput(args []string) (string, error) {
+	PrintVerbose("Podman.RunOutput: running %s", strings.Join(args, " "))
+
+	// add root flag to args
+	args = append([]string{"--root", p.Root}, args...)
+
+	// run podman
+	cmd := exec.Command("podman", args...)
+	out, err := cmd.Output()
+	if err != nil {
+		PrintVerbose("Podman.RunOutput:error: %s", err)
+		return "", err
+	}
+
+	PrintVerbose("Podman.RunOutput: successfully ran.")
+	return string(out), nil
 }
 
+// Pull pulls an image and returns a PodmanImage struct
+func (p *Podman) Pull(image string) (*PodmanImage, error) {
+	PrintVerbose("Podman.Pull: running...")
+
+	// pull image
+	err := p.Run([]string{"pull", image})
+	if err != nil {
+		PrintVerbose("Podman.Pull:error: %s", err)
+		return nil, err
+	}
+
+	// get digest
+	digest, err := p.Inspect(image, "Digest")
+	if err != nil {
+		PrintVerbose("Podman.Pull:error(2): %s", err)
+		return nil, err
+	}
+
+	return &PodmanImage{
+		Digest: digest,
+		Image:  image,
+	}, nil
+}
+
+// Inspect returns a value from an image
+func (p *Podman) Inspect(image string, key string) (string, error) {
+	PrintVerbose("Podman.Inspect: running...")
+
+	// inspect image
+	out, err := p.RunOutput([]string{"inspect", image, "--format", fmt.Sprintf("{{.%s}}", key)})
+	if err != nil {
+		PrintVerbose("Podman.Inspect:error: %s", err)
+		return "", err
+	}
+
+	return strings.TrimSpace(out), nil
+}
+
+// Save saves an image to a destination
 func (p *Podman) Save(image string, dest string) error {
 	PrintVerbose("Podman.Save: running...")
 	return p.Run([]string{"save", image, "-o", dest})
 }
 
+// BuildImage builds an image from a container file
 func (p *Podman) BuildImage(image string, containerFile string) error {
 	PrintVerbose("Podman.BuildImage: running...")
 	return p.Run([]string{"build", "-t", image, "-f", containerFile, "."})
 }
 
+// NewContainerFile creates a new ContainerFile struct
 func (p *Podman) NewContainerFile(image string, labels map[string]string, args map[string]string, content string) *ContainerFile {
 	PrintVerbose("Podman.NewContainerFile: running...")
 	return &ContainerFile{
@@ -97,6 +158,7 @@ func (p *Podman) NewContainerFile(image string, labels map[string]string, args m
 	}
 }
 
+// Write writes a ContainerFile to a path
 func (c *ContainerFile) Write(path string) error {
 	PrintVerbose("ContainerFile.Write: running...")
 
@@ -144,6 +206,7 @@ func (c *ContainerFile) Write(path string) error {
 	return nil
 }
 
+// GenerateRootfs generates a rootfs from a container file
 func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest string) error {
 	PrintVerbose("Podman.GenerateRootfs: running...")
 
@@ -203,6 +266,7 @@ func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest
 	return nil
 }
 
+// ExtractLayers extracts layers from an image
 func ExtractLayers(image string, dest string) error {
 	PrintVerbose("ExtractLayers: running...")
 
