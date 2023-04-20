@@ -256,6 +256,11 @@ func (p *PackageManager) GetFinalCmd() string {
 		return ""
 	}
 
+	if len(addPkgs) == 0 && len(removePkgs) == 0 {
+		PrintVerbose("PackageManager.GetFinalCmd: no packages to install or remove")
+		return "true"
+	}
+
 	finalAddPkgs := ""
 	if addPkgs != "" {
 		finalAddPkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngAdd, addPkgs)
