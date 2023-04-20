@@ -29,6 +29,13 @@ type ABSystem struct {
 	CurImage *ABImage
 }
 
+type QueuedFunction struct {
+	Name   string
+	Values []interface{}
+}
+
+var queue []QueuedFunction
+
 // NewABSystem creates a new system
 func NewABSystem() (*ABSystem, error) {
 	PrintVerbose("NewABSystem: running...")
@@ -100,9 +107,45 @@ func (s *ABSystem) SyncEtc(systemEtc string) error {
 	return nil
 }
 
+// RunCleanUpQueue runs the functions in the queue
+func (s *ABSystem) RunCleanUpQueue() error {
+	PrintVerbose("ABSystem.RunCleanUpQueue: running...")
+
+	for _, f := range queue {
+		switch f.Name {
+		case "umountFuture":
+			err := f.Values[0].(*ABRootPartition).Partition.Unmount()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:error: %s", err)
+				return err
+			}
+		}
+	}
+
+	s.ResetQueue()
+
+	PrintVerbose("ABSystem.RunCleanUpQueue: completed")
+	return nil
+}
+
+// AddToCleanUpQueue adds a function to the queue
+func (s *ABSystem) AddToCleanUpQueue(name string, values ...interface{}) {
+	queue = append(queue, QueuedFunction{
+		Name:   name,
+		Values: values,
+	})
+}
+
+// ResetQueue resets the queue
+func (s *ABSystem) ResetQueue() {
+	queue = []QueuedFunction{}
+}
+
 // Upgrade upgrades the system to the latest available image
 func (s *ABSystem) Upgrade() error {
 	PrintVerbose("ABSystem.Upgrade: starting upgrade")
+
+	s.ResetQueue()
 
 	// Are hooks supposed to exist in ABRoot v2?
 	// hooksM := NewHooks()
@@ -147,6 +190,8 @@ func (s *ABSystem) Upgrade() error {
 		PrintVerbose("ABSystem.Upgrade:error: %s", err)
 		return err
 	}
+
+	s.AddToCleanUpQueue("umountFuture", partFuture)
 
 	// Stage 2: Pull the new image
 	PrintVerbose("[Stage 2] ABSystemUpgrade")
