@@ -212,8 +212,13 @@ func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest
 
 	rootfs := filepath.Join(dest, "abroot_trans")
 
-	// create rootfs dir
-	err := os.MkdirAll(rootfs, 0755)
+	// // create rootfs dir
+	err := os.RemoveAll(rootfs)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
+		return err
+	}
+	err = os.MkdirAll(rootfs, 0755)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
 		return err
@@ -247,8 +252,15 @@ func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest
 		return err
 	}
 
+	// empy dest dir
+	err = os.RemoveAll(dest)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
+		return err
+	}
+
 	// move rootfs
-	err = os.Rename(filepath.Join(rootfs, "rootfs"), filepath.Join(dest, "rootfs"))
+	err = os.Rename(filepath.Join(rootfs, "rootfs"), dest)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
 		return err
