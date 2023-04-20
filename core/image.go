@@ -15,9 +15,9 @@ package core
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -62,17 +62,19 @@ func NewABImageFromRoot() (*ABImage, error) {
 func (a *ABImage) WriteTo(dest string, suffix string) error {
 	PrintVerbose("ABImage.WriteTo: running...")
 
-	dir := filepath.Dir(dest)
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		PrintVerbose("ABImage.WriteTo:error: " + err.Error())
-		return err
+	if _, err := os.Stat(dest); os.IsNotExist(err) {
+		err = os.MkdirAll(dest, 0755)
+		if err != nil {
+			PrintVerbose("ABImage.WriteTo:error: " + err.Error())
+			return err
+		}
 	}
 
 	if suffix != "" {
 		suffix = "-" + suffix
 	}
 	imageName := "abimage" + suffix + ".abr"
-	imagePath := filepath.Join(dir, imageName)
+	imagePath := fmt.Sprintf("%s/%s", dest, imageName)
 
 	abimage, err := json.Marshal(a)
 	if err != nil {
@@ -85,6 +87,8 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 		PrintVerbose("ABImage.WriteTo:error(3): " + err.Error())
 		return err
 	}
+
+	PrintVerbose("ABImage.WriteTo: successfully wrote abimage.abr to " + imagePath)
 
 	return nil
 }
