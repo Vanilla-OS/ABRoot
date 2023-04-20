@@ -181,14 +181,42 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 func (p *Partition) Mount(destination string) error {
 	PrintVerbose("Partition.Mount: running...")
 
+	if _, err := os.Stat(destination); os.IsNotExist(err) {
+		if err := os.MkdirAll(destination, 0755); err != nil {
+			PrintVerbose("Partition.Mount: error: %s", err)
+			return err
+		}
+	}
+
 	cmd := exec.Command("mount", "-U", p.Uuid, destination)
 	err := cmd.Run()
 	if err != nil {
-		PrintVerbose("Partition.Mount: error: %s", err)
+		PrintVerbose("Partition.Mount: error(2): %s", err)
 		return err
 	}
 
 	p.MountPoint = destination
 	PrintVerbose("Partition.Mount: successfully mounted partition")
+	return nil
+}
+
+// Unmount unmounts a partition
+func (p *Partition) Unmount() error {
+	PrintVerbose("Partition.Unmount: running...")
+
+	if p.MountPoint == "" {
+		PrintVerbose("Partition.Unmount: error: no mount point")
+		return errors.New("no mount point")
+	}
+
+	cmd := exec.Command("umount", p.MountPoint)
+	err := cmd.Run()
+	if err != nil {
+		PrintVerbose("Partition.Unmount: error(2): %s", err)
+		return err
+	}
+
+	p.MountPoint = ""
+	PrintVerbose("Partition.Unmount: successfully unmounted partition")
 	return nil
 }
