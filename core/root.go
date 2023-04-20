@@ -34,6 +34,7 @@ type ABRootPartition struct {
 	MountOptions string
 	Uuid         string
 	FsType       string
+	Current      bool
 }
 
 // NewABRootManager creates a new ABRootManager
@@ -65,6 +66,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 				return err
 			}
 
+			isCurrent := a.IsCurrent(partition)
 			a.Partitions = append(a.Partitions, ABRootPartition{
 				Label:        partition.Label,
 				IdentifiedAs: identifier,
@@ -74,6 +76,7 @@ func (a *ABRootManager) GetRootPartitions() error {
 				MountOptions: partition.MountOptions,
 				Uuid:         partition.Uuid,
 				FsType:       partition.FsType,
+				Current:      isCurrent,
 			})
 		}
 	}
@@ -81,6 +84,19 @@ func (a *ABRootManager) GetRootPartitions() error {
 	PrintVerbose("ABRootManager.GetRootPartitions: successfully got root partitions")
 
 	return nil
+}
+
+// IsCurrent checks if a partition is the current one
+func (a *ABRootManager) IsCurrent(partition Partition) bool {
+	PrintVerbose("ABRootManager.IsCurrent: running...")
+
+	if partition.MountPoint == "/" {
+		PrintVerbose("ABRootManager.IsCurrent: partition is current")
+		return true
+	}
+
+	PrintVerbose("ABRootManager.IsCurrent: partition is not current")
+	return false
 }
 
 // IdentifyPartition identifies a partition
