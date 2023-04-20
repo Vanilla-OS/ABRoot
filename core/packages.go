@@ -32,56 +32,48 @@ const (
 	PackagesRemoveFile = "packages.remove"
 )
 
-// init creates the base files and directories
-func init() {
-	PrintVerbose("PackageManager.init: running...")
+// NewPackageManager returns a new PackageManager struct
+func NewPackageManager() *PackageManager {
+	PrintVerbose("PackageManager.NewPackageManager: running...")
 
 	err := os.MkdirAll(PackagesAddFile, 0755)
 	if err != nil {
-		PrintVerbose("PackageManager.init:error: " + err.Error())
+		PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
 		panic(err)
 	}
 
 	err = os.MkdirAll(PackagesRemoveFile, 0755)
 	if err != nil {
-		PrintVerbose("PackageManager.init:error: " + err.Error())
+		PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
 		panic(err)
 	}
 
 	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesAddFile))
 	if err != nil {
-		PrintVerbose("PackageManager.init:error: " + err.Error())
 		err = ioutil.WriteFile(
 			filepath.Join(PackagesBaseDir, PackagesAddFile),
 			[]byte(""),
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.init:error: " + err.Error())
+			PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
 			panic(err)
 		}
 	}
 
 	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesRemoveFile))
 	if err != nil {
-		PrintVerbose("PackageManager.init:error: " + err.Error())
 		err = ioutil.WriteFile(
 			filepath.Join(PackagesBaseDir, PackagesRemoveFile),
 			[]byte(""),
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.init:error: " + err.Error())
+			PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
 			panic(err)
 		}
 	}
 
-	PrintVerbose("PackageManager.init: done")
-}
-
-// NewPackageManager returns a new PackageManager struct
-func NewPackageManager() *PackageManager {
-	PrintVerbose("PackageManager.NewPackageManager: running...")
 	return &PackageManager{}
 }
 
@@ -264,11 +256,18 @@ func (p *PackageManager) GetFinalCmd() string {
 		return ""
 	}
 
-	cmd := fmt.Sprintf(
-		"%s %s && %s %s",
-		settings.Cnf.IPkgMngAdd, addPkgs,
-		settings.Cnf.IPkgMngRm, removePkgs,
-	)
+	finalAddPkgs := ""
+	if addPkgs != "" {
+		finalAddPkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngAdd, addPkgs)
+	}
+
+	finalRemovePkgs := ""
+	if removePkgs != "" {
+		finalRemovePkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngRm, removePkgs)
+	}
+
+	cmd := fmt.Sprintf("%s && %s", finalAddPkgs, finalRemovePkgs)
+
 	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)
 	return cmd
 }
