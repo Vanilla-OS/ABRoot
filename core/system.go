@@ -230,7 +230,12 @@ func (s *ABSystem) Upgrade() error {
 	// Stage 4: Extract the rootfs
 	PrintVerbose("[Stage 4] ABSystemUpgrade")
 
-	err = podman.GenerateRootfs(fullImageName, containerFile, partFuture.Partition.MountPoint+"/.system.new/")
+	err = podman.GenerateRootfs(
+		fullImageName,
+		containerFile,
+		partFuture.Partition.MountPoint,
+		partFuture.Partition.MountPoint+"/.system.new/",
+	)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:error(6): %s", err)
 		return err

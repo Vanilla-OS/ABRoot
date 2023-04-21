@@ -15,6 +15,7 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -207,73 +208,78 @@ func (c *ContainerFile) Write(path string) error {
 }
 
 // GenerateRootfs generates a rootfs from a container file
-func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, dest string) error {
+func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, transDir string, dest string) error {
 	PrintVerbose("Podman.GenerateRootfs: running...")
 
-	rootfs := filepath.Join(dest, "abroot_trans")
+	if transDir == dest {
+		err := errors.New("transDir and dest cannot be the same")
+		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
+		return err
+	}
+
+	dest = filepath.Clean(strings.ReplaceAll(dest, "//", "/"))
+	transDir = filepath.Join(transDir, "abroot_trans")
 
 	// // create rootfs dir
-	err := os.RemoveAll(rootfs)
+	err := os.RemoveAll(dest)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
 		return err
 	}
-	err = os.MkdirAll(rootfs, 0755)
-	if err != nil {
-		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
-		return err
-	}
-
-	// create containerfile
-	err = containerFile.Write(filepath.Join(rootfs, "Containerfile"))
+	err = os.RemoveAll(transDir)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(2): %s", err)
 		return err
 	}
-
-	// build image
-	err = p.BuildImage(image, filepath.Join(rootfs, "Containerfile"))
+	err = os.MkdirAll(transDir, 0755)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(3): %s", err)
 		return err
 	}
 
-	// save image
-	err = p.Save(image, filepath.Join(rootfs, "image.tar"))
+	// create containerfile
+	err = containerFile.Write(filepath.Join(transDir, "Containerfile"))
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(4): %s", err)
 		return err
 	}
 
-	// extract layers
-	err = ExtractLayers(filepath.Join(rootfs, "image.tar"), rootfs)
+	// build image
+	err = p.BuildImage(image, filepath.Join(transDir, "Containerfile"))
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(5): %s", err)
 		return err
 	}
 
-	// empy dest dir
-	err = os.RemoveAll(dest)
+	// save image
+	err = p.Save(image, filepath.Join(transDir, "image.tar"))
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
 		return err
 	}
 
-	// move rootfs
-	err = os.Rename(filepath.Join(rootfs, "rootfs"), dest)
-	if err != nil {
-		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
-		return err
-	}
-
-	// remove trans dir
-	err = os.RemoveAll(rootfs)
+	// extract layers
+	err = ExtractLayers(filepath.Join(transDir, "image.tar"), transDir)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(7): %s", err)
 		return err
 	}
 
-	PrintVerbose("Podman.GenerateRootfs: successfully generated.")
+	// move rootfs
+	err = os.Rename(filepath.Join(transDir, "rootfs"), dest)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error(8): %s", err)
+		return err
+	}
+
+	// remove trans dir
+	err = os.RemoveAll(transDir)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error(9): %s", err)
+		return err
+	}
+
+	PrintVerbose("Podman.GenerateRootfs: successfully generated in %s", dest)
 
 	return nil
 }
