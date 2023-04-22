@@ -120,6 +120,13 @@ func (s *ABSystem) RunCleanUpQueue() error {
 				PrintVerbose("ABSystem.RunCleanUpQueue:error: %s", err)
 				return err
 			}
+		case "closeChroot":
+			chroot := f.Values[0].(*Chroot)
+			err := chroot.Close()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:error(2): %s", err)
+				return err
+			}
 		}
 	}
 
@@ -277,15 +284,32 @@ func (s *ABSystem) Upgrade() error {
 	// Stage 7: Update the bootloader
 	PrintVerbose("[Stage 7] ABSystemUpgrade")
 
-	err = ChrootExecuteCmds(
+	err = generateGrubRecipe(
 		partFuture.Partition.MountPoint+"/.system/",
+		partFuture.Partition.Uuid,
+		partFuture.IdentifiedAs,
+	)
+	if err != nil {
+		PrintVerbose("ABSystem.Upgrade:error(10): %s", err)
+		return err
+	}
+
+	chroot, err := NewChroot(partFuture.Partition.MountPoint + "/.system/")
+	if err != nil {
+		PrintVerbose("ABSystem.Upgrade:error(10.1): %s", err)
+		return err
+	}
+
+	s.AddToCleanUpQueue("closeChroot", chroot)
+
+	err = chroot.ExecuteCmds(
 		[]string{
 			"grub-mkconfig -o /boot/grub/grub.cfg",
 			"exit",
 		},
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(10): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(11): %s", err)
 		return err
 	}
 
@@ -294,7 +318,7 @@ func (s *ABSystem) Upgrade() error {
 
 	err = s.SyncEtc(partFuture.Partition.MountPoint + "/.system/etc/")
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(11): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(12): %s", err)
 		return err
 	}
 
@@ -304,13 +328,13 @@ func (s *ABSystem) Upgrade() error {
 	uuid := uuid.New().String()
 	err = os.Mkdir("/tmp/"+uuid, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(12): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(13): %s", err)
 		return err
 	}
 
 	err = partBoot.Mount("/tmp/" + uuid)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(13): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(14): %s", err)
 		return err
 	}
 
@@ -322,7 +346,7 @@ func (s *ABSystem) Upgrade() error {
 		"/tmp/"+uuid+"/grub.cfg.future",
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(14): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(15): %s", err)
 		return err
 	}
 
