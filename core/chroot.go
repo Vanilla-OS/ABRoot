@@ -39,7 +39,7 @@ func NewChroot(root string, rootUuid string) (*Chroot, error) {
 
 	// Workaround for a bug in os grub-probe, not detecting the
 	// root partition
-	err := exec.Command("mount", "UUID="+rootUuid, "/").Run()
+	err := exec.Command("mount", "-U", rootUuid, "/").Run()
 	if err != nil {
 		PrintVerbose("NewChroot:error(3): " + err.Error())
 		return nil, err
