@@ -8,7 +8,8 @@ import (
 
 // Chroot is a struct which represents a chroot environment
 type Chroot struct {
-	root string
+	root     string
+	rootUuid string
 }
 
 var mounts = []string{
@@ -20,7 +21,7 @@ var mounts = []string{
 }
 
 // NewChroot creates a new chroot environment
-func NewChroot(root string) (*Chroot, error) {
+func NewChroot(root string, rootUuid string) (*Chroot, error) {
 	PrintVerbose("NewChroot: running...")
 
 	if _, err := os.Stat(root); os.IsNotExist(err) {
@@ -36,8 +37,17 @@ func NewChroot(root string) (*Chroot, error) {
 		}
 	}
 
+	// Workaround for a bug in os grub-probe, not detecting the
+	// root partition
+	err := exec.Command("mount", "UUID="+rootUuid, "/").Run()
+	if err != nil {
+		PrintVerbose("NewChroot:error(3): " + err.Error())
+		return nil, err
+	}
+
 	return &Chroot{
-		root: root,
+		root:     root,
+		rootUuid: rootUuid,
 	}, nil
 }
 
