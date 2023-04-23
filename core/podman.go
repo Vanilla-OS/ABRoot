@@ -21,6 +21,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -51,6 +53,9 @@ type PodmanImage struct {
 
 func NewPodman() *Podman {
 	PrintVerbose("NewPodman: running...")
+
+	os.RemoveAll(podmanStorageRoot) // this is meant to be a temp storage
+
 	return &Podman{
 		Root: podmanStorageRoot,
 	}
@@ -143,9 +148,9 @@ func (p *Podman) Save(image string, dest string) error {
 }
 
 // BuildImage builds an image from a container file
-func (p *Podman) BuildImage(image string, containerFile string) error {
+func (p *Podman) BuildImage(image string, digest string, containerFile string) error {
 	PrintVerbose("Podman.BuildImage: running...")
-	return p.Run([]string{"build", "-t", image, "-f", containerFile, "."})
+	return p.Run([]string{"build", "-t", digest, "-f", containerFile, "."})
 }
 
 // NewContainerFile creates a new ContainerFile struct
@@ -208,7 +213,7 @@ func (c *ContainerFile) Write(path string) error {
 }
 
 // GenerateRootfs generates a rootfs from a container file
-func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, transDir string, dest string) error {
+func (p *Podman) GenerateRootfs(image string, intImageName string, containerFile *ContainerFile, transDir string, dest string) error {
 	PrintVerbose("Podman.GenerateRootfs: running...")
 
 	if transDir == dest {
@@ -220,20 +225,29 @@ func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, tran
 	dest = filepath.Clean(strings.ReplaceAll(dest, "//", "/"))
 	transDir = filepath.Join(transDir, "abroot_trans")
 
-	// // create rootfs dir
+	// cleanup dest
 	err := os.RemoveAll(dest)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error: %s", err)
 		return err
 	}
+
+	err = os.MkdirAll(dest, 0755)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error(3): %s", err)
+		return err
+	}
+
+	// cleanup transDir
 	err = os.RemoveAll(transDir)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(2): %s", err)
 		return err
 	}
+
 	err = os.MkdirAll(transDir, 0755)
 	if err != nil {
-		PrintVerbose("Podman.GenerateRootfs:error(3): %s", err)
+		PrintVerbose("Podman.GenerateRootfs:error(4): %s", err)
 		return err
 	}
 
@@ -245,43 +259,108 @@ func (p *Podman) GenerateRootfs(image string, containerFile *ContainerFile, tran
 	}
 
 	// build image
-	err = p.BuildImage(image, filepath.Join(transDir, "Containerfile"))
+	err = p.BuildImage(image, intImageName, filepath.Join(transDir, "Containerfile"))
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(5): %s", err)
 		return err
 	}
 
-	// save image
-	err = p.Save(image, filepath.Join(transDir, "image.tar"))
+	// create temp container
+	containerName := uuid.New().String()
+	err = p.Create(intImageName, containerName, true)
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(6): %s", err)
 		return err
 	}
 
-	// extract layers
-	err = ExtractLayers(filepath.Join(transDir, "image.tar"), transDir)
+	// export rootfs
+	err = p.Export(containerName, filepath.Join(transDir, "rootfs.tar"))
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(7): %s", err)
 		return err
 	}
 
-	// move rootfs
-	err = os.Rename(filepath.Join(transDir, "rootfs"), dest)
+	// extract rootfs
+	err = exec.Command("tar", "-xvf", filepath.Join(transDir, "rootfs.tar"), "-C", dest).Run()
 	if err != nil {
 		PrintVerbose("Podman.GenerateRootfs:error(8): %s", err)
+		return err
+	}
+
+	// remove temp image and container
+	err = p.RemoveImage(intImageName, true)
+	if err != nil {
+		PrintVerbose("Podman.GenerateRootfs:error(9): %s", err)
 		return err
 	}
 
 	// remove trans dir
 	err = os.RemoveAll(transDir)
 	if err != nil {
-		PrintVerbose("Podman.GenerateRootfs:error(9): %s", err)
+		PrintVerbose("Podman.GenerateRootfs:error(10): %s", err)
 		return err
 	}
 
 	PrintVerbose("Podman.GenerateRootfs: successfully generated in %s", dest)
 
 	return nil
+}
+
+// Create creates a container
+func (p *Podman) Create(image string, name string, start bool) error {
+	PrintVerbose("Podman.Create: running...")
+
+	err := p.Run([]string{"create", "--name", name, image})
+	if err != nil {
+		PrintVerbose("Podman.Create:error: %s", err)
+		return err
+	}
+
+	if start {
+		err = p.Run([]string{"start", name})
+		if err != nil {
+			PrintVerbose("Podman.Create:error(2): %s", err)
+			return err
+		}
+	}
+
+	PrintVerbose("Podman.Create: successfully created.")
+	return nil
+}
+
+// Start starts a container
+func (p *Podman) Start(name string) error {
+	PrintVerbose("Podman.Start: running...")
+	return p.Run([]string{"start", name})
+}
+
+// Remove removes a container
+func (p *Podman) Remove(name string, force bool) error {
+	PrintVerbose("Podman.Remove: running...")
+
+	forceFlag := ""
+	if force {
+		forceFlag = "-f"
+	}
+
+	return p.Run([]string{"rm", forceFlag, name})
+}
+
+// RemoveImage removes an image (and container if force is true)
+func (p *Podman) RemoveImage(name string, force bool) error {
+	PrintVerbose("Podman.RemoveImage: running...")
+	forceFlag := ""
+	if force {
+		forceFlag = "-f"
+	}
+
+	return p.Run([]string{"rmi", forceFlag, name})
+}
+
+// Export exports a container
+func (p *Podman) Export(name string, dest string) error {
+	PrintVerbose("Podman.Export: running...")
+	return p.Run([]string{"export", name, "-o", dest})
 }
 
 // ExtractLayers extracts layers from an image

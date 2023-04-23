@@ -249,7 +249,7 @@ func (s *ABSystem) Upgrade() error {
 	// }
 
 	// Stage 0: Check if there is an update available
-	PrintVerbose("[Stage 0] ABSystemUpgrade")
+	PrintVerbose("[Stage 0] -------- ABSystemUpgrade")
 
 	if !s.CheckUpdate() {
 		err := errors.New("no update available")
@@ -262,7 +262,7 @@ func (s *ABSystem) Upgrade() error {
 	// 			old .system_new and abimage-new.abr (it is
 	// 			possible that last transaction was interrupted
 	// 			before the clean up was done)
-	PrintVerbose("[Stage 1] ABSystemUpgrade")
+	PrintVerbose("[Stage 1] -------- ABSystemUpgrade")
 
 	partFuture, err := s.RootM.GetFuture()
 	if err != nil {
@@ -288,7 +288,7 @@ func (s *ABSystem) Upgrade() error {
 	s.AddToCleanUpQueue("umountFuture", 90, partFuture)
 
 	// Stage 2: Pull the new image
-	PrintVerbose("[Stage 2] ABSystemUpgrade")
+	PrintVerbose("[Stage 2] -------- ABSystemUpgrade")
 
 	podman := NewPodman()
 	fullImageName := settings.Cnf.Registry + "/" + settings.Cnf.Name + ":" + settings.Cnf.Tag
@@ -299,7 +299,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 3: Make a Containerfile with user packages
-	PrintVerbose("[Stage 3] ABSystemUpgrade")
+	PrintVerbose("[Stage 3] -------- ABSystemUpgrade")
 
 	pkgM := NewPackageManager()
 	pkgsFinal := pkgM.GetFinalCmd()
@@ -321,10 +321,11 @@ func (s *ABSystem) Upgrade() error {
 	)
 
 	// Stage 4: Extract the rootfs
-	PrintVerbose("[Stage 4] ABSystemUpgrade")
+	PrintVerbose("[Stage 4] -------- ABSystemUpgrade")
 
 	err = podman.GenerateRootfs(
 		fullImageName,
+		"abroot-"+uuid.New().String(),
 		containerFile,
 		partFuture.Partition.MountPoint,
 		partFuture.Partition.MountPoint+"/.system.new/",
@@ -348,7 +349,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 6: Atomic swap the rootfs and abimage.abr
-	PrintVerbose("[Stage 6] ABSystemUpgrade")
+	PrintVerbose("[Stage 6] -------- ABSystemUpgrade")
 
 	err = AtomicSwap(
 		partFuture.Partition.MountPoint+"/.system/",
@@ -372,7 +373,7 @@ func (s *ABSystem) Upgrade() error {
 	s.AddToCleanUpQueue("removeNewABImage", 30, partFuture)
 
 	// Stage 7: Generate /etc/fstab
-	PrintVerbose("[Stage 7] ABSystemUpgrade")
+	PrintVerbose("[Stage 7] -------- ABSystemUpgrade")
 
 	err = s.GenerateFstab(partFuture.Partition.MountPoint+"/.system/", partFuture)
 	if err != nil {
@@ -381,7 +382,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 8: Update the bootloader
-	PrintVerbose("[Stage 8] ABSystemUpgrade")
+	PrintVerbose("[Stage 8] -------- ABSystemUpgrade")
 
 	err = generateGrubRecipe(
 		partFuture.Partition.MountPoint+"/.system/",
@@ -417,7 +418,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 9: Sync /etc
-	PrintVerbose("[Stage 9] ABSystemUpgrade")
+	PrintVerbose("[Stage 9] -------- ABSystemUpgrade")
 
 	err = s.SyncEtc(partFuture.Partition.MountPoint + "/.system/etc/")
 	if err != nil {
@@ -426,7 +427,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 10: Mount boot partition
-	PrintVerbose("[Stage 10] ABSystemUpgrade")
+	PrintVerbose("[Stage 10] -------- ABSystemUpgrade")
 
 	uuid := uuid.New().String()
 	err = os.Mkdir("/tmp/"+uuid, 0755)
@@ -442,7 +443,7 @@ func (s *ABSystem) Upgrade() error {
 	}
 
 	// Stage 11: Atomic swap the bootloader
-	PrintVerbose("[Stage 11] ABSystemUpgrade")
+	PrintVerbose("[Stage 11] -------- ABSystemUpgrade")
 
 	err = AtomicSwap(
 		"/tmp/"+uuid+"/grub.cfg",
