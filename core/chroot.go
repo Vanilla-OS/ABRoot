@@ -9,8 +9,9 @@ import (
 
 // Chroot is a struct which represents a chroot environment
 type Chroot struct {
-	root     string
-	rootUuid string
+	root       string
+	rootUuid   string
+	rootDevice string
 }
 
 var ReservedMounts = []string{
@@ -22,7 +23,7 @@ var ReservedMounts = []string{
 }
 
 // NewChroot creates a new chroot environment
-func NewChroot(root string, rootUuid string) (*Chroot, error) {
+func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error) {
 	PrintVerbose("NewChroot: running...")
 
 	root = strings.ReplaceAll(root, "//", "/")
@@ -33,22 +34,16 @@ func NewChroot(root string, rootUuid string) (*Chroot, error) {
 	}
 
 	chroot := &Chroot{
-		root:     root,
-		rootUuid: rootUuid,
+		root:       root,
+		rootUuid:   rootUuid,
+		rootDevice: rootDevice,
 	}
 
-	// we need to mount /dev before the root so we can find the root device
-	err := exec.Command("mount", "--bind", "/dev", root+"/dev").Run()
+	// workaround for grub-mkconfig, not able to find the device
+	// inside a chroot environment
+	err := chroot.Execute("mount", []string{"--bind", "/", "/"})
 	if err != nil {
 		PrintVerbose("NewChroot:error(2): " + err.Error())
-		return nil, err
-	}
-
-	// workaround for a bug with grub-mkconfig not being able to find the
-	// root device
-	err = chroot.Execute("mount", []string{"-U", rootUuid, "/"})
-	if err != nil {
-		PrintVerbose("NewChroot:error(3): " + err.Error())
 		return nil, err
 	}
 
@@ -56,7 +51,7 @@ func NewChroot(root string, rootUuid string) (*Chroot, error) {
 		err := exec.Command("mount", "--bind", mount, root+mount).Run()
 		fmt.Println("mounting", mount, "to", root+mount)
 		if err != nil {
-			PrintVerbose("NewChroot:error(4): " + err.Error())
+			PrintVerbose("NewChroot:error(3): " + err.Error())
 			return nil, err
 		}
 	}
@@ -67,52 +62,53 @@ func NewChroot(root string, rootUuid string) (*Chroot, error) {
 
 // Close unmounts all the bind mounts
 func (c *Chroot) Close() error {
-	PrintVerbose("Close: running...")
+	PrintVerbose("Chroot.Close: running...")
 
 	for _, mount := range ReservedMounts {
 		err := exec.Command("umount", c.root+mount).Run()
 		if err != nil {
-			PrintVerbose("Close:error: " + err.Error())
+			PrintVerbose("Chroot.Close:error: " + err.Error())
 			return err
 		}
 	}
 
+	PrintVerbose("Chroot.Close: successfully closed.")
 	return nil
 }
 
 // Execute runs a command in the chroot environment
 func (c *Chroot) Execute(cmd string, args []string) error {
-	PrintVerbose("Execute: running...")
+	PrintVerbose("Chroot.Execute: running...")
 
 	cmd = strings.Join(append([]string{cmd}, args...), " ")
-	PrintVerbose("Execute: running command: " + cmd)
+	PrintVerbose("Chroot.Execute: running command: " + cmd)
 	e := exec.Command("chroot", c.root, "/bin/sh", "-c", cmd)
 	e.Stdout = os.Stdout
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
 	err := e.Run()
 	if err != nil {
-		PrintVerbose("Execute:error: " + err.Error())
+		PrintVerbose("Chroot.Execute:error: " + err.Error())
 		return err
 	}
 
-	PrintVerbose("Execute: successfully ran.")
+	PrintVerbose("Chroot.Execute: successfully ran.")
 	return nil
 }
 
 // ExecuteCmds runs a list of commands in the chroot environment,
 // stops at the first error
 func (c *Chroot) ExecuteCmds(cmds []string) error {
-	PrintVerbose("ExecuteCmds: running...")
+	PrintVerbose("Chroot.ExecuteCmds: running...")
 
 	for _, cmd := range cmds {
 		err := c.Execute(cmd, []string{})
 		if err != nil {
-			PrintVerbose("ExecuteCmds:error: " + err.Error())
+			PrintVerbose("Chroot.ExecuteCmds:error: " + err.Error())
 			return err
 		}
 	}
 
-	PrintVerbose("ExecuteCmds: successfully ran.")
+	PrintVerbose("Chroot.ExecuteCmds: successfully ran.")
 	return nil
 }

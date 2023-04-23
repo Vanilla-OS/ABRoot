@@ -297,6 +297,7 @@ func (s *ABSystem) Upgrade() error {
 	chroot, err := NewChroot(
 		partFuture.Partition.MountPoint+"/.system/",
 		partFuture.Partition.Uuid,
+		partFuture.Partition.Device,
 	)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:error(10.1): %s", err)
