@@ -101,7 +101,7 @@ func (s *ABSystem) SyncEtc(systemEtc string) error {
 	}
 
 	for _, file := range etcFiles {
-		sourceFile := etcDir + file
+		sourceFile := etcDir + "/" + file
 		destFile := systemEtc + "/" + file
 
 		// write the diff to the destination
