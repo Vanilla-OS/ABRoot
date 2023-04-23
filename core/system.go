@@ -161,6 +161,20 @@ func (s *ABSystem) RunCleanUpQueue() error {
 				PrintVerbose("ABSystem.RunCleanUpQueue:error(2): %s", err)
 				return err
 			}
+		case "removeNewSystem":
+			newSystem := f.Values[0].(string)
+			err := os.RemoveAll(newSystem)
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:error(3): %s", err)
+				return err
+			}
+		case "removeNewABImage":
+			newImage := f.Values[0].(string)
+			err := os.RemoveAll(newImage)
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:error(4): %s", err)
+				return err
+			}
 		}
 	}
 
@@ -243,8 +257,11 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	// Stage 1: Get the future root and boot partitions
-	// 			and mount future to /part-future
+	// Stage 1: Get the future root and boot partitions,
+	// 			mount future to /part-future and clean up
+	// 			old .system_new and abimage-new.abr (it is
+	// 			possible that last transaction was interrupted
+	// 			before the clean up was done)
 	PrintVerbose("[Stage 1] ABSystemUpgrade")
 
 	partFuture, err := s.RootM.GetFuture()
@@ -265,7 +282,10 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("umountFuture", 20, partFuture)
+	os.RemoveAll("/part-future/.system_new")
+	os.RemoveAll("/part-future/abimage-new.abr") // errors are safe to ignore
+
+	s.AddToCleanUpQueue("umountFuture", 90, partFuture)
 
 	// Stage 2: Pull the new image
 	PrintVerbose("[Stage 2] ABSystemUpgrade")
@@ -339,6 +359,8 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
+	s.AddToCleanUpQueue("removeNewSystem", 20, partFuture)
+
 	oldABImage := partFuture.Partition.MountPoint + "/abimage.abr"
 	newABImage := partFuture.Partition.MountPoint + "/abimage-new.abr"
 	err = AtomicSwap(oldABImage, newABImage)
@@ -346,6 +368,8 @@ func (s *ABSystem) Upgrade() error {
 		PrintVerbose("ABSystem.Upgrade:error(6.1): %s", err)
 		return err
 	}
+
+	s.AddToCleanUpQueue("removeNewABImage", 30, partFuture)
 
 	// Stage 7: Generate /etc/fstab
 	PrintVerbose("[Stage 7] ABSystemUpgrade")
