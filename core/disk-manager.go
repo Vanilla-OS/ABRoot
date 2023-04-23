@@ -38,6 +38,7 @@ type Partition struct {
 	MountOptions string
 	Uuid         string
 	FsType       string
+	Device       string
 }
 
 // NewDiskManager creates a new DiskManager
@@ -168,6 +169,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 				MountOptions: child.MountOptions,
 				Uuid:         child.Uuid,
 				FsType:       child.FsType,
+				Device:       child.LogicalName,
 			})
 		}
 	}
