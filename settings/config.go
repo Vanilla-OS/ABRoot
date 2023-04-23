@@ -27,6 +27,7 @@ type Config struct {
 	HooksPath          string `json:"hooksPath"`
 	IPkgMngAdd         string `json:"iPkgMngAdd"`
 	IPkgMngRm          string `json:"iPkgMngRm"`
+	PartLabelHome      string `json:"partLabelHome"`
 	PartLabelA         string `json:"partLabelA"`
 	PartLabelB         string `json:"partLabelB"`
 	PartLabelBoot      string `json:"partLabelBoot"`
@@ -55,6 +56,7 @@ func init() {
 		HooksPath:          viper.GetString("hooksPath"),
 		IPkgMngAdd:         viper.GetString("iPkgMngAdd"),
 		IPkgMngRm:          viper.GetString("iPkgMngRm"),
+		PartLabelHome:      viper.GetString("partLabelHome"),
 		PartLabelA:         viper.GetString("partLabelA"),
 		PartLabelB:         viper.GetString("partLabelB"),
 		PartLabelBoot:      viper.GetString("partLabelBoot"),

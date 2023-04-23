@@ -21,7 +21,8 @@ import (
 
 // ABRootManager represents the ABRoot manager
 type ABRootManager struct {
-	Partitions []ABRootPartition
+	Partitions    []ABRootPartition
+	HomePartition Partition
 }
 
 // ABRootPartition represents an ABRoot partition
@@ -42,13 +43,13 @@ func NewABRootManager() *ABRootManager {
 	PrintVerbose("NewABRootManager: running...")
 
 	a := &ABRootManager{}
-	a.GetRootPartitions()
+	a.GetPartitions()
 
 	return a
 }
 
-// GetRootPartitions gets the root partitions from the current device
-func (a *ABRootManager) GetRootPartitions() error {
+// GetPartitions gets the root partitions from the current device
+func (a *ABRootManager) GetPartitions() error {
 	PrintVerbose("ABRootManager.GetRootPartitions: running...")
 
 	diskM := NewDiskManager()
@@ -78,6 +79,8 @@ func (a *ABRootManager) GetRootPartitions() error {
 				FsType:       partition.FsType,
 				Current:      isCurrent,
 			})
+		} else if partition.Label == settings.Cnf.PartLabelHome {
+			a.HomePartition = partition
 		}
 	}
 
