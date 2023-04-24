@@ -101,8 +101,8 @@ func (s *ABSystem) SyncEtc(systemEtc string) error {
 	}
 
 	for _, file := range etcFiles {
-		sourceFile := etcDir + "/" + file
-		destFile := systemEtc + "/" + file
+		sourceFile := systemEtc + "/" + file
+		destFile := etcDir + "/" + file
 
 		// write the diff to the destination
 		err := MergeDiff(sourceFile, destFile)
@@ -290,11 +290,16 @@ func (s *ABSystem) Upgrade() error {
 	// Stage 2: Pull the new image
 	PrintVerbose("[Stage 2] -------- ABSystemUpgrade")
 
-	podman := NewPodman()
+	podman, error := NewPodman()
+	if error != nil {
+		PrintVerbose("ABSystem.Upgrade:error(2): %s", error)
+		return error
+	}
+
 	fullImageName := settings.Cnf.Registry + "/" + settings.Cnf.Name + ":" + settings.Cnf.Tag
 	podmanImage, err := podman.Pull(fullImageName)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:error(2): %s", err)
+		PrintVerbose("ABSystem.Upgrade:error(2.1): %s", err)
 		return err
 	}
 
@@ -446,8 +451,8 @@ func (s *ABSystem) Upgrade() error {
 	PrintVerbose("[Stage 11] -------- ABSystemUpgrade")
 
 	err = AtomicSwap(
-		"/tmp/"+uuid+"/grub.cfg",
-		"/tmp/"+uuid+"/grub.cfg.future",
+		"/tmp/"+uuid+"/grub/grub.cfg",
+		"/tmp/"+uuid+"/grub/grub.cfg.future",
 	)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:error(11): %s", err)
