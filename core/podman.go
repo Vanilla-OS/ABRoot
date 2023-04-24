@@ -51,14 +51,22 @@ type PodmanImage struct {
 	Image  string
 }
 
-func NewPodman() *Podman {
+func NewPodman() (*Podman, error) {
 	PrintVerbose("NewPodman: running...")
 
-	os.RemoveAll(podmanStorageRoot) // this is meant to be a temp storage
+	if os.Getenv("ABROOT_NO_CLEAN_STORAGE") != "1" { // development purposes
+		_, err := exec.Command("umount", filepath.Join(podmanStorageRoot, "overlay")).Output()
+		if err != nil {
+			PrintVerbose("NewPodman:error: %s", err)
+			return nil, err
+		}
+
+		os.RemoveAll(podmanStorageRoot) // this is meant to be a temp storage
+	}
 
 	return &Podman{
 		Root: podmanStorageRoot,
-	}
+	}, nil
 }
 
 // Run runs a podman command
