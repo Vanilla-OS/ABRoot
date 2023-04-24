@@ -32,8 +32,8 @@
 
 ```json
 {
-    "digest":"sha256:e9f2773ab60fabf4e456e4549d86e345b38754f1f8397183ce4dc28d52bab66e","
-    timestamp":"2023-04-23T15:13:19.066903531+02:00","
-    image":"registry.vanillaos.org/vanillaos/desktop:main"
+    "digest":"sha256:e9f2773ab60fabf4e456e4549d86e345b38754f1f8397183ce4dc28d52bab66e",
+    "timestamp":"2023-04-23T15:13:19.066903531+02:00",
+    "image":"registry.vanillaos.org/vanillaos/desktop:main"
 }
 ```
