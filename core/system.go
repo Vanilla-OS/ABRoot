@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/vanilla-os/abroot/settings"
@@ -83,8 +84,8 @@ func (s *ABSystem) CheckUpdate() bool {
 }
 
 // SyncEtc syncs /.system/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(systemEtc string) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", systemEtc)
+func (s *ABSystem) SyncEtc(newEtc string) error {
+	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -101,8 +102,8 @@ func (s *ABSystem) SyncEtc(systemEtc string) error {
 	}
 
 	for _, file := range etcFiles {
-		sourceFile := systemEtc + "/" + file
-		destFile := etcDir + "/" + file
+		sourceFile := etcDir + "/" + file
+		destFile := newEtc + "/" + file
 
 		// write the diff to the destination
 		err := MergeDiff(sourceFile, destFile)
@@ -122,7 +123,7 @@ func (s *ABSystem) SyncEtc(systemEtc string) error {
 		"--exclude=subuid",
 		"--exclude=subgid",
 		"/.system/etc/",
-		systemEtc,
+		newEtc,
 	).Run()
 	if err != nil {
 		PrintVerbose("ABSystem.SyncEtc:error(3): %s", err)
@@ -329,11 +330,10 @@ func (s *ABSystem) Upgrade() error {
 	PrintVerbose("[Stage 4] -------- ABSystemUpgrade")
 
 	err = podman.GenerateRootfs(
-		fullImageName,
 		"abroot-"+uuid.New().String(),
 		containerFile,
-		partFuture.Partition.MountPoint,
-		partFuture.Partition.MountPoint+"/.system.new/",
+		filepath.Join(partFuture.Partition.MountPoint, "abroot-trans"),
+		filepath.Join(partFuture.Partition.MountPoint, ".system.new"),
 	)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:error(4): %s", err)
@@ -425,7 +425,7 @@ func (s *ABSystem) Upgrade() error {
 	// Stage 9: Sync /etc
 	PrintVerbose("[Stage 9] -------- ABSystemUpgrade")
 
-	err = s.SyncEtc(partFuture.Partition.MountPoint + "/.system/etc/")
+	err = s.SyncEtc(partFuture.Partition.MountPoint + ".system/etc/")
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:error(9): %s", err)
 		return err
