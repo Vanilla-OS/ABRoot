@@ -35,14 +35,21 @@ func DiffFiles(sourceFile, destFile string) ([]byte, error) {
 	cmd := exec.Command("diff", "-u", sourceFile, destFile)
 	var out bytes.Buffer
 	cmd.Stdout = &out
+	errCode := 0
 	err := cmd.Run()
 	if err != nil {
-		PrintVerbose("DiffFiles:error: %s", err)
-		return nil, err
+		if exitError, ok := err.(*exec.ExitError); ok {
+			errCode = exitError.ExitCode()
+		}
 	}
 
-	PrintVerbose("DiffFiles: diff completed")
-	return out.Bytes(), nil
+	if errCode == 1 {
+		PrintVerbose("DiffFiles: diff found")
+		return out.Bytes(), nil
+	}
+
+	PrintVerbose("DiffFiles: no diff found")
+	return nil, nil
 }
 
 // WriteDiff applies the diff lines to the destination file.
