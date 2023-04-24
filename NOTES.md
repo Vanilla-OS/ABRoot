@@ -37,3 +37,10 @@
     "image":"registry.vanillaos.org/vanillaos/desktop:main"
 }
 ```
+
+## Boot Structure
+
+- /
+- /grub
+- /grub/grub.cfg
+- /grub/grub.cfg.future
