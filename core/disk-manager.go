@@ -51,7 +51,7 @@ func (d *DiskManager) GetDisk(device string) (Disk, error) {
 	PrintVerbose("DiskManager.GetDisk: running...")
 	partitions, err := d.getPartitions(device)
 	if err != nil {
-		PrintVerbose("DiskManager.GetDisk:error: %s", err)
+		PrintVerbose("DiskManager.GetDisk:err: %s", err)
 		return Disk{}, err
 	}
 
@@ -69,7 +69,7 @@ func (d *DiskManager) GetDiskByPartition(partition string) (Disk, error) {
 
 	output, err := exec.Command("lsblk", "-n", "-o", "PKNAME", "/dev/"+partition).Output()
 	if err != nil {
-		PrintVerbose("DiskManager.GetDiskByPartition:error: %s", err)
+		PrintVerbose("DiskManager.GetDiskByPartition:err: %s", err)
 		return Disk{}, err
 	}
 
@@ -86,7 +86,7 @@ func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 
 	root, err := os.Getwd()
 	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:error: %s", err)
+		PrintVerbose("DiskManager.GetCurrentDisk:err: %s", err)
 		return Disk{}, err
 	}
 
@@ -94,27 +94,27 @@ func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	// in case of weird setups
 	root, err = filepath.EvalSymlinks(root)
 	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:error(2): %s", err)
+		PrintVerbose("DiskManager.GetCurrentDisk:err(2): %s", err)
 		return Disk{}, err
 	}
 
 	output, err := exec.Command("df", "-P", root).Output()
 	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:error(3): %s", err)
+		PrintVerbose("DiskManager.GetCurrentDisk:err(3): %s", err)
 		return Disk{}, err
 	}
 
 	lines := strings.Split(string(output), "\n")
 	if len(lines) < 2 {
 		err := errors.New("could not determine device name for " + root)
-		PrintVerbose("DiskManager.GetCurrentDisk:error(4): %s", err)
+		PrintVerbose("DiskManager.GetCurrentDisk:err(4): %s", err)
 		return Disk{}, err
 	}
 
 	fields := strings.Fields(lines[1])
 	if len(fields) < 6 {
 		err := errors.New("could not determine device name for " + root)
-		PrintVerbose("DiskManager.GetCurrentDisk:error(5): %s", err)
+		PrintVerbose("DiskManager.GetCurrentDisk:err(5): %s", err)
 		return Disk{}, err
 	}
 
@@ -131,7 +131,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 
 	output, err := exec.Command("lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID").Output()
 	if err != nil {
-		PrintVerbose("DiskManager.getPartitions:error: %s", err)
+		PrintVerbose("DiskManager.getPartitions:err: %s", err)
 		return nil, err
 	}
 
@@ -152,7 +152,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	}
 
 	if err := json.Unmarshal(output, &partitions); err != nil {
-		PrintVerbose("DiskManager.getPartitions:error(2): %s", err)
+		PrintVerbose("DiskManager.getPartitions:err(2): %s", err)
 		return nil, err
 	}
 

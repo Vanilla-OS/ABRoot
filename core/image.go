@@ -43,14 +43,14 @@ func NewABImageFromRoot() (*ABImage, error) {
 
 	abimage, err := ioutil.ReadFile("/abimage.abr")
 	if err != nil {
-		PrintVerbose("NewABImageFromRoot:error: " + err.Error())
+		PrintVerbose("NewABImageFromRoot:err: " + err.Error())
 		return nil, err
 	}
 
 	var a ABImage
 	err = json.Unmarshal(abimage, &a)
 	if err != nil {
-		PrintVerbose("NewABImageFromRoot:error(2): " + err.Error())
+		PrintVerbose("NewABImageFromRoot:err(2): " + err.Error())
 		return nil, err
 	}
 
@@ -65,7 +65,7 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
 		err = os.MkdirAll(dest, 0755)
 		if err != nil {
-			PrintVerbose("ABImage.WriteTo:error: " + err.Error())
+			PrintVerbose("ABImage.WriteTo:err: " + err.Error())
 			return err
 		}
 	}
@@ -78,13 +78,13 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 
 	abimage, err := json.Marshal(a)
 	if err != nil {
-		PrintVerbose("ABImage.WriteTo:error(2): " + err.Error())
+		PrintVerbose("ABImage.WriteTo:err(2): " + err.Error())
 		return err
 	}
 
 	err = ioutil.WriteFile(imagePath, abimage, 0644)
 	if err != nil {
-		PrintVerbose("ABImage.WriteTo:error(3): " + err.Error())
+		PrintVerbose("ABImage.WriteTo:err(3): " + err.Error())
 		return err
 	}
 

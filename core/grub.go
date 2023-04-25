@@ -70,14 +70,14 @@ menuentry '%s' --class gnu-linux --class gnu --class os {
 	kernelVersion := getKernelVersion(rootPath)
 	if kernelVersion == "" {
 		err := errors.New("could not get kernel version")
-		PrintVerbose("generateGrubConfig:error: %s", err)
+		PrintVerbose("generateGrubConfig:err: %s", err)
 		return err
 	}
 
 	grubDir := filepath.Join(rootPath, "etc", "grub.d")
 	err := os.MkdirAll(grubDir, 0755)
 	if err != nil {
-		PrintVerbose("generateGrubConfig:error(2): %s", err)
+		PrintVerbose("generateGrubConfig:err(2): %s", err)
 		return err
 	}
 
@@ -87,7 +87,7 @@ menuentry '%s' --class gnu-linux --class gnu --class os {
 		0644,
 	)
 	if err != nil {
-		PrintVerbose("generateGrubConfig:error(3): %s", err)
+		PrintVerbose("generateGrubConfig:err(3): %s", err)
 		return err
 	}
 
@@ -101,12 +101,12 @@ func getKernelVersion(rootPath string) string {
 	kernelDir := filepath.Join(rootPath, "boot", "vmlinuz-*")
 	files, err := filepath.Glob(kernelDir)
 	if err != nil {
-		PrintVerbose("getKernelVersion:error: %s", err)
+		PrintVerbose("getKernelVersion:err: %s", err)
 		return ""
 	}
 
 	if len(files) == 0 {
-		PrintVerbose("getKernelVersion:error: no kernel found")
+		PrintVerbose("getKernelVersion:err: no kernel found")
 		return ""
 	}
 

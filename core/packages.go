@@ -38,13 +38,13 @@ func NewPackageManager() *PackageManager {
 
 	err := os.MkdirAll(PackagesAddFile, 0755)
 	if err != nil {
-		PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
+		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 		panic(err)
 	}
 
 	err = os.MkdirAll(PackagesRemoveFile, 0755)
 	if err != nil {
-		PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
+		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 		panic(err)
 	}
 
@@ -56,7 +56,7 @@ func NewPackageManager() *PackageManager {
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
+			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 			panic(err)
 		}
 	}
@@ -69,7 +69,7 @@ func NewPackageManager() *PackageManager {
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.NewPackageManager:error: " + err.Error())
+			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 			panic(err)
 		}
 	}
@@ -83,7 +83,7 @@ func (p *PackageManager) Add(pkg string) error {
 
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Add:error: " + err.Error())
+		PrintVerbose("PackageManager.Add:err: " + err.Error())
 		return err
 	}
 
@@ -106,7 +106,7 @@ func (p *PackageManager) Remove(pkg string) error {
 
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:error: " + err.Error())
+		PrintVerbose("PackageManager.Remove:err: " + err.Error())
 		return err
 	}
 
@@ -119,7 +119,7 @@ func (p *PackageManager) Remove(pkg string) error {
 
 	err = p.writeAddPackages(pkgs)
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:error(2): " + err.Error())
+		PrintVerbose("PackageManager.Remove:err(2): " + err.Error())
 		return err
 	}
 
@@ -144,7 +144,7 @@ func (p *PackageManager) GetAddPackagesString(sep string) (string, error) {
 	PrintVerbose("PackageManager.GetAddPackagesString: running...")
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.GetAddPackagesString:error: " + err.Error())
+		PrintVerbose("PackageManager.GetAddPackagesString:err: " + err.Error())
 		return "", err
 	}
 
@@ -157,7 +157,7 @@ func (p *PackageManager) GetRemovePackagesString(sep string) (string, error) {
 	PrintVerbose("PackageManager.GetRemovePackagesString: running...")
 	pkgs, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerbose("PackageManager.GetRemovePackagesString:error: " + err.Error())
+		PrintVerbose("PackageManager.GetRemovePackagesString:err: " + err.Error())
 		return "", err
 	}
 
@@ -171,14 +171,14 @@ func (p *PackageManager) getPackages(file string) ([]string, error) {
 	pkgs := []string{}
 	f, err := os.Open(filepath.Join(PackagesBaseDir, file))
 	if err != nil {
-		PrintVerbose("PackageManager.getPackages:error: " + err.Error())
+		PrintVerbose("PackageManager.getPackages:err: " + err.Error())
 		return pkgs, err
 	}
 	defer f.Close()
 
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		PrintVerbose("PackageManager.getPackages:error(2): " + err.Error())
+		PrintVerbose("PackageManager.getPackages:err(2): " + err.Error())
 		return pkgs, err
 	}
 
@@ -198,7 +198,7 @@ func (p *PackageManager) writeRemovePackages(pkg string) error {
 
 	pkgs, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerbose("PackageManager.writeRemovePackages:error: " + err.Error())
+		PrintVerbose("PackageManager.writeRemovePackages:err: " + err.Error())
 		return err
 	}
 
@@ -220,7 +220,7 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 
 	f, err := os.Create(filepath.Join(PackagesBaseDir, file))
 	if err != nil {
-		PrintVerbose("PackageManager.writePackages:error: " + err.Error())
+		PrintVerbose("PackageManager.writePackages:err: " + err.Error())
 		return err
 	}
 	defer f.Close()
@@ -232,7 +232,7 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 
 		_, err = f.WriteString(fmt.Sprintf("%s\n", pkg))
 		if err != nil {
-			PrintVerbose("PackageManager.writePackages:error(2): " + err.Error())
+			PrintVerbose("PackageManager.writePackages:err(2): " + err.Error())
 			return err
 		}
 	}
@@ -246,13 +246,13 @@ func (p *PackageManager) GetFinalCmd() string {
 
 	addPkgs, err := p.GetAddPackagesString(" ")
 	if err != nil {
-		PrintVerbose("PackageManager.GetFinalCmd:error: " + err.Error())
+		PrintVerbose("PackageManager.GetFinalCmd:err: " + err.Error())
 		return ""
 	}
 
 	removePkgs, err := p.GetRemovePackagesString(" ")
 	if err != nil {
-		PrintVerbose("PackageManager.GetFinalCmd:error(2): " + err.Error())
+		PrintVerbose("PackageManager.GetFinalCmd:err(2): " + err.Error())
 		return ""
 	}
 

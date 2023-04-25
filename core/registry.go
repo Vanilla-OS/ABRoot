@@ -47,7 +47,7 @@ func (r *Registry) HasUpdate(digest string) bool {
 
 	manifest, err := r.GetManifest()
 	if err != nil {
-		PrintVerbose("Registry.HasUpdate:error: %s", err)
+		PrintVerbose("Registry.HasUpdate:err: %s", err)
 		return false
 	}
 
@@ -69,7 +69,7 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 
 	req, err := http.NewRequest("GET", manifestAPIUrl, nil)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:error: %s", err)
+		PrintVerbose("Registry.GetManifest:err: %s", err)
 		return nil, err
 	}
 
@@ -77,21 +77,21 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:error(2): %s", err)
+		PrintVerbose("Registry.GetManifest:err(2): %s", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:error(3): %s", err)
+		PrintVerbose("Registry.GetManifest:err(3): %s", err)
 		return nil, err
 	}
 
 	m := make(map[string]interface{})
 	err = json.Unmarshal(body, &m)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest(:error4): %s", err)
+		PrintVerbose("Registry.GetManifest(:err4): %s", err)
 		return nil, err
 	}
 

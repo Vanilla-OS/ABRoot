@@ -28,19 +28,19 @@ func AtomicSwap(src, dst string) error {
 
 	orig, err := os.Open(src)
 	if err != nil {
-		PrintVerbose("AtomicSwap:error: %s", err)
+		PrintVerbose("AtomicSwap:err: %s", err)
 		return err
 	}
 
 	newfile, err := os.Open(dst)
 	if err != nil {
-		PrintVerbose("AtomicSwap:error(2): %s", err)
+		PrintVerbose("AtomicSwap:err(2): %s", err)
 		return err
 	}
 
 	err = unix.Renameat2(int(orig.Fd()), src, int(newfile.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
-		PrintVerbose("AtomicSwap:error(3): %s", err)
+		PrintVerbose("AtomicSwap:err(3): %s", err)
 		return err
 	}
 

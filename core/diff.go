@@ -13,14 +13,14 @@ func MergeDiff(sourceFile, destFile string) error {
 	// get the diff lines
 	diffLines, err := DiffFiles(sourceFile, destFile)
 	if err != nil {
-		PrintVerbose("MergeDiff:error: %s", err)
+		PrintVerbose("MergeDiff:err: %s", err)
 		return err
 	}
 
 	// write the diff to the destination
 	err = WriteDiff(destFile, diffLines)
 	if err != nil {
-		PrintVerbose("MergeDiff:error: %s", err)
+		PrintVerbose("MergeDiff:err: %s", err)
 		return err
 	}
 
@@ -66,7 +66,7 @@ func WriteDiff(destFile string, diffLines []byte) error {
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		PrintVerbose("WriteDiff:error: %s", err)
+		PrintVerbose("WriteDiff:err: %s", err)
 		return err
 	}
 

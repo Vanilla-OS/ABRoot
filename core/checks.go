@@ -62,20 +62,20 @@ func (c *Checks) CheckCompatibilityFS() error {
 	if runtime.GOOS == "linux" {
 		fs = []string{"ext4", "btrfs", "xfs"}
 	} else {
-		PrintVerbose("Checks.CheckCompatibilityFS:error: " + runtime.GOOS + " is not supported")
+		PrintVerbose("Checks.CheckCompatibilityFS:err: " + runtime.GOOS + " is not supported")
 		return errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
 	}
 
 	cmd, err := exec.Command("findmnt", "-n", "-o", "source", "/").Output()
 	if err != nil {
-		PrintVerbose("Checks.CheckCompatibilityFS:error(2): " + err.Error())
+		PrintVerbose("Checks.CheckCompatibilityFS:err(2): " + err.Error())
 		return err
 	}
 	device := string([]byte(cmd[:len(cmd)-1]))
 
 	cmd, err = exec.Command("lsblk", "-o", "fstype", "-n", device).Output()
 	if err != nil {
-		PrintVerbose("Checks.CheckCompatibilityFS:error(3): " + err.Error())
+		PrintVerbose("Checks.CheckCompatibilityFS:err(3): " + err.Error())
 		return err
 	}
 	fsType := string([]byte(cmd[:len(cmd)-1]))
@@ -88,7 +88,7 @@ func (c *Checks) CheckCompatibilityFS() error {
 	}
 
 	err = errors.New(`the filesystem ("` + fsType + `") is not supported`)
-	PrintVerbose("Checks.CheckCompatibilityFS:error(4): " + err.Error())
+	PrintVerbose("Checks.CheckCompatibilityFS:err(4): " + err.Error())
 	return err
 }
 
@@ -101,14 +101,14 @@ func (c *Checks) CheckEssentialTools() error {
 		tools = []string{"podman", "tar", "ping"}
 	} else {
 		err := errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
-		PrintVerbose("Checks.CheckEssentialTools:error(1): " + err.Error())
+		PrintVerbose("Checks.CheckEssentialTools:err(1): " + err.Error())
 		return err
 	}
 
 	for _, tool := range tools {
 		_, err := exec.LookPath(tool)
 		if err != nil {
-			PrintVerbose("Checks.CheckEssentialTools:error(2): " + err.Error())
+			PrintVerbose("Checks.CheckEssentialTools:err(2): " + err.Error())
 			return err
 		}
 	}
@@ -126,18 +126,18 @@ func (c *Checks) CheckConnectivity() error {
 		cmd = exec.Command("ping", "-c", "1", "google.com")
 	} else {
 		err := errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
-		PrintVerbose("Checks.CheckConnectivity:error(1): " + err.Error())
+		PrintVerbose("Checks.CheckConnectivity:err(1): " + err.Error())
 		return err
 	}
 
 	err := cmd.Run()
 	if err != nil {
-		PrintVerbose("Checks.CheckConnectivity:error(2): " + err.Error())
+		PrintVerbose("Checks.CheckConnectivity:err(2): " + err.Error())
 		return err
 	}
 
 	err = errors.New("no internet connection")
-	PrintVerbose("Checks.CheckConnectivity:error(3): " + err.Error())
+	PrintVerbose("Checks.CheckConnectivity:err(3): " + err.Error())
 	return err
 }
 
@@ -151,6 +151,6 @@ func (c *Checks) CheckRoot() error {
 	}
 
 	err := errors.New("not root")
-	PrintVerbose("Checks.CheckRoot:error(1): " + err.Error())
+	PrintVerbose("Checks.CheckRoot:err(1): " + err.Error())
 	return err
 }

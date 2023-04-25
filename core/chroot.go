@@ -29,7 +29,7 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 	root = strings.ReplaceAll(root, "//", "/")
 
 	if _, err := os.Stat(root); os.IsNotExist(err) {
-		PrintVerbose("NewChroot:error: " + err.Error())
+		PrintVerbose("NewChroot:err: " + err.Error())
 		return nil, err
 	}
 
@@ -43,7 +43,7 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 	// inside a chroot environment
 	err := chroot.Execute("mount", []string{"--bind", "/", "/"})
 	if err != nil {
-		PrintVerbose("NewChroot:error(2): " + err.Error())
+		PrintVerbose("NewChroot:err(2): " + err.Error())
 		return nil, err
 	}
 
@@ -51,7 +51,7 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 		err := exec.Command("mount", "--bind", mount, root+mount).Run()
 		fmt.Println("mounting", mount, "to", root+mount)
 		if err != nil {
-			PrintVerbose("NewChroot:error(3): " + err.Error())
+			PrintVerbose("NewChroot:err(3): " + err.Error())
 			return nil, err
 		}
 	}
@@ -67,7 +67,7 @@ func (c *Chroot) Close() error {
 	for _, mount := range ReservedMounts {
 		err := exec.Command("umount", c.root+mount).Run()
 		if err != nil {
-			PrintVerbose("Chroot.Close:error: " + err.Error())
+			PrintVerbose("Chroot.Close:err: " + err.Error())
 			return err
 		}
 	}
@@ -88,7 +88,7 @@ func (c *Chroot) Execute(cmd string, args []string) error {
 	e.Stdin = os.Stdin
 	err := e.Run()
 	if err != nil {
-		PrintVerbose("Chroot.Execute:error: " + err.Error())
+		PrintVerbose("Chroot.Execute:err: " + err.Error())
 		return err
 	}
 
@@ -104,7 +104,7 @@ func (c *Chroot) ExecuteCmds(cmds []string) error {
 	for _, cmd := range cmds {
 		err := c.Execute(cmd, []string{})
 		if err != nil {
-			PrintVerbose("Chroot.ExecuteCmds:error: " + err.Error())
+			PrintVerbose("Chroot.ExecuteCmds:err: " + err.Error())
 			return err
 		}
 	}

@@ -14,6 +14,7 @@ package settings
 */
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/spf13/viper"
@@ -32,14 +33,24 @@ type Config struct {
 	PartLabelB         string `json:"partLabelB"`
 	PartLabelBoot      string `json:"partLabelBoot"`
 	PartLabelEfi       string `json:"partLabelEfivar"`
+
+	// Virtual
+	FullImageName string
 }
 
 var Cnf *Config
 
 func init() {
+	// prod paths
 	viper.AddConfigPath("/etc/abroot/")
 	viper.AddConfigPath("/usr/share/abroot/")
+
+	// dev paths
 	viper.AddConfigPath("config/")
+
+	// tests paths
+	viper.AddConfigPath("../config/")
+
 	viper.SetConfigName("abroot")
 	viper.SetConfigType("json")
 	err := viper.ReadInConfig()
@@ -61,5 +72,10 @@ func init() {
 		PartLabelB:         viper.GetString("partLabelB"),
 		PartLabelBoot:      viper.GetString("partLabelBoot"),
 		PartLabelEfi:       viper.GetString("partLabelEfi"),
+
+		// Virtual
+		FullImageName: "",
 	}
+
+	Cnf.FullImageName = fmt.Sprintf("%s/%s:%s", Cnf.Registry, Cnf.Name, Cnf.Tag)
 }

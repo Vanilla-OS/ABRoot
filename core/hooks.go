@@ -106,14 +106,14 @@ func (h *Hooks) FinalScript(event string) (string, error) {
 
 	tmpDir, err := ioutil.TempDir("", "")
 	if err != nil {
-		PrintVerbose("Hooks.FinalScript:error: %s", err)
+		PrintVerbose("Hooks.FinalScript:err: %s", err)
 		return "", err
 	}
 
 	finalScriptPath := filepath.Join(tmpDir, fmt.Sprintf("abh-%s-%s.sh", event, uuid.New()))
 	finalScript, err := os.Create(finalScriptPath)
 	if err != nil {
-		PrintVerbose("Hooks.FinalScript:error: %s", err)
+		PrintVerbose("Hooks.FinalScript:err: %s", err)
 		return "", err
 	}
 	defer finalScript.Close()
