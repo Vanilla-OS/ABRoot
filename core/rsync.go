@@ -1,5 +1,20 @@
 package core
 
+/*	License: GPLv3
+	Authors:
+		Mirko Brombin <mirko@fabricators.ltd>
+		Vanilla OS Contributors <https://github.com/vanilla-os/>
+		Luca di Maio <https://github.com/89luca89>
+		Mateus B. Melchiades <https://github.com/matbme>
+	Copyright: 2023
+	Description:
+		ABRoot is utility which provides full immutability and
+		atomicity to a Linux system, by transacting between
+		two root filesystems. Updates are performed using OCI
+		images, to ensure that the system is always in a
+		consistent state.
+*/
+
 import (
 	"bufio"
 	"fmt"

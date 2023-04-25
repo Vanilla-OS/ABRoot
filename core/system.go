@@ -1,17 +1,5 @@
 package core
 
-import (
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path/filepath"
-
-	"github.com/google/uuid"
-	"github.com/vanilla-os/abroot/settings"
-)
-
 /*	License: GPLv3
 	Authors:
 		Mirko Brombin <mirko@fabricators.ltd>
@@ -24,6 +12,18 @@ import (
 		images, to ensure that the system is always in a
 		consistent state.
 */
+
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+
+	"github.com/google/uuid"
+	"github.com/vanilla-os/abroot/settings"
+)
 
 // ABSystem represents the system
 type ABSystem struct {
