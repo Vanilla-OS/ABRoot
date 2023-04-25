@@ -56,6 +56,8 @@ and A (future).
 We can use `set default=0` too but this way the result should be more
 understandable for the user.
 
+After a successful update, `grub.cfg` and `grub.cfg.future` are swapped.
+
 ## Root Boot Structure
 
 Each root has a `/.system/boot` folder with the following structure:
