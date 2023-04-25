@@ -44,3 +44,31 @@
 - /grub
 - /grub/grub.cfg
 - /grub/grub.cfg.future
+
+> Check the `/samples/grub` folder for examples.
+
+Essentially, we need 2 copy of the `/samples/grub/bootPart.grub.cfg` file,
+one for the current root and one for the future root. What changes is the
+order of the menu entries, the present is always the first entry. So we
+have 1 file with A (present) and B (future) and another file with B (present)
+and A (future).
+
+We can use `set default=0` too but this way the result should be more
+understandable for the user.
+
+## Root Boot Structure
+
+Each root has a `/.system/boot` folder with the following structure:
+
+- /.system/boot
+- /.system/boot/grub
+- /.system/boot/grub/abroot.cfg
+
+> Check the `/samples/grub` folder for examples.
+
+The `abroot.cfg` file is the same as the `rootPart.abroot.cfg` file but
+with the `root=` parameter set to the correct UUID.
+
+Note that this file is being loaded as a configuration using the `configfile`
+command. Do not include a `menuentry`, otherwise it will result in
+a submenu. (Good for advanced cases?).
