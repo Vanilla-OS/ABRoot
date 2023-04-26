@@ -442,7 +442,7 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("removeNewSystem", 20, partFuture)
+	s.AddToCleanUpQueue("removeNewSystem", 20, systemNew)
 
 	oldABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage.abr")
 	newABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage-new.abr")
@@ -452,7 +452,7 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("removeNewABImage", 30, partFuture)
+	s.AddToCleanUpQueue("removeNewABImage", 30, newABImage)
 
 	// Stage 11: Atomic swap the bootloader
 	// ------------------------------------------------
