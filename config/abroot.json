@@ -1,13 +1,19 @@
 {
+    "autoRepair": true,
+    
     "registry": "registry.vanillaos.org",
     "registryAPIVersion": "v2",
     "name": "vanillaos/desktop",
     "tag": "main",
-    "hooksPath": "example-hooks",
+    
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
+
     "partLabelA": "vanillaos-a",
     "partLabelB": "vanillaos-b",
     "partLabelBoot": "vanillaos-boot",
-    "partLabelEfi": "vanillaos-efi"
+    "partLabelEfi": "vanillaos-efi",
+
+    "libPathStates": "/var/lib/abroot/states",
+    "libPathPrivateOverlays": "/var/lib/abroot/private-overlays"
 }

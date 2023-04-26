@@ -267,7 +267,8 @@ func (s *ABSystem) Upgrade() error {
 	// 			mount future to /part-future and clean up
 	// 			old .system_new and abimage-new.abr (it is
 	// 			possible that last transaction was interrupted
-	// 			before the clean up was done)
+	// 			before the clean up was done). Finally run
+	// 			the IntegrityCheck on the future root.
 	// ------------------------------------------------
 	PrintVerbose("[Stage 1] -------- ABSystemUpgrade")
 
@@ -293,6 +294,12 @@ func (s *ABSystem) Upgrade() error {
 	os.RemoveAll("/part-future/abimage-new.abr") // errors are safe to ignore
 
 	s.AddToCleanUpQueue("umountFuture", 90, partFuture)
+
+	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
+	if err != nil {
+		PrintVerbose("ABSystem.Upgrade:err(1.3): %s", err)
+		return err
+	}
 
 	// Stage 2: Pull the new image
 	// ------------------------------------------------

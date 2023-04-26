@@ -45,3 +45,21 @@ func RootCheck(display bool) bool {
 
 	return true
 }
+
+// fileExists checks if a file exists
+func fileExists(path string) bool {
+	if _, err := os.Stat(path); err == nil {
+		return true
+	}
+
+	return false
+}
+
+// isLink checks if a path is a link
+func isLink(path string) bool {
+	if _, err := os.Lstat(path); err == nil {
+		return true
+	}
+
+	return false
+}

@@ -21,18 +21,29 @@ import (
 )
 
 type Config struct {
+	// Common
+	AutoRepair bool `json:"autoRepair"`
+
+	// Registry
 	Registry           string `json:"registry"`
 	RegistryAPIVersion string `json:"registryAPIVersion"`
 	Name               string `json:"name"`
 	Tag                string `json:"tag"`
-	HooksPath          string `json:"hooksPath"`
-	IPkgMngAdd         string `json:"iPkgMngAdd"`
-	IPkgMngRm          string `json:"iPkgMngRm"`
-	PartLabelHome      string `json:"partLabelHome"`
-	PartLabelA         string `json:"partLabelA"`
-	PartLabelB         string `json:"partLabelB"`
-	PartLabelBoot      string `json:"partLabelBoot"`
-	PartLabelEfi       string `json:"partLabelEfivar"`
+
+	// Package manager
+	IPkgMngAdd string `json:"iPkgMngAdd"`
+	IPkgMngRm  string `json:"iPkgMngRm"`
+
+	// Partitions
+	PartLabelHome string `json:"partLabelHome"`
+	PartLabelA    string `json:"partLabelA"`
+	PartLabelB    string `json:"partLabelB"`
+	PartLabelBoot string `json:"partLabelBoot"`
+	PartLabelEfi  string `json:"partLabelEfivar"`
+
+	// Lib
+	LibPathStates          string `json:"libPathStates"`
+	LibPathPrivateOverlays string `json:"libPathPrivateOverlays"`
 
 	// Virtual
 	FullImageName string
@@ -60,18 +71,29 @@ func init() {
 	}
 
 	Cnf = &Config{
+		// Common
+		AutoRepair: viper.GetBool("autoRepair"),
+
+		// Registry
 		Registry:           viper.GetString("registry"),
 		RegistryAPIVersion: viper.GetString("registryAPIVersion"),
 		Name:               viper.GetString("name"),
 		Tag:                viper.GetString("tag"),
-		HooksPath:          viper.GetString("hooksPath"),
-		IPkgMngAdd:         viper.GetString("iPkgMngAdd"),
-		IPkgMngRm:          viper.GetString("iPkgMngRm"),
-		PartLabelHome:      viper.GetString("partLabelHome"),
-		PartLabelA:         viper.GetString("partLabelA"),
-		PartLabelB:         viper.GetString("partLabelB"),
-		PartLabelBoot:      viper.GetString("partLabelBoot"),
-		PartLabelEfi:       viper.GetString("partLabelEfi"),
+
+		// Package manager
+		IPkgMngAdd: viper.GetString("iPkgMngAdd"),
+		IPkgMngRm:  viper.GetString("iPkgMngRm"),
+
+		// Partitions
+		PartLabelHome: viper.GetString("partLabelHome"),
+		PartLabelA:    viper.GetString("partLabelA"),
+		PartLabelB:    viper.GetString("partLabelB"),
+		PartLabelBoot: viper.GetString("partLabelBoot"),
+		PartLabelEfi:  viper.GetString("partLabelEfi"),
+
+		// Lib
+		LibPathStates:          viper.GetString("libPathStates"),
+		LibPathPrivateOverlays: viper.GetString("libPathPrivateOverlays"),
 
 		// Virtual
 		FullImageName: "",
