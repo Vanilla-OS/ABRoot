@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -77,8 +78,23 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 func (c *Chroot) Close() error {
 	PrintVerbose("Chroot.Close: running...")
 
-	for _, mount := range ReservedMounts {
-		err := exec.Command("umount", c.root+mount).Run()
+	err := exec.Command("umount", filepath.Join(c.root, "/dev/pts")).Run()
+	if err != nil {
+		PrintVerbose("Chroot.Close:err: " + err.Error())
+		return err
+	}
+
+	mountList := ReservedMounts
+	mountList = append(mountList, "")
+
+	for _, mount := range mountList {
+		if mount == "/dev/pts" {
+			continue
+		}
+
+		mountDir := filepath.Join(c.root, mount)
+		PrintVerbose("Chroot.Close: unmounting " + mountDir)
+		err := exec.Command("umount", mountDir).Run()
 		if err != nil {
 			PrintVerbose("Chroot.Close:err: " + err.Error())
 			return err
