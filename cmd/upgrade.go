@@ -70,7 +70,6 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	err = aBsys.Upgrade()
 	if err != nil {
 		cmdr.Error.Println(err)
-		err = aBsys.RunCleanUpQueue()
 		if err != nil {
 			cmdr.Error.Println(err)
 		}
