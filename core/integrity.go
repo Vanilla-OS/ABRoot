@@ -27,6 +27,7 @@ type IntegrityCheck struct {
 	systemPath          string
 	rootEtcPath         string
 	standardLinks       []string
+	rootPaths           []string
 }
 
 // NewIntegrityCheck creates a new IntegrityCheck instance
@@ -50,6 +51,22 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 			"/libx32",
 			"/sbin",
 			"/usr",
+		},
+		rootPaths: []string{ // those paths must be present in the root partition
+			"/boot",
+			"/dev",
+			"/home",
+			"/media",
+			"/mnt",
+			"/opt",
+			"/part-future",
+			"/proc",
+			"/root",
+			"/run",
+			"/srv",
+			"/sys",
+			"/tmp",
+			"/var",
 		},
 	}
 
@@ -89,6 +106,13 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	for _, link := range ic.standardLinks {
 		if !isLink(link) {
 			repairLinks = append(repairLinks, link)
+		}
+	}
+
+	// check if root paths exist
+	for _, path := range ic.rootPaths {
+		if !fileExists(path) {
+			repairPaths = append(repairPaths, path)
 		}
 	}
 
