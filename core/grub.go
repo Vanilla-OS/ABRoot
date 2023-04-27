@@ -85,5 +85,7 @@ func getKernelVersion(rootPath string) string {
 		}
 	}
 
+	maxVersion = maxVersion[7:]
+
 	return maxVersion
 }
