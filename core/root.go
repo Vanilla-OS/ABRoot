@@ -153,6 +153,41 @@ func (a *ABRootManager) GetFuture() (partition ABRootPartition, err error) {
 	return ABRootPartition{}, err
 }
 
+// GetOther gets the other partition
+func (a *ABRootManager) GetOther() (partition ABRootPartition, err error) {
+	PrintVerbose("ABRootManager.GetOther: running...")
+
+	present, err := a.GetPresent()
+	if err != nil {
+		PrintVerbose("ABRootManager.GetOther: error: %s", err)
+		return ABRootPartition{}, err
+	}
+
+	if present.Label == settings.Cnf.PartLabelA {
+		PrintVerbose("ABRootManager.GetOther: successfully got other partition")
+		return a.GetPartition(settings.Cnf.PartLabelB)
+	}
+
+	PrintVerbose("ABRootManager.GetOther: successfully got other partition")
+	return a.GetPartition(settings.Cnf.PartLabelA)
+}
+
+// GetPartition gets a partition by label
+func (a *ABRootManager) GetPartition(label string) (partition ABRootPartition, err error) {
+	PrintVerbose("ABRootManager.GetPartition: running...")
+
+	for _, partition := range a.Partitions {
+		if partition.Label == label {
+			PrintVerbose("ABRootManager.GetPartition: successfully got partition")
+			return partition, nil
+		}
+	}
+
+	err = errors.New("partition not found")
+	PrintVerbose("ABRootManager.GetPartition: error: %s", err)
+	return ABRootPartition{}, err
+}
+
 // GetBoot gets the boot partition from the current device
 func (a *ABRootManager) GetBoot() (partition Partition, err error) {
 	PrintVerbose("ABRootManager.GetBoot: running...")

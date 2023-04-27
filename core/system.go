@@ -84,8 +84,8 @@ func (s *ABSystem) CheckUpdate() bool {
 }
 
 // SyncEtc syncs /.system/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(newEtc string) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
+func (s *ABSystem) SyncEtc(present ABRootPartition, future ABRootPartition) error {
+	PrintVerbose("ABSystem.SyncEtc: SyncEtc running...")
 
 	etcFiles := []string{
 		"passwd",
@@ -95,9 +95,16 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"subuid",
 		"subgid",
 	}
-	etcDir := "/.system/etc"
+
+	etcDir := "/var/lib/abroot/etc" + present.Label
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
 		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
+		return err
+	}
+
+	newEtc := "/var/lib/abroot/etc" + future.Label
+	if _, err := os.Stat(newEtc); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
 		return err
 	}
 
@@ -113,7 +120,7 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		}
 	}
 
-	err := exec.Command(
+	err := exec.Command( // TODO: use the Rsync method here
 		"rsync",
 		"-a",
 		"--exclude=passwd",
@@ -226,9 +233,10 @@ func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error {
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 UUID=%s  /  %s  defaults  0  0
-UUID=%s  /home  %s  defaults  0  0
-/.system/var /var none bind 0 0
-/.system/opt /opt none bind 0 0
+UUID=%s  /var %s  defaults  0  0
+/var/home /home none bind 0 0
+/var/opt /opt none bind 0 0
+/var/lib/abroot/etc/%s /etc none bind 0 0
 }`
 	fstab := fmt.Sprintf(
 		template,
@@ -236,6 +244,7 @@ UUID=%s  /home  %s  defaults  0  0
 		root.Partition.FsType,
 		s.RootM.HomePartition.Uuid,
 		s.RootM.HomePartition.FsType,
+		root.IdentifiedAs,
 	)
 
 	err := ioutil.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
@@ -279,15 +288,21 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	partBoot, err := s.RootM.GetBoot()
+	partPresent, err := s.RootM.GetPresent()
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(1.1): %s", err)
 		return err
 	}
 
-	err = partFuture.Partition.Mount("/part-future/")
+	partBoot, err := s.RootM.GetBoot()
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(1.2): %s", err)
+		return err
+	}
+
+	err = partFuture.Partition.Mount("/part-future/")
+	if err != nil {
+		PrintVerbose("ABSystem.Upgrade:err(1.3: %s", err)
 		return err
 	}
 
@@ -298,7 +313,7 @@ func (s *ABSystem) Upgrade() error {
 
 	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1.3): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(1.4): %s", err)
 		return err
 	}
 
@@ -413,8 +428,7 @@ func (s *ABSystem) Upgrade() error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemUpgrade")
 
-	systemNewEtc := filepath.Join(systemNew, "etc")
-	err = s.SyncEtc(systemNewEtc)
+	err = s.SyncEtc(partPresent, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(8): %s", err)
 		return err

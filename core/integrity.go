@@ -14,7 +14,6 @@ package core
 */
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -22,26 +21,22 @@ import (
 )
 
 type IntegrityCheck struct {
-	statesPath          string
-	privateOverlaysPath string
-	systemPath          string
-	rootEtcPath         string
-	standardLinks       []string
-	rootPaths           []string
+	rootPath      string
+	systemPath    string
+	etcA          string
+	etcB          string
+	standardLinks []string
+	rootPaths     []string
 }
 
 // NewIntegrityCheck creates a new IntegrityCheck instance
 func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
 	systemPath := filepath.Join(root.MountPoint, "/.system")
-	rootEtcPath := filepath.Join(
-		settings.Cnf.LibPathPrivateOverlays,
-		fmt.Sprintf("etc-%s", root.Label),
-	)
 	ic := &IntegrityCheck{
-		statesPath:          settings.Cnf.LibPathStates,
-		privateOverlaysPath: settings.Cnf.LibPathPrivateOverlays,
-		systemPath:          systemPath,
-		rootEtcPath:         rootEtcPath,
+		rootPath:   root.MountPoint,
+		systemPath: systemPath,
+		etcA:       filepath.Join("/var/lib/abroot/etc/", settings.Cnf.PartLabelA),
+		etcB:       filepath.Join("/var/lib/abroot/etc/", settings.Cnf.PartLabelB),
 		standardLinks: []string{
 			"/bin",
 			"/etc",
@@ -55,6 +50,7 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 		rootPaths: []string{ // those paths must be present in the root partition
 			"/boot",
 			"/dev",
+			"/etc",
 			"/home",
 			"/media",
 			"/mnt",
@@ -67,6 +63,7 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 			"/sys",
 			"/tmp",
 			"/var",
+			settings.Cnf.LibPathStates,
 		},
 	}
 
@@ -82,37 +79,30 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	repairPaths := []string{}
 	repairLinks := []string{}
 
-	// check if states dir exists
-	if !fileExists(ic.statesPath) {
-		repairPaths = append(repairPaths, ic.statesPath)
-	}
-
-	// check if private overlays dir exists
-	if !fileExists(ic.privateOverlaysPath) {
-		repairPaths = append(repairPaths, ic.privateOverlaysPath)
-	}
-
-	// check if root etc dir exists
-	if !fileExists(ic.rootEtcPath) {
-		repairPaths = append(repairPaths, ic.rootEtcPath)
-	}
-
 	// check if system dir exists
 	if !fileExists(ic.systemPath) {
 		repairPaths = append(repairPaths, ic.systemPath)
 	}
 
+	// check if etc dirs exist
+	if !fileExists(ic.etcA) {
+		repairPaths = append(repairPaths, ic.etcA)
+	}
+	if !fileExists(ic.etcB) {
+		repairPaths = append(repairPaths, ic.etcB)
+	}
+
 	// check if standard links exist and are links
 	for _, link := range ic.standardLinks {
 		if !isLink(link) {
-			repairLinks = append(repairLinks, link)
+			repairLinks = append(repairLinks, filepath.Join(ic.rootPath, link))
 		}
 	}
 
 	// check if root paths exist
 	for _, path := range ic.rootPaths {
 		if !fileExists(path) {
-			repairPaths = append(repairPaths, path)
+			repairPaths = append(repairPaths, filepath.Join(ic.rootPath, path))
 		}
 	}
 

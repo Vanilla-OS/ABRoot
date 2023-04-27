@@ -14,6 +14,5 @@
     "partLabelBoot": "vanillaos-boot",
     "partLabelEfi": "vanillaos-efi",
 
-    "libPathStates": "/var/lib/abroot/states",
-    "libPathPrivateOverlays": "/var/lib/abroot/private-overlays"
+    "libPathStates": "/var/lib/abroot/states"
 }

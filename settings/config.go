@@ -42,8 +42,7 @@ type Config struct {
 	PartLabelEfi  string `json:"partLabelEfivar"`
 
 	// Lib
-	LibPathStates          string `json:"libPathStates"`
-	LibPathPrivateOverlays string `json:"libPathPrivateOverlays"`
+	LibPathStates string `json:"libPathStates"`
 
 	// Virtual
 	FullImageName string
@@ -92,8 +91,7 @@ func init() {
 		PartLabelEfi:  viper.GetString("partLabelEfi"),
 
 		// Lib
-		LibPathStates:          viper.GetString("libPathStates"),
-		LibPathPrivateOverlays: viper.GetString("libPathPrivateOverlays"),
+		LibPathStates: viper.GetString("libPathStates"),
 
 		// Virtual
 		FullImageName: "",
