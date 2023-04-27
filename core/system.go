@@ -242,8 +242,8 @@ UUID=%s  /var %s  defaults  0  0
 		template,
 		root.Partition.Uuid,
 		root.Partition.FsType,
-		s.RootM.HomePartition.Uuid,
-		s.RootM.HomePartition.FsType,
+		s.RootM.VarPartition.Uuid,
+		s.RootM.VarPartition.FsType,
 		root.IdentifiedAs,
 	)
 

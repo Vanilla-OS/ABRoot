@@ -21,8 +21,8 @@ import (
 
 // ABRootManager represents the ABRoot manager
 type ABRootManager struct {
-	Partitions    []ABRootPartition
-	HomePartition Partition
+	Partitions   []ABRootPartition
+	VarPartition Partition
 }
 
 // ABRootPartition represents an ABRoot partition
@@ -79,8 +79,8 @@ func (a *ABRootManager) GetPartitions() error {
 				FsType:       partition.FsType,
 				Current:      isCurrent,
 			})
-		} else if partition.Label == settings.Cnf.PartLabelHome {
-			a.HomePartition = partition
+		} else if partition.Label == settings.Cnf.PartLabelVar {
+			a.VarPartition = partition
 		}
 	}
 

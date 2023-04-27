@@ -35,7 +35,7 @@ type Config struct {
 	IPkgMngRm  string `json:"iPkgMngRm"`
 
 	// Partitions
-	PartLabelHome string `json:"partLabelHome"`
+	PartLabelVar  string `json:"partLabelVar"`
 	PartLabelA    string `json:"partLabelA"`
 	PartLabelB    string `json:"partLabelB"`
 	PartLabelBoot string `json:"partLabelBoot"`
@@ -84,7 +84,7 @@ func init() {
 		IPkgMngRm:  viper.GetString("iPkgMngRm"),
 
 		// Partitions
-		PartLabelHome: viper.GetString("partLabelHome"),
+		PartLabelVar:  viper.GetString("partLabelVar"),
 		PartLabelA:    viper.GetString("partLabelA"),
 		PartLabelB:    viper.GetString("partLabelB"),
 		PartLabelBoot: viper.GetString("partLabelBoot"),

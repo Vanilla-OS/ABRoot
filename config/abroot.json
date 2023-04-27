@@ -9,6 +9,7 @@
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
 
+    "partLabelVar": "vanillaos-var",
     "partLabelA": "vanillaos-a",
     "partLabelB": "vanillaos-b",
     "partLabelBoot": "vanillaos-boot",
