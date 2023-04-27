@@ -122,6 +122,7 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"--exclude=shadow",
 		"--exclude=subuid",
 		"--exclude=subgid",
+		"--exclude=fstab",
 		"/.system/etc/",
 		newEtc,
 	).Run()
