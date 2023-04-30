@@ -23,8 +23,6 @@ import (
 type IntegrityCheck struct {
 	rootPath      string
 	systemPath    string
-	etcA          string
-	etcB          string
 	standardLinks []string
 	rootPaths     []string
 }
@@ -35,8 +33,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 	ic := &IntegrityCheck{
 		rootPath:   root.MountPoint,
 		systemPath: systemPath,
-		etcA:       filepath.Join("/var/lib/abroot/etc/", settings.Cnf.PartLabelA),
-		etcB:       filepath.Join("/var/lib/abroot/etc/", settings.Cnf.PartLabelB),
 		standardLinks: []string{
 			"/bin",
 			"/etc",
@@ -82,14 +78,6 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	// check if system dir exists
 	if !fileExists(ic.systemPath) {
 		repairPaths = append(repairPaths, ic.systemPath)
-	}
-
-	// check if etc dirs exist
-	if !fileExists(ic.etcA) {
-		repairPaths = append(repairPaths, ic.etcA)
-	}
-	if !fileExists(ic.etcB) {
-		repairPaths = append(repairPaths, ic.etcB)
 	}
 
 	// check if standard links exist and are links
