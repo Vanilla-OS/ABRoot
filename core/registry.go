@@ -42,22 +42,22 @@ func NewRegistry() *Registry {
 }
 
 // HasUpdate checks if the image/tag from the registry has a different digest
-func (r *Registry) HasUpdate(digest string) bool {
+func (r *Registry) HasUpdate(digest string) (string, bool) {
 	PrintVerbose("Registry.HasUpdate: Checking for updates ...")
 
 	manifest, err := r.GetManifest()
 	if err != nil {
 		PrintVerbose("Registry.HasUpdate:err: %s", err)
-		return false
+		return "", false
 	}
 
 	if manifest.Digest == digest {
 		PrintVerbose("Registry.HasUpdate: no update available")
-		return false
+		return "", false
 	}
 
 	PrintVerbose("Registry.HasUpdate: update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
-	return true
+	return manifest.Digest, true
 }
 
 // GetManifest returns the manifest of the image
