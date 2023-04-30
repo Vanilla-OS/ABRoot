@@ -59,7 +59,8 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
-		if aBsys.CheckUpdate() {
+		_, res := aBsys.CheckUpdate()
+		if res {
 			cmdr.Info.Println(abroot.Trans("upgrade.updateAvailable"))
 		} else {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))

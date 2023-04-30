@@ -16,6 +16,7 @@ package main
 import (
 	"embed"
 
+	"github.com/containers/storage/pkg/reexec"
 	"github.com/vanilla-os/abroot/cmd"
 	"github.com/vanilla-os/orchid/cmdr"
 )
@@ -29,6 +30,10 @@ var fs embed.FS
 var abroot *cmdr.App
 
 func main() {
+	if reexec.Init() {
+		return
+	}
+
 	abroot = cmd.New(Version, fs)
 
 	// root command
