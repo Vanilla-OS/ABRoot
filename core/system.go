@@ -78,14 +78,14 @@ func (s *ABSystem) CheckAll() error {
 }
 
 // CheckUpdate checks if there is an update available
-func (s *ABSystem) CheckUpdate() bool {
+func (s *ABSystem) CheckUpdate() (string, bool) {
 	PrintVerbose("ABSystem.CheckUpdate: running...")
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
 // SyncEtc syncs /.system/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(present ABRootPartition, future ABRootPartition) error {
-	PrintVerbose("ABSystem.SyncEtc: SyncEtc running...")
+func (s *ABSystem) SyncEtc(newEtc string) error {
+	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -96,15 +96,9 @@ func (s *ABSystem) SyncEtc(present ABRootPartition, future ABRootPartition) erro
 		"subgid",
 	}
 
-	etcDir := "/var/lib/abroot/etc" + present.Label
+	etcDir := "/.system/etc"
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
 		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
-		return err
-	}
-
-	newEtc := "/var/lib/abroot/etc" + future.Label
-	if _, err := os.Stat(newEtc); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
 		return err
 	}
 
@@ -234,9 +228,9 @@ func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error {
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 UUID=%s  /  %s  defaults  0  0
 UUID=%s  /var %s  defaults  0  0
-/var/home /home none bind 0 0
-/var/opt /opt none bind 0 0
-/var/lib/abroot/etc/%s /etc none bind 0 0
+/var/home /home x-systemd.after=/var bind 0 0
+/var/opt /opt x-systemd.after=/var bind 0 0
+/.system/usr /.system/usr none bind,ro 0 0
 }`
 	fstab := fmt.Sprintf(
 		template,
@@ -244,7 +238,6 @@ UUID=%s  /var %s  defaults  0  0
 		root.Partition.FsType,
 		s.RootM.VarPartition.Uuid,
 		s.RootM.VarPartition.FsType,
-		root.IdentifiedAs,
 	)
 
 	err := ioutil.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
@@ -263,46 +256,41 @@ func (s *ABSystem) Upgrade() error {
 
 	s.ResetQueue()
 
-	// Stage 0: Check if there is an update available
+	// Stage 1: Check if there is an update available
 	// ------------------------------------------------
-	PrintVerbose("[Stage 0] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 1] -------- ABSystemUpgrade")
 
-	if !s.CheckUpdate() {
+	newDigest, res := s.CheckUpdate()
+	if !res {
 		err := errors.New("no update available")
-		PrintVerbose("ABSystemUpgrade:err(0): %s", err)
+		PrintVerbose("ABSystemUpgrade:err(1): %s", err)
 		return err
 	}
 
-	// Stage 1: Get the future root and boot partitions,
+	// Stage 2: Get the future root and boot partitions,
 	// 			mount future to /part-future and clean up
 	// 			old .system_new and abimage-new.abr (it is
 	// 			possible that last transaction was interrupted
 	// 			before the clean up was done). Finally run
 	// 			the IntegrityCheck on the future root.
 	// ------------------------------------------------
-	PrintVerbose("[Stage 1] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 2] -------- ABSystemUpgrade")
 
 	partFuture, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1): %s", err)
-		return err
-	}
-
-	partPresent, err := s.RootM.GetPresent()
-	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1.1): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(2): %s", err)
 		return err
 	}
 
 	partBoot, err := s.RootM.GetBoot()
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1.2): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(2.2): %s", err)
 		return err
 	}
 
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1.3: %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(2.3: %s", err)
 		return err
 	}
 
@@ -313,17 +301,7 @@ func (s *ABSystem) Upgrade() error {
 
 	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(1.4): %s", err)
-		return err
-	}
-
-	// Stage 2: Pull the new image
-	// ------------------------------------------------
-	PrintVerbose("[Stage 2] -------- ABSystemUpgrade")
-
-	podmanImage, err := PodPull(settings.Cnf.FullImageName)
-	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(2): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(2.4): %s", err)
 		return err
 	}
 
@@ -368,7 +346,7 @@ func (s *ABSystem) Upgrade() error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 5] ABSystemUpgrade")
 
-	abimage := NewABImage(podmanImage.Digest, settings.Cnf.FullImageName)
+	abimage := NewABImage(newDigest, settings.Cnf.FullImageName)
 	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(5): %s", err)
@@ -428,7 +406,8 @@ func (s *ABSystem) Upgrade() error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemUpgrade")
 
-	err = s.SyncEtc(partPresent, partFuture)
+	newEtc := filepath.Join(systemNew, "/etc")
+	err = s.SyncEtc(newEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(8): %s", err)
 		return err
