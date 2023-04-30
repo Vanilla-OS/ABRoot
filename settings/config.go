@@ -15,7 +15,6 @@ package settings
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -66,7 +65,7 @@ func init() {
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	Cnf = &Config{
