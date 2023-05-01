@@ -14,11 +14,11 @@ package core
 */
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 )
 
 // Chroot is a struct which represents a chroot environment
@@ -62,8 +62,8 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 	}
 
 	for _, mount := range ReservedMounts {
-		err := exec.Command("mount", "--bind", mount, root+mount).Run()
-		fmt.Println("mounting", mount, "to", root+mount)
+		PrintVerbose("NewChroot: mounting " + mount)
+		err := syscall.Mount(mount, filepath.Join(root, mount), "", syscall.MS_BIND, "")
 		if err != nil {
 			PrintVerbose("NewChroot:err(3): " + err.Error())
 			return nil, err
@@ -78,7 +78,7 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 func (c *Chroot) Close() error {
 	PrintVerbose("Chroot.Close: running...")
 
-	err := exec.Command("umount", filepath.Join(c.root, "/dev/pts")).Run()
+	err := syscall.Unmount(filepath.Join(c.root, "/dev/pts"), 0)
 	if err != nil {
 		PrintVerbose("Chroot.Close:err: " + err.Error())
 		return err
@@ -94,7 +94,7 @@ func (c *Chroot) Close() error {
 
 		mountDir := filepath.Join(c.root, mount)
 		PrintVerbose("Chroot.Close: unmounting " + mountDir)
-		err := exec.Command("umount", mountDir).Run()
+		err := syscall.Unmount(mountDir, 0)
 		if err != nil {
 			PrintVerbose("Chroot.Close:err: " + err.Error())
 			return err

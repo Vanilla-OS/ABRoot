@@ -16,10 +16,12 @@ package core
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 )
 
 // DiskManager represents a disk
@@ -190,8 +192,7 @@ func (p *Partition) Mount(destination string) error {
 		}
 	}
 
-	cmd := exec.Command("mount", "-U", p.Uuid, destination)
-	err := cmd.Run()
+	err := syscall.Mount(fmt.Sprintf("/dev/%s", p.Device), destination, p.FsType, 0, "")
 	if err != nil {
 		PrintVerbose("Partition.Mount: error(2): %s", err)
 		return err
@@ -211,8 +212,7 @@ func (p *Partition) Unmount() error {
 		return errors.New("no mount point")
 	}
 
-	cmd := exec.Command("umount", p.MountPoint)
-	err := cmd.Run()
+	err := syscall.Unmount(p.MountPoint, 0)
 	if err != nil {
 		PrintVerbose("Partition.Unmount: error(2): %s", err)
 		return err

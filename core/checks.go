@@ -15,9 +15,11 @@ package core
 
 import (
 	"errors"
+	"net"
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 )
 
 // Represents a Checks struct which contains all the checks which can
@@ -32,11 +34,6 @@ func NewChecks() *Checks {
 // PerformAllChecks performs all checks
 func (c *Checks) PerformAllChecks() error {
 	err := c.CheckCompatibilityFS()
-	if err != nil {
-		return err
-	}
-
-	err = c.CheckEssentialTools()
 	if err != nil {
 		return err
 	}
@@ -92,53 +89,18 @@ func (c *Checks) CheckCompatibilityFS() error {
 	return err
 }
 
-// CheckEssentialTools checks if the essential tools are installed (podman, tar)
-func (c *Checks) CheckEssentialTools() error {
-	PrintVerbose("Checks.CheckEssentialTools: running...")
-
-	var tools []string
-	if runtime.GOOS == "linux" {
-		tools = []string{"podman", "tar", "ping"}
-	} else {
-		err := errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
-		PrintVerbose("Checks.CheckEssentialTools:err(1): " + err.Error())
-		return err
-	}
-
-	for _, tool := range tools {
-		_, err := exec.LookPath(tool)
-		if err != nil {
-			PrintVerbose("Checks.CheckEssentialTools:err(2): " + err.Error())
-			return err
-		}
-	}
-
-	PrintVerbose("Checks.CheckEssentialTools: all essential tools are installed")
-	return nil
-}
-
 // CheckConnectivity checks if the system is connected to the internet
 func (c *Checks) CheckConnectivity() error {
 	PrintVerbose("Checks.CheckConnectivity: running...")
 
-	var cmd *exec.Cmd
-	if runtime.GOOS == "linux" {
-		cmd = exec.Command("ping", "-c", "1", "google.com")
-	} else {
-		err := errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
+	timeout := 5 * time.Second
+	_, err := net.DialTimeout("tcp", "vanillaos.org:80", timeout)
+	if err != nil {
 		PrintVerbose("Checks.CheckConnectivity:err(1): " + err.Error())
 		return err
 	}
 
-	err := cmd.Run()
-	if err != nil {
-		PrintVerbose("Checks.CheckConnectivity:err(2): " + err.Error())
-		return err
-	}
-
-	err = errors.New("no internet connection")
-	PrintVerbose("Checks.CheckConnectivity:err(3): " + err.Error())
-	return err
+	return nil
 }
 
 // CheckRoot checks if the user is root

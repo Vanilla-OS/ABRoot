@@ -27,7 +27,7 @@ type ImageRecipe struct {
 
 // NewImageRecipe creates a new ImageRecipe struct
 func NewImageRecipe(image string, labels map[string]string, args map[string]string, content string) *ImageRecipe {
-	PrintVerbose("Podman.NewImageRecipe: running...")
+	PrintVerbose("NewImageRecipe: running...")
 
 	return &ImageRecipe{
 		From:    image,
