@@ -1,3 +1,9 @@
+abroot (2.0.0) unstable; urgency=critical
+
+* Pre-alpha release with OCI support
+
+-- Mirko Brombin <send@mirko.pm>   Thu, 02 Feb 2023 10:09:00 -0300
+
 abroot (1.4.4) unstable; urgency=critical
 
 * Check system is in UEFI mode before mounting EFI

@@ -5,7 +5,10 @@ Maintainer: Mirko Brombin <send@mirko.pm>
 Uploaders: Mirko Brombin <send@mirko.pm>
 Build-Depends: debhelper (>= 9),
                dh-golang,
-               golang-go
+               golang-go,
+               libbtrfs-dev,
+               libdevmapper-dev,
+               libgpgme-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/vanilla-os/ABRoot
 Vcs-Browser: https://github.com/vanilla-os/ABRoot
@@ -15,7 +18,6 @@ Package: abroot
 Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         golang-go,
-         podman
+         golang-go
 Built-Using: ${misc:Built-Using}
 Description: ABRoot is utility which provides full immutability and atomicity to a Linux system, by transacting between two root filesystems. Updates are performed using OCI images, to ensure that the system is always in a consistent state.
