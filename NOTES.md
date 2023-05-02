@@ -50,8 +50,8 @@
 Essentially, we need 2 copy of the `/samples/grub/bootPart.grub.cfg` file,
 one for the current root and one for the future root. What changes is the
 order of the menu entries, the present is always the first entry. So we
-have 1 file with A (present) and B (future) and another file with B (present)
-and A (future).
+have 1 file with A (current) and B (previous) and another file with 
+B (current) and A (previous).
 
 We can use `set default=0` too but this way the result should be more
 understandable for the user.
