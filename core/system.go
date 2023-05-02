@@ -179,8 +179,8 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "umountBoot":
-			bootPart := f.Values[0].(ABRootPartition)
-			err := bootPart.Partition.Unmount()
+			bootPart := f.Values[0].(Partition)
+			err := bootPart.Unmount()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(5): %s", err)
 				return err
