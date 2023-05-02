@@ -96,14 +96,20 @@ func (ic *IntegrityCheck) check(repair bool) error {
 
 	if repair {
 		for _, path := range repairPaths {
-			if err := os.MkdirAll(path, 0755); err != nil {
+			PrintVerbose("IntegrityCheck: Repairing path %s", path)
+			err := os.MkdirAll(path, 0755)
+			if err != nil {
+				PrintVerbose("IntegrityCheck:err: %s", err)
 				return err
 			}
 		}
 
 		for _, link := range repairLinks {
 			sysPath := filepath.Join(ic.systemPath, link)
-			if err := os.Symlink(sysPath, link); err != nil {
+			PrintVerbose("IntegrityCheck: Repairing link %s -> %s", link, sysPath)
+			err := os.Symlink(sysPath, link)
+			if err != nil {
+				PrintVerbose("IntegrityCheck:err(2): %s", err)
 				return err
 			}
 		}
