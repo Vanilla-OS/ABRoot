@@ -19,7 +19,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+type Grub struct {
+	presentRoot string
+	futureRoot  string
+}
 
 // generateABGrubConf generates a new grub config with the given details
 // kernel version is automatically detected
@@ -88,4 +94,47 @@ func getKernelVersion(rootPath string) string {
 	maxVersion = maxVersion[8:]
 
 	return maxVersion
+}
+
+// NewGrub creates a new Grub instance
+func NewGrub(bootPart Partition) (*Grub, error) {
+	PrintVerbose("NewGrub: creating new grub instance")
+
+	grubPath := filepath.Join(bootPart.MountPoint, "grub")
+	confPath := filepath.Join(grubPath, "grub.cfg")
+
+	cfg, err := ioutil.ReadFile(confPath)
+	if err != nil {
+		PrintVerbose("NewGrub:err: %s", err)
+		return nil, err
+	}
+
+	var presentRoot, futureRoot string
+
+	for _, entry := range strings.Split(string(cfg), "\n") {
+		if strings.Contains(entry, "abroot-a") {
+			if strings.Contains(entry, "(current)") {
+				presentRoot = "a"
+			} else if strings.Contains(entry, "(previous)") {
+				futureRoot = "a"
+			}
+		} else if strings.Contains(entry, "abroot-b") {
+			if strings.Contains(entry, "(current)") {
+				presentRoot = "b"
+			} else if strings.Contains(entry, "(previous)") {
+				futureRoot = "b"
+			}
+		}
+	}
+
+	if presentRoot == "" || futureRoot == "" {
+		err := errors.New("could not find root partitions")
+		PrintVerbose("NewGrub:err(2): %s", err)
+		return nil, err
+	}
+
+	return &Grub{
+		presentRoot: presentRoot,
+		futureRoot:  futureRoot,
+	}, nil
 }

@@ -456,16 +456,23 @@ func (s *ABSystem) Upgrade() error {
 	s.AddToCleanUpQueue("removeNewABImage", 30, newABImage)
 
 	// Stage 11: Atomic swap the bootloader
-	// TODO: do not swap if rollback
 	// ------------------------------------------------
 	PrintVerbose("[Stage 11] -------- ABSystemUpgrade")
 
-	grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
-	grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
-	err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
+	grub, err := NewGrub(partBoot)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(11): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(11.1): %s", err)
 		return err
+	}
+
+	if grub.futureRoot != partFuture.Label {
+		grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
+		grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
+		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
+		if err != nil {
+			PrintVerbose("ABSystem.Upgrade:err(11.2): %s", err)
+			return err
+		}
 	}
 
 	PrintVerbose("ABSystem.Upgrade: upgrade completed")
