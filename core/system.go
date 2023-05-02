@@ -456,6 +456,7 @@ func (s *ABSystem) Upgrade() error {
 	s.AddToCleanUpQueue("removeNewABImage", 30, newABImage)
 
 	// Stage 11: Atomic swap the bootloader
+	// TODO: do not swap if rollback
 	// ------------------------------------------------
 	PrintVerbose("[Stage 11] -------- ABSystemUpgrade")
 

@@ -49,17 +49,21 @@ func RootCheck(display bool) bool {
 // fileExists checks if a file exists
 func fileExists(path string) bool {
 	if _, err := os.Stat(path); err == nil {
+		PrintVerbose("File exists: " + path)
 		return true
 	}
 
+	PrintVerbose("File does not exist: " + path)
 	return false
 }
 
 // isLink checks if a path is a link
 func isLink(path string) bool {
 	if _, err := os.Lstat(path); err == nil {
+		PrintVerbose("Path is a link: " + path)
 		return true
 	}
 
+	PrintVerbose("Path is not a link: " + path)
 	return false
 }

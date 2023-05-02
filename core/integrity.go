@@ -29,9 +29,9 @@ type IntegrityCheck struct {
 
 // NewIntegrityCheck creates a new IntegrityCheck instance
 func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
-	systemPath := filepath.Join(root.MountPoint, "/.system")
+	systemPath := filepath.Join(root.Partition.MountPoint, "/.system")
 	ic := &IntegrityCheck{
-		rootPath:   root.MountPoint,
+		rootPath:   root.Partition.MountPoint,
 		systemPath: systemPath,
 		standardLinks: []string{
 			"/bin",
@@ -72,6 +72,7 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 
 // check performs an integrity check on the system
 func (ic *IntegrityCheck) check(repair bool) error {
+	PrintVerbose("IntegrityCheck.check: Running...")
 	repairPaths := []string{}
 	repairLinks := []string{}
 
@@ -82,15 +83,17 @@ func (ic *IntegrityCheck) check(repair bool) error {
 
 	// check if standard links exist and are links
 	for _, link := range ic.standardLinks {
-		if !isLink(link) {
-			repairLinks = append(repairLinks, filepath.Join(ic.rootPath, link))
+		finalPath := filepath.Join(ic.rootPath, link)
+		if !isLink(finalPath) {
+			repairLinks = append(repairLinks, finalPath)
 		}
 	}
 
 	// check if root paths exist
 	for _, path := range ic.rootPaths {
-		if !fileExists(path) {
-			repairPaths = append(repairPaths, filepath.Join(ic.rootPath, path))
+		finalPath := filepath.Join(ic.rootPath, path)
+		if !fileExists(finalPath) {
+			repairPaths = append(repairPaths, finalPath)
 		}
 	}
 
