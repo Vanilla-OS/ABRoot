@@ -231,7 +231,7 @@ UUID=%s  /var %s  defaults  0  0
 /var/home /home x-systemd.after=/var bind 0 0
 /var/opt /opt x-systemd.after=/var bind 0 0
 /.system/usr /.system/usr none bind,ro 0 0
-}`
+`
 	fstab := fmt.Sprintf(
 		template,
 		root.Partition.Uuid,
@@ -247,6 +247,55 @@ UUID=%s  /var %s  defaults  0  0
 	}
 
 	PrintVerbose("ABSystem.GenerateFstab: fstab generated")
+	return nil
+}
+
+// GenerateSbinInit generates a usr/sbin/init file for the future root
+func (s *ABSystem) GenerateSbinInit(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateSbinInit: generating init")
+
+	template := `#!/usr/bin/bash
+echo "ABRoot: Initializing mount points..."
+
+# /var mount
+mount -U %s /var
+
+# /etc overlay
+mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
+
+# /var binds
+mount -o bind /var/home /home
+mount -o bind /var/opt /opt
+mount -o bind,ro /.system/usr /usr
+
+echo "ABRoot: Starting systemd..."
+
+# Start systemd
+exec /lib/systemd/systemd
+`
+
+	init := fmt.Sprintf(
+		template,
+		s.RootM.VarPartition.Uuid,
+		root.Label,
+		root.Label,
+	)
+
+	os.Remove(rootPath + "/usr/sbin/init")
+
+	err := ioutil.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		return err
+	}
+
+	err = os.Chmod(rootPath+"/usr/sbin/init", 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateSbinInit:err(2): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.GenerateSbinInit: init generated")
 	return nil
 }
 
@@ -353,13 +402,19 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab
+	// Stage 6: Generate /etc/fstab and /usr/sbin/init
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemUpgrade")
 
 	err = s.GenerateFstab(systemNew, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(6): %s", err)
+		return err
+	}
+
+	err = s.GenerateSbinInit(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.Upgrade:err(6.1): %s", err)
 		return err
 	}
 

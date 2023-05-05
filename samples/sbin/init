@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+echo "ABRoot: Initializing mount points..."
+
+# /var mount
+mount -U a834618a-39a6-415a-b9a7-31d30f2db2e2 /var
+
+# /etc overlay
+mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/a,workdir=/var/lib/abroot/etc/a-work /etc
+
+# /var binds
+mount -o bind /var/home /home
+mount -o bind /var/opt /opt
+mount -o bind,ro /.system/usr /usr
+
+echo "ABRoot: Starting systemd..."
+
+# Start systemd
+exec /lib/systemd/systemd
