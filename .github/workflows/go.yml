@@ -27,6 +27,9 @@ jobs:
 
     - name: Build
       run: go build -o abrootv2
+    
+    - name: Compress
+      run: tar -czvf abrootv2.tar.gz abrootv2
 
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
@@ -35,4 +38,4 @@ jobs:
         prerelease: true
         title: "Continuous Build"
         files: |
-          abrootv2
+          abrootv2.tar.gz
