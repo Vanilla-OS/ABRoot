@@ -29,6 +29,11 @@ libraries, which are licensed under the [Apache License 2.0](https://www.apache.
 Prometheus is distributed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
 license.
 
+## Run tests
+
+```bash
+go test -v ./tests/...
+```
 
 ## Why the name Prometheus?
 

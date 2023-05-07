@@ -21,7 +21,8 @@ import (
 
 type Config struct {
 	// Common
-	AutoRepair bool `json:"autoRepair"`
+	AutoRepair           bool `json:"autoRepair"`
+	MaxParallelDownloads uint `json:"maxParallelDownloads"`
 
 	// Registry
 	Registry           string `json:"registry"`
@@ -70,7 +71,8 @@ func init() {
 
 	Cnf = &Config{
 		// Common
-		AutoRepair: viper.GetBool("autoRepair"),
+		AutoRepair:           viper.GetBool("autoRepair"),
+		MaxParallelDownloads: viper.GetUint("maxParallelDownloads"),
 
 		// Registry
 		Registry:           viper.GetString("registry"),

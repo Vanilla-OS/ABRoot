@@ -32,7 +32,7 @@ import (
  * Prometheus only works with custom stores, so you need to pass the
  * root graphDriverName to create a new one.
  */
-func NewPrometheus(root, graphDriverName string) (*Prometheus, error) {
+func NewPrometheus(root, graphDriverName string, maxParallelDownloads uint) (*Prometheus, error) {
 	var err error
 
 	root = filepath.Clean(root)
@@ -55,7 +55,14 @@ func NewPrometheus(root, graphDriverName string) (*Prometheus, error) {
 		return nil, err
 	}
 
-	return &Prometheus{Store: store}, nil
+	return &Prometheus{
+		Store: store,
+		Config: PrometheusConfig{
+			Root:                 root,
+			GraphDriverName:      graphDriverName,
+			MaxParallelDownloads: maxParallelDownloads,
+		},
+	}, nil
 }
 
 /* PullImage pulls an image from a remote registry and stores it in the
@@ -91,7 +98,8 @@ func (p *Prometheus) PullImage(imageName string, dstName string) (*OciManifest, 
 		destRef,
 		srcRef,
 		&copy.Options{
-			ReportWriter: os.Stdout,
+			ReportWriter:         os.Stdout,
+			MaxParallelDownloads: p.Config.MaxParallelDownloads,
 		},
 	)
 	if err != nil {

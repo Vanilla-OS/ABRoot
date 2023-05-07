@@ -22,3 +22,4 @@ prometheus/prometheus
 
 Containerfile
 storage
+vendor

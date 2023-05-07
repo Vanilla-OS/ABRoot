@@ -15,5 +15,7 @@
     "partLabelBoot": "vanillaos-boot",
     "partLabelEfi": "vanillaos-efi",
 
-    "libPathStates": "/var/lib/abroot/states"
+    "libPathStates": "/var/lib/abroot/states",
+
+    "maxParallelDownloads": 2
 }

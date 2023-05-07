@@ -18,6 +18,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
 
@@ -25,7 +26,11 @@ import (
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
 	PrintVerbose("OciExportRootFs: running...")
 
-	pt, err := prometheus.NewPrometheus("/var/lib/abroot/storage", "overlay")
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
 	if err != nil {
 		PrintVerbose("OciExportRootFs:err: %s", err)
 		return err

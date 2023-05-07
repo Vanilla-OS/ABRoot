@@ -14,7 +14,8 @@ package prometheus
 import cstorage "github.com/containers/storage"
 
 type Prometheus struct {
-	Store cstorage.Store
+	Store  cstorage.Store
+	Config PrometheusConfig
 }
 
 type OciManifest struct {
@@ -28,4 +29,10 @@ type OciManifestConfig struct {
 	MediaType string `json:"mediaType"`
 	Size      int    `json:"size"`
 	Digest    string `json:"digest"`
+}
+
+type PrometheusConfig struct {
+	Root                 string
+	GraphDriverName      string
+	MaxParallelDownloads uint
 }

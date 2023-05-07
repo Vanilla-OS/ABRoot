@@ -689,7 +689,7 @@ github.com/vanilla-os/orchid
 github.com/vanilla-os/orchid/cmdr
 github.com/vanilla-os/orchid/log
 github.com/vanilla-os/orchid/roff
-# github.com/vanilla-os/prometheus v0.1.4
+# github.com/vanilla-os/prometheus v0.1.5
 ## explicit; go 1.19
 github.com/vanilla-os/prometheus
 # github.com/vbatts/tar-split v0.11.3
