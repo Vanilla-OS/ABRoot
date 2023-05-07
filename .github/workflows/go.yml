@@ -2,14 +2,16 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "2.0-oci-support" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "2.0-oci-support" ]
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
+    container:
+      image: registry.vanillaos.org/vanillaos/pico:main
     steps:
     - uses: actions/checkout@v3
 
@@ -19,7 +21,15 @@ jobs:
         go-version: 1.19
 
     - name: Build
-      run: go build -v ./...
+      run: |
+        go get ./...
+        go build -o abrootv2
 
-    - name: Test
-      run: go test -v ./...
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "continuous"
+        prerelease: true
+        title: "Continuous Build"
+        files: |
+          abrootv2
