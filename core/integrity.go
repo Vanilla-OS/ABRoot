@@ -32,10 +32,10 @@ type IntegrityCheck struct {
 // NewIntegrityCheck creates a new IntegrityCheck instance
 func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
 	systemPath := filepath.Join(root.Partition.MountPoint, "/.system")
-	etcPath := filepath.Join("/var/lib/abroot/etc", root.IdentifiedAs)
+	etcPath := filepath.Join("/var/lib/abroot/etc", root.Label)
 	etcWorkPath := filepath.Join(
 		"/var/lib/abroot/etc",
-		fmt.Sprintf("%s-work", root.IdentifiedAs),
+		fmt.Sprintf("%s-work", root.Label),
 	)
 	ic := &IntegrityCheck{
 		rootPath:   root.Partition.MountPoint,
@@ -94,9 +94,9 @@ func (ic *IntegrityCheck) check(repair bool) error {
 
 	// check if standard links exist and are links
 	for _, link := range ic.standardLinks {
-		finalPath := filepath.Join(ic.rootPath, link)
-		if !isLink(finalPath) {
-			repairLinks = append(repairLinks, finalPath)
+		testPath := filepath.Join(ic.rootPath, link)
+		if !isLink(testPath) {
+			repairLinks = append(repairLinks, link)
 		}
 	}
 
@@ -116,21 +116,28 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	}
 
 	if repair {
-		for _, path := range repairPaths {
-			PrintVerbose("IntegrityCheck: Repairing path %s", path)
-			err := os.MkdirAll(path, 0755)
+		for _, link := range repairLinks {
+			srcPath := filepath.Join(ic.systemPath, link)
+			dstPath := filepath.Join(ic.rootPath, link)
+			relSrcPath, err := filepath.Rel(filepath.Dir(dstPath), srcPath)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err: %s", err)
+				PrintVerbose("IntegrityCheck:err(1): %s", err)
+				return err
+			}
+
+			PrintVerbose("IntegrityCheck: Repairing link %s -> %s", relSrcPath, dstPath)
+			err = os.Symlink(relSrcPath, dstPath)
+			if err != nil {
+				PrintVerbose("IntegrityCheck:err(2): %s", err)
 				return err
 			}
 		}
 
-		for _, link := range repairLinks {
-			sysPath := filepath.Join(ic.systemPath, link)
-			PrintVerbose("IntegrityCheck: Repairing link %s -> %s", link, sysPath)
-			err := os.Symlink(sysPath, link)
+		for _, path := range repairPaths {
+			PrintVerbose("IntegrityCheck: Repairing path %s", path)
+			err := os.MkdirAll(path, 0755)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err(2): %s", err)
+				PrintVerbose("IntegrityCheck:err(3): %s", err)
 				return err
 			}
 		}
