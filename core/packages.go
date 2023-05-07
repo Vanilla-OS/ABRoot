@@ -271,7 +271,14 @@ func (p *PackageManager) GetFinalCmd() string {
 		finalRemovePkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngRm, removePkgs)
 	}
 
-	cmd := fmt.Sprintf("%s && %s", finalAddPkgs, finalRemovePkgs)
+	cmd := ""
+	if finalAddPkgs != "" && finalRemovePkgs != "" {
+		cmd = fmt.Sprintf("%s && %s", finalAddPkgs, finalRemovePkgs)
+	} else if finalAddPkgs != "" {
+		cmd = finalAddPkgs
+	} else if finalRemovePkgs != "" {
+		cmd = finalRemovePkgs
+	}
 
 	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)
 	return cmd
