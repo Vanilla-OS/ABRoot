@@ -227,17 +227,11 @@ func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error {
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 UUID=%s  /  %s  defaults  0  0
-UUID=%s  /var %s  defaults  0  0
-/var/home /home x-systemd.after=/var bind 0 0
-/var/opt /opt x-systemd.after=/var bind 0 0
-/.system/usr /.system/usr none bind,ro 0 0
 `
 	fstab := fmt.Sprintf(
 		template,
 		root.Partition.Uuid,
 		root.Partition.FsType,
-		s.RootM.VarPartition.Uuid,
-		s.RootM.VarPartition.FsType,
 	)
 
 	err := ioutil.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
