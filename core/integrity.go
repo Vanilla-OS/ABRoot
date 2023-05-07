@@ -53,7 +53,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 		rootPaths: []string{ // those paths must be present in the root partition
 			"/boot",
 			"/dev",
-			"/etc",
 			"/home",
 			"/media",
 			"/mnt",
@@ -116,26 +115,26 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	}
 
 	if repair {
+		for _, path := range repairPaths {
+			PrintVerbose("IntegrityCheck: Repairing path %s", path)
+			err := os.MkdirAll(path, 0755)
+			if err != nil {
+				PrintVerbose("IntegrityCheck:err(1): %s", err)
+				return err
+			}
+		}
+
 		for _, link := range repairLinks {
 			srcPath := filepath.Join(ic.systemPath, link)
 			dstPath := filepath.Join(ic.rootPath, link)
 			relSrcPath, err := filepath.Rel(filepath.Dir(dstPath), srcPath)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err(1): %s", err)
+				PrintVerbose("IntegrityCheck:err(2): %s", err)
 				return err
 			}
 
 			PrintVerbose("IntegrityCheck: Repairing link %s -> %s", relSrcPath, dstPath)
 			err = os.Symlink(relSrcPath, dstPath)
-			if err != nil {
-				PrintVerbose("IntegrityCheck:err(2): %s", err)
-				return err
-			}
-		}
-
-		for _, path := range repairPaths {
-			PrintVerbose("IntegrityCheck: Repairing path %s", path)
-			err := os.MkdirAll(path, 0755)
 			if err != nil {
 				PrintVerbose("IntegrityCheck:err(3): %s", err)
 				return err
