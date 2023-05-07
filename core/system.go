@@ -331,6 +331,9 @@ func (s *ABSystem) Upgrade() error {
 		return err
 	}
 
+	partFuture.Partition.Unmount() // just in case
+	partBoot.Unmount()
+
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(2.3: %s", err)
