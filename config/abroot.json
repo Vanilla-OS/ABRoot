@@ -9,11 +9,11 @@
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
 
-    "partLabelVar": "vanillaos-var",
-    "partLabelA": "vanillaos-a",
-    "partLabelB": "vanillaos-b",
-    "partLabelBoot": "vanillaos-boot",
-    "partLabelEfi": "vanillaos-efi",
+    "partLabelVar": "vos-var",
+    "partLabelA": "vos-a",
+    "partLabelB": "vos-b",
+    "partLabelBoot": "vos-boot",
+    "partLabelEfi": "vos-efi",
 
     "libPathStates": "/var/lib/abroot/states",
 
