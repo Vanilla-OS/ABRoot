@@ -14,7 +14,6 @@ Vcs-Git: git://github.com/vanilla-os/ABRoot.git
 Package: abroot
 Architecture: all
 Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         golang-go
+         ${misc:Depends}
 Built-Using: ${misc:Built-Using}
 Description: On-demand immutability for Vanilla OS.
