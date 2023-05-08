@@ -444,10 +444,16 @@ func (s *ABSystem) Upgrade() error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 5] ABSystemUpgrade")
 
+	if s.UserLockRequested() {
+		err := errors.New("upgrade locked per user request")
+		PrintVerbose("ABSystemUpgrade:err(5): %s", err)
+		return err
+	}
+
 	abimage := NewABImage(newDigest, settings.Cnf.FullImageName)
 	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(5): %s", err)
+		PrintVerbose("ABSystem.Upgrade:err(5.1): %s", err)
 		return err
 	}
 
