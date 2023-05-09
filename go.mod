@@ -7,7 +7,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/vanilla-os/orchid v0.4.0
 	github.com/vanilla-os/prometheus v0.1.5
-	golang.org/x/sys v0.7.0
+	golang.org/x/sys v0.8.0
 )
 
 require (
