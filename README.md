@@ -9,4 +9,4 @@
 </div>
 
 > **NOTE**: ABRoot v2 is currently in development. The current
-> version is v1, which is available in the `main` branch.
+> version is v1, which is available in the `v1` branch.
