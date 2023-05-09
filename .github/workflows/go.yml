@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ "2.0-oci-support" ]
+    branches: [ "v2" ]
   pull_request:
-    branches: [ "2.0-oci-support" ]
+    branches: [ "v2" ]
 
 jobs:
 
