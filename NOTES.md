@@ -74,3 +74,50 @@ with the `root=` parameter set to the correct UUID.
 Note that this file is being loaded as a configuration using the `configfile`
 command. Do not include a `menuentry`, otherwise it will result in
 a submenu. (Good for advanced cases?).
+
+# Development Notes
+
+## Root Lifecycle
+
+The root lifecycle is composed of 2 stages: 
+
+- **Current**: The root which is currently being used by the system.
+- **Future**: The root which will be used by the system after an update.
+
+The "current" root should never be modified, in any way. The "future" root is
+the root which is being modified by the update process and any other process
+which may require root modification (e.g. kargs, fstab..).
+
+## System Update / Root Re-generation
+
+When developing new features which does not envolve the update process, it is 
+important to consider the possibility of regenerating the root, as opposed to 
+performing a specific update. This may be necessary, for example, when updating 
+a kernel flag or fstab entry. To regenerate the root, developers should use the 
+Containerfile and avoid taking data from the current root.
+
+It is important to note that regenerating the root does not require pulling a 
+new image; rather, the latest image in the storage can be used. In ABRoot, 
+Prometheus (the container runtime used) makes this process easier, as 
+generating an image from the Containerfile does not execute a pull if the image 
+is already present in the store. During the update process, however, it is 
+necessary to force the pull to take the updated image (this may not happen
+during the development process).
+
+In the case of a rollback, the AtomicSwap function should be used to swap the 
+current grub configuration with the future one.
+
+## Function Data Files
+
+Some functions like kargs, fstab and pkg, need to store data to be used in the
+future. Those should always be placed in the current `/etc/abroot/..` path.
+
+If you are concerned that the current root should never be changed, you are 
+correct but in this case the `/etc` path is a combined overlay of the root and 
+respective `/etc` path files in the var partition:
+
+```
+/etc -> /var/lib/abroot/etc/a
+```
+
+Even if the root is read-only, the `/etc` path is not.
