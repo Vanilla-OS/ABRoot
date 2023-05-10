@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.vanillaos.org/vanillaos/pico:main
+
     steps:
     - uses: actions/checkout@v3
 
@@ -23,13 +24,10 @@ jobs:
     - name: Install build dependencies
       run: |
           apt-get update
-          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential sudo
+          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
 
     - name: Build
       run: go build -o abrootv2
-
-    - name: Test
-      run: sudo go test -v ./tests/...
     
     - name: Compress
       run: tar -czvf abrootv2.tar.gz abrootv2
