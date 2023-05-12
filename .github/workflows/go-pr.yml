@@ -1,0 +1,31 @@
+name: Go (PR)
+
+on:
+  pull_request:
+    branches: [ "v2" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: registry.vanillaos.org/vanillaos/pico:main
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Install build dependencies
+      run: |
+          apt-get update
+          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
+
+    - name: Build
+      run: go build -o abrootv2
+    
+    - name: Test
+      run: go test -v ./tests/..
