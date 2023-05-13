@@ -40,9 +40,10 @@ type QueuedFunction struct {
 }
 
 var (
-	queue        []QueuedFunction
-	lockFile     string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
-	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
+	queue         []QueuedFunction
+	lockFile      string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
+	userLockFile  string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
+	NoUpdateError error  = errors.New("no update available")
 )
 
 // NewABSystem creates a new system
@@ -342,9 +343,9 @@ func (s *ABSystem) Upgrade(force bool) error {
 		if force {
 			PrintVerbose("ABSystemUpgrade: No update available but --force it set. Proceeding...")
 		} else {
-			err := errors.New("no update available")
 			PrintVerbose("ABSystemUpgrade:err(1.1): %s", err)
-			return err
+			s.RunCleanUpQueue("")
+			return NoUpdateError
 		}
 	}
 
