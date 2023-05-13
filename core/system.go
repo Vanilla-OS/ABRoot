@@ -303,7 +303,7 @@ exec /lib/systemd/systemd
 }
 
 // Upgrade upgrades the system to the latest available image
-func (s *ABSystem) Upgrade() error {
+func (s *ABSystem) Upgrade(force bool) error {
 	PrintVerbose("ABSystem.Upgrade: starting upgrade")
 
 	s.ResetQueue()
@@ -338,9 +338,13 @@ func (s *ABSystem) Upgrade() error {
 
 	newDigest, res := s.CheckUpdate()
 	if !res {
-		err := errors.New("no update available")
-		PrintVerbose("ABSystemUpgrade:err(1.1): %s", err)
-		return err
+		if force {
+			PrintVerbose("ABSystemUpgrade: No update available but --force it set. Proceeding...")
+		} else {
+			err := errors.New("no update available")
+			PrintVerbose("ABSystemUpgrade:err(1.1): %s", err)
+			return err
+		}
 	}
 
 	// Stage 2: Get the future root and boot partitions,

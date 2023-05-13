@@ -35,6 +35,13 @@ func NewUpgradeCommand() *cmdr.Command {
 			abroot.Trans("upgrade.checkOnlyFlag"),
 			false))
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"force",
+			"f",
+			abroot.Trans("upgrade.forceFlag"),
+			false))
+
 	cmd.Example = "abroot upgrade"
 
 	return cmd
@@ -68,7 +75,13 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	err = aBsys.Upgrade()
+	force, err := cmd.Flags().GetBool("force")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	err = aBsys.Upgrade(force)
 	if err != nil {
 		cmdr.Error.Println(err)
 		if err != nil {
