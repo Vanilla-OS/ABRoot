@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/vanilla-os/abroot/settings"
@@ -560,6 +561,14 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	oldABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage.abr")
 	newABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage-new.abr")
+
+	// PartFuture may not have /abimage.abr if it got corrupted or was wiped.
+	// In these cases, create a dummy file for the atomic swap.
+	if _, err = os.Stat(oldABImage); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.Upgrade: Creating dummy /part-future/abimage.abr")
+		os.Create(oldABImage)
+	}
+
 	err = AtomicSwap(oldABImage, newABImage)
 	if err != nil {
 		PrintVerbose("ABSystem.Upgrade:err(10.1): %s", err)
@@ -581,9 +590,38 @@ func (s *ABSystem) Upgrade(force bool) error {
 	if grub.futureRoot != partFuture.Label {
 		grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
 		grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
+
+		// Just like in Stage 10, tmpBootMount/grub/grub.cfg.future may not exist.
+		if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
+			PrintVerbose("ABSystem.Upgrade: Creating grub.cfg.future")
+
+			grubCfgContents, err := os.ReadFile(grubCfgCurrent)
+			if err != nil {
+				PrintVerbose("ABSystem.Upgrade:err(11.1): %s", err)
+			}
+
+			var replacerPairs []string
+			if grub.futureRoot == "a" {
+				replacerPairs = []string{
+					"default=1", "default=0",
+					"A (previous)", "A (current)",
+					"B (current)", "B (previous)",
+				}
+			} else {
+				replacerPairs = []string{
+					"default=0", "default=1",
+					"A (current)", "A (previous)",
+					"B (previous)", "B (current)",
+				}
+			}
+
+			replacer := strings.NewReplacer(replacerPairs...)
+			os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0644)
+		}
+
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 		if err != nil {
-			PrintVerbose("ABSystem.Upgrade:err(11.1): %s", err)
+			PrintVerbose("ABSystem.Upgrade:err(11.2): %s", err)
 			return err
 		}
 	}
