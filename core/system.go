@@ -341,7 +341,7 @@ func (s *ABSystem) Upgrade(force bool) error {
 	newDigest, res := s.CheckUpdate()
 	if !res {
 		if force {
-			PrintVerbose("ABSystemUpgrade: No update available but --force it set. Proceeding...")
+			PrintVerbose("ABSystemUpgrade: No update available but --force is set. Proceeding...")
 		} else {
 			PrintVerbose("ABSystemUpgrade:err(1.1): %s", err)
 			s.RunCleanUpQueue("")
