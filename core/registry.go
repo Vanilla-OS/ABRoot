@@ -15,7 +15,7 @@ package core
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/vanilla-os/abroot/settings"
@@ -82,7 +82,7 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		PrintVerbose("Registry.GetManifest:err(3): %s", err)
 		return nil, err

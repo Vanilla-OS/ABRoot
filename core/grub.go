@@ -16,7 +16,6 @@ package core
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,7 +53,7 @@ initrd  /.system/boot/initrd.img-%s`
 		return err
 	}
 
-	err = ioutil.WriteFile(
+	err = os.WriteFile(
 		confPath,
 		[]byte(fmt.Sprintf(template, rootUuid, kernelVersion, rootUuid, kernelVersion)),
 		0644,
@@ -103,7 +102,7 @@ func NewGrub(bootPart Partition) (*Grub, error) {
 	grubPath := filepath.Join(bootPart.MountPoint, "grub")
 	confPath := filepath.Join(grubPath, "grub.cfg")
 
-	cfg, err := ioutil.ReadFile(confPath)
+	cfg, err := os.ReadFile(confPath)
 	if err != nil {
 		PrintVerbose("NewGrub:err: %s", err)
 		return nil, err

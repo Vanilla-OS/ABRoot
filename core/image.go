@@ -16,7 +16,6 @@ package core
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 )
@@ -41,7 +40,7 @@ func NewABImage(digest string, image string) *ABImage {
 func NewABImageFromRoot() (*ABImage, error) {
 	PrintVerbose("NewABImageFromRoot: running...")
 
-	abimage, err := ioutil.ReadFile("/abimage.abr")
+	abimage, err := os.ReadFile("/abimage.abr")
 	if err != nil {
 		PrintVerbose("NewABImageFromRoot:err: " + err.Error())
 		return nil, err
@@ -82,7 +81,7 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(imagePath, abimage, 0644)
+	err = os.WriteFile(imagePath, abimage, 0644)
 	if err != nil {
 		PrintVerbose("ABImage.WriteTo:err(3): " + err.Error())
 		return err

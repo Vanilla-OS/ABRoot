@@ -15,7 +15,7 @@ package core
 
 import (
 	"fmt"
-	"io/ioutil"
+    "io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,7 +50,7 @@ func NewPackageManager() *PackageManager {
 
 	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesAddFile))
 	if err != nil {
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			filepath.Join(PackagesBaseDir, PackagesAddFile),
 			[]byte(""),
 			0644,
@@ -63,7 +63,7 @@ func NewPackageManager() *PackageManager {
 
 	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesRemoveFile))
 	if err != nil {
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			filepath.Join(PackagesBaseDir, PackagesRemoveFile),
 			[]byte(""),
 			0644,
@@ -176,7 +176,7 @@ func (p *PackageManager) getPackages(file string) ([]string, error) {
 	}
 	defer f.Close()
 
-	b, err := ioutil.ReadAll(f)
+	b, err := io.ReadAll(f)
 	if err != nil {
 		PrintVerbose("PackageManager.getPackages:err(2): " + err.Error())
 		return pkgs, err

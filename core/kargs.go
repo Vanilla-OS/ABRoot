@@ -14,7 +14,6 @@ package core
 */
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -33,7 +32,7 @@ func kargsCreateIfMissing() error {
 
 	if _, err := os.Stat(KargsPath); os.IsNotExist(err) {
 		PrintVerbose("kargsCreateIfMissing: creating kargs file...")
-		err = ioutil.WriteFile(KargsPath, []byte(""), 0644)
+		err = os.WriteFile(KargsPath, []byte(""), 0644)
 		if err != nil {
 			PrintVerbose("kargsCreateIfMissing:err: " + err.Error())
 			return err
@@ -66,7 +65,7 @@ func KargsWrite(content string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(KargsPath, []byte(validated), 0644)
+	err = os.WriteFile(KargsPath, []byte(validated), 0644)
 	if err != nil {
 		PrintVerbose("KargsWrite:err(4): " + err.Error())
 		return err
@@ -85,7 +84,7 @@ func KargsBackup() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(KargsPath+".bak", []byte(content), 0644)
+	err = os.WriteFile(KargsPath+".bak", []byte(content), 0644)
 	if err != nil {
 		PrintVerbose("KargsBackup:err: " + err.Error())
 		return err
@@ -104,7 +103,7 @@ func KargsRead() (string, error) {
 		return "", err
 	}
 
-	content, err := ioutil.ReadFile(KargsPath)
+	content, err := os.ReadFile(KargsPath)
 	if err != nil {
 		PrintVerbose("KargsRead:err(2): " + err.Error())
 		return "", err

@@ -16,7 +16,6 @@ package core
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -244,7 +243,7 @@ UUID=%s  /  %s  defaults  0  0
 		root.Partition.FsType,
 	)
 
-	err := ioutil.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
+	err := os.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateFstab:err: %s", err)
 		return err
@@ -287,7 +286,7 @@ exec /lib/systemd/systemd
 
 	os.Remove(rootPath + "/usr/sbin/init")
 
-	err := ioutil.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
+	err := os.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
 		return err
