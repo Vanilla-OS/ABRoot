@@ -31,8 +31,10 @@ type Config struct {
 	Tag                string `json:"tag"`
 
 	// Package manager
-	IPkgMngAdd string `json:"iPkgMngAdd"`
-	IPkgMngRm  string `json:"iPkgMngRm"`
+	IPkgMngPre  string `json:"iPkgMngPre"`
+	IPkgMngPost string `json:"iPkgMngPost"`
+	IPkgMngAdd  string `json:"iPkgMngAdd"`
+	IPkgMngRm   string `json:"iPkgMngRm"`
 
 	// Partitions
 	PartLabelVar  string `json:"partLabelVar"`
@@ -81,8 +83,10 @@ func init() {
 		Tag:                viper.GetString("tag"),
 
 		// Package manager
-		IPkgMngAdd: viper.GetString("iPkgMngAdd"),
-		IPkgMngRm:  viper.GetString("iPkgMngRm"),
+		IPkgMngPre:  viper.GetString("iPkgMngPre"),
+		IPkgMngPost: viper.GetString("iPkgMngPost"),
+		IPkgMngAdd:  viper.GetString("iPkgMngAdd"),
+		IPkgMngRm:   viper.GetString("iPkgMngRm"),
 
 		// Partitions
 		PartLabelVar:  viper.GetString("partLabelVar"),

@@ -15,7 +15,7 @@ package core
 
 import (
 	"fmt"
-    "io"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -278,6 +278,20 @@ func (p *PackageManager) GetFinalCmd() string {
 		cmd = finalAddPkgs
 	} else if finalRemovePkgs != "" {
 		cmd = finalRemovePkgs
+	}
+
+	// No need to add pre/post hooks to an empty operation
+	if cmd == "" {
+		return cmd
+	}
+
+	preExec := settings.Cnf.IPkgMngPre
+	postExec := settings.Cnf.IPkgMngPost
+	if preExec != "" {
+		cmd = fmt.Sprintf("%s && %s", preExec, cmd)
+	}
+	if postExec != "" {
+		cmd = fmt.Sprintf("%s && %s", cmd, postExec)
 	}
 
 	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)

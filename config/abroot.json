@@ -1,11 +1,13 @@
 {
     "autoRepair": true,
-    
+
     "registry": "registry.vanillaos.org",
     "registryAPIVersion": "v2",
     "name": "vanillaos/desktop",
     "tag": "main",
-    
+
+    "iPkgMngPre": "",
+    "iPkgMngPost": "",
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
 
