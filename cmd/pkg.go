@@ -14,6 +14,9 @@ package cmd
 */
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -47,21 +50,29 @@ func pkg(cmd *cobra.Command, args []string) error {
 
 	switch args[0] {
 	case "add":
-		err := pkgM.Add(args[1])
-		if err != nil {
-			cmdr.Error.Println(err)
-			return err
-		} else {
-			cmdr.Info.Printf("Package %s added\n", args[1])
+		if len(args) < 2 {
+			return errors.New(abroot.Trans("pkg.noPackageNameProvided"))
 		}
+		for _, pkg := range args[1:] {
+			err := pkgM.Add(pkg)
+			if err != nil {
+				cmdr.Error.Println(err)
+				return err
+			}
+		}
+		cmdr.Info.Printf(abroot.Trans("pkg.addedMsg"), strings.Join(args[1:], ", "))
 	case "remove":
-		err := pkgM.Remove(args[1])
-		if err != nil {
-			cmdr.Error.Println(err)
-			return err
-		} else {
-			cmdr.Info.Printf("Package %s removed\n", args[1])
+		if len(args) < 2 {
+			return errors.New(abroot.Trans("pkg.noPackageNameProvided"))
 		}
+		for _, pkg := range args[1:] {
+			err := pkgM.Remove(pkg)
+			if err != nil {
+				cmdr.Error.Println(err)
+				return err
+			}
+		}
+		cmdr.Info.Printf(abroot.Trans("pkg.removedMsg"), strings.Join(args[1:], ", "))
 	case "list":
 		added, err := pkgM.GetAddPackagesString("\n")
 		if err != nil {
@@ -75,7 +86,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		cmdr.Info.Printf("Added packages:\n%s\nRemoved packages:\n%s\n", added, removed)
+		cmdr.Info.Printf(abroot.Trans("pkg.listMsg"), added, removed)
 		return nil
 	}
 
