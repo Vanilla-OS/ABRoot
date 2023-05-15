@@ -104,23 +104,17 @@ func (p *PackageManager) Add(pkg string) error {
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerbose("PackageManager.Remove: running...")
 
-	pkgs, err := p.GetAddPackages()
+	apkgs, err := p.GetAddPackages()
 	if err != nil {
 		PrintVerbose("PackageManager.Remove:err: " + err.Error())
 		return err
 	}
 
-	for i, p := range pkgs {
-		if p == pkg {
-			pkgs = append(pkgs[:i], pkgs[i+1:]...)
-			break
+	for i, apkg := range apkgs {
+		if apkg == pkg {
+			apkgs = append(apkgs[:i], apkgs[i+1:]...)
+			return p.writeAddPackages(apkgs)
 		}
-	}
-
-	err = p.writeAddPackages(pkgs)
-	if err != nil {
-		PrintVerbose("PackageManager.Remove:err(2): " + err.Error())
-		return err
 	}
 
 	PrintVerbose("PackageManager.Remove: writing packages.remove")
