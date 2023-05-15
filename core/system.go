@@ -39,6 +39,14 @@ type QueuedFunction struct {
 	Priority int
 }
 
+const (
+	UPGRADE      = "upgrade"
+	FOCE_UPGRADE = "force-upgrade"
+	APPLY        = "package-apply"
+)
+
+type ABSystemOperation string
+
 var (
 	queue         []QueuedFunction
 	lockFile      string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
@@ -304,25 +312,29 @@ exec /lib/systemd/systemd
 	return nil
 }
 
-// Upgrade upgrades the system to the latest available image
-func (s *ABSystem) Upgrade(force bool) error {
-	PrintVerbose("ABSystem.Upgrade: starting upgrade")
+// RunOperation executes a root-switching operation from the options below:
+//
+//	UPGRADE: Upgrades to a new image, if available,
+//	FORCE_UPGRADE: Forces the upgrade operation, even if no new image is available,
+//	APPLY: Applies package changes, but doesn't update the system.
+func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
+	PrintVerbose("ABSystem.RunOperation: starting %s", operation)
 
 	s.ResetQueue()
 
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
-	PrintVerbose("[Stage 0] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 0] -------- ABSystemRunOperation")
 
 	if s.UpgradeLockExists() {
 		err := errors.New("upgrades are locked, another is running or need a reboot")
-		PrintVerbose("ABSystemUpgrade:err(0): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(0): %s", err)
 		return err
 	}
 
 	err := s.LockUpgrade()
 	if err != nil {
-		PrintVerbose("ABSystemUpgrade:err(0.1): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(0.1): %s", err)
 		return err
 	}
 
@@ -330,23 +342,28 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	// Stage 1: Check if there is an update available
 	// ------------------------------------------------
-	PrintVerbose("[Stage 1] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 1] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemUpgrade:err(1): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(1): %s", err)
 		return err
 	}
 
-	newDigest, res := s.CheckUpdate()
-	if !res {
-		if force {
-			PrintVerbose("ABSystemUpgrade: No update available but --force is set. Proceeding...")
-		} else {
-			PrintVerbose("ABSystemUpgrade:err(1.1): %s", err)
-			s.RunCleanUpQueue("")
-			return NoUpdateError
+	var imageDigest string
+	if operation != APPLY {
+		var res bool
+		imageDigest, res = s.CheckUpdate()
+		if !res {
+			if operation != FOCE_UPGRADE {
+				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
+				s.RunCleanUpQueue("")
+				return NoUpdateError
+			}
+			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
 		}
+	} else {
+		imageDigest = s.CurImage.Digest
 	}
 
 	// Stage 2: Get the future root and boot partitions,
@@ -356,23 +373,23 @@ func (s *ABSystem) Upgrade(force bool) error {
 	// 			before the clean up was done). Finally run
 	// 			the IntegrityCheck on the future root.
 	// ------------------------------------------------
-	PrintVerbose("[Stage 2] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 2] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemUpgrade:err(2): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(2): %s", err)
 		return err
 	}
 
 	partFuture, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(2.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.1): %s", err)
 		return err
 	}
 
 	partBoot, err := s.RootM.GetBoot()
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(2.2): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.2): %s", err)
 		return err
 	}
 
@@ -381,7 +398,7 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(2.3: %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.3: %s", err)
 		return err
 	}
 
@@ -392,17 +409,17 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(2.4): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.4): %s", err)
 		return err
 	}
 
 	// Stage 3: Make a imageRecipe with user packages
 	// ------------------------------------------------
-	PrintVerbose("[Stage 3] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 3] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemUpgrade:err(3): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(3): %s", err)
 		return err
 	}
 
@@ -414,8 +431,16 @@ func (s *ABSystem) Upgrade(force bool) error {
 		pkgsFinal = "true"
 	}
 	content := `RUN ` + pkgsFinal
+
+	var imageName string
+	if operation == APPLY {
+		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0] + "@" + s.CurImage.Digest
+	} else {
+		imageName = settings.Cnf.FullImageName
+	}
+
 	imageRecipe := NewImageRecipe(
-		settings.Cnf.FullImageName,
+		imageName,
 		labels,
 		args,
 		content,
@@ -423,11 +448,11 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	// Stage 4: Extract the rootfs
 	// ------------------------------------------------
-	PrintVerbose("[Stage 4] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 4] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemUpgrade:err(4): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(4): %s", err)
 		return err
 	}
 
@@ -441,46 +466,46 @@ func (s *ABSystem) Upgrade(force bool) error {
 		systemNew,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(4.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(4.1): %s", err)
 		return err
 	}
 
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
-	PrintVerbose("[Stage 5] ABSystemUpgrade")
+	PrintVerbose("[Stage 5] ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemUpgrade:err(5): %s", err)
+		PrintVerbose("ABSystemRunOperation:err(5): %s", err)
 		return err
 	}
 
-	abimage := NewABImage(newDigest, settings.Cnf.FullImageName)
+	abimage := NewABImage(imageDigest, settings.Cnf.FullImageName)
 	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(5.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(5.1): %s", err)
 		return err
 	}
 
 	// Stage 6: Generate /etc/fstab and /usr/sbin/init
 	// ------------------------------------------------
-	PrintVerbose("[Stage 6] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
 	err = s.GenerateFstab(systemNew, partFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(6): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(6): %s", err)
 		return err
 	}
 
 	err = s.GenerateSbinInit(systemNew, partFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(6.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
 		return err
 	}
 
 	// Stage 7: Update the bootloader
 	// ------------------------------------------------
-	PrintVerbose("[Stage 7] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 7] -------- ABSystemRunOperation")
 
 	chroot, err := NewChroot(
 		systemNew,
@@ -488,7 +513,7 @@ func (s *ABSystem) Upgrade(force bool) error {
 		partFuture.Partition.Device,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(7): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(7): %s", err)
 		return err
 	}
 
@@ -501,7 +526,7 @@ func (s *ABSystem) Upgrade(force bool) error {
 		},
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(7.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(7.1): %s", err)
 		return err
 	}
 
@@ -513,36 +538,36 @@ func (s *ABSystem) Upgrade(force bool) error {
 		partFuture.Partition.Uuid,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(7.2): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
 		return err
 	}
 
 	// Stage 8: Sync /etc
 	// ------------------------------------------------
-	PrintVerbose("[Stage 8] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
 	newEtc := filepath.Join(systemNew, "/etc")
 	err = s.SyncEtc(newEtc)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(8): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
 		return err
 	}
 
 	// Stage 9: Mount boot partition
 	// ------------------------------------------------
-	PrintVerbose("[Stage 9] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 9] -------- ABSystemRunOperation")
 
 	uuid := uuid.New().String()
 	tmpBootMount := filepath.Join("/tmp", uuid)
 	err = os.Mkdir(tmpBootMount, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(9): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
 		return err
 	}
 
 	err = partBoot.Mount(tmpBootMount)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(9.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(9.1): %s", err)
 		return err
 	}
 
@@ -550,11 +575,11 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	// Stage 10: Atomic swap the rootfs and abimage.abr
 	// ------------------------------------------------
-	PrintVerbose("[Stage 10] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 10] -------- ABSystemRunOperation")
 
 	err = AtomicSwap(systemOld, systemNew)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(10): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
 		return err
 	}
 
@@ -566,13 +591,13 @@ func (s *ABSystem) Upgrade(force bool) error {
 	// PartFuture may not have /abimage.abr if it got corrupted or was wiped.
 	// In these cases, create a dummy file for the atomic swap.
 	if _, err = os.Stat(oldABImage); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.Upgrade: Creating dummy /part-future/abimage.abr")
+		PrintVerbose("ABSystem.RunOperation: Creating dummy /part-future/abimage.abr")
 		os.Create(oldABImage)
 	}
 
 	err = AtomicSwap(oldABImage, newABImage)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(10.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(10.1): %s", err)
 		return err
 	}
 
@@ -580,11 +605,11 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 	// Stage 11: Atomic swap the bootloader
 	// ------------------------------------------------
-	PrintVerbose("[Stage 11] -------- ABSystemUpgrade")
+	PrintVerbose("[Stage 11] -------- ABSystemRunOperation")
 
 	grub, err := NewGrub(partBoot)
 	if err != nil {
-		PrintVerbose("ABSystem.Upgrade:err(11): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(11): %s", err)
 		return err
 	}
 
@@ -594,11 +619,11 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 		// Just like in Stage 10, tmpBootMount/grub/grub.cfg.future may not exist.
 		if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
-			PrintVerbose("ABSystem.Upgrade: Creating grub.cfg.future")
+			PrintVerbose("ABSystem.RunOperation: Creating grub.cfg.future")
 
 			grubCfgContents, err := os.ReadFile(grubCfgCurrent)
 			if err != nil {
-				PrintVerbose("ABSystem.Upgrade:err(11.1): %s", err)
+				PrintVerbose("ABSystem.RunOperation:err(11.1): %s", err)
 			}
 
 			var replacerPairs []string
@@ -622,12 +647,12 @@ func (s *ABSystem) Upgrade(force bool) error {
 
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 		if err != nil {
-			PrintVerbose("ABSystem.Upgrade:err(11.2): %s", err)
+			PrintVerbose("ABSystem.RunOperation:err(11.2): %s", err)
 			return err
 		}
 	}
 
-	PrintVerbose("ABSystem.Upgrade: upgrade completed")
+	PrintVerbose("ABSystem.RunOperation: upgrade completed")
 	s.RunCleanUpQueue("")
 	return nil
 }

@@ -81,7 +81,14 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	err = aBsys.Upgrade(force)
+	var operation core.ABSystemOperation
+	if force {
+		operation = core.FOCE_UPGRADE
+	} else {
+		operation = core.UPGRADE
+	}
+
+	err = aBsys.RunOperation(operation)
 	if err != nil {
 		if err == core.NoUpdateError {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
