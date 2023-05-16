@@ -27,22 +27,32 @@ import (
 type PackageManager struct{}
 
 const (
-	PackagesBaseDir    = "/etc/abroot"
-	PackagesAddFile    = "packages.add"
-	PackagesRemoveFile = "packages.remove"
+	PackagesBaseDir      = "/etc/abroot"
+	PackagesAddFile      = "packages.add"
+	PackagesRemoveFile   = "packages.remove"
+	PackagesUnstagedFile = "packages.unstaged"
 )
+
+const (
+	ADD    = "+"
+	REMOVE = "-"
+)
+
+// An unstaged package is a package that is waiting to be applied
+// to the next root.
+//
+// Every time a `pkg apply` or `upgrade` operation
+// is executed, all unstaged packages are consumed and added/removed
+// in the next root.
+type UnstagedPackage struct {
+	Name, Status string
+}
 
 // NewPackageManager returns a new PackageManager struct
 func NewPackageManager() *PackageManager {
 	PrintVerbose("PackageManager.NewPackageManager: running...")
 
-	err := os.MkdirAll(PackagesAddFile, 0755)
-	if err != nil {
-		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
-		panic(err)
-	}
-
-	err = os.MkdirAll(PackagesRemoveFile, 0755)
+	err := os.MkdirAll(PackagesBaseDir, 0755)
 	if err != nil {
 		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 		panic(err)
@@ -81,6 +91,12 @@ func NewPackageManager() *PackageManager {
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
 
+	err := p.writeUnstagedPackages([]UnstagedPackage{{pkg, ADD}})
+	if err != nil {
+		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		return err
+	}
+
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
 		PrintVerbose("PackageManager.Add:err: " + err.Error())
@@ -103,6 +119,12 @@ func (p *PackageManager) Add(pkg string) error {
 // Remove removes a package from the packages.add file
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerbose("PackageManager.Remove: running...")
+
+	err := p.writeUnstagedPackages([]UnstagedPackage{{pkg, REMOVE}})
+	if err != nil {
+		PrintVerbose("PackageManager.Remove:err: " + err.Error())
+		return err
+	}
 
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
@@ -137,6 +159,24 @@ func (p *PackageManager) GetAddPackages() ([]string, error) {
 func (p *PackageManager) GetRemovePackages() ([]string, error) {
 	PrintVerbose("PackageManager.GetRemovePackages: running...")
 	return p.getPackages(PackagesRemoveFile)
+}
+
+// GetUnstagedPackages returns the package changes that are yet to be applied
+func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
+	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
+    pkgs, err := p.getPackages(PackagesAddFile)
+    if err != nil {
+        PrintVerbose("PackageManager.GetUnstagedPackages:err: ", err.Error())
+        return nil, err
+    }
+
+    unstagedList := []UnstagedPackage{}
+    for _, line := range pkgs {
+        splits := strings.SplitN(line, " ", 2)
+        unstagedList = append(unstagedList, UnstagedPackage{splits[1], splits[0]})
+    }
+
+    return unstagedList, nil
 }
 
 // GetAddPackages returns the packages in the packages.add file as string
@@ -215,6 +255,17 @@ func (p *PackageManager) writeRemovePackages(pkg string) error {
 	return p.writePackages(PackagesRemoveFile, pkgs)
 }
 
+func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
+	PrintVerbose("PackageManager.writeUnstagedPackages: running...")
+
+	pkgFmt := []string{}
+	for _, pkg := range pkgs {
+		pkgFmt = append(pkgFmt, fmt.Sprintf("%s %s", pkg.Status, pkg.Name))
+	}
+
+	return p.writePackages(PackagesUnstagedFile, pkgFmt)
+}
+
 func (p *PackageManager) writePackages(file string, pkgs []string) error {
 	PrintVerbose("PackageManager.writePackages: running...")
 
@@ -243,6 +294,11 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 
 func (p *PackageManager) GetFinalCmd() string {
 	PrintVerbose("PackageManager.GetFinalCmd: running...")
+
+    // TODO: Consume unstaged packages if in an apply operation
+    // An upgrade operation should just remove them add add all
+    // packages as normal.
+    // Pass variable specifying operation? Separate function?
 
 	addPkgs, err := p.GetAddPackagesString(" ")
 	if err != nil {
