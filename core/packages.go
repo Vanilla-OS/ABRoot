@@ -164,7 +164,7 @@ func (p *PackageManager) GetRemovePackages() ([]string, error) {
 // GetUnstagedPackages returns the package changes that are yet to be applied
 func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
-	pkgs, err := p.getPackages(PackagesAddFile)
+	pkgs, err := p.getPackages(PackagesUnstagedFile)
 	if err != nil {
 		PrintVerbose("PackageManager.GetUnstagedPackages:err: ", err.Error())
 		return nil, err
