@@ -91,15 +91,23 @@ func NewPackageManager() *PackageManager {
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
 
-	err := p.writeUnstagedPackages([]UnstagedPackage{{pkg, ADD}})
+	// Add to unstaged packages first
+	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
 		PrintVerbose("PackageManager.Add:err: " + err.Error())
 		return err
 	}
+	upkgs = append(upkgs, UnstagedPackage{pkg, ADD})
+	err = p.writeUnstagedPackages(upkgs)
+	if err != nil {
+		PrintVerbose("PackageManager.Add:err(2): " + err.Error())
+		return err
+	}
 
+	// Modify added packages list
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		PrintVerbose("PackageManager.Add:err(3): " + err.Error())
 		return err
 	}
 
@@ -120,31 +128,35 @@ func (p *PackageManager) Add(pkg string) error {
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerbose("PackageManager.Remove: running...")
 
-	err := p.writeUnstagedPackages([]UnstagedPackage{{pkg, REMOVE}})
+	// Add to unstaged packages first
+	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:err: " + err.Error())
+		PrintVerbose("PackageManager.Add:err: " + err.Error())
 		return err
 	}
-
-	pkgs, err := p.GetAddPackages()
-	if err != nil {
-		PrintVerbose("PackageManager.Remove:err: " + err.Error())
-		return err
-	}
-
-	for i, p := range pkgs {
-		if p == pkg {
-			pkgs = append(pkgs[:i], pkgs[i+1:]...)
-			break
-		}
-	}
-
-	err = p.writeAddPackages(pkgs)
+	upkgs = append(upkgs, UnstagedPackage{pkg, REMOVE})
+	err = p.writeUnstagedPackages(upkgs)
 	if err != nil {
 		PrintVerbose("PackageManager.Remove:err(2): " + err.Error())
 		return err
 	}
 
+	// If package was added by the user, simply remove it from packages.add
+	// Unstaged will take care of the rest
+	pkgs, err := p.GetAddPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.Remove:err(3): " + err.Error())
+		return err
+	}
+	for i, ap := range pkgs {
+		if ap == pkg {
+			pkgs = append(pkgs[:i], pkgs[i+1:]...)
+			PrintVerbose("PackageManager.Remove: removing manually added package")
+			return p.writeAddPackages(pkgs)
+		}
+	}
+
+	// Otherwise, add package to packages.remove
 	PrintVerbose("PackageManager.Remove: writing packages.remove")
 	return p.writeRemovePackages(pkg)
 }
