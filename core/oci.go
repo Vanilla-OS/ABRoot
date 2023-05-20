@@ -14,10 +14,12 @@ package core
 */
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
 
+	"github.com/containers/buildah"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
@@ -104,4 +106,42 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	return nil
+}
+
+// FindImageWithLabel returns the name of the first image containinig the provided key-value pair
+// or an empty string if none was found
+func FindImageWithLabel(key, value string) (string, error) {
+	PrintVerbose("FindImageWithLabel: running...")
+
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerbose("FindImageWithLabel:err: %s", err)
+		return "", err
+	}
+
+	images, err := pt.Store.Images()
+	if err != nil {
+		PrintVerbose("FindImageWithLabel:err(2): %s", err)
+		return "", err
+	}
+
+	for _, img := range images {
+		// This is the only way I could find to get the labels form an image
+		builder, err := buildah.ImportBuilderFromImage(context.Background(), pt.Store, buildah.ImportFromImageOptions{Image: img.ID})
+		if err != nil {
+			PrintVerbose("FindImageWithLabel:err(3): %s", err)
+			return "", err
+		}
+
+		val, ok := builder.Labels()[key]
+		if ok && val == value {
+			return img.Names[0], nil
+		}
+	}
+
+	return "", nil
 }

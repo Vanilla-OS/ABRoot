@@ -184,7 +184,9 @@ func (p *Prometheus) BuildContainerFile(dockerfilePath string, imageName string)
 	id, _, err := imagebuildah.BuildDockerfiles(
 		context.Background(),
 		p.Store,
-		define.BuildOptions{},
+		define.BuildOptions{
+            Output: imageName,
+        },
 		dockerfilePath,
 	)
 	if err != nil {

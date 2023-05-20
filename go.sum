@@ -544,6 +544,8 @@ github.com/vanilla-os/orchid v0.4.0 h1:Phx+WSdcvXAV48rCLbAVMr5ePaJyqG1263ybHxOUv
 github.com/vanilla-os/orchid v0.4.0/go.mod h1:dNPvHxofO4hEXodEKXp0nLQDZhoHh8evCUXc6X1xLao=
 github.com/vanilla-os/prometheus v0.1.5 h1:cAv0XaFtE9dZYxYpluc/wcq9Wkg2FytwMzh67F8dV+s=
 github.com/vanilla-os/prometheus v0.1.5/go.mod h1:ChWuR5stilaf0KkHa+aNIj4ZtnfLJO1UOBtb4FiputY=
+github.com/vanilla-os/prometheus v0.1.6 h1:FU+Ts+Hxwz6C0uflD05s836CxKytclTD56ZHzgxpp70=
+github.com/vanilla-os/prometheus v0.1.6/go.mod h1:A65eiUB5ZJa1PLJeEW7gLuNJKKXJBFIvXnSEa5rbMQE=
 github.com/vbatts/tar-split v0.11.3 h1:hLFqsOLQ1SsppQNTMpkpPXClLDfC2A3Zgy9OUU+RVck=
 github.com/vbatts/tar-split v0.11.3/go.mod h1:9QlHN18E+fEH7RdG+QAJJcuya3rqT7eXSTY7wGrAokY=
 github.com/vbauerster/mpb/v8 v8.3.0 h1:xw2eMJ6v5NP8Rd7yOVzU6OqnRPrS1yWAoLTrWe7W4Nc=
