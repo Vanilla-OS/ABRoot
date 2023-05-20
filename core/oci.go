@@ -145,3 +145,43 @@ func FindImageWithLabel(key, value string) (string, error) {
 
 	return "", nil
 }
+
+// DeleteImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
+func RetrieveImageForRoot(root string) (string, error) {
+	PrintVerbose("ApplyInImageForRoot: running...")
+
+	image, err := FindImageWithLabel("ABRoot.root", root)
+	if err != nil {
+		PrintVerbose("ApplyInImageForRoot:err: %s", err)
+		return "", err
+	}
+
+	return image, nil
+}
+
+// DeleteImageForRoot deletes the image created for the provided root ("vos-a"|"vos-b")
+func DeleteImageForRoot(root string) error {
+	image, err := RetrieveImageForRoot(root)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err: %s", err)
+		return err
+	}
+
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err(2): %s", err)
+		return err
+	}
+
+	_, err = pt.Store.DeleteImage(image, true)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err(3): %s", err)
+		return err
+	}
+
+	return nil
+}

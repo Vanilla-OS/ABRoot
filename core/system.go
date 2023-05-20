@@ -448,7 +448,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerbose("ABSystemRunOperation:err(3.2): %s", err)
 			return err
 		}
-		imageName, err = FindImageWithLabel("ABRoot.root", presentPartition.Label)
+		imageName, err = RetrieveImageForRoot(presentPartition.Label)
 		if err != nil {
 			PrintVerbose("ABSystemRunOperation:err(3.3): %s", err)
 			return err
@@ -456,6 +456,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	} else {
 		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0] + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest
+	}
+
+	// Delete old image
+	err = DeleteImageForRoot(futurePartition.Label)
+	if err != nil {
+		PrintVerbose("ABSystemRunOperation:err(3.4): %s", err)
+		return err
 	}
 
 	imageRecipe := NewImageRecipe(
