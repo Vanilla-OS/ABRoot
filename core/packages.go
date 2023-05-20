@@ -172,6 +172,10 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 
 	unstagedList := []UnstagedPackage{}
 	for _, line := range pkgs {
+		if line == "" || line == "\n" {
+			continue
+		}
+
 		splits := strings.SplitN(line, " ", 2)
 		unstagedList = append(unstagedList, UnstagedPackage{splits[1], splits[0]})
 	}
