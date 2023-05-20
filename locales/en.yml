@@ -96,3 +96,10 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state."
   rootRequired: "You must be root to run this command."
+
+pkg:
+  rootRequired: "You must be root to run this command."
+  noPackageNameProvided: "You must provide at least one package name for this operation."
+  addedMsg: "Package(s) %s added.\n"
+  removedMsg: "Package(s) %s removed.\n"
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
