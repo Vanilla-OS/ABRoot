@@ -22,7 +22,7 @@ import (
 	"github.com/vanilla-os/prometheus"
 )
 
-// GenerateRootfs generates a rootfs from a image recipe file
+// OciExportRootFs generates a rootfs from a image recipe file
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
 	PrintVerbose("OciExportRootFs: running...")
 
