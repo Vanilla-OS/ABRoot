@@ -27,22 +27,32 @@ import (
 type PackageManager struct{}
 
 const (
-	PackagesBaseDir    = "/etc/abroot"
-	PackagesAddFile    = "packages.add"
-	PackagesRemoveFile = "packages.remove"
+	PackagesBaseDir      = "/etc/abroot"
+	PackagesAddFile      = "packages.add"
+	PackagesRemoveFile   = "packages.remove"
+	PackagesUnstagedFile = "packages.unstaged"
 )
+
+const (
+	ADD    = "+"
+	REMOVE = "-"
+)
+
+// An unstaged package is a package that is waiting to be applied
+// to the next root.
+//
+// Every time a `pkg apply` or `upgrade` operation
+// is executed, all unstaged packages are consumed and added/removed
+// in the next root.
+type UnstagedPackage struct {
+	Name, Status string
+}
 
 // NewPackageManager returns a new PackageManager struct
 func NewPackageManager() *PackageManager {
 	PrintVerbose("PackageManager.NewPackageManager: running...")
 
-	err := os.MkdirAll(PackagesAddFile, 0755)
-	if err != nil {
-		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
-		panic(err)
-	}
-
-	err = os.MkdirAll(PackagesRemoveFile, 0755)
+	err := os.MkdirAll(PackagesBaseDir, 0755)
 	if err != nil {
 		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 		panic(err)
@@ -81,9 +91,23 @@ func NewPackageManager() *PackageManager {
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
 
-	pkgs, err := p.GetAddPackages()
+	// Add to unstaged packages first
+	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
 		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		return err
+	}
+	upkgs = append(upkgs, UnstagedPackage{pkg, ADD})
+	err = p.writeUnstagedPackages(upkgs)
+	if err != nil {
+		PrintVerbose("PackageManager.Add:err(2): " + err.Error())
+		return err
+	}
+
+	// Modify added packages list
+	pkgs, err := p.GetAddPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.Add:err(3): " + err.Error())
 		return err
 	}
 
@@ -104,19 +128,35 @@ func (p *PackageManager) Add(pkg string) error {
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerbose("PackageManager.Remove: running...")
 
-	apkgs, err := p.GetAddPackages()
+	// Add to unstaged packages first
+	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:err: " + err.Error())
+		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		return err
+	}
+	upkgs = append(upkgs, UnstagedPackage{pkg, REMOVE})
+	err = p.writeUnstagedPackages(upkgs)
+	if err != nil {
+		PrintVerbose("PackageManager.Remove:err(2): " + err.Error())
 		return err
 	}
 
-	for i, apkg := range apkgs {
-		if apkg == pkg {
-			apkgs = append(apkgs[:i], apkgs[i+1:]...)
-			return p.writeAddPackages(apkgs)
+	// If package was added by the user, simply remove it from packages.add
+	// Unstaged will take care of the rest
+	pkgs, err := p.GetAddPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.Remove:err(3): " + err.Error())
+		return err
+	}
+	for i, ap := range pkgs {
+		if ap == pkg {
+			pkgs = append(pkgs[:i], pkgs[i+1:]...)
+			PrintVerbose("PackageManager.Remove: removing manually added package")
+			return p.writeAddPackages(pkgs)
 		}
 	}
 
+	// Otherwise, add package to packages.remove
 	PrintVerbose("PackageManager.Remove: writing packages.remove")
 	return p.writeRemovePackages(pkg)
 }
@@ -131,6 +171,34 @@ func (p *PackageManager) GetAddPackages() ([]string, error) {
 func (p *PackageManager) GetRemovePackages() ([]string, error) {
 	PrintVerbose("PackageManager.GetRemovePackages: running...")
 	return p.getPackages(PackagesRemoveFile)
+}
+
+// GetUnstagedPackages returns the package changes that are yet to be applied
+func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
+	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
+	pkgs, err := p.getPackages(PackagesUnstagedFile)
+	if err != nil {
+		PrintVerbose("PackageManager.GetUnstagedPackages:err: ", err.Error())
+		return nil, err
+	}
+
+	unstagedList := []UnstagedPackage{}
+	for _, line := range pkgs {
+		if line == "" || line == "\n" {
+			continue
+		}
+
+		splits := strings.SplitN(line, " ", 2)
+		unstagedList = append(unstagedList, UnstagedPackage{splits[1], splits[0]})
+	}
+
+	return unstagedList, nil
+}
+
+// ClearUnstagedPackages removes all packages from the unstaged list
+func (p *PackageManager) ClearUnstagedPackages() error {
+	PrintVerbose("PackageManager.ClearUnstagedPackages: running...")
+	return p.writeUnstagedPackages([]UnstagedPackage{})
 }
 
 // GetAddPackages returns the packages in the packages.add file as string
@@ -209,6 +277,17 @@ func (p *PackageManager) writeRemovePackages(pkg string) error {
 	return p.writePackages(PackagesRemoveFile, pkgs)
 }
 
+func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
+	PrintVerbose("PackageManager.writeUnstagedPackages: running...")
+
+	pkgFmt := []string{}
+	for _, pkg := range pkgs {
+		pkgFmt = append(pkgFmt, fmt.Sprintf("%s %s", pkg.Status, pkg.Name))
+	}
+
+	return p.writePackages(PackagesUnstagedFile, pkgFmt)
+}
+
 func (p *PackageManager) writePackages(file string, pkgs []string) error {
 	PrintVerbose("PackageManager.writePackages: running...")
 
@@ -235,24 +314,52 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 	return nil
 }
 
-func (p *PackageManager) GetFinalCmd() string {
-	PrintVerbose("PackageManager.GetFinalCmd: running...")
+func (p *PackageManager) processApplyPackages() (string, string) {
+	PrintVerbose("PackageManager.processApplyPackages: running...")
 
+	unstaged, err := p.GetUnstagedPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.processApplyPackages:err: %s", err.Error())
+	}
+
+	var addPkgs, removePkgs []string
+	for _, pkg := range unstaged {
+		if pkg.Status == ADD {
+			addPkgs = append(addPkgs, pkg.Name)
+		} else if pkg.Status == REMOVE {
+			removePkgs = append(removePkgs, pkg.Name)
+		}
+	}
+
+	finalAddPkgs := ""
+	if len(addPkgs) > 0 {
+		finalAddPkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngAdd, strings.Join(addPkgs, " "))
+	}
+
+	finalRemovePkgs := ""
+	if len(removePkgs) > 0 {
+		finalRemovePkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngRm, strings.Join(removePkgs, " "))
+	}
+
+	return finalAddPkgs, finalRemovePkgs
+}
+
+func (p *PackageManager) processUpgradePackages() (string, string) {
 	addPkgs, err := p.GetAddPackagesString(" ")
 	if err != nil {
 		PrintVerbose("PackageManager.GetFinalCmd:err: " + err.Error())
-		return ""
+		return "", ""
 	}
 
 	removePkgs, err := p.GetRemovePackagesString(" ")
 	if err != nil {
 		PrintVerbose("PackageManager.GetFinalCmd:err(2): " + err.Error())
-		return ""
+		return "", ""
 	}
 
 	if len(addPkgs) == 0 && len(removePkgs) == 0 {
 		PrintVerbose("PackageManager.GetFinalCmd: no packages to install or remove")
-		return "true"
+		return "", ""
 	}
 
 	finalAddPkgs := ""
@@ -263,6 +370,24 @@ func (p *PackageManager) GetFinalCmd() string {
 	finalRemovePkgs := ""
 	if removePkgs != "" {
 		finalRemovePkgs = fmt.Sprintf("%s %s", settings.Cnf.IPkgMngRm, removePkgs)
+	}
+
+	return finalAddPkgs, finalRemovePkgs
+}
+
+func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
+	PrintVerbose("PackageManager.GetFinalCmd: running...")
+
+	var finalAddPkgs, finalRemovePkgs string
+	if operation == APPLY {
+		finalAddPkgs, finalRemovePkgs = p.processApplyPackages()
+	} else {
+		err := p.ClearUnstagedPackages()
+		if err != nil {
+			PrintVerbose("PackageManager.GetFinalCmd:err: %s", err.Error())
+			panic(err)
+		}
+		finalAddPkgs, finalRemovePkgs = p.processUpgradePackages()
 	}
 
 	cmd := ""

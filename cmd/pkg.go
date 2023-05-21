@@ -23,11 +23,11 @@ import (
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
-var validPkgArgs = []string{"add", "remove", "list"}
+var validPkgArgs = []string{"add", "remove", "list", "apply"}
 
 func NewPkgCommand() *cmdr.Command {
 	cmd := cmdr.NewCommand(
-		"pkg add|remove|list",
+		"pkg add|remove|list|apply",
 		abroot.Trans("pkg.long"),
 		abroot.Trans("pkg.short"),
 		pkg,
@@ -88,6 +88,18 @@ func pkg(cmd *cobra.Command, args []string) error {
 
 		cmdr.Info.Printf(abroot.Trans("pkg.listMsg"), added, removed)
 		return nil
+	case "apply":
+		aBsys, err := core.NewABSystem()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+
+		err = aBsys.RunOperation(core.APPLY)
+		if err != nil {
+			cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
+			return err
+		}
 	}
 
 	return nil

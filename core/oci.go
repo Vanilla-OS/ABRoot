@@ -14,15 +14,17 @@ package core
 */
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
 
+	"github.com/containers/buildah"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
 
-// GenerateRootfs generates a rootfs from a image recipe file
+// OciExportRootFs generates a rootfs from a image recipe file
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
 	PrintVerbose("OciExportRootFs: running...")
 
@@ -100,6 +102,84 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	_, err = pt.UnMountImage(imageBuild.TopLayer, true)
 	if err != nil {
 		PrintVerbose("OciExportRootFs:err(11): %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// FindImageWithLabel returns the name of the first image containinig the provided key-value pair
+// or an empty string if none was found
+func FindImageWithLabel(key, value string) (string, error) {
+	PrintVerbose("FindImageWithLabel: running...")
+
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerbose("FindImageWithLabel:err: %s", err)
+		return "", err
+	}
+
+	images, err := pt.Store.Images()
+	if err != nil {
+		PrintVerbose("FindImageWithLabel:err(2): %s", err)
+		return "", err
+	}
+
+	for _, img := range images {
+		// This is the only way I could find to get the labels form an image
+		builder, err := buildah.ImportBuilderFromImage(context.Background(), pt.Store, buildah.ImportFromImageOptions{Image: img.ID})
+		if err != nil {
+			PrintVerbose("FindImageWithLabel:err(3): %s", err)
+			return "", err
+		}
+
+		val, ok := builder.Labels()[key]
+		if ok && val == value {
+			return img.Names[0], nil
+		}
+	}
+
+	return "", nil
+}
+
+// DeleteImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
+func RetrieveImageForRoot(root string) (string, error) {
+	PrintVerbose("ApplyInImageForRoot: running...")
+
+	image, err := FindImageWithLabel("ABRoot.root", root)
+	if err != nil {
+		PrintVerbose("ApplyInImageForRoot:err: %s", err)
+		return "", err
+	}
+
+	return image, nil
+}
+
+// DeleteImageForRoot deletes the image created for the provided root ("vos-a"|"vos-b")
+func DeleteImageForRoot(root string) error {
+	image, err := RetrieveImageForRoot(root)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err: %s", err)
+		return err
+	}
+
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err(2): %s", err)
+		return err
+	}
+
+	_, err = pt.Store.DeleteImage(image, true)
+	if err != nil {
+		PrintVerbose("DeleteImageForRoot:err(3): %s", err)
 		return err
 	}
 
