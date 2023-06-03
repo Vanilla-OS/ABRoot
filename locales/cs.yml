@@ -1,98 +1,98 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot poskytuje plnou neměnnost a atomicitu za pomocí přechodů\
+    \ mezi 2 root oddíly (A<->B)"
+  short: "ABRoot poskytuje plnou neměnnost a atomicitu za pomocí přechodů\
+    \ mezi 2 root oddíly (A<->B)"
+  verboseFlag: "zobrazit více podrobný výstup"
 
 update:
   use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
+  long: "Aktualizovat boot oddíl za účely údržby (pouze pro pokročilé uživatele)"
+  short: "Aktualizovat boot oddíl"
+  forceUpdateFlag: "násilím aktualizovat boot oddíl bez potvrzení"
+  confirm: "Opravdu chcete pokračovat?\nBoot oddíl by měl být aktualizován\
+    \ pouze když transakce uspěla. Tento\npříkaz by měl být používán pouze pokročilými uživately\
+    \ za účelem údržby."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
 
 get:
   use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
+  long: "Vypíše stav momentálního nebo následujícího root oddílu (A nebo B)"
+  short: "Vypíše stav momentálního nebo následujícího root oddílu (A nebo B)"
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
+  long: "Spravovat parametry jádra."
+  short: "Spravovat parametry jádra"."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
+  nextReboot: "Nové parametry jádra budou aplikovány po restartu počítače."
+  failedTransaction: "Spouštění shellu pro transakci selhalo:"
+  stateRequired: "Prosím specifikujte stav (present nebo future)"
+  params: "Parametry tohoto oddílu:\n%s\n"
+  futureParams: "Parametry budoucího oddílu:\n%s\n"
+  unknownState: "Neznámý stav: %s\n"
+  unknownParam: "Neznámý parametr: %s\n"
+  transactionsLocked: "Nějaká transakce již byla provedena. musíte restartovat\
+    \ váš systém než začnete další transakci."
 
 edit:
   use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "Upravit parametry jádra."
+  short: "Upravit parametry jádra."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
 
 exec:
   use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
+  long: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
+    \ do ní po restartu počítače"
+  short: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
+    \ do ní po restartu počítače"
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
+  skipDiffFlag: "Přeskočit diff kontrolu na konci transakce"
+  forceRunFlag: "Násilím spustit příkaz bez potvrzení"
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    ČTĚTE PROSÍM OPATRNĚ, NEŽ BUDETE POKRAČOVAT\n===============================================================================\n\
+    Změny provedené v shellu budou aplikovány do budoucího root oddílu po restartování pokud operace\n\
+    uspěje.\nSpouštění příkazu v transakčním shellu je uřeno pro\
+    \ pokročilé uživatele\nza účelem údržby.\n\nPokud se snažíte\
+    \ nainstalovat aplikace, použijte raději\nFlatpak/Appimage nebo Apx (apx install\
+    \ package).\n\nVíce informací o ABRoot na [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nOpravdu chcete pokračovat?"
+  start: "Nová transakce zahájena. Tato operace může nějakou dobu trvat.\nNerestartujte a nerušte příkaz\
+    \ dokud transakce není dokončená."
+  success: "Transakce úspěšně provedena. Restartujte pro aplikování změn."
+  failed: "Spouštění shellu pro transakci selhalo:"
 
 shell:
   use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
+  long: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
+    \ do ní po restartu počítače."
+  short: "Vstoupit do transakčního shellu."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
+  forceOpenFlag: "Násilím otevřít shell bez potvrzení."
   confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
+    ČTĚTE PROSÍM OPATRNĚ, NEŽ BUDETE POKRAČOVAT\n===============================================================================\n\
+    Změny provedené v shellu budou aplikovány do budoucího root oddílu po restartování pokud operace\n\
+    uspěje.\Spouštění příkazu v transakčním shellu je uřeno pro\
+    \ pokročilé uživatele\nza účelem údržby.\n\nPokud se snažíte\
+    \ nainstalovat aplikace, použijte raději\nFlatpak/Appimage nebo Apx (apx install\
+    \ package).\n\nVíce informací o ABRoot na [https://documentation.vanillaos.org/docs/ABRoot/].\n\
+    \nOpravdu chcete pokračovat?"
+  start: "Nová transakce zahájena. Tato operace může nějakou dobu trvat.\nNerestartujte a nerušte příkaz\
+    \ dokud transakce není dokončená."
+  success: "Transakce úspěšně provedena. Restartujte pro aplikování změn."
+  failed: "Spouštění shellu pro transakci selhalo:"
 
 diff:
   use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
+  long: "Vypsat úpravy v souborovém systému po poslední transakci."
+  short: "Vypsat úpravy po poslední transakci."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Navrátit změny po poslední transakci."
+  short: "Vrátit systém do předchozího stavu."
+  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
