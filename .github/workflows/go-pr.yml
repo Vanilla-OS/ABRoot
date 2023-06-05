@@ -1,8 +1,8 @@
 name: Go (PR)
 
 on:
-  pull_request:
-    branches: [ "v2" ]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
 jobs:
 
