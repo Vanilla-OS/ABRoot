@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 
 	"github.com/containers/buildah"
+	cstypes "github.com/containers/storage/types"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
@@ -178,7 +179,7 @@ func DeleteImageForRoot(root string) error {
 	}
 
 	_, err = pt.Store.DeleteImage(image, true)
-	if err != nil {
+	if err != nil && err != cstypes.ErrNotAnImage {
 		PrintVerbose("DeleteImageForRoot:err(3): %s", err)
 		return err
 	}
