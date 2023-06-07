@@ -147,7 +147,7 @@ func FindImageWithLabel(key, value string) (string, error) {
 	return "", nil
 }
 
-// DeleteImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
+// RetrieveImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
 func RetrieveImageForRoot(root string) (string, error) {
 	PrintVerbose("ApplyInImageForRoot: running...")
 
