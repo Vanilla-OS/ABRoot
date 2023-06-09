@@ -453,6 +453,10 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerbose("ABSystemRunOperation:err(3.3): %s", err)
 			return err
 		}
+		// Handle case where an image for the current root may not exist in storage
+		if imageName == "" {
+			imageName = settings.Cnf.FullImageName
+		}
 	} else {
 		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0] + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest

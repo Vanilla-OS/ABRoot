@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 
 	"github.com/containers/buildah"
+	cstypes "github.com/containers/storage/types"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
@@ -146,7 +147,7 @@ func FindImageWithLabel(key, value string) (string, error) {
 	return "", nil
 }
 
-// DeleteImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
+// RetrieveImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
 func RetrieveImageForRoot(root string) (string, error) {
 	PrintVerbose("ApplyInImageForRoot: running...")
 
@@ -178,7 +179,7 @@ func DeleteImageForRoot(root string) error {
 	}
 
 	_, err = pt.Store.DeleteImage(image, true)
-	if err != nil {
+	if err != nil && err != cstypes.ErrNotAnImage {
 		PrintVerbose("DeleteImageForRoot:err(3): %s", err)
 		return err
 	}

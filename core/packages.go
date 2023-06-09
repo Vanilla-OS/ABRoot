@@ -84,6 +84,19 @@ func NewPackageManager() *PackageManager {
 		}
 	}
 
+	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesUnstagedFile))
+	if err != nil {
+		err = os.WriteFile(
+			filepath.Join(PackagesBaseDir, PackagesUnstagedFile),
+			[]byte(""),
+			0644,
+		)
+		if err != nil {
+			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
+			panic(err)
+		}
+	}
+
 	return &PackageManager{}
 }
 
