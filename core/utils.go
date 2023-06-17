@@ -15,6 +15,7 @@ package core
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -66,4 +67,33 @@ func isLink(path string) bool {
 
 	PrintVerbose("Path is not a link: " + path)
 	return false
+}
+
+// copyFile copies a file from source to dest
+func copyFile(source, dest string) error {
+	PrintVerbose("copyFile: running...")
+
+	PrintVerbose("copyFile: Opening source file")
+    srcFile, err := os.Open(source)
+    if err != nil {
+		PrintVerbose("copyFile:err: " + err.Error())
+        return err
+    }
+    defer srcFile.Close()
+
+	PrintVerbose("copyFile: Opening destination file")
+	destFile, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0755)
+    if err != nil {
+		PrintVerbose("copyFile:err: " + err.Error())
+        return err
+    }
+    defer destFile.Close()
+
+	PrintVerbose("copyFile: Performing copy operation")
+    if _, err := io.Copy(destFile, srcFile); err != nil {
+		PrintVerbose("copyFile:err: " + err.Error())
+        return err
+    }
+
+    return nil
 }
