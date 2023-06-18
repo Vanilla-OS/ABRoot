@@ -45,32 +45,37 @@ func kargs(cmd *cobra.Command, args []string) error {
 	}
 
 	switch args[0] {
-		case "edit":
-			err := core.KargsEdit()
-			if err != nil {
-				cmdr.Error.Println(err)
-				return err
-			}
+	case "edit":
+		changed, err := core.KargsEdit()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
 
-			aBsys, err := core.NewABSystem()
-			if err != nil {
-				cmdr.Error.Println(err)
-				return err
-			}
-			err = aBsys.RunOperation(core.APPLY)
-			if err != nil {
-				cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
-				return err
-			}
-		case "show":
-			kargsStr, err := core.KargsRead()
-			if err != nil {
-				cmdr.Error.Println(err)
-				return err
-			}
-			cmdr.Info.Println(kargsStr)
-		default:
-			return errors.New(abroot.Trans("kargs.unknownParam", args[0]))
+		if !changed {
+			cmdr.Info.Println(abroot.Trans("kargs.notChanged"))
+			return nil
+		}
+
+		aBsys, err := core.NewABSystem()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+		err = aBsys.RunOperation(core.APPLY)
+		if err != nil {
+			cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
+			return err
+		}
+	case "show":
+		kargsStr, err := core.KargsRead()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+		cmdr.Info.Println(kargsStr)
+	default:
+		return errors.New(abroot.Trans("kargs.unknownParam", args[0]))
 	}
 
 	return nil

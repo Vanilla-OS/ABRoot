@@ -34,6 +34,7 @@ kargs:
   futureParams: "Future partition's parameters:\n%s\n"
   unknownState: "Unknown state: %s\n"
   unknownParam: "Unknown parameter: %s\n"
+  notChanged: "No changes were made to kernel parameters."
   transactionsLocked: "Another transaction has already been executed, you must reboot\
     \ your system before starting a new transaction."
 
