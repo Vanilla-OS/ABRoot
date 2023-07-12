@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/containers/buildah v1.30.0
 	github.com/containers/storage v1.46.1
+	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20230712114827-997c496e6d40
 	github.com/spf13/cobra v1.7.0
 	github.com/vanilla-os/orchid v0.4.0
 	github.com/vanilla-os/prometheus v0.1.6
@@ -13,7 +14,7 @@ require (
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
-	github.com/BurntSushi/toml v1.2.1 // indirect
+	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/Microsoft/hcsshim v0.10.0-rc.7 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
@@ -89,6 +90,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/proglottis/gpgme v0.1.3 // indirect
 	github.com/seccomp/libseccomp-golang v0.10.0 // indirect
+	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/sigstore/fulcio v1.2.0 // indirect
 	github.com/sigstore/rekor v1.2.0 // indirect
 	github.com/sigstore/sigstore v1.6.4 // indirect
@@ -109,7 +111,7 @@ require (
 	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
-	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53 // indirect
+	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect

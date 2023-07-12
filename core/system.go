@@ -17,11 +17,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
 	"github.com/google/uuid"
+	EtcBuilder "github.com/linux-immutability-tools/EtcBuilder/cmd"
 	"github.com/vanilla-os/abroot/settings"
 )
 
@@ -97,49 +97,10 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 }
 
 // SyncEtc syncs /.system/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(newEtc string) error {
+func (s *ABSystem) SyncEtc(newEtc string, root ABRootPartition) error {
 	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
 
-	etcFiles := []string{
-		"passwd",
-		"group",
-		"shells",
-		"shadow",
-		"subuid",
-		"subgid",
-	}
-
-	etcDir := "/.system/etc"
-	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
-		return err
-	}
-
-	for _, file := range etcFiles {
-		sourceFile := etcDir + "/" + file
-		destFile := newEtc + "/" + file
-
-		// write the diff to the destination
-		err := MergeDiff(sourceFile, destFile)
-		if err != nil {
-			PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
-			return err
-		}
-	}
-
-	err := exec.Command( // TODO: use the Rsync method here
-		"rsync",
-		"-a",
-		"--exclude=passwd",
-		"--exclude=group",
-		"--exclude=shells",
-		"--exclude=shadow",
-		"--exclude=subuid",
-		"--exclude=subgid",
-		"--exclude=fstab",
-		"/.system/etc/",
-		newEtc,
-	).Run()
+	err := EtcBuilder.ExtBuildCommand("/etc", newEtc, fmt.Sprintf("/var/lib/abroot/etc/%s", root.Label))
 	if err != nil {
 		PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
 		return err
@@ -577,7 +538,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
 	newEtc := filepath.Join(systemNew, "/etc")
-	err = s.SyncEtc(newEtc)
+	err = s.SyncEtc(newEtc, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
 		return err

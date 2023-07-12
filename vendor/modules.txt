@@ -10,7 +10,7 @@ atomicgo.dev/keyboard/keys
 ## explicit; go 1.16
 github.com/Azure/go-ansiterm
 github.com/Azure/go-ansiterm/winterm
-# github.com/BurntSushi/toml v1.2.1
+# github.com/BurntSushi/toml v1.3.2
 ## explicit; go 1.16
 github.com/BurntSushi/toml
 github.com/BurntSushi/toml/internal
@@ -486,6 +486,11 @@ github.com/letsencrypt/boulder/goodkey
 github.com/letsencrypt/boulder/identifier
 github.com/letsencrypt/boulder/probs
 github.com/letsencrypt/boulder/revocation
+# github.com/linux-immutability-tools/EtcBuilder v0.0.0-20230712114827-997c496e6d40
+## explicit; go 1.20
+github.com/linux-immutability-tools/EtcBuilder/cmd
+github.com/linux-immutability-tools/EtcBuilder/core
+github.com/linux-immutability-tools/EtcBuilder/settings
 # github.com/lithammer/fuzzysearch v1.1.5
 ## explicit; go 1.15
 github.com/lithammer/fuzzysearch/fuzzy
@@ -610,6 +615,9 @@ github.com/russross/blackfriday/v2
 # github.com/seccomp/libseccomp-golang v0.10.0
 ## explicit; go 1.14
 github.com/seccomp/libseccomp-golang
+# github.com/sergi/go-diff v1.3.1
+## explicit; go 1.12
+github.com/sergi/go-diff/diffmatchpatch
 # github.com/sigstore/fulcio v1.2.0
 ## explicit; go 1.20
 github.com/sigstore/fulcio/pkg/certificate
@@ -758,7 +766,7 @@ golang.org/x/crypto/sha3
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
-# golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
+# golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 ## explicit; go 1.20
 golang.org/x/exp/constraints
 golang.org/x/exp/maps
