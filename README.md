@@ -5,7 +5,7 @@
 		atomicity to a Linux system, by transacting between
 		two root filesystems. Updates are performed using OCI
 		images, to ensure that the system is always in a
-		consistent state.</p>
+		consistent state</p>
 </div>
 
 > **NOTE**: ABRoot v2 is currently in development. The current
