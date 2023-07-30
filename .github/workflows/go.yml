@@ -2,7 +2,7 @@ name: Go
 
 on:
   push:
-    branches: [ "v2" ]
+    branches: [ "v2" , "ghcr" ]
 
 jobs:
 
@@ -10,7 +10,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: registry.vanillaos.org/vanillaos/pico:main
+      image: ghcr.io/vanilla-os/pico:main
 
     steps:
     - uses: actions/checkout@v3
