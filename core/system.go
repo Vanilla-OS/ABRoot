@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/google/uuid"
@@ -44,6 +45,8 @@ const (
 	FOCE_UPGRADE = "force-upgrade"
 	APPLY        = "package-apply"
 )
+
+const InitPath = "/usr/sbin/init"
 
 type ABSystemOperation string
 
@@ -263,40 +266,27 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
-// GenerateSbinInit generates a usr/sbin/init file for the future root
+// GenerateSbinInit generates a /usr/sbin/init file for the future root
 func (s *ABSystem) GenerateSbinInit(rootPath string, root ABRootPartition) error {
 	PrintVerbose("ABSystem.GenerateSbinInit: generating init")
 
-	template := `#!/usr/bin/bash
-echo "ABRoot: Initializing mount points..."
+	init, err := os.ReadFile(rootPath + InitPath)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		return err
+	}
 
-# /var mount
-mount -U %s /var
+	// Replace /var overlay
+	varRootMatch := regexp.MustCompile(`mount( -U|) .+ \/var`)
+	init = varRootMatch.ReplaceAll(init, []byte("mount$1 "+s.RootM.VarPartition.Uuid+" /var"))
 
-# /etc overlay
-mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
+	// Replace /etc overlay
+	etcRootMatch := regexp.MustCompile(`\/etc\/\w`)
+	init = etcRootMatch.ReplaceAll(init, []byte("/etc/"+root.Label))
 
-# /var binds
-mount -o bind /var/home /home
-mount -o bind /var/opt /opt
-mount -o bind,ro /.system/usr /usr
+	os.Remove(rootPath + InitPath)
 
-echo "ABRoot: Starting systemd..."
-
-# Start systemd
-exec /lib/systemd/systemd
-`
-
-	init := fmt.Sprintf(
-		template,
-		s.RootM.VarPartition.Uuid,
-		root.Label,
-		root.Label,
-	)
-
-	os.Remove(rootPath + "/usr/sbin/init")
-
-	err := os.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
+	err = os.WriteFile(rootPath+InitPath, init, 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
 		return err
