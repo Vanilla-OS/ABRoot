@@ -46,7 +46,7 @@ const (
 	APPLY        = "package-apply"
 )
 
-const InitPath = "/usr/sbin/init"
+const MountScriptPath = "/usr/sbin/.vanilla-mountpoints"
 
 type ABSystemOperation string
 
@@ -266,39 +266,39 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
-// GenerateSbinInit generates a /usr/sbin/init file for the future root
-func (s *ABSystem) GenerateSbinInit(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateSbinInit: generating init")
+// GenerateMountpointsScript generates a /usr/sbin/.vanilla-mountpoints file for the future root
+func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsScript: generating init")
 
-	init, err := os.ReadFile(rootPath + InitPath)
+	script, err := os.ReadFile(rootPath + MountScriptPath)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err: %s", err)
 		return err
 	}
 
 	// Replace /var overlay
 	varRootMatch := regexp.MustCompile(`mount( -U|) .+ \/var`)
-	init = varRootMatch.ReplaceAll(init, []byte("mount$1 "+s.RootM.VarPartition.Uuid+" /var"))
+	script = varRootMatch.ReplaceAll(script, []byte("mount$1 "+s.RootM.VarPartition.Uuid+" /var"))
 
 	// Replace /etc overlay
 	etcRootMatch := regexp.MustCompile(`\/etc\/\w`)
-	init = etcRootMatch.ReplaceAll(init, []byte("/etc/"+root.Label))
+	script = etcRootMatch.ReplaceAll(script, []byte("/etc/"+root.Label))
 
-	os.Remove(rootPath + InitPath)
+	os.Remove(rootPath + MountScriptPath)
 
-	err = os.WriteFile(rootPath+InitPath, init, 0755)
+	err = os.WriteFile(rootPath+MountScriptPath, script, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(2): %s", err)
 		return err
 	}
 
-	err = os.Chmod(rootPath+"/usr/sbin/init", 0755)
+	err = os.Chmod(rootPath+MountScriptPath, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err(2): %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.GenerateSbinInit: init generated")
+	PrintVerbose("ABSystem.GenerateMountpointsScript: script generated")
 	return nil
 }
 
@@ -507,7 +507,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab and /usr/sbin/init
+	// Stage 6: Generate /etc/fstab and /usr/sbin/.vanilla-mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -517,7 +517,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = s.GenerateSbinInit(systemNew, partFuture)
+	err = s.GenerateMountpointsScript(systemNew, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
 		return err
