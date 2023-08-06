@@ -86,15 +86,9 @@ func (d *DiskManager) GetDiskByPartition(partition string) (Disk, error) {
 func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	PrintVerbose("DiskManager.GetCurrentDisk: running...")
 
-	root, err := os.Getwd()
-	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:err: %s", err)
-		return Disk{}, err
-	}
-
 	// we need to evaluate symlinks to get the real root path
 	// in case of weird setups
-	root, err = filepath.EvalSymlinks(root)
+	root, err := filepath.EvalSymlinks("/")
 	if err != nil {
 		PrintVerbose("DiskManager.GetCurrentDisk:err(2): %s", err)
 		return Disk{}, err
