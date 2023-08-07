@@ -19,7 +19,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/google/uuid"
@@ -46,7 +45,12 @@ const (
 	APPLY        = "package-apply"
 )
 
-const MountScriptPath = "/usr/sbin/.vanilla-mountpoints"
+const (
+	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
+	MountUnitDir     = "/.system/etc/systemd/system"
+	SystemDTargetDir = "/.system/etc/systemd/system/cryptsetup.target.wants"
+	MountUnitFile    = "/abroot-mount.service"
+)
 
 type ABSystemOperation string
 
@@ -266,27 +270,27 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
-// GenerateMountpointsScript generates a /usr/sbin/.vanilla-mountpoints file for the future root
+// GenerateMountpointsScript generates a /usr/sbin/.abroot-mountpoints file for the future root
 func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateMountpointsScript: generating init")
+	PrintVerbose("ABSystem.GenerateMountpointsScript: generating script")
 
-	script, err := os.ReadFile(rootPath + MountScriptPath)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsScript:err: %s", err)
-		return err
-	}
+	template := `#!/usr/bin/bash
+echo "ABRoot: Initializing mount points..."
 
-	// Replace /var overlay
-	varRootMatch := regexp.MustCompile(`mount( -U|) .+ \/var`)
-	script = varRootMatch.ReplaceAll(script, []byte("mount$1 "+s.RootM.VarPartition.Uuid+" /var"))
+# /var mount
+mount %s /var
 
-	// Replace /etc overlay
-	etcRootMatch := regexp.MustCompile(`\/etc\/\w`)
-	script = etcRootMatch.ReplaceAll(script, []byte("/etc/"+root.Label))
+# /etc overlay
+mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
 
-	os.Remove(rootPath + MountScriptPath)
+# /var binds
+mount -o bind /var/home /home
+mount -o bind /var/opt /opt
+mount -o bind,ro /.system/usr /usr
+`
+	mountpoints := fmt.Sprintf(template, s.RootM.VarPartition.Uuid, root.Label, root.Label)
 
-	err = os.WriteFile(rootPath+MountScriptPath, script, 0755)
+	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsScript:err(2): %s", err)
 		return err
@@ -299,6 +303,45 @@ func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartiti
 	}
 
 	PrintVerbose("ABSystem.GenerateMountpointsScript: script generated")
+	return nil
+}
+
+// GenerateMountpointsSystemDUnit creates a SystemD unit to setup the /var partition and its
+// derivatives such as /home, /opt, and /etc.
+// This unit must run as soon as all encrypted partitions (if any) have been decrupted.
+func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: generating script")
+
+	template := `[Unit]
+Description=Mount partitions
+Requires=cryptsetup.target
+After=cryptsetup.target
+
+[Service]
+Type=oneshot
+ExecStart=%s
+`
+	unit := fmt.Sprintf(template, MountScriptPath)
+
+	err := os.WriteFile(rootPath+MountUnitDir+MountUnitFile, []byte(unit), 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(2): %s", err)
+		return err
+	}
+
+	err = os.Mkdir(SystemDTargetDir, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
+		return err
+	}
+
+	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+SystemDTargetDir+MountUnitFile)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: unit generated")
 	return nil
 }
 
@@ -507,7 +550,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab and /usr/sbin/.vanilla-mountpoints
+	// Stage 6: Generate /etc/fstab, /usr/sbin/.abroot-mountpoints, and the SystemD unit
+	// to setup mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -520,6 +564,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	err = s.GenerateMountpointsScript(systemNew, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.2): %s", err)
 		return err
 	}
 
