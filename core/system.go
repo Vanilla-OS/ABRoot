@@ -47,8 +47,8 @@ const (
 
 const (
 	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
-	MountUnitDir     = "/.system/etc/systemd/system"
-	SystemDTargetDir = "/.system/etc/systemd/system/cryptsetup.target.wants"
+	MountUnitDir     = "/etc/systemd/system"
+	SystemDTargetDir = "/etc/systemd/system/cryptsetup.target.wants"
 	MountUnitFile    = "/abroot-mount.service"
 )
 
@@ -103,7 +103,7 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
-// SyncEtc syncs /.system/etc -> /part-future/.system/etc
+// SyncEtc syncs /var/lib/abroot/etc -> /part-future/.system/etc
 func (s *ABSystem) SyncEtc(newEtc string) error {
 	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
 
@@ -116,9 +116,15 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"subgid",
 	}
 
-	etcDir := "/.system/etc"
-	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
+	current_part, err := s.RootM.GetPresent()
+	if err != nil {
 		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
+		return err
+	}
+
+	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
+	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
 		return err
 	}
 
@@ -129,12 +135,12 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		// write the diff to the destination
 		err := MergeDiff(sourceFile, destFile)
 		if err != nil {
-			PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
+			PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
 			return err
 		}
 	}
 
-	err := exec.Command( // TODO: use the Rsync method here
+	err = exec.Command( // TODO: use the Rsync method here
 		"rsync",
 		"-a",
 		"--exclude=passwd",
@@ -144,11 +150,11 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"--exclude=subuid",
 		"--exclude=subgid",
 		"--exclude=fstab",
-		"/.system/etc/",
+		etcDir,
 		newEtc,
 	).Run()
 	if err != nil {
-		PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
+		PrintVerbose("ABSystem.SyncEtc:err(4): %s", err)
 		return err
 	}
 
@@ -616,7 +622,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	newEtc := filepath.Join(systemNew, "/.system/etc")
+	newEtc := filepath.Join(systemNew, "/etc")
 	err = s.SyncEtc(newEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
