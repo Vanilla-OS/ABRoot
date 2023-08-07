@@ -335,12 +335,10 @@ ExecStart=%s
 		return err
 	}
 
-	if _, err := os.Stat(SystemDTargetDir); os.IsNotExist(err) {
-		err = os.MkdirAll(SystemDTargetDir, 0755)
-		if err != nil {
-			PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
-			return err
-		}
+	err = os.MkdirAll(rootPath+SystemDTargetDir, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
+		return err
 	}
 
 	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+SystemDTargetDir+MountUnitFile)
