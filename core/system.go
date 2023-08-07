@@ -616,7 +616,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	newEtc := filepath.Join(systemNew, "/etc")
+	newEtc := filepath.Join(systemNew, "/.system/etc")
 	err = s.SyncEtc(newEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
