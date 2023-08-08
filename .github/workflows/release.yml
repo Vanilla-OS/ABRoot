@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  upload-artifacts:
+  release:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
