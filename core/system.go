@@ -277,6 +277,8 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
+// GenerateCrypttab identifies which devices are encrypted and generates
+// the /etc/crypttab file for the specified root
 func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	PrintVerbose("ABSystem.GenerateCrypttab: generating crypttab")
 
@@ -284,7 +286,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 
 	// Check for encrypted roots
 	for _, rootDevice := range s.RootM.Partitions {
-		luks, err := isDeviceLUKSEncrypted(rootDevice.Device)
+		luks, err := isDeviceLUKSEncrypted("/dev/" + rootDevice.Device)
 		if err != nil {
 			PrintVerbose("ABSystem.GenerateCrypttab:err: %s", err)
 			return err
@@ -303,7 +305,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	}
 
 	// Check for encrypted /var
-	luks, err := isDeviceLUKSEncrypted(s.RootM.VarPartition.Device)
+	luks, err := isDeviceLUKSEncrypted("/dev/" + s.RootM.VarPartition.Device)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateCrypttab:err(2): %s", err)
 		return err
@@ -343,7 +345,7 @@ func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartiti
 echo "ABRoot: Initializing mount points..."
 
 # /var mount
-mount %s /var
+mount %s%s /var
 
 # /etc overlay
 mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
@@ -353,17 +355,29 @@ mount -o bind /var/home /home
 mount -o bind /var/opt /opt
 mount -o bind,ro /.system/usr /usr
 `
-	mountpoints := fmt.Sprintf(template, s.RootM.VarPartition.Uuid, root.Label, root.Label)
-
-	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
+	luks, err := isDeviceLUKSEncrypted("/dev/" + s.RootM.VarPartition.Device)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsScript:err(2): %s", err)
 		return err
 	}
 
-	err = os.Chmod(rootPath+MountScriptPath, 0755)
+	mountExtCmd := ""
+	if luks {
+		mountExtCmd = "/dev/mapper/luks-"
+	} else {
+		mountExtCmd = "-U "
+	}
+	mountpoints := fmt.Sprintf(template, mountExtCmd, s.RootM.VarPartition.Uuid, root.Label, root.Label)
+
+	err = os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
+		return err
+	}
+
+	err = os.Chmod(rootPath+MountScriptPath, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(4): %s", err)
 		return err
 	}
 

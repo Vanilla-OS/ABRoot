@@ -71,6 +71,8 @@ func isLink(path string) bool {
 
 // isDeviceLUKSEncrypted checks whether a device specified by devicePath is a LUKS-encrypted device
 func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
+	PrintVerbose("Verifying if %s is encrypted", devicePath)
+
 	isLuksCmd := "cryptsetup isLuks %s"
 
 	cmd := exec.Command("sh", "-c", fmt.Sprintf(isLuksCmd, devicePath))
