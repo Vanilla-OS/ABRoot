@@ -286,7 +286,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 
 	// Check for encrypted roots
 	for _, rootDevice := range s.RootM.Partitions {
-		luks, err := isDeviceLUKSEncrypted("/dev/" + rootDevice.Device)
+		luks, err := isDeviceLUKSEncrypted("/dev/" + rootDevice.Partition.Device)
 		if err != nil {
 			PrintVerbose("ABSystem.GenerateCrypttab:err: %s", err)
 			return err

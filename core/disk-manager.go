@@ -43,6 +43,18 @@ type Partition struct {
 	Device       string
 }
 
+// The children a block device or partition may have
+type Children struct {
+	MountPoint   string     `json:"mountpoint"`
+	FsType       string     `json:"fstype"`
+	Label        string     `json:"label"`
+	Uuid         string     `json:"uuid"`
+	LogicalName  string     `json:"name"`
+	Size         string     `json:"size"`
+	MountOptions string     `json:"mountopts"`
+	Children     []Children `json:"children"`
+}
+
 // NewDiskManager creates a new DiskManager
 func NewDiskManager() *DiskManager {
 	return &DiskManager{}
@@ -121,6 +133,22 @@ func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	return d.GetDiskByPartition(device)
 }
 
+// iterChildren iterates through the children of a device or partition recursively
+func iterChildren(childs *[]Children, result *[]Partition) {
+	for _, child := range *childs {
+		*result = append(*result, Partition{
+			Label:        child.Label,
+			MountPoint:   child.MountPoint,
+			MountOptions: child.MountOptions,
+			Uuid:         child.Uuid,
+			FsType:       child.FsType,
+			Device:       child.LogicalName,
+		})
+
+		iterChildren(&child.Children, result)
+	}
+}
+
 // getPartitions gets a disk's partitions
 func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	PrintVerbose("DiskManager.getPartitions: running...")
@@ -133,17 +161,9 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 
 	var partitions struct {
 		BlockDevices []struct {
-			Name     string `json:"name"`
-			Type     string `json:"type"`
-			Children []struct {
-				MountPoint   string `json:"mountpoint"`
-				FsType       string `json:"fstype"`
-				Label        string `json:"label"`
-				Uuid         string `json:"uuid"`
-				LogicalName  string `json:"name"`
-				Size         string `json:"size"`
-				MountOptions string `json:"mountopts"`
-			} `json:"children"`
+			Name     string     `json:"name"`
+			Type     string     `json:"type"`
+			Children []Children `json:"children"`
 		} `json:"blockdevices"`
 	}
 
@@ -158,16 +178,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 			continue
 		}
 
-		for _, child := range blockDevice.Children {
-			result = append(result, Partition{
-				Label:        child.Label,
-				MountPoint:   child.MountPoint,
-				MountOptions: child.MountOptions,
-				Uuid:         child.Uuid,
-				FsType:       child.FsType,
-				Device:       child.LogicalName,
-			})
-		}
+		iterChildren(&blockDevice.Children, &result)
 	}
 
 	PrintVerbose("DiskManager.getPartitions: successfully got partitions for disk %s", device)
