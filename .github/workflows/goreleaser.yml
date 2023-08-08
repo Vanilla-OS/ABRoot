@@ -26,3 +26,35 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
           # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/vanilla-os/pico:main
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+
+      - name: Install build dependencies
+        run: |
+            apt-get update
+            apt-get install -y pkg-config build-essential
+
+      - name: Build
+        run: go build -o abrootv2
+    
+      - name: Test
+        run: go test -v ./tests/...
+
+      - name: Compress
+        run: tar -czvf abrootv2.tar.gz abrootv2
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          files: |
+            abrootv2.tar.gz
