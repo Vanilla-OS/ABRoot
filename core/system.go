@@ -105,7 +105,7 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 
 // SyncEtc syncs /var/lib/abroot/etc -> /part-future/.system/etc
 func (s *ABSystem) SyncEtc(newEtc string) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
+	PrintVerbose("ABSystem.SyncEtc: syncing /var/lib/abroot/etc -> %s", newEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -150,6 +150,7 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"--exclude=subuid",
 		"--exclude=subgid",
 		"--exclude=fstab",
+		"--exclude=crypttab",
 		etcDir,
 		newEtc,
 	).Run()
@@ -273,6 +274,64 @@ UUID=%s  /  %s  defaults  0  0
 	}
 
 	PrintVerbose("ABSystem.GenerateFstab: fstab generated")
+	return nil
+}
+
+func (s *ABSystem) GenerateCrypttab(rootPath string) error {
+	PrintVerbose("ABSystem.GenerateCrypttab: generating crypttab")
+
+	cryptEntries := [][]string{}
+
+	// Check for encrypted roots
+	for _, rootDevice := range s.RootM.Partitions {
+		luks, err := isDeviceLUKSEncrypted(rootDevice.Device)
+		if err != nil {
+			PrintVerbose("ABSystem.GenerateCrypttab:err: %s", err)
+			return err
+		}
+
+		if luks {
+			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
+
+			cryptEntries = append(cryptEntries, []string{
+				fmt.Sprintf("luks-%s", rootDevice.Uuid),
+				fmt.Sprintf("UUID=%s", rootDevice.Uuid),
+				"none",
+				"luks,discard",
+			})
+		}
+	}
+
+	// Check for encrypted /var
+	luks, err := isDeviceLUKSEncrypted(s.RootM.VarPartition.Device)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateCrypttab:err(2): %s", err)
+		return err
+	}
+
+	if luks {
+		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
+
+		cryptEntries = append(cryptEntries, []string{
+			fmt.Sprintf("luks-%s", s.RootM.VarPartition.Uuid),
+			fmt.Sprintf("UUID=%s", s.RootM.VarPartition.Uuid),
+			"none",
+			"luks,discard",
+		})
+	}
+
+	crypttabContent := ""
+	for _, entry := range cryptEntries {
+		fmtEntry := strings.Join(entry, " ")
+		crypttabContent += fmtEntry + "\n"
+	}
+
+	err = os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateCrypttab:err(3): %s", err)
+		return err
+	}
+
 	return nil
 }
 
@@ -556,8 +615,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab, /usr/sbin/.abroot-mountpoints, and the SystemD unit
-	// to setup mountpoints
+	// Stage 6: Generate /etc/fstab, /etc/crypttab, /usr/sbin/.abroot-mountpoints, and the
+	// SystemD unit to setup mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -567,15 +626,21 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = s.GenerateMountpointsScript(systemNew, partFuture)
+	err = s.GenerateCrypttab(systemNew)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
 		return err
 	}
 
-	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
+	err = s.GenerateMountpointsScript(systemNew, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.2): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.3): %s", err)
 		return err
 	}
 
