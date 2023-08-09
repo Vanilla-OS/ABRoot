@@ -686,10 +686,14 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	newEtc := filepath.Join(systemNew, "/etc")
-	err = s.SyncEtc(newEtc)
+	futureEtc, err := s.RootM.GetFuture()
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
+		return err
+	}
+	err = s.SyncEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
 		return err
 	}
 
@@ -701,13 +705,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	tmpBootMount := filepath.Join("/tmp", uuid)
 	err = os.Mkdir(tmpBootMount, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
 		return err
 	}
 
 	err = partBoot.Mount(tmpBootMount)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(9.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(10.1): %s", err)
 		return err
 	}
 
@@ -719,7 +723,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = AtomicSwap(systemOld, systemNew)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(11): %s", err)
 		return err
 	}
 
