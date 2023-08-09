@@ -348,7 +348,7 @@ mount -o bind,ro /.system/usr /usr
 	mountExtCmd := ""
 	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
 		parent := s.RootM.VarPartition.Parent
-		mountExtCmd = fmt.Sprintln("/dev/mapper/luks-%s", parent.Uuid)
+		mountExtCmd = fmt.Sprintf("/dev/mapper/luks-%s", parent.Uuid)
 	} else {
 		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
 	}
