@@ -335,7 +335,7 @@ func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartiti
 echo "ABRoot: Initializing mount points..."
 
 # /var mount
-mount %s%s /var
+mount %s /var
 
 # /etc overlay
 mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
@@ -347,11 +347,12 @@ mount -o bind,ro /.system/usr /usr
 `
 	mountExtCmd := ""
 	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
-		mountExtCmd = "/dev/mapper/luks-"
+		parent := s.RootM.VarPartition.Parent
+		mountExtCmd = fmt.Sprintln("/dev/mapper/luks-%s", parent.Uuid)
 	} else {
-		mountExtCmd = "-U "
+		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
 	}
-	mountpoints := fmt.Sprintf(template, mountExtCmd, s.RootM.VarPartition.Uuid, root.Label, root.Label)
+	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label)
 
 	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
