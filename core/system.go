@@ -287,11 +287,12 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	// Check for encrypted roots
 	for _, rootDevice := range s.RootM.Partitions {
 		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
-			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
+			parent := rootDevice.Partition.Parent
+			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
 
 			cryptEntries = append(cryptEntries, []string{
-				fmt.Sprintf("luks-%s", rootDevice.Uuid),
-				fmt.Sprintf("UUID=%s", rootDevice.Uuid),
+				fmt.Sprintf("luks-%s", parent.Uuid),
+				fmt.Sprintf("UUID=%s", parent.Uuid),
 				"none",
 				"luks,discard",
 			})
@@ -300,11 +301,12 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 
 	// Check for encrypted /var
 	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
-		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
+		parent := s.RootM.VarPartition.Parent
+		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
 
 		cryptEntries = append(cryptEntries, []string{
-			fmt.Sprintf("luks-%s", s.RootM.VarPartition.Uuid),
-			fmt.Sprintf("UUID=%s", s.RootM.VarPartition.Uuid),
+			fmt.Sprintf("luks-%s", parent.Uuid),
+			fmt.Sprintf("UUID=%s", parent.Uuid),
 			"none",
 			"luks,discard",
 		})

@@ -40,7 +40,13 @@ type Partition struct {
 	MountOptions string
 	Uuid         string
 	FsType       string
-	Device       string
+	Device       string // e.g. sda1, nvme0n1p1
+
+	// If the partition is LUKS-encrypted, the logical volume opened in /dev/mapper/
+	// will be a child of the physical partiiton in /dev/.
+	// Otherwise, the partition will be a direct child of the block device, and
+	// therefore Parent will be nil.
+	Parent *Partition
 }
 
 // The children a block device or partition may have
@@ -145,7 +151,18 @@ func iterChildren(childs *[]Children, result *[]Partition) {
 			Device:       child.LogicalName,
 		})
 
+		detectedPartitions := len(*result)
+
 		iterChildren(&child.Children, result)
+
+		if detectedPartitions == 0 {
+			return
+		}
+
+		// Populate children's reference to parent
+		for i := 0; i < len(*result)-detectedPartitions; i++ {
+			(*result)[detectedPartitions+i].Parent = &(*result)[detectedPartitions-1]
+		}
 	}
 }
 
