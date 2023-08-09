@@ -286,13 +286,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 
 	// Check for encrypted roots
 	for _, rootDevice := range s.RootM.Partitions {
-		luks, err := isDeviceLUKSEncrypted("/dev/" + rootDevice.Partition.Device)
-		if err != nil {
-			PrintVerbose("ABSystem.GenerateCrypttab:err: %s", err)
-			return err
-		}
-
-		if luks {
+		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
 			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
 
 			cryptEntries = append(cryptEntries, []string{
@@ -305,13 +299,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	}
 
 	// Check for encrypted /var
-	luks, err := isDeviceLUKSEncrypted("/dev/" + s.RootM.VarPartition.Device)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateCrypttab:err(2): %s", err)
-		return err
-	}
-
-	if luks {
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
 		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab")
 
 		cryptEntries = append(cryptEntries, []string{
@@ -328,7 +316,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 		crypttabContent += fmtEntry + "\n"
 	}
 
-	err = os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
+	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateCrypttab:err(3): %s", err)
 		return err
@@ -355,21 +343,15 @@ mount -o bind /var/home /home
 mount -o bind /var/opt /opt
 mount -o bind,ro /.system/usr /usr
 `
-	luks, err := isDeviceLUKSEncrypted("/dev/" + s.RootM.VarPartition.Device)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsScript:err(2): %s", err)
-		return err
-	}
-
 	mountExtCmd := ""
-	if luks {
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
 		mountExtCmd = "/dev/mapper/luks-"
 	} else {
 		mountExtCmd = "-U "
 	}
 	mountpoints := fmt.Sprintf(template, mountExtCmd, s.RootM.VarPartition.Uuid, root.Label, root.Label)
 
-	err = os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
+	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
 		return err
