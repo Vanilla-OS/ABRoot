@@ -105,7 +105,7 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 }
 
 // SyncLowerEtc syncs the lower etc dir (/.system/etc)
-func (s *ABSystem) SyncLowerEtc(newEtc string) error {
+func (s *ABSystem) SyncLowerEtc(newEtc, presentUpperEtc string) error {
 	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newEtc)
 
 	etcFiles := []string{
@@ -124,13 +124,26 @@ func (s *ABSystem) SyncLowerEtc(newEtc string) error {
 	}
 
 	for _, file := range etcFiles {
-		sourceFile := etcDir + "/" + file
+		// Use file present in the immutable /etc if it exists. Otherwise, use the immutable one.
+		sourceFile := ""
+		_, err := os.Stat(presentUpperEtc + "/" + file)
+		if err != nil {
+			if os.IsNotExist(err) {
+				sourceFile = etcDir + "/" + file
+			} else {
+				PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
+				return err
+			}
+		} else {
+			sourceFile = presentUpperEtc + "/" + file
+		}
+
 		destFile := newEtc + "/" + file
 
 		// write the diff to the destination
-		err := MergeDiff(sourceFile, destFile)
+		err = MergeDiff(sourceFile, destFile)
 		if err != nil {
-			PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
+			PrintVerbose("ABSystem.SyncLowerEtc:err(3): %s", err)
 			return err
 		}
 	}
@@ -708,21 +721,25 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	err = s.SyncLowerEtc(filepath.Join(systemNew, "/etc"))
+	presentEtc, err := s.RootM.GetPresent()
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
 		return err
 	}
-
-	futureEtc, err := s.RootM.GetFuture()
+	err = s.SyncLowerEtc(filepath.Join(systemNew, "/etc"), fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label))
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.1): %s", err)
 		return err
 	}
 
-	err = s.SyncUpperEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+	futureEtc, err := s.RootM.GetFuture()
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
+		return err
+	}
+	err = s.SyncUpperEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
 		return err
 	}
 
