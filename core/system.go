@@ -151,7 +151,7 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"--exclude=subgid",
 		"--exclude=fstab",
 		"--exclude=crypttab",
-		etcDir,
+		etcDir+"/",
 		newEtc,
 	).Run()
 	if err != nil {
