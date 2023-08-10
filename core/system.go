@@ -104,9 +104,10 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
-// SyncLowerEtc syncs the lower etc dir (/.system/etc)
-func (s *ABSystem) SyncLowerEtc(newEtc, presentUpperEtc string) error {
-	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newEtc)
+// MergeUserEtcFiles merges user-related files from the new lower etc (/.system/etc)
+// with the old upper etc, if present, saving the result in the new upper etc.
+func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error {
+	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newLowerEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -125,26 +126,25 @@ func (s *ABSystem) SyncLowerEtc(newEtc, presentUpperEtc string) error {
 
 	for _, file := range etcFiles {
 		// Use file present in the immutable /etc if it exists. Otherwise, use the immutable one.
-		sourceFile := ""
-		_, err := os.Stat(presentUpperEtc + "/" + file)
+		_, err := os.Stat(oldUpperEtc + "/" + file)
 		if err != nil {
-			if os.IsNotExist(err) {
-				sourceFile = etcDir + "/" + file
+			if os.IsNotExist(err) { // No changes were made to the file from its image base, skip merge
+				continue
 			} else {
 				PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
 				return err
 			}
 		} else {
-			sourceFile = presentUpperEtc + "/" + file
-		}
+			firstFile := oldUpperEtc + "/" + file
+			secondFile := newLowerEtc + "/" + file
+			destination := newUpperEtc + "/" + file
 
-		destFile := newEtc + "/" + file
-
-		// write the diff to the destination
-		err = MergeDiff(sourceFile, destFile)
-		if err != nil {
-			PrintVerbose("ABSystem.SyncLowerEtc:err(3): %s", err)
-			return err
+			// write the diff to the destination
+			err = MergeDiff(firstFile, secondFile, destination)
+			if err != nil {
+				PrintVerbose("ABSystem.SyncLowerEtc:err(3): %s", err)
+				return err
+			}
 		}
 	}
 
@@ -726,18 +726,21 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
 		return err
 	}
-	err = s.SyncLowerEtc(filepath.Join(systemNew, "/etc"), fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label))
+	futureEtc, err := s.RootM.GetFuture()
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.1): %s", err)
 		return err
 	}
+	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
+	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
 
-	futureEtc, err := s.RootM.GetFuture()
+	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
 		return err
 	}
-	err = s.SyncUpperEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+
+	err = s.SyncUpperEtc(newUpperEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
 		return err
