@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/google/uuid"
@@ -183,13 +184,9 @@ func (s *ABSystem) SyncUpperEtc(newEtc string) error {
 func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 	PrintVerbose("ABSystem.RunCleanUpQueue: running...")
 
-	for i := 0; i < len(queue); i++ {
-		for j := 0; j < len(queue)-1; j++ {
-			if queue[j].Priority > queue[j+1].Priority {
-				queue[j], queue[j+1] = queue[j+1], queue[j]
-			}
-		}
-	}
+	sort.Slice(queue, func(i, j int) bool {
+		return queue[i].Priority < queue[j].Priority
+	})
 
 	for _, f := range queue {
 		if fnName != "" && f.Name != fnName {
@@ -232,6 +229,13 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 			err := s.UnlockUpgrade()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
+				return err
+			}
+		case "clearUnstagedPackages":
+			pkgM := NewPackageManager()
+			err := pkgM.ClearUnstagedPackages()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
 				return err
 			}
 		}
@@ -612,6 +616,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		PrintVerbose("ABSystem.RunOperation:err(4.1): %s", err)
 		return err
 	}
+
+	s.AddToCleanUpQueue("clearUnstagedPackages", 10)
 
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------

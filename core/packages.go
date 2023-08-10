@@ -395,11 +395,6 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 	if operation == APPLY {
 		finalAddPkgs, finalRemovePkgs = p.processApplyPackages()
 	} else {
-		err := p.ClearUnstagedPackages()
-		if err != nil {
-			PrintVerbose("PackageManager.GetFinalCmd:err: %s", err.Error())
-			panic(err)
-		}
 		finalAddPkgs, finalRemovePkgs = p.processUpgradePackages()
 	}
 
