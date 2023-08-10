@@ -103,9 +103,9 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
-// SyncEtc syncs /var/lib/abroot/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(newEtc string) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /var/lib/abroot/etc -> %s", newEtc)
+// SyncLowerEtc syncs the lower etc dir (/.system/etc)
+func (s *ABSystem) SyncLowerEtc(newEtc string) error {
+	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -116,15 +116,9 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"subgid",
 	}
 
-	current_part, err := s.RootM.GetPresent()
-	if err != nil {
-		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
-		return err
-	}
-
-	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
+	etcDir := "/.system/etc"
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
+		PrintVerbose("ABSystem.SyncLowerEtc:err: %s", err)
 		return err
 	}
 
@@ -135,10 +129,32 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		// write the diff to the destination
 		err := MergeDiff(sourceFile, destFile)
 		if err != nil {
-			PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
+			PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
 			return err
 		}
 	}
+
+	PrintVerbose("ABSystem.SyncLowerEtc: sync completed")
+	return nil
+}
+
+// SyncUpperEtc syncs the mutable etc directories from /var/lib/abroot/etc
+func (s *ABSystem) SyncUpperEtc(newEtc string) error {
+	PrintVerbose("ABSystem.SyncUpperEtc: Starting")
+
+	current_part, err := s.RootM.GetPresent()
+	if err != nil {
+		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
+		return err
+	}
+
+	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
+	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.SyncUpperEtc: syncing /var/lib/abroot/etc/%s -> %s", current_part.Label, newEtc)
 
 	err = exec.Command( // TODO: use the Rsync method here
 		"rsync",
@@ -155,11 +171,11 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		newEtc,
 	).Run()
 	if err != nil {
-		PrintVerbose("ABSystem.SyncEtc:err(4): %s", err)
+		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.SyncEtc: sync completed")
+	PrintVerbose("ABSystem.SyncUpperEtc: sync completed")
 	return nil
 }
 
@@ -686,14 +702,21 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	futureEtc, err := s.RootM.GetFuture()
+	err = s.SyncLowerEtc(filepath.Join(systemNew, "/etc"))
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
 		return err
 	}
-	err = s.SyncEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+
+	futureEtc, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(8.1): %s", err)
+		return err
+	}
+
+	err = s.SyncUpperEtc(fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label))
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
 		return err
 	}
 
@@ -705,13 +728,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	tmpBootMount := filepath.Join("/tmp", uuid)
 	err = os.Mkdir(tmpBootMount, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
 		return err
 	}
 
 	err = partBoot.Mount(tmpBootMount)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(10.1): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(9.1): %s", err)
 		return err
 	}
 
@@ -723,7 +746,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = AtomicSwap(systemOld, systemNew)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(11): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
 		return err
 	}
 
