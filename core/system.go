@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/google/uuid"
@@ -43,6 +44,13 @@ const (
 	UPGRADE      = "upgrade"
 	FOCE_UPGRADE = "force-upgrade"
 	APPLY        = "package-apply"
+)
+
+const (
+	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
+	MountUnitDir     = "/etc/systemd/system"
+	SystemDTargetDir = "/etc/systemd/system/cryptsetup.target.wants"
+	MountUnitFile    = "/abroot-mount.service"
 )
 
 type ABSystemOperation string
@@ -96,9 +104,10 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
-// SyncEtc syncs /.system/etc -> /part-future/.system/etc
-func (s *ABSystem) SyncEtc(newEtc string) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
+// MergeUserEtcFiles merges user-related files from the new lower etc (/.system/etc)
+// with the old upper etc, if present, saving the result in the new upper etc.
+func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error {
+	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newLowerEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -111,23 +120,57 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 
 	etcDir := "/.system/etc"
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncEtc:err: %s", err)
+		PrintVerbose("ABSystem.SyncLowerEtc:err: %s", err)
 		return err
 	}
 
 	for _, file := range etcFiles {
-		sourceFile := etcDir + "/" + file
-		destFile := newEtc + "/" + file
-
-		// write the diff to the destination
-		err := MergeDiff(sourceFile, destFile)
+		// Use file present in the immutable /etc if it exists. Otherwise, use the immutable one.
+		_, err := os.Stat(oldUpperEtc + "/" + file)
 		if err != nil {
-			PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
-			return err
+			if os.IsNotExist(err) { // No changes were made to the file from its image base, skip merge
+				continue
+			} else {
+				PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
+				return err
+			}
+		} else {
+			firstFile := oldUpperEtc + "/" + file
+			secondFile := newLowerEtc + "/" + file
+			destination := newUpperEtc + "/" + file
+
+			// write the diff to the destination
+			err = MergeDiff(firstFile, secondFile, destination)
+			if err != nil {
+				PrintVerbose("ABSystem.SyncLowerEtc:err(3): %s", err)
+				return err
+			}
 		}
 	}
 
-	err := exec.Command( // TODO: use the Rsync method here
+	PrintVerbose("ABSystem.SyncLowerEtc: sync completed")
+	return nil
+}
+
+// SyncUpperEtc syncs the mutable etc directories from /var/lib/abroot/etc
+func (s *ABSystem) SyncUpperEtc(newEtc string) error {
+	PrintVerbose("ABSystem.SyncUpperEtc: Starting")
+
+	current_part, err := s.RootM.GetPresent()
+	if err != nil {
+		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
+		return err
+	}
+
+	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
+	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.SyncUpperEtc: syncing /var/lib/abroot/etc/%s -> %s", current_part.Label, newEtc)
+
+	err = exec.Command( // TODO: use the Rsync method here
 		"rsync",
 		"-a",
 		"--exclude=passwd",
@@ -137,15 +180,16 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 		"--exclude=subuid",
 		"--exclude=subgid",
 		"--exclude=fstab",
-		"/.system/etc/",
+		"--exclude=crypttab",
+		etcDir+"/",
 		newEtc,
 	).Run()
 	if err != nil {
-		PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
+		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.SyncEtc: sync completed")
+	PrintVerbose("ABSystem.SyncUpperEtc: sync completed")
 	return nil
 }
 
@@ -153,13 +197,9 @@ func (s *ABSystem) SyncEtc(newEtc string) error {
 func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 	PrintVerbose("ABSystem.RunCleanUpQueue: running...")
 
-	for i := 0; i < len(queue); i++ {
-		for j := 0; j < len(queue)-1; j++ {
-			if queue[j].Priority > queue[j+1].Priority {
-				queue[j], queue[j+1] = queue[j+1], queue[j]
-			}
-		}
-	}
+	sort.Slice(queue, func(i, j int) bool {
+		return queue[i].Priority < queue[j].Priority
+	})
 
 	for _, f := range queue {
 		if fnName != "" && f.Name != fnName {
@@ -202,6 +242,13 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 			err := s.UnlockUpgrade()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
+				return err
+			}
+		case "clearUnstagedPackages":
+			pkgM := NewPackageManager()
+			err := pkgM.ClearUnstagedPackages()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
 				return err
 			}
 		}
@@ -263,15 +310,65 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
-// GenerateSbinInit generates a usr/sbin/init file for the future root
-func (s *ABSystem) GenerateSbinInit(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateSbinInit: generating init")
+// GenerateCrypttab identifies which devices are encrypted and generates
+// the /etc/crypttab file for the specified root
+func (s *ABSystem) GenerateCrypttab(rootPath string) error {
+	PrintVerbose("ABSystem.GenerateCrypttab: generating crypttab")
+
+	cryptEntries := [][]string{}
+
+	// Check for encrypted roots
+	for _, rootDevice := range s.RootM.Partitions {
+		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
+			parent := rootDevice.Partition.Parent
+			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+
+			cryptEntries = append(cryptEntries, []string{
+				fmt.Sprintf("luks-%s", parent.Uuid),
+				fmt.Sprintf("UUID=%s", parent.Uuid),
+				"none",
+				"luks,discard",
+			})
+		}
+	}
+
+	// Check for encrypted /var
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		parent := s.RootM.VarPartition.Parent
+		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+
+		cryptEntries = append(cryptEntries, []string{
+			fmt.Sprintf("luks-%s", parent.Uuid),
+			fmt.Sprintf("UUID=%s", parent.Uuid),
+			"none",
+			"luks,discard",
+		})
+	}
+
+	crypttabContent := ""
+	for _, entry := range cryptEntries {
+		fmtEntry := strings.Join(entry, " ")
+		crypttabContent += fmtEntry + "\n"
+	}
+
+	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateCrypttab:err(3): %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// GenerateMountpointsScript generates a /usr/sbin/.abroot-mountpoints file for the future root
+func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsScript: generating script")
 
 	template := `#!/usr/bin/bash
 echo "ABRoot: Initializing mount points..."
 
 # /var mount
-mount -U %s /var
+mount %s /var
 
 # /etc overlay
 mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
@@ -280,35 +377,68 @@ mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%
 mount -o bind /var/home /home
 mount -o bind /var/opt /opt
 mount -o bind,ro /.system/usr /usr
-
-echo "ABRoot: Starting systemd..."
-
-# Start systemd
-exec /lib/systemd/systemd
 `
+	mountExtCmd := ""
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		parent := s.RootM.VarPartition.Parent
+		mountExtCmd = fmt.Sprintf("/dev/mapper/luks-%s", parent.Uuid)
+	} else {
+		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
+	}
+	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label)
 
-	init := fmt.Sprintf(
-		template,
-		s.RootM.VarPartition.Uuid,
-		root.Label,
-		root.Label,
-	)
-
-	os.Remove(rootPath + "/usr/sbin/init")
-
-	err := os.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
+	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
 		return err
 	}
 
-	err = os.Chmod(rootPath+"/usr/sbin/init", 0755)
+	err = os.Chmod(rootPath+MountScriptPath, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err(2): %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(4): %s", err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.GenerateSbinInit: init generated")
+	PrintVerbose("ABSystem.GenerateMountpointsScript: script generated")
+	return nil
+}
+
+// GenerateMountpointsSystemDUnit creates a SystemD unit to setup the /var partition and its
+// derivatives such as /home, /opt, and /etc.
+// This unit must run as soon as all encrypted partitions (if any) have been decrupted.
+func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: generating script")
+
+	template := `[Unit]
+Description=Mount partitions
+Requires=cryptsetup.target
+After=cryptsetup.target
+
+[Service]
+Type=oneshot
+ExecStart=%s
+`
+	unit := fmt.Sprintf(template, MountScriptPath)
+
+	err := os.WriteFile(rootPath+MountUnitDir+MountUnitFile, []byte(unit), 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(2): %s", err)
+		return err
+	}
+
+	err = os.MkdirAll(rootPath+SystemDTargetDir, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
+		return err
+	}
+
+	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+SystemDTargetDir+MountUnitFile)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: unit generated")
 	return nil
 }
 
@@ -500,6 +630,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	s.AddToCleanUpQueue("clearUnstagedPackages", 10)
+
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
 	PrintVerbose("[Stage 5] ABSystemRunOperation")
@@ -517,7 +649,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab and /usr/sbin/init
+	// Stage 6: Generate /etc/fstab, /etc/crypttab, /usr/sbin/.abroot-mountpoints, and the
+	// SystemD unit to setup mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -527,9 +660,21 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = s.GenerateSbinInit(systemNew, partFuture)
+	err = s.GenerateCrypttab(systemNew)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsScript(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.2): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.3): %s", err)
 		return err
 	}
 
@@ -576,10 +721,40 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
 
-	newEtc := filepath.Join(systemNew, "/etc")
-	err = s.SyncEtc(newEtc)
+	presentEtc, err := s.RootM.GetPresent()
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
+		return err
+	}
+	futureEtc, err := s.RootM.GetFuture()
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.1): %s", err)
+		return err
+	}
+	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
+	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
+
+	// Clean new upper etc to prevent deleted files from persisting
+	err = os.RemoveAll(newUpperEtc)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
+		return err
+	}
+	err = os.Mkdir(newUpperEtc, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
+		return err
+	}
+
+	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.4): %s", err)
+		return err
+	}
+
+	err = s.SyncUpperEtc(newUpperEtc)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.5): %s", err)
 		return err
 	}
 

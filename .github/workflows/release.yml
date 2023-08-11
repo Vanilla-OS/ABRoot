@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/vanilla-os/pico:main
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+
+      - name: Install build dependencies
+        run: |
+            apt-get update
+            apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
+
+      - name: Build
+        run: go build -o abrootv2
+
+      - name: Compress
+        run: tar -czvf abrootv2.tar.gz abrootv2
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          files: |
+            abrootv2.tar.gz

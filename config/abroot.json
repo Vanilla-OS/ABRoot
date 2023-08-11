@@ -1,9 +1,9 @@
 {
     "autoRepair": true,
 
-    "registry": "registry.vanillaos.org",
+    "registry": "ghcr.io/vanilla-os",
     "registryAPIVersion": "v2",
-    "name": "vanillaos/desktop",
+    "name": "desktop",
     "tag": "main",
 
     "iPkgMngPre": "",

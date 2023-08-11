@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 )
 
 var abrootDir = "/etc/abroot"
@@ -96,4 +97,26 @@ func copyFile(source, dest string) error {
     }
 
     return nil
+}
+
+// isDeviceLUKSEncrypted checks whether a device specified by devicePath is a LUKS-encrypted device
+func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
+	PrintVerbose("Verifying if %s is encrypted", devicePath)
+
+	isLuksCmd := "cryptsetup isLuks %s"
+
+	cmd := exec.Command("sh", "-c", fmt.Sprintf(isLuksCmd, devicePath))
+	err := cmd.Run()
+	if err != nil {
+		// We expect the command to return exit status 1 if partition isn't
+		// LUKS-encrypted
+		if exitError, ok := err.(*exec.ExitError); ok {
+			if exitError.ExitCode() == 1 {
+				return false, nil
+			}
+		}
+		return false, fmt.Errorf("Failed to check if %s is LUKS-encrypted: %s", devicePath, err)
+	}
+
+	return true, nil
 }
