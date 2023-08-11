@@ -734,15 +734,27 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
 	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
 
-	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
+	// Clean new upper etc to prevent deleted files from persisting
+	err = os.RemoveAll(newUpperEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
+		return err
+	}
+	err = os.Mkdir(newUpperEtc, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
+		return err
+	}
+
+	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(8.4): %s", err)
 		return err
 	}
 
 	err = s.SyncUpperEtc(newUpperEtc)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(8.5): %s", err)
 		return err
 	}
 
