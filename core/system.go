@@ -201,13 +201,17 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 		return queue[i].Priority < queue[j].Priority
 	})
 
-	for _, f := range queue {
+	itemsToRemove := []int{}
+	for i, f := range queue {
 		if fnName != "" && f.Name != fnName {
 			continue
 		}
 
+		itemsToRemove = append(itemsToRemove, i)
+
 		switch f.Name {
 		case "umountFuture":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountFuture")
 			futurePart := f.Values[0].(ABRootPartition)
 			err := futurePart.Partition.Unmount()
 			if err != nil {
@@ -215,9 +219,11 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "closeChroot":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing closeChroot")
 			chroot := f.Values[0].(*Chroot)
 			chroot.Close() // safe to ignore, already closed
 		case "removeNewSystem":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewSystem")
 			newSystem := f.Values[0].(string)
 			err := os.RemoveAll(newSystem)
 			if err != nil {
@@ -225,6 +231,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "removeNewABImage":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewABImage")
 			newImage := f.Values[0].(string)
 			err := os.RemoveAll(newImage)
 			if err != nil {
@@ -232,6 +239,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "umountBoot":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountBoot")
 			bootPart := f.Values[0].(Partition)
 			err := bootPart.Unmount()
 			if err != nil {
@@ -239,12 +247,14 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "unlockUpgrade":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
 			err := s.UnlockUpgrade()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
 				return err
 			}
 		case "clearUnstagedPackages":
+            PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
 			pkgM := NewPackageManager()
 			err := pkgM.ClearUnstagedPackages()
 			if err != nil {
@@ -254,7 +264,11 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 		}
 	}
 
-	s.ResetQueue()
+	// Remove matched items in reverse order to avoid changing indices
+	for i := len(itemsToRemove) - 1; i <= 0; i-- {
+		removeIdx := itemsToRemove[i]
+		queue = append(queue[:removeIdx], queue[removeIdx+1:]...)
+	}
 
 	PrintVerbose("ABSystem.RunCleanUpQueue: completed")
 	return nil
@@ -634,7 +648,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
-	PrintVerbose("[Stage 5] ABSystemRunOperation")
+	PrintVerbose("[Stage 5] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
