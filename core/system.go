@@ -211,7 +211,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 
 		switch f.Name {
 		case "umountFuture":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountFuture")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountFuture")
 			futurePart := f.Values[0].(ABRootPartition)
 			err := futurePart.Partition.Unmount()
 			if err != nil {
@@ -219,11 +219,11 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "closeChroot":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing closeChroot")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing closeChroot")
 			chroot := f.Values[0].(*Chroot)
 			chroot.Close() // safe to ignore, already closed
 		case "removeNewSystem":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewSystem")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewSystem")
 			newSystem := f.Values[0].(string)
 			err := os.RemoveAll(newSystem)
 			if err != nil {
@@ -231,7 +231,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "removeNewABImage":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewABImage")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewABImage")
 			newImage := f.Values[0].(string)
 			err := os.RemoveAll(newImage)
 			if err != nil {
@@ -239,7 +239,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "umountBoot":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountBoot")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountBoot")
 			bootPart := f.Values[0].(Partition)
 			err := bootPart.Unmount()
 			if err != nil {
@@ -247,14 +247,14 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "unlockUpgrade":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
 			err := s.UnlockUpgrade()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
 				return err
 			}
 		case "clearUnstagedPackages":
-            PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
 			pkgM := NewPackageManager()
 			err := pkgM.ClearUnstagedPackages()
 			if err != nil {
@@ -466,6 +466,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	s.ResetQueue()
 
+	defer s.RunCleanUpQueue("")
+
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
 	PrintVerbose("[Stage 0] -------- ABSystemRunOperation")
@@ -501,7 +503,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if !res {
 			if operation != FOCE_UPGRADE {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
-				s.RunCleanUpQueue("")
 				return NoUpdateError
 			}
 			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
@@ -872,7 +873,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	PrintVerbose("ABSystem.RunOperation: upgrade completed")
-	s.RunCleanUpQueue("")
 	return nil
 }
 
