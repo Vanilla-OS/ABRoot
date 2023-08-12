@@ -105,10 +105,13 @@ func NewPackageManager() *PackageManager {
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
 
-	err := p.ExistsInRepo(pkg)
-	if err != nil {
-		PrintVerbose("PackageManager.Add:err: " + err.Error())
-		return err
+	// Check if package exists in repo
+	for _, _pkg := range strings.Split(pkg, " ") {
+		err := p.ExistsInRepo(_pkg)
+		if err != nil {
+			PrintVerbose("PackageManager.Add:err: " + err.Error())
+			return err
+		}
 	}
 
 	// Add to unstaged packages first
@@ -455,7 +458,7 @@ func (p *PackageManager) ExistsInRepo(pkg string) error {
 
 	if resp.StatusCode != 200 {
 		PrintVerbose("PackageManager.ExistsInRepo: package does not exist in repo")
-		return fmt.Errorf("package does not exist in repo")
+		return fmt.Errorf("package does not exist in repo: %s", pkg)
 	}
 
 	PrintVerbose("PackageManager.ExistsInRepo: package exists in repo")

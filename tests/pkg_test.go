@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/vanilla-os/abroot/core"
@@ -10,7 +11,7 @@ func TestPackageManager(t *testing.T) {
 	pm := core.NewPackageManager()
 
 	// Add a package
-	pkg := "bash"
+	pkg := "bash htop"
 	err := pm.Add(pkg)
 	if err != nil {
 		t.Error(err)
@@ -57,8 +58,10 @@ func TestPackageManager(t *testing.T) {
 	}
 
 	// Check if package exists in repo
-	err = pm.ExistsInRepo(pkg)
-	if err != nil {
-		t.Error(err)
+	for _, _pkg := range strings.Split(pkg, " ") {
+		err = pm.ExistsInRepo(_pkg)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
