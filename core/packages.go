@@ -198,7 +198,7 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
 	pkgs, err := p.getPackages(PackagesUnstagedFile)
 	if err != nil {
-		PrintVerbose("PackageManager.GetUnstagedPackages:err: ", err.Error())
+		PrintVerbose("PackageManager.GetUnstagedPackages:err: " + err.Error())
 		return nil, err
 	}
 
