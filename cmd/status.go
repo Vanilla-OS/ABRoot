@@ -85,13 +85,7 @@ func status(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	cmdr.Info.Printf(`ABRoot Partitions:
-	- Present: %s
-	- Future: %s
-	`,
-		present.Label,
-		future.Label,
-	)
+	cmdr.Info.Printf(abroot.Trans("status.infoMsg"), present.Label, future.Label)
 
 	return nil
 }
