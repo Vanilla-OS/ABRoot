@@ -265,7 +265,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 	}
 
 	// Remove matched items in reverse order to avoid changing indices
-	for i := len(itemsToRemove) - 1; i <= 0; i-- {
+	for i := len(itemsToRemove) - 1; i >= 0; i-- {
 		removeIdx := itemsToRemove[i]
 		queue = append(queue[:removeIdx], queue[removeIdx+1:]...)
 	}
@@ -721,7 +721,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	s.RunCleanUpQueue("closeChroot")
-	s.RemoveFromCleanUpQueue("closeChroot")
 
 	err = generateABGrubConf( // *2 but we don't care about grub.cfg
 		systemNew,
