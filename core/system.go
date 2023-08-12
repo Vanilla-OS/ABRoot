@@ -766,6 +766,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	s.RunCleanUpQueue("clearUnstagedPackages")
+
 	err = s.SyncUpperEtc(newUpperEtc)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(8.5): %s", err)
