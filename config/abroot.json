@@ -10,6 +10,7 @@
     "iPkgMngPost": "",
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
+    "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
 
     "partLabelVar": "vos-var",
     "partLabelA": "vos-a",

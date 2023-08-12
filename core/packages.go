@@ -16,6 +16,7 @@ package core
 import (
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -103,6 +104,12 @@ func NewPackageManager() *PackageManager {
 // Add adds a package to the packages.add file
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
+
+	err := p.ExistsInRepo(pkg)
+	if err != nil {
+		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		return err
+	}
 
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
@@ -423,4 +430,34 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 
 	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)
 	return cmd
+}
+
+func (p *PackageManager) ExistsInRepo(pkg string) error {
+	PrintVerbose("PackageManager.ExistsInRepo: running...")
+
+	if settings.Cnf.IPkgMngApi == "" {
+		PrintVerbose("PackageManager.ExistsInRepo: no API url set, will not check if package exists. This could lead to errors")
+		return nil
+	}
+
+	if !strings.Contains(settings.Cnf.IPkgMngApi, "{packageName}") {
+		return fmt.Errorf("PackageManager.ExistsInRepo: API url does not contain {packageName} placeholder. ABRoot is probably misconfigured, please report the issue to the maintainers of the distribution")
+	}
+
+	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
+	PrintVerbose("PackageManager.ExistsInRepo: checking if package exists in repo: " + url)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		PrintVerbose("PackageManager.ExistsInRepo:err: " + err.Error())
+		return err
+	}
+
+	if resp.StatusCode != 200 {
+		PrintVerbose("PackageManager.ExistsInRepo: package does not exist in repo")
+		return fmt.Errorf("package does not exist in repo")
+	}
+
+	PrintVerbose("PackageManager.ExistsInRepo: package exists in repo")
+	return nil
 }
