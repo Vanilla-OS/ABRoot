@@ -97,7 +97,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 
 		err = aBsys.RunOperation(core.APPLY)
 		if err != nil {
-			cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
+			cmdr.Info.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err
 		}
 	}

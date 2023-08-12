@@ -37,6 +37,7 @@ pkg:
   rootRequired: "You must be root to run this command."
   noPackageNameProvided: "You must provide at least one package name for this operation."
   addedMsg: "Package(s) %s added.\n"
+  applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
 
