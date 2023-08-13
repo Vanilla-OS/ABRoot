@@ -19,7 +19,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"syscall"
 
 	"github.com/containers/buildah"
 	cstypes "github.com/containers/storage/types"
@@ -88,7 +87,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// WORKAROUND: Delete tmp storage directory
-	err = syscall.Unmount(storageTmpDir, 0)
+	err = exec.Command("umount", "-l", storageTmpDir).Run()
 	if err != nil {
 		PrintVerbose("OciExportRootFs:err(7): %s", err)
 	}
