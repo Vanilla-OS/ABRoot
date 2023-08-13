@@ -17,7 +17,6 @@ import (
 	"context"
 	"errors"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/containers/buildah"
@@ -39,20 +38,6 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		PrintVerbose("OciExportRootFs:err: %s", err)
 		return err
 	}
-
-	// WORKAROUND: https://github.com/Vanilla-OS/Prometheus/issues/8
-	storageTmpDir := filepath.Join("/var/lib/abroot/storage", "tmp")
-	err = os.Mkdir(storageTmpDir, 0644)
-	if err != nil {
-		PrintVerbose("OciExportRootFs:err(0): %s", err)
-		return err
-	}
-	err = exec.Command("mount", "--bind", storageTmpDir, "/var/tmp").Run()
-	if err != nil {
-		PrintVerbose("OciExportRootFs:err(1): %s", err)
-		return err
-	}
-	// END WORKAROUND
 
 	imageRecipePath := filepath.Join(transDir, "imageRecipe")
 
@@ -85,17 +70,6 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		PrintVerbose("OciExportRootFs:err(6): %s", err)
 		return err
 	}
-
-	// WORKAROUND: Delete tmp storage directory
-	err = exec.Command("umount", "-l", storageTmpDir).Run()
-	if err != nil {
-		PrintVerbose("OciExportRootFs:err(7): %s", err)
-	}
-	err = os.RemoveAll(storageTmpDir)
-	if err != nil {
-		PrintVerbose("OciExportRootFs:err(8): %s", err)
-	}
-	// END WORKAROUND
 
 	// write imageRecipe
 	err = imageRecipe.Write(imageRecipePath)
