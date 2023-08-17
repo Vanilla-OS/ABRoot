@@ -139,7 +139,7 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 		return nil, err
 	}
 
-	digest := m["config"].(map[string]interface{})["digest"].(string)
+	digest := resp.Header.Get("Docker-Content-Digest")
 	layers := m["layers"].([]interface{})
 	var layerDigests []string
 	for _, layer := range layers {
@@ -151,10 +151,6 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 		Manifest: body,
 		Digest:   digest,
 		Layers:   layerDigests,
-	}
-
-	if manifest.Digest[0:7] == "sha256:" {
-		manifest.Digest = manifest.Digest[7:]
 	}
 
 	return manifest, nil

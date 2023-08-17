@@ -603,7 +603,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			imageName = settings.Cnf.FullImageName
 		}
 	} else {
-		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0] + "@" + imageDigest
+		imageName = settings.Cnf.FullImageName + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest
 	}
 
