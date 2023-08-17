@@ -657,10 +657,15 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	abimage := NewABImage(imageDigest, settings.Cnf.FullImageName)
-	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
+	abimage, err := NewABImage(imageDigest, settings.Cnf.FullImageName)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(5.1): %s", err)
+		return err
+	}
+
+	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(5.2): %s", err)
 		return err
 	}
 

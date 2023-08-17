@@ -45,23 +45,66 @@ func NewRegistry() *Registry {
 func (r *Registry) HasUpdate(digest string) (string, bool) {
 	PrintVerbose("Registry.HasUpdate: Checking for updates ...")
 
-	manifest, err := r.GetManifest()
+	token, err := GetToken()
 	if err != nil {
 		PrintVerbose("Registry.HasUpdate:err: %s", err)
 		return "", false
 	}
 
-	if manifest.Digest == digest {
-		PrintVerbose("Registry.HasUpdate: no update available")
+	manifest, err := r.GetManifest(token)
+	if err != nil {
+		PrintVerbose("Registry.HasUpdate(1):err: %s", err)
 		return "", false
 	}
 
-	PrintVerbose("Registry.HasUpdate: update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
+	if manifest.Digest == digest {
+		PrintVerbose("Registry.HasUpdate(2): no update available")
+		return "", false
+	}
+
+	PrintVerbose("Registry.HasUpdate(3): update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
 	return manifest.Digest, true
 }
 
+// GetToken generates a token using the provided tokenURL and returns it
+func GetToken() (string, error) {
+	requestUrl := fmt.Sprintf(
+		"https://%s/token?scope=repository:%s:pull&service=%s",
+		settings.Cnf.Registry,
+		settings.Cnf.Name,
+		settings.Cnf.RegistryService,
+	)
+	PrintVerbose("Registry.GetToken: call uri is %s", requestUrl)
+
+	resp, err := http.Get(requestUrl)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("token request failed with status code: %d", resp.StatusCode)
+	}
+
+	tokenBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var tokenResponse struct {
+		Token string `json:"token"`
+	}
+	err = json.Unmarshal(tokenBytes, &tokenResponse)
+	if err != nil {
+		return "", err
+	}
+
+	token := tokenResponse.Token
+	return token, nil
+}
+
 // GetManifest returns the manifest of the image
-func (r *Registry) GetManifest() (*Manifest, error) {
+func (r *Registry) GetManifest(token string) (*Manifest, error) {
 	PrintVerbose("Registry.GetManifest: running...")
 
 	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
@@ -74,6 +117,7 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 	}
 
 	req.Header.Set("User-Agent", "abroot")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -95,7 +139,7 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 		return nil, err
 	}
 
-	digest := resp.Header.Get("Docker-Content-Digest")
+	digest := m["config"].(map[string]interface{})["digest"].(string)
 	layers := m["layers"].([]interface{})
 	var layerDigests []string
 	for _, layer := range layers {
@@ -103,9 +147,15 @@ func (r *Registry) GetManifest() (*Manifest, error) {
 	}
 
 	PrintVerbose("Registry.GetManifest: success")
-	return &Manifest{
+	manifest := &Manifest{
 		Manifest: body,
 		Digest:   digest,
 		Layers:   layerDigests,
-	}, nil
+	}
+
+	if manifest.Digest[0:7] == "sha256:" {
+		manifest.Digest = manifest.Digest[7:]
+	}
+
+	return manifest, nil
 }

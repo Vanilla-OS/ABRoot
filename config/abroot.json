@@ -1,13 +1,15 @@
 {
     "autoRepair": true,
+    "maxParallelDownloads": 2,
 
-    "registry": "ghcr.io/vanilla-os",
+    "registry": "ghcr.io",
+    "registryService": "registry.ghcr.io",
     "registryAPIVersion": "v2",
-    "name": "desktop",
+    "name": "vanilla-os/desktop",
     "tag": "main",
 
-    "iPkgMngPre": "",
-    "iPkgMngPost": "",
+    "iPkgMngPre": "lpkg --unlock",
+    "iPkgMngPost": "lpkg --lock",
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
@@ -18,7 +20,5 @@
     "partLabelBoot": "vos-boot",
     "partLabelEfi": "vos-efi",
 
-    "libPathStates": "/var/lib/abroot/states",
-
-    "maxParallelDownloads": 2
+    "libPathStates": "/var/lib/abroot/states"
 }
