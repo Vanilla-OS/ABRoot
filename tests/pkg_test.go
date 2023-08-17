@@ -8,7 +8,7 @@ import (
 )
 
 func TestPackageManager(t *testing.T) {
-	pm := core.NewPackageManager()
+	pm := core.NewPackageManager(true)
 
 	// Add a package
 	pkg := "bash htop"

@@ -62,6 +62,7 @@ func init() {
 
 	// dev paths
 	viper.AddConfigPath("config/")
+	viper.AddConfigPath("../config/")
 
 	// prod paths
 	viper.AddConfigPath("/etc/abroot/")
@@ -94,7 +95,7 @@ func init() {
 		IPkgMngPost: viper.GetString("iPkgMngPost"),
 		IPkgMngAdd:  viper.GetString("iPkgMngAdd"),
 		IPkgMngRm:   viper.GetString("iPkgMngRm"),
-		IPkgMngApi:  viper.GetString("IPkgMngApi"),
+		IPkgMngApi:  viper.GetString("iPkgMngApi"),
 
 		// Partitions
 		PartLabelVar:  viper.GetString("partLabelVar"),

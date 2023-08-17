@@ -255,7 +255,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 			}
 		case "clearUnstagedPackages":
 			PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
-			pkgM := NewPackageManager()
+			pkgM := NewPackageManager(false)
 			err := pkgM.ClearUnstagedPackages()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
@@ -579,7 +579,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		"ABRoot.root": futurePartition.Label,
 	}
 	args := map[string]string{}
-	pkgM := NewPackageManager()
+	pkgM := NewPackageManager(false)
 	pkgsFinal := pkgM.GetFinalCmd(operation)
 	if pkgsFinal == "" {
 		pkgsFinal = "true"

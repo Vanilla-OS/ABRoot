@@ -46,7 +46,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	pkgM := core.NewPackageManager()
+	pkgM := core.NewPackageManager(false)
 
 	switch args[0] {
 	case "add":
