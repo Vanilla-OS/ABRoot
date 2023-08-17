@@ -76,8 +76,6 @@ func init() {
 		return
 	}
 
-	fmt.Println("Configuration being used:", viper.ConfigFileUsed())
-
 	Cnf = &Config{
 		// Common
 		AutoRepair:           viper.GetBool("autoRepair"),
