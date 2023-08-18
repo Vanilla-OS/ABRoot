@@ -635,7 +635,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	systemOld := filepath.Join(partFuture.Partition.MountPoint, ".system")
 	systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system.new")
 	if os.Getenv("ABROOT_FREE_SPACE") != "" {
-		PrintVerbose("ABSystemRunOperation: ABROOT_FREE_SPACE is set, deleting current system to free space, this is potentially harmful, assuming we are in a test environment")
+		PrintVerbose("ABSystemRunOperation: ABROOT_FREE_SPACE is set, deleting future system to free space, this is potentially harmful, assuming we are in a test environment")
 		err := os.RemoveAll(systemOld)
 		if err != nil {
 			PrintVerbose("ABSystemRunOperation:err(4.0): %s", err)
