@@ -172,7 +172,7 @@ func KargsEdit() (bool, error) {
 
 	// Open a temporary file, so editors installed via apx can also be used
 	PrintVerbose("KargsEdit: Copying kargs file to /tmp")
-	err = copyFile(KargsPath, KargsTmpFile)
+	err = CopyFile(KargsPath, KargsTmpFile)
 	if err != nil {
 		PrintVerbose("KargsEdit:err(2): " + err.Error())
 		return false, err

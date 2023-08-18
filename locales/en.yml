@@ -45,8 +45,31 @@ status:
   long: ""
   short: ""
   jsonFlag: "show output in JSON format"
+  dumpFlag: "dump the ABRoot status to an archive"
   rootRequired: "You must be root to run this command."
-  infoMsg: "ABRoot Partitions:\n\t- Present: %s\n\t- Future: %s\n"
+  infoMsg: |
+    ABRoot Partitions:
+      - Present: %s ◄
+      - Future: %s
+    
+    Loaded configuration: %s
+    
+    PC Specs:
+      - CPU: %s
+      - GPU:%s
+      - Memory: %s
+    
+    ABImage:
+      - Digest: %s
+      - Timestamp: %s
+      - Image: %s
+
+    Kernel Arguments: %s
+
+    Packages:
+      - Added: %s
+      - Removed: %s
+  dumpMsg: "Dumped ABRoot status to %s\n"
 
 upgrade:
   long: "Update the boot partition for maintenance purposes (for advanced users only)"

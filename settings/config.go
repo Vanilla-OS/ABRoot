@@ -54,6 +54,7 @@ type Config struct {
 }
 
 var Cnf *Config
+var CnfFileUsed string
 
 func init() {
 	// user paths
@@ -75,6 +76,8 @@ func init() {
 	if err != nil {
 		return
 	}
+
+	CnfFileUsed = viper.ConfigFileUsed()
 
 	Cnf = &Config{
 		// Common

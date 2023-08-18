@@ -70,33 +70,33 @@ func isLink(path string) bool {
 	return false
 }
 
-// copyFile copies a file from source to dest
-func copyFile(source, dest string) error {
-	PrintVerbose("copyFile: running...")
+// CopyFile copies a file from source to dest
+func CopyFile(source, dest string) error {
+	PrintVerbose("CopyFile: running...")
 
-	PrintVerbose("copyFile: Opening source file")
-    srcFile, err := os.Open(source)
-    if err != nil {
-		PrintVerbose("copyFile:err: " + err.Error())
-        return err
-    }
-    defer srcFile.Close()
+	PrintVerbose("CopyFile: Opening source file")
+	srcFile, err := os.Open(source)
+	if err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
+	defer srcFile.Close()
 
-	PrintVerbose("copyFile: Opening destination file")
+	PrintVerbose("CopyFile: Opening destination file")
 	destFile, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0755)
-    if err != nil {
-		PrintVerbose("copyFile:err: " + err.Error())
-        return err
-    }
-    defer destFile.Close()
+	if err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
+	defer destFile.Close()
 
-	PrintVerbose("copyFile: Performing copy operation")
-    if _, err := io.Copy(destFile, srcFile); err != nil {
-		PrintVerbose("copyFile:err: " + err.Error())
-        return err
-    }
+	PrintVerbose("CopyFile: Performing copy operation")
+	if _, err := io.Copy(destFile, srcFile); err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 // isDeviceLUKSEncrypted checks whether a device specified by devicePath is a LUKS-encrypted device
