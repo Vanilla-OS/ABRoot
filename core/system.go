@@ -641,6 +641,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerbose("ABSystemRunOperation:err(4.0): %s", err)
 			return err
 		}
+		err = os.MkdirAll(systemOld, 0755)
+		if err != nil {
+			PrintVerbose("ABSystemRunOperation:err(4.0.1): %s", err)
+			return err
+		}
 	}
 
 	err = OciExportRootFs(
