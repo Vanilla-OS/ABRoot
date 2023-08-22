@@ -4,36 +4,26 @@ abroot:
     \ between 2 root partitions (A<->B)"
   short: "ABRoot provides full immutability and atomicity by performing transactions\
     \ between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "Show more detailed output"
 
 kargs:
   use: "kargs"
   long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
+  short: "Manage kernel parameters"
   rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownParam: "Unknown parameter: %s\n"
   notChanged: "No changes were made to kernel parameters."
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
-
-edit:
-  use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
+  applyFailed: "Apply command failed: %s\n"
 
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
+  short: "Return the system to a previous state"
   rootRequired: "You must be root to run this command."
 
 pkg:
+  use: "pkg"
+  long: "Install and manage packages."
+  short: "Manage packages"
   rootRequired: "You must be root to run this command."
   noPackageNameProvided: "You must provide at least one package name for this operation."
   addedMsg: "Package(s) %s added.\n"
@@ -42,10 +32,11 @@ pkg:
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
 
 status:
-  long: ""
-  short: ""
-  jsonFlag: "show output in JSON format"
-  dumpFlag: "dump the ABRoot status to an archive"
+  use: "status"
+  long: "Display the current ABRoot status."
+  short: "Display status"
+  jsonFlag: "Show output in JSON format"
+  dumpFlag: "Dump the ABRoot status to an archive"
   rootRequired: "You must be root to run this command."
   infoMsg: |
     ABRoot Partitions:
@@ -74,6 +65,7 @@ status:
   dumpMsg: "Dumped ABRoot status to %s\n"
 
 upgrade:
+  use: "upgrade"
   long: "Update the boot partition for maintenance purposes (for advanced users only)"
   short: "Update the boot partition"
   forceFlag: "force update the boot partition without asking for confirmation"
