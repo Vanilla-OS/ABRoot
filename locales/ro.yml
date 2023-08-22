@@ -11,6 +11,8 @@ kargs:
   long: "Gestionează parametrii de kernel."
   short: "Gestionează parametrii de kernel."
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
+  applyFailed: "Apply command failed: %s\n"
+  notChanged: No changes were made to kernel parameters.
 rollback:
   use: "rollback"
   long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina
@@ -25,3 +27,30 @@ pkg:
   addedMsg: "Pachet(e) %s adăugate.\n"
   removedMsg: "Pachet(e) %s șterse.\n"
   listMsg: "Pachete adăugate:\n%s\nPachete șsterse:\n%s\n"
+  applyFailed: "Apply command failed: %s\n"
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+status:
+  use: status
+  long: Display the current ABRoot status.
+  short: Display status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  dumpMsg: "Dumped ABRoot status to %s\n"
+upgrade:
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
