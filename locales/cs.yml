@@ -1,98 +1,53 @@
 abroot:
   use: "abroot"
-  long: "ABRoot poskytuje plnou neměnnost a atomicitu za pomocí přechodů\
-    \ mezi 2 root oddíly (A<->B)"
-  short: "ABRoot poskytuje plnou neměnnost a atomicitu za pomocí přechodů\
-    \ mezi 2 root oddíly (A<->B)"
-  verboseFlag: "zobrazit více podrobný výstup"
-
-update:
-  use: "_update-boot"
-  long: "Aktualizovat boot oddíl za účely údržby (pouze pro pokročilé uživatele)"
-  short: "Aktualizovat boot oddíl"
-  forceUpdateFlag: "násilím aktualizovat boot oddíl bez potvrzení"
-  confirm: "Opravdu chcete pokračovat?\nBoot oddíl by měl být aktualizován\
-    \ pouze když transakce uspěla. Tento\npříkaz by měl být používán pouze pokročilými uživately\
-    \ za účelem údržby."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-
-get:
-  use: "get"
-  long: "Vypíše stav momentálního nebo následujícího root oddílu (A nebo B)"
-  short: "Vypíše stav momentálního nebo následujícího root oddílu (A nebo B)"
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
+  long: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  verboseFlag: "show more detailed output"
 
 kargs:
   use: "kargs"
-  long: "Spravovat parametry jádra."
-  short: "Spravovat parametry jádra."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-  nextReboot: "Nové parametry jádra budou aplikovány po restartu počítače."
-  failedTransaction: "Spouštění shellu pro transakci selhalo:"
-  stateRequired: "Prosím specifikujte stav (present nebo future)"
-  params: "Parametry tohoto oddílu:\n%s\n"
-  futureParams: "Parametry budoucího oddílu:\n%s\n"
-  unknownState: "Neznámý stav: %s\n"
-  unknownParam: "Neznámý parametr: %s\n"
-  transactionsLocked: "Nějaká transakce již byla provedena. musíte restartovat\
-    \ váš systém než začnete další transakci."
-
-edit:
-  use: "edit"
-  long: "Upravit parametry jádra."
-  short: "Upravit parametry jádra."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-
-exec:
-  use: "exec"
-  long: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
-    \ do ní po restartu počítače"
-  short: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
-    \ do ní po restartu počítače"
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-  skipDiffFlag: "Přeskočit diff kontrolu na konci transakce"
-  forceRunFlag: "Násilím spustit příkaz bez potvrzení"
-  confirm: "\n===============================================================================\n\
-    ČTĚTE PROSÍM OPATRNĚ, NEŽ BUDETE POKRAČOVAT\n===============================================================================\n\
-    Změny provedené v shellu budou aplikovány do budoucího root oddílu po restartování pokud operace\n\
-    uspěje.\nSpouštění příkazu v transakčním shellu je uřeno pro\
-    \ pokročilé uživatele\nza účelem údržby.\n\nPokud se snažíte\
-    \ nainstalovat aplikace, použijte raději\nFlatpak/Appimage nebo Apx (apx install\
-    \ package).\n\nVíce informací o ABRoot na [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nOpravdu chcete pokračovat?"
-  start: "Nová transakce zahájena. Tato operace může nějakou dobu trvat.\nNerestartujte a nerušte příkaz\
-    \ dokud transakce není dokončená."
-  success: "Transakce úspěšně provedena. Restartujte pro aplikování změn."
-  failed: "Spouštění shellu pro transakci selhalo:"
-
-shell:
-  use: "shell"
-  long: "Spustit příkaz v transakčním shellu ve budoucím root oddílu a přepnout\
-    \ do ní po restartu počítače."
-  short: "Vstoupit do transakčního shellu."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-  forceOpenFlag: "Násilím otevřít shell bez potvrzení."
-  confirm: "\n===============================================================================\n\
-    ČTĚTE PROSÍM OPATRNĚ, NEŽ BUDETE POKRAČOVAT\n===============================================================================\n\
-    Změny provedené v shellu budou aplikovány do budoucího root oddílu po restartování pokud operace\n\
-    uspěje.\Spouštění příkazu v transakčním shellu je uřeno pro\
-    \ pokročilé uživatele\nza účelem údržby.\n\nPokud se snažíte\
-    \ nainstalovat aplikace, použijte raději\nFlatpak/Appimage nebo Apx (apx install\
-    \ package).\n\nVíce informací o ABRoot na [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nOpravdu chcete pokračovat?"
-  start: "Nová transakce zahájena. Tato operace může nějakou dobu trvat.\nNerestartujte a nerušte příkaz\
-    \ dokud transakce není dokončená."
-  success: "Transakce úspěšně provedena. Restartujte pro aplikování změn."
-  failed: "Spouštění shellu pro transakci selhalo:"
-
-diff:
-  use: "diff"
-  long: "Vypsat úpravy v souborovém systému po poslední transakci."
-  short: "Vypsat úpravy po poslední transakci."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
-
+  long: "Manage kernel parameters."
+  short: "Manage kernel parameters."
+  rootRequired: "You must be root to run this command."
+  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
-  long: "Navrátit změny po poslední transakci."
-  short: "Vrátit systém do předchozího stavu."
-  rootRequired: "Musíte být root pro spouštění tohoto příkazu."
+  long: "Executes a system rollback, discarding changes made to the present root."
+  short: "Return the system to a previous state."
+  rootRequired: "You must be root to run this command."
+upgrade:
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  rootRequired: You must be root to run this command.
+  forceFlag: force update the boot partition without asking for confirmation
+pkg:
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+  rootRequired: You must be root to run this command.
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  addedMsg: "Package(s) %s added.\n"
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+status:
+  short: Display status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  use: status
+  long: Display the current ABRoot status.
+  dumpMsg: "Dumped ABRoot status to %s\n"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
