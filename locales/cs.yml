@@ -25,7 +25,7 @@ get:
 kargs:
   use: "kargs"
   long: "Spravovat parametry jádra."
-  short: "Spravovat parametry jádra"."
+  short: "Spravovat parametry jádra."
   rootRequired: "Musíte být root pro spouštění tohoto příkazu."
   nextReboot: "Nové parametry jádra budou aplikovány po restartu počítače."
   failedTransaction: "Spouštění shellu pro transakci selhalo:"
