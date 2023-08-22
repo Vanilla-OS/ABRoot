@@ -423,11 +423,11 @@ mount -o bind,ro /.system/usr /usr
 func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPartition) error {
 	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: generating script")
 
-	depTarget := "local-fs.target"
+	depTarget := "local-fs"
 	template := `[Unit]
 Description=Mount partitions
-Requires=%s
-After=%s
+Requires=%s.target
+After=%s.target
 
 [Service]
 Type=oneshot
@@ -436,9 +436,14 @@ ExecStart=%s
 	// Check for encrypted roots
 	for _, rootDevice := range s.RootM.Partitions {
 		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
-			depTarget = "cryptsetup.target"
+			depTarget = "cryptsetup"
 			break
 		}
+	}
+
+	// Check for encrypted var
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		depTarget = "cryptsetup"
 	}
 
 	unit := fmt.Sprintf(template, depTarget, depTarget, MountScriptPath)
