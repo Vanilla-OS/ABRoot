@@ -49,7 +49,7 @@ const (
 const (
 	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
 	MountUnitDir     = "/etc/systemd/system"
-	SystemDTargetDir = "/etc/systemd/system/cryptsetup.target.wants"
+	SystemDTargetDir = "/etc/systemd/system/%s.target.wants"
 	MountUnitFile    = "/abroot-mount.service"
 )
 
@@ -454,13 +454,13 @@ ExecStart=%s
 		return err
 	}
 
-	err = os.MkdirAll(rootPath+SystemDTargetDir, 0755)
+	err = os.MkdirAll(rootPath+fmt.Sprintf(SystemDTargetDir, depTarget), 0755)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
 		return err
 	}
 
-	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+SystemDTargetDir+MountUnitFile)
+	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
 		return err
