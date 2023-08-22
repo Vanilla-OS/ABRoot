@@ -1,109 +1,56 @@
 abroot:
   use: "abroot"
-  long: "ABRoot oferă imuabilitate completă și atomicitate prin efectuarea de tranzacții\
-    \ între 2 partiții root (rădăcină) (A<->B)"
-  short: "ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții\
-    \ între 2 partiții root (rădăcină) (A<->B)"
+  long: "ABRoot oferă imuabilitate completă și atomicitate prin efectuarea de tranzacții
+    între 2 partiții root (rădăcină) (A<->B)"
+  short: "ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții
+    între 2 partiții root (rădăcină) (A<->B)"
   verboseFlag: "afișează detalii"
-
-update:
-  use: "_update-boot"
-  long: "Actualizează partiția de boot în scopuri de întreținere (doar pentru utilizatorii\
-    \ avansați)"
-  short: "Actualizează partiția de boot"
-  forceUpdateFlag: "forțează actualizarea partiției de boot fără a cere confirmare"
-  confirm: "Sunteți sigur că doriți să continuați?\nPartiția de boot ar trebui să\
-    \ fie actualizată numai dacă o tranzacție a reușit. Această\ncomandă ar trebui\
-    \ să fie utilizată doar de utilizatori avansați în scopuri de întreținere."
-  rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-
-get:
-  use: "get"
-  long: "Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)"
-  short: "Afișează starea prezentă sau viitoare a partiției rădăcină (A sau B)"
-  rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
 
 kargs:
   use: "kargs"
   long: "Gestionează parametrii de kernel."
   short: "Gestionează parametrii de kernel."
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-  nextReboot: "Parametrii de kernel se vor aplica la următoarea pornire."
-  failedTransaction: "Pornirea shell-ului tranzacțional a eșuat:"
-  stateRequired: "Vă rugăm să specificați o stare (prezentă sau viitoare)"
-  params: "Parametrii partiției curente:\n%s\n"
-  futureParams: "Parametrii partiției viitoare:\n%s\n"
-  unknownState: "Stare necunoscută: %s\n"
-  unknownParam: "Parametru necunoscut: %s\n"
-  transactionsLocked: "O altă tranzacție a fost deja executată, trebuie să reporniți\
-    \ sistemul înainte de a începe o nouă tranzacție."
-
-edit:
-  use: "edit"
-  long: "editați parametrii de kernel."
-  short: "editați parametrii de kernel."
-  rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-
-exec:
-  use: "exec"
-  long: "Execută o comandă într-un shell tranzacțional în rădăcina viitoare și comută\
-    \ la această partiție la următoarea pornire"
-  short: "Execută o comandă într-un shell tranzacțional în rădăcina viitoare și comută\
-    \ la această partiție la următoarea pornire"
-  rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-  skipDiffFlag: "Omite verificarea diferențelor la sfârșitul tranzacției"
-  forceRunFlag: "Forțează execuția comenzii fără a cere confirmare"
-  confirm: "\n===============================================================================\n\
-    CITIȚI CU ATENȚIE ÎNAINTE DE A CONTINUA\n===============================================================================\n\
-    \ Modificările făcute în shell vor fi aplicate rădăcinii viitoare la următoarea pornire\n
-    \ dacă tranzacția s-a incheiat cu succes.\nRularea unei comenzi într-un shell tranzacțional\n\
-    \ este menită să fie utilizată doar de utilizatorii avansați\n\
-    \ în scopuri de întreținere.\n\nDacă ați ajuns aici încercând să instalați o aplicație,\
-    \ luați în considerare utilizarea\nFlatpak/Appimage sau Apx (apx install \"nume-pachet\"\
-    ) în schimb.\n\nCitiți mai multe despre ABRoot la [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nSunteți sigur că doriți să continuați?"
-  start: "A început o nouă tranzacție. Acest lucru poate dura ceva timp...\nNu reporniți\
-    \ sau anulați tranzacția până când nu este finalizată."
-  success: "Tranzacție finalizată cu succes. Reporniți pentru a aplica modificările."
-  failed: "Pornirea shell-ului tranzacțional a eșuat:"
-
-shell:
-  use: "shell"
-  long: "Intră într-un shell tranzacțional în partiția rădăcină viitoare și comută\
-    \ la această partiție la următoarea pornire"
-  short: "Introduceți un shell tranzacțional"
-  rootRequired: "Trebuie să fiți root pentru a executa această comandă."
-  forceOpenFlag: "Forțează deschiderea shell-ului fără a cere confirmare"
-  confirm: "\n===============================================================================\n\
-    CITIȚI CU ATENȚIE ÎNAINTE DE A CONTINUA\n===============================================================================\n\
-    \ Modificările făcute în shell vor fi aplicate rădăcinii viitoarei la următoarea pornire\n\
-    \ dacă tranzacția s-a incheiat cu succes.\nRularea unei comenzi într-un shell tranzacțional\n\
-    \ este menită să fie utilizată doar de utilizatorii avansați\n\
-    \ în scopuri de întreținere.\n\nDacă ați ajuns aici încercând să instalați o aplicație,\
-    \ luați în considerare utilizarea\nFlatpak/Appimage sau Apx (apx install \"nume-pachet\"\
-    ) în schimb.\n\nCitiți mai multe despre ABRoot la [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nSunteți sigur că doriți să continuați?"
-  start: "A început o nouă tranzacție. Acest lucru poate dura ceva timp...\nNu reporniți\
-    \ sau anulați tranzacția până când nu este finalizată."
-  success: "Tranzacție finalizată cu succes. Reporniți pentru a aplica modificările."
-  failed: "Pornirea shell-ului tranzacțional a eșuat:"
-
-diff:
-  use: "diff"
-  long: "Listează modificările aduse sistemului de fișiere în cea mai recentă tranzacție"
-  short: "Afișează modificările din ultima tranzacție."
-  rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-
+  applyFailed: "Apply command failed: %s\n"
+  notChanged: No changes were made to kernel parameters.
 rollback:
   use: "rollback"
-  long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina\
-    \ actuală."
+  long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina
+    actuală."
   short: "Readuceți sistemul la o stare anterioară."
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
 
 pkg:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-  noPackageNameProvided: "Trebuie să specificați cel puțin un nume de pachet pentru această operație."
+  noPackageNameProvided: "Trebuie să specificați cel puțin un nume de pachet pentru
+    această operație."
   addedMsg: "Pachet(e) %s adăugate.\n"
   removedMsg: "Pachet(e) %s șterse.\n"
   listMsg: "Pachete adăugate:\n%s\nPachete șsterse:\n%s\n"
+  applyFailed: "Apply command failed: %s\n"
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+status:
+  use: status
+  long: Display the current ABRoot status.
+  short: Display status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  dumpMsg: "Dumped ABRoot status to %s\n"
+upgrade:
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
