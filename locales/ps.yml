@@ -1,98 +1,53 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions\
-    \ between 2 root partitions (A<->B)"
+  long: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
   verboseFlag: "show more detailed output"
-
-update:
-  use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Are you sure you want to proceed?\nThe boot partition should be updated\
-    \ only if a transaction succeeded. This\ncommand should be used by advanced users\
-    \ for maintenance purposes."
-  rootRequired: "You must be root to run this command."
-
-get:
-  use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
 
 kargs:
   use: "kargs"
   long: "Manage kernel parameters."
   short: "Manage kernel parameters."
   rootRequired: "You must be root to run this command."
-  nextReboot: "Kernel parameters will be applied on next boot."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Please specify a state (present or future)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Future partition's parameters:\n%s\n"
-  unknownState: "Unknown state: %s\n"
-  unknownParam: "Unknown parameter: %s\n"
-  transactionsLocked: "Another transaction has already been executed, you must reboot\
-    \ your system before starting a new transaction."
-
-edit:
-  use: "edit"
-  long: "edit kernel parameters."
-  short: "edit kernel parameters."
-  rootRequired: "You must be root to run this command."
-
-exec:
-  use: "exec"
-  long: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  short: "Execute a command in a transactional shell in the future root and switch\
-    \ to it on next boot"
-  rootRequired: "You must be root to run this command."
-  skipDiffFlag: "Skip the diff check at the end of the transaction"
-  forceRunFlag: "Force run the command without asking for confirmation"
-  confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
-
-shell:
-  use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
-  confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
-
-diff:
-  use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
-
+  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state."
   rootRequired: "You must be root to run this command."
+pkg:
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+  rootRequired: You must be root to run this command.
+  addedMsg: "Package(s) %s added.\n"
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+status:
+  use: status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  long: Display the current ABRoot status.
+  short: Display status
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Dumped ABRoot status to %s\n"
+upgrade:
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
+  use: upgrade
+  short: Update the boot partition
+  long: Update the boot partition for maintenance purposes (for advanced users only)

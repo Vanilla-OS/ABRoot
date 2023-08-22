@@ -1,101 +1,53 @@
 abroot:
   use: "abroot"
-  long: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik\
-    \ ve atomiklik sağlar"
-  short: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik\
-    \ ve atomiklik sağlar"
+  long: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik
+    ve atomiklik sağlar"
+  short: "ABRoot, 2 kök bölüm (A<->B) arasında işlemler gerçekleştirerek tam değişmezlik
+    ve atomiklik sağlar"
   verboseFlag: "daha ayrıntılı çıktı göster"
-
-update:
-  use: "_update-boot"
-  long: "Bakım amacıyla önyükleme bölümünü güncelle (yalnızca ileri düzey kullanıcılar\
-    \ için)"
-  short: "Önyükleme bölümünü güncelle"
-  forceUpdateFlag: "Onay istemeden önyükleme bölümünü güncellemeye zorla"
-  confirm: "Devam etmek istediğinizden emin misiniz?\nÖnyükleme bölümü yalnızca bir\
-    \ işlem başarılı olduğunda güncellenmelidir. Bu\nkomutu ileri düzey kullanıcılar\
-    \ tarafından bakım amacıyla kullanılmalıdır."
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-
-get:
-  use: "get"
-  long: "Mevcut veya gelecekteki kök bölüm durumunu (A veya B) çıktısını verir"
-  short: "Mevcut veya gelecekteki kök bölüm durumunu (A veya B) çıktısını verir"
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 
 kargs:
   use: "kargs"
   long: "Çekirdek parametrelerini yönetin."
   short: "Çekirdek parametrelerini yönetin."
   rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-  nextReboot: "Çekirdek parametreleri bir sonraki açılışta uygulanacaktır."
-  failedTransaction: "İşlemsel kabuk başlatılamadı:"
-  stateRequired: "Lütfen bir durum belirtin (mevcut veya gelecek)"
-  params: "Geçerli bölümün parametreleri:\n%s\n"
-  futureParams: "Gelecek bölümün parametreleri:\n%s\n"
-  unknownState: "Bilinmeyen durum: %s\n"
-  unknownParam: "Bilinmeyen parametre: %s\n"
-  transactionsLocked: "Başka bir işlem zaten çalıştırıldı, yeni bir işlem başlatmadan\
-    \ önce sisteminizi yeniden başlatmanız gerekiyor."
-
-edit:
-  use: "edit"
-  long: "Çekirdek parametrelerini düzenleyin."
-  short: "Çekirdek parametrelerini düzenleyin."
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-
-exec:
-  use: "exec"
-  long: "Gelecekteki kökde, işlem kabuğunda bir komut çalıştır ve bir sonraki açılışta\
-    \ buna geç"
-  short: "Gelecekteki kökde, işlem kabuğunda bir komut çalıştır ve bir sonraki açılışta\
-    \ buna geç"
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-  skipDiffFlag: "İşlemin sonundaki, fark kontrolüne atlayın"
-  forceRunFlag: "Onay istemeden komutu çalıştırmaya zorla"
-  confirm: "\n===============================================================================\n\
-    LÜTFEN DEVAM ETMEDEN ÖNCE DİKKATLİCE OKUYUN\n===============================================================================\n\
-    Kabukta yapılan değişiklikler bir sonraki açılışta gelecekteki kök dizinine uygulanacaktır.\n\
-    başarılı.\nİşlem kabuğunda bir komut çalıştırmak, ileri düzey kullanıcılar tarafından\
-    \ kullanılmak üzere tasarlanmıştır\nbakım amaçları için.\n\nEğer buraya bir uygulama\
-    \ yüklemeye çalışırken geldiyseniz, dikkatlice düşünün\nFlatpak/Appimage veya\
-    \ Apx (apx yükleme paketi) Bunun yerine.\n\nABRoot hakkında daha fazla bilgiyi\
-    \ [https://documentation.vanillaos.org/docs/ABRoot/] adresinde bulabilirsiniz.\n\
-    \nDevam etmek istediğinizden emin misiniz ?"
-  start: "Yeni işlem başlatıldı. Bu biraz zaman alabilir...\nİşlem bitene kadar yeniden\
-    \ başlatmayın veya işlemi iptal etmeyin."
-  success: "İşlem başarıyla tamamlandı. Değişiklikleri uygulamak için yeniden başlatın."
-  failed: "İşlemsel kabuk başlatılamadı:"
-
-shell:
-  use: "shell"
-  long: "Gelecekteki kök bölümüne bir işlem kabuğu girin ve bir sonraki açılışta kök\
-    \ dizine geçin"
-  short: "İşlemsel bir kabuk girin"
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-  forceOpenFlag: "Onay istemeden kabuğu açmaya zorla"
-  confirm: "\n===============================================================================\n\
-    LÜTFEN DEVAM ETMEDEN ÖNCE DİKKATLİCE OKUYUN\n===============================================================================\n\
-    Kabukta yapılan değişiklikler bir sonraki açılışta gelecekteki kök dizinine uygulanacaktır.\n\
-    başarılı.\nİşlem kabuğunda bir komut çalıştırmak, ileri düzey kullanıcılar tarafından\
-    \ kullanılmak üzere tasarlanmıştır\nbakım amaçları için.\n\nEğer buraya bir uygulama\
-    \ yüklemeye çalışırken geldiyseniz, dikkatlice düşünün\nFlatpak/Appimage veya\
-    \ Apx (apx yükleme paketi) Bunun yerine.\n\nABRoot hakkında daha fazla bilgiyi\
-    \ [https://documentation.vanillaos.org/docs/ABRoot/] adresinde bulabilirsiniz.\n\
-    \nDevam etmek istediğinizden emin misiniz ?"
-  start: "Yeni işlem başlatıldı. Bu biraz zaman alabilir...\nİşlem bitene kadar yeniden\
-    \ başlatmayın veya işlemi iptal etmeyin."
-  success: "İşlem başarıyla tamamlandı. Değişiklikleri uygulamak için yeniden başlatın."
-  failed: "İşlemsel kabuk başlatılamadı:"
-
-diff:
-  use: "diff"
-  long: "En son aktarımda, dosya sisteminde yapılan değişiklikleri listele"
-  short: "Son işlemden itibaren yapılan değişiklikleri göster."
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-
+  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
   long: "Mevcut kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
   short: "Sistemi önceki duruma döndür."
   rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
+pkg:
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+  rootRequired: You must be root to run this command.
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  addedMsg: "Package(s) %s added.\n"
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+status:
+  use: status
+  long: Display the current ABRoot status.
+  rootRequired: You must be root to run this command.
+  short: Display status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Dumped ABRoot status to %s\n"
+upgrade:
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them

@@ -1,101 +1,54 @@
 abroot:
   use: "abroot"
-  long: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações entre\
-    \ 2 partições raiz (A<->B)"
-  short: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações\
-    \ entre 2 partições raízes (A<->B)"
+  long: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações entre
+    2 partições raiz (A<->B)"
+  short: "ABRoot oferece total imutabilidade e atomicidade ao realizar transações
+    entre 2 partições raízes (A<->B)"
   verboseFlag: "mostrar saída mais detalhada"
-
-update:
-  use: "_update-boot"
-  long: "Atualizar a partição de inicialização para fins de manutenção (somente para\
-    \ usuários avançados)"
-  short: "Atualizar a partição de inicialização"
-  forceUpdateFlag: "forçar a atualização da partição de inicialização sem pedir confirmação"
-  confirm: "Você tem certeza de que quer prosseguir?\nA partição de inicialização\
-    \ deve ser atualizada somente se uma transação for bem-sucedida. Este\ncomando\
-    \ deve ser utilizado por usuários avançados para fins de manutenção."
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
-
-get:
-  use: "get"
-  long: "Produz o estado atual ou futuro da partição raiz (A ou B)"
-  short: "Produz o estado atual ou futuro da partição raiz (A ou B)"
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
 
 kargs:
   use: "kargs"
   long: "Gerenciar os parâmetros do kernel."
   short: "Gerenciar os parâmetros do kernel."
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
-  nextReboot: "Os parâmetros do kernel serão aplicados na próxima inicialização."
-  failedTransaction: "Falha ao iniciar o shell transacional:"
-  stateRequired: "Especifique um estado (presente ou futuro)"
-  params: "Parâmetros da partição atual:\n%s\n"
-  futureParams: "Parâmetros da partição futura:\n%s\n"
-  unknownState: "Estado desconhecido: %s\n"
-  unknownParam: "Parâmetro desconhecido: %s\n"
-  transactionsLocked: "Outra transação já foi executada, você deve reinicializar seu\
-    \ sistema antes de iniciar uma nova transação."
-
-edit:
-  use: "edit"
-  long: "editar parâmetros do kernel."
-  short: "editar parâmetros do kernel."
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
-
-exec:
-  use: "exec"
-  long: "Executa um comando em uma shell transacional na raiz futura e muda para ela\
-    \ na próxima inicialização"
-  short: "Executa um comando em uma shell transacional na raiz futura e muda para\
-    \ ela na próxima inicialização"
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
-  skipDiffFlag: "Ignorar a verificação de comparação no final da transação"
-  forceRunFlag: "Forçar a execução do comando sem pedir confirmação"
-  confirm: "\n===============================================================================\n\
-    POR FAVOR, LEIA ATENTAMENTE ANTES DE PROSSEGUIR\n===============================================================================\n\
-    As alterações feitas no shell serão aplicadas à futura raiz na próxima inicialização\n\
-    bem-sucedida.\nA execução de um comando em uma shell transacional é destinada\
-    \ a ser usada por usuários avançados\npara fins de manutenção.\n\nSe você acabou\
-    \ aqui tentando instalar um aplicativo, considere o usar\npacotes Flatpak/Appimage\
-    \ ou Apx (apx install package) em seu lugar.\n\nLeia mais sobre o utilitário ABRoot\
-    \ em [https://documentation.vanillaos.org/docs/ABRoot/].\n\nVocê tem certeza de\
-    \ que quer prosseguir?"
-  start: "Nova transação iniciada. Isso pode demorar um pouco...\nNão reinicie ou\
-    \ cancele a transação até que ela seja concluída."
-  success: "Transação concluída com sucesso. Reinicie o sistema para aplicar as alterações."
-  failed: "Falha em iniciar o shell transacional:"
-
-shell:
-  use: "shell"
-  long: "Insira um shell transacional na futura partição raiz e troque a raiz na próxima\
-    \ inicialização"
-  short: "Insira um shell transacional"
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
-  forceOpenFlag: "Forçar a abertura do shell sem pedir confirmação"
-  confirm: "\n===============================================================================\n\
-    POR FAVOR, LEIA COM ATENÇÃO ANTES DE PROSSEGUIR\n===============================================================================\n\
-    As alterações feitas na casca serão aplicadas à futura raiz no próximo boot em\n\
-    sucesso.\nA execução de um comando em uma shell transacional é destinada a ser\
-    \ usada por usuários avançados\npara fins de manutenção.\n\nSe você acabou aqui\
-    \ tentando instalar um aplicativo, considere o uso de\nFlatpak/Appimage ou Apx\
-    \ (apx install package) em seu lugar.\n\nLeia mais sobre a ABRoot em [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nVocê tem certeza de que quer prosseguir?"
-  start: "Começou uma nova transação. Isto pode demorar um pouco...\nNão reinicie\
-    \ ou cancele a transação até que ela esteja concluída."
-  success: "Transação concluída com sucesso. Reinicie o sistema para aplicar as alterações."
-  failed: "Falha em iniciar o shell transacional:"
-
-diff:
-  use: "diff"
-  long: "Listar modificações feitas no sistema de arquivos na última transação"
-  short: "Mostrar modificações da última transação."
-  rootRequired: "Você deve ser um administrador (root) para executar este comando."
-
+  applyFailed: "Apply command failed: %s\n"
+  notChanged: No changes were made to kernel parameters.
 rollback:
   use: "rollback"
-  long: "Executa um rollback do sistema, descartando as alterações feitas na raiz\
-    \ atual."
+  long: "Executa um rollback do sistema, descartando as alterações feitas na raiz
+    atual."
   short: "Retorna o sistema a um estado anterior."
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
+pkg:
+  rootRequired: You must be root to run this command.
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+  addedMsg: "Package(s) %s added.\n"
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+status:
+  long: Display the current ABRoot status.
+  short: Display status
+  dumpFlag: Dump the ABRoot status to an archive
+  rootRequired: You must be root to run this command.
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Dumped ABRoot status to %s\n"
+  use: status
+  jsonFlag: Show output in JSON format
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+upgrade:
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
