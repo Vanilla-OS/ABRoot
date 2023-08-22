@@ -227,6 +227,24 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 	return unstagedList, nil
 }
 
+// GetUnstagedPackagesPlain returns the package changes that are yet to be applied
+// as strings
+func (p *PackageManager) GetUnstagedPackagesPlain() ([]string, error) {
+	PrintVerbose("PackageManager.GetUnstagedPackagesPlain: running...")
+	pkgs, err := p.GetUnstagedPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.GetUnstagedPackagesPlain:err: " + err.Error())
+		return nil, err
+	}
+
+	unstagedList := []string{}
+	for _, pkg := range pkgs {
+		unstagedList = append(unstagedList, pkg.Name)
+	}
+
+	return unstagedList, nil
+}
+
 // ClearUnstagedPackages removes all packages from the unstaged list
 func (p *PackageManager) ClearUnstagedPackages() error {
 	PrintVerbose("PackageManager.ClearUnstagedPackages: running...")

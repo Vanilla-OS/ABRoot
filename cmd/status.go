@@ -105,32 +105,38 @@ func status(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	pkgsUnstg, err := pkgMng.GetUnstagedPackagesPlain()
+	if err != nil {
+		return err
+	}
 
 	if jsonFlag || dumpFlag {
 		type status struct {
-			Present string       `json:"present"`
-			Future  string       `json:"future"`
-			CnfFile string       `json:"cnfFile"`
-			CPU     string       `json:"cpu"`
-			GPU     []string     `json:"gpu"`
-			Memory  string       `json:"memory"`
-			ABImage core.ABImage `json:"abimage"`
-			Kargs   string       `json:"kargs"`
-			PkgsAdd []string     `json:"pkgsAdd"`
-			PkgsRm  []string     `json:"pkgsRm"`
+			Present   string       `json:"present"`
+			Future    string       `json:"future"`
+			CnfFile   string       `json:"cnfFile"`
+			CPU       string       `json:"cpu"`
+			GPU       []string     `json:"gpu"`
+			Memory    string       `json:"memory"`
+			ABImage   core.ABImage `json:"abimage"`
+			Kargs     string       `json:"kargs"`
+			PkgsAdd   []string     `json:"pkgsAdd"`
+			PkgsRm    []string     `json:"pkgsRm"`
+			PkgsUnstg []string     `json:"pkgsUnstg"`
 		}
 
 		s := status{
-			Present: present.Label,
-			Future:  future.Label,
-			CnfFile: settings.CnfFileUsed,
-			CPU:     specs.CPU,
-			GPU:     specs.GPU,
-			Memory:  specs.Memory,
-			ABImage: *abImage,
-			Kargs:   kargs,
-			PkgsAdd: pkgsAdd,
-			PkgsRm:  pkgsRm,
+			Present:   present.Label,
+			Future:    future.Label,
+			CnfFile:   settings.CnfFileUsed,
+			CPU:       specs.CPU,
+			GPU:       specs.GPU,
+			Memory:    specs.Memory,
+			ABImage:   *abImage,
+			Kargs:     kargs,
+			PkgsAdd:   pkgsAdd,
+			PkgsRm:    pkgsRm,
+			PkgsUnstg: pkgsUnstg,
 		}
 
 		b, err := json.Marshal(s)
@@ -210,6 +216,11 @@ func status(cmd *cobra.Command, args []string) error {
 		formattedGPU += fmt.Sprintf("\n\t\t- %s", gpu)
 	}
 
+	unstagedAlert := ""
+	if len(pkgsUnstg) > 0 {
+		unstagedAlert = fmt.Sprintf(abroot.Trans("status.unstagedFoundMsg"), len(pkgsUnstg))
+	}
+
 	cmdr.Info.Printf(
 		abroot.Trans("status.infoMsg"),
 		present.Label, future.Label,
@@ -217,7 +228,8 @@ func status(cmd *cobra.Command, args []string) error {
 		specs.CPU, formattedGPU, specs.Memory,
 		abImage.Digest, abImage.Timestamp.Format("2006-01-02 15:04:05"), abImage.Image,
 		kargs,
-		strings.Join(pkgsAdd, ", "), strings.Join(pkgsRm, ", "),
+		strings.Join(pkgsAdd, ", "), strings.Join(pkgsRm, ", "), strings.Join(pkgsUnstg, ", "),
+		unstagedAlert,
 	)
 
 	return nil
