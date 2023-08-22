@@ -1,97 +1,16 @@
 abroot:
   use: "abroot"
-  long: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des\
-    \ transactions entre 2 partitions racine (A<->B)"
-  short: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des\
-    \ transactions entre 2 partitions racine (A<->B)"
+  long: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des
+    transactions entre 2 partitions racine (A<->B)"
+  short: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des
+    transactions entre 2 partitions racine (A<->B)"
   verboseFlag: "show more detailed output"
-
-update:
-  use: "_update-boot"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Mise à jour de la partition de démarrage"
-  forceUpdateFlag: "force update the boot partition without asking for confirmation"
-  confirm: "Êtes-vous sûr de vouloir continuer ?\nLa partition de démarrage ne doit\
-    \ être mise à jour que si une transaction a réussi. Cette commande\ndoit être\
-    \ utilisée par des utilisateurs expérimentés à des fins de maintenance."
-  rootRequired: "You must be root to run this command."
-
-get:
-  use: "get"
-  long: "Outputs the present or future root partition state (A or B)"
-  short: "Outputs the present or future root partition state (A or B)"
-  rootRequired: "You must be root to run this command."
 
 kargs:
   use: "kargs"
   long: "Gérer les paramètres du noyau."
   short: "Gérer les paramètres du noyau."
   rootRequired: "You must be root to run this command."
-  nextReboot: "Les paramètres du noyau seront appliqués au prochain démarrage."
-  failedTransaction: "Failed to start transactional shell:"
-  stateRequired: "Veuillez spécifier un état (actuel ou futur)"
-  params: "Current partition's parameters:\n%s\n"
-  futureParams: "Paramètres de la future partition :\n%s\n"
-  unknownState: "État inconnu : %s\n"
-  unknownParam: "Paramètre inconnu : %s\n"
-  transactionsLocked: "Une autre transaction a déjà été exécutée, vous devez redémarrer\
-    \ votre système avant de commencer une nouvelle transaction."
-
-edit:
-  use: "edit"
-  long: "éditer les paramètres du noyau."
-  short: "éditer les paramètres du noyau."
-  rootRequired: "Vous devez être root pour exécuter cette commande."
-
-exec:
-  use: "exec"
-  long: "Exécuter une commande dans un shell transactionnel dans la future racine\
-    \ et basculer vers celle-ci au prochain démarrage."
-  short: "Exécuter une commande dans un shell transactionnel dans la future racine\
-    \ et basculer vers celle-ci au prochain démarrage"
-  rootRequired: "Vous devez être root pour exécuter cette commande."
-  skipDiffFlag: "Sauter le contrôle des différences à la fin de la transaction"
-  forceRunFlag: "Forcer l'exécution de la commande sans demander de confirmation"
-  confirm: "\n===============================================================================\n\
-    VEUILLEZ LIRE ATTENTIVEMENT AVANT DE POURSUIVRE\n===============================================================================\n\
-    Les changements effectués dans l'interpréteur de commandes seront appliqués à\
-    \ la future racine lors du prochain démarrage sur\navec succès.\nL'exécution d'une\
-    \ commande dans un shell transactionnel est destinée aux utilisateurs avancés\n\
-    à des fins de maintenance.\n\nSi vous vous êtes retrouvé ici en essayant d'installer\
-    \ une application, envisagez d'utiliser\nFlatpak/Appimage ou Apx (apx install\
-    \ package).\n\nPour en savoir plus sur ABRoot, consultez le site [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nÊtes-vous sûr de vouloir continuer ?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
-
-shell:
-  use: "shell"
-  long: "Enter a transactional shell in the future root partition and switch root\
-    \ on the next boot"
-  short: "Enter a transactional shell"
-  rootRequired: "You must be root to run this command."
-  forceOpenFlag: "Force open the shell without asking for confirmation"
-  confirm: "\n===============================================================================\n\
-    PLEASE READ CAREFULLY BEFORE PROCEEDING\n===============================================================================\n\
-    Changes made in the shell will be applied to the future root on next boot on\n\
-    successful.\nRunning a command in a transactional shell is meant to be used by\
-    \ advanced users\nfor maintenance purposes.\n\nIf you ended up here trying to\
-    \ install an application, consider using\nFlatpak/Appimage or Apx (apx install\
-    \ package) instead.\n\nRead more about ABRoot at [https://documentation.vanillaos.org/docs/ABRoot/].\n\
-    \nAre you sure you want to proceed?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaction completed successfully. Reboot to apply changes."
-  failed: "Failed to start transactional shell:"
-
-diff:
-  use: "diff"
-  long: "List modifications made to the filesystem in the latest transiction"
-  short: "Show modifications from latest transaction."
-  rootRequired: "You must be root to run this command."
-
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."

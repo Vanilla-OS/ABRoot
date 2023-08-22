@@ -1,99 +1,16 @@
 abroot:
   use: "abroot"
-  long: "ABRoot zapewnia pełną niezmienność i atomowość poprzez wykonywanie transakcji\
-    \ pomiędzy 2 partycjami root (A<->B)"
-  short: "ABRoot zapewnia pełną niezmienność i atomowość poprzez wykonywanie transakcji\
-    \ pomiędzy 2 partycjami root (A<->B)"
+  long: "ABRoot zapewnia pełną niezmienność i atomowość poprzez wykonywanie transakcji
+    pomiędzy 2 partycjami root (A<->B)"
+  short: "ABRoot zapewnia pełną niezmienność i atomowość poprzez wykonywanie transakcji
+    pomiędzy 2 partycjami root (A<->B)"
   verboseFlag: "pokaż bardziej szczegółowe dane wyjściowe"
-
-update:
-  use: "_update-boot"
-  long: "Aktualizacja partycji startowej w celach konserwacyjnych (tylko dla zaawansowanych\
-    \ użytkowników)"
-  short: "Aktualizacja partycji startowej"
-  forceUpdateFlag: "wymuszenie aktualizacji partycji startowej bez pytania o potwierdzenie"
-  confirm: "Czy na pewno chcesz kontynuować?\nPartycja startowa powinna być aktualizowana\
-    \ tylko wtedy, gdy transakcja się powiedzie. To\npowinno być używane przez zaawansowanych\
-    \ użytkowników do celów konserwacyjnych."
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-
-get:
-  use: "get"
-  long: "Wyprowadza obecny lub przyszły stan partycji głównej (A lub B)"
-  short: "Wyprowadza obecny lub przyszły stan partycji głównej (A lub B)"
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
 
 kargs:
   use: "kargs"
   long: "Zarządzaj parametrami jądra."
   short: "Zarządzaj parametrami jądra."
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  nextReboot: "Parametry jądra zostaną zastosowane przy następnym starcie systemu."
-  failedTransaction: "Nie udało się uruchomić powłoki transakcyjnej:"
-  stateRequired: "Proszę określić stan (obecny lub przyszły)"
-  params: "Parametry bieżącej partycji:\n%s\n"
-  futureParams: "Parametry przyszłej partycji:\n%s\n"
-  unknownState: "Nieznany stan: %s\n"
-  unknownParam: "Nieznany parametr: %s\n"
-  transactionsLocked: "Inna transakcja została już wykonana, przed rozpoczęciem nowej\
-    \ transakcji należy ponownie uruchomić system."
-
-edit:
-  use: "edit"
-  long: "edytować parametry jądra."
-  short: "edytować parametry jądra."
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-
-exec:
-  use: "exec"
-  long: "Wykonaj polecenie w powłoce transakcyjnej w przyszłym roocie i przełącz się\
-    \ na nią przy następnym starcie"
-  short: "Wykonaj polecenie w powłoce transakcyjnej w przyszłym roocie i przełącz\
-    \ się na nią przy następnym starcie"
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  skipDiffFlag: "Pominięcie kontroli różnicowej na końcu transakcji"
-  forceRunFlag: "Wymuś uruchomienie polecenia bez pytania o potwierdzenie"
-  confirm: "\n===============================================================================\n\
-    PROSIMY O UWAŻNE PRZECZYTANIE PRZED PRZYSTĄPIENIEM DO PRACY\n===============================================================================\n\
-    Zmiany dokonane w powłoce zostaną zastosowane do przyszłego roota przy następnym\
-    \ uruchomieniu systemu na\nudane.\nUruchomienie polecenia w powłoce transakcyjnej\
-    \ jest przeznaczone dla zaawansowanych użytkowników\ndo celów konserwacyjnych.\n\
-    \nJeśli znalazłeś się tutaj próbując zainstalować aplikację, rozważ użycie\nFlatpak/Appimage\
-    \ lub Apx (pakiet instalacyjny apx).\n\nWięcej o ABRoot można przeczytać na stronie\
-    \ [https://documentation.vanillaos.org/docs/ABRoot/].\n\nCzy na pewno chcesz kontynuować?"
-  start: "Nowa transakcja rozpoczęta. To może trochę potrwać...\nNie należy restartować\
-    \ ani anulować transakcji, dopóki nie zostanie ona zakończona."
-  success: "Transakcja zakończona pomyślnie. Uruchom ponownie komputer, aby zastosować\
-    \ zmiany."
-  failed: "Nie udało się uruchomić powłoki transakcyjnej:"
-
-shell:
-  use: "shell"
-  long: "Wejdź do powłoki transakcyjnej na przyszłej partycji głównej i przełącz się\
-    \ na roota przy następnym starcie"
-  short: "Wprowadź powłokę transakcyjną"
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  forceOpenFlag: "Wymuszone otwarcie powłoki bez pytania o potwierdzenie"
-  confirm: "\n===============================================================================\n\
-    PROSIMY O UWAŻNE PRZECZYTANIE PRZED PRZYSTĄPIENIEM DO PRACY\n===============================================================================\n\
-    Zmiany dokonane w powłoce zostaną zastosowane do przyszłego roota przy następnym\
-    \ uruchomieniu systemu na\nudane.\nUruchomienie polecenia w powłoce transakcyjnej\
-    \ jest przeznaczone dla zaawansowanych użytkowników\ndo celów konserwacyjnych.\n\
-    \nJeśli znalazłeś się tutaj próbując zainstalować aplikację, rozważ użycie\nFlatpak/Appimage\
-    \ lub Apx (pakiet instalacyjny apx).\n\nWięcej o ABRoot można przeczytać na stronie\
-    \ [https://documentation.vanillaos.org/docs/ABRoot/].\n\nCzy na pewno chcesz kontynuować?"
-  start: "Nowa transakcja rozpoczęta. To może trochę potrwać...\nNie należy restartować\
-    \ ani anulować transakcji, dopóki nie zostanie ona zakończona."
-  success: "Transakcja zakończona pomyślnie. Uruchom ponownie komputer, aby zastosować\
-    \ zmiany."
-  failed: "Nie udało się uruchomić powłoki transakcyjnej:"
-
-diff:
-  use: "diff"
-  long: "Lista modyfikacji dokonanych w systemie plików w ostatniej tranzycji"
-  short: "Pokaż modyfikacje z ostatniej transakcji."
-  rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-
 rollback:
   use: "rollback"
   long: "Wykonuje rollback systemu, odrzucając zmiany wprowadzone do obecnego roota."
