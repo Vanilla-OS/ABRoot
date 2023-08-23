@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -69,8 +71,10 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		_, res := aBsys.CheckUpdate()
 		if res {
 			cmdr.Info.Println(abroot.Trans("upgrade.updateAvailable"))
+			os.Exit(0)
 		} else {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
+			os.Exit(1)
 		}
 		return nil
 	}
@@ -92,12 +96,13 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		if err == core.NoUpdateError {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
-			return nil
+			return err
 		}
 
 		cmdr.Error.Println(err)
 		return err
 	}
 
+	os.Exit(0)
 	return nil
 }
