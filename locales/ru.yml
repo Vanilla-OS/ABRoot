@@ -2,52 +2,53 @@ abroot:
   use: "abroot"
   long: "ABRoot обеспечивает полную неизменяемость и атомарность, выполняя транзакции
     между двумя корневыми разделами (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  short: "ABRoot обеспечивает полную неизменяемость и атомарность, выполняя транзакции
+    между двумя корневыми разделами (A<->B)"
+  verboseFlag: "Показать более подробный вывод"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  applyFailed: "Apply command failed: %s\n"
-  notChanged: No changes were made to kernel parameters.
+  long: "Управление параметрами ядра."
+  short: "Управление параметрами ядра"
+  rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
+  applyFailed: "Не удалось применить команду: %s\n"
+  notChanged: Никаких изменений в параметры ядра не вносилось.
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Выполнить \"system rollback\", отменив все изменения в текущем корневом разделе."
+  short: "Вернуть систему в предыдущее состояние"
+  rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
 pkg:
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
+  long: Установка и управление пакетами.
+  short: Управление пакетами
+  rootRequired: Для выполнения этой команды вы должны быть пользователем root.
+  noPackageNameProvided: Для этой операции необходимо указать хотя бы одно имя пакета.
   use: pkg
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  addedMsg: "Добавлено пакетов: %s.\n"
+  applyFailed: "Не удалось применить команду: %s\n"
+  removedMsg: "Пакетов удалено: %s.\n"
+  listMsg: "Пакетов добавлено:\n%s\nИ удалено:\n%s\n"
 status:
-  short: Display status
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  short: Показать состояние
+  dumpMsg: "Состояние ABRoot сохранено в %s\n"
   use: status
-  long: Display the current ABRoot status.
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
+  long: Показать текущее состояние ABRoot.
+  jsonFlag: Показать вывод в формате JSON
+  dumpFlag: Сохранить состояние ABRoot в архив
+  rootRequired: Для выполнения этой команды вы должны быть пользователем root.
+  infoMsg: "Разделы ABRoot:\n  - Текущий: %s ◄\n  - Будущий: %s\n\nЗагруженная конфигурация:
+    %s\n\nСпецификации ПК:\n  - Процессор: %s\n  - Графический процессор:%s\n  - Память:
+    %s\n\nAB Образ:\n  - Дайджест: %s\n  - Временная метка: %s\n  - Образ: %s\n\n
+    Аргументы ядра: %s\n\nПакеты:\n  - Добавлено: %s\n  - Удалено: %s\n  - Ожидают
+    применения: %s%s\n"
+  unstagedFoundMsg: "\n\t\tЕсть %d пакетов, которые ещё не применены. Используйте
+    'abroot pkg apply' чтобы применить их."
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  rootRequired: You must be root to run this command.
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Обновить загрузочный раздел в целях обслуживания (только для опытных пользователей)
+  rootRequired: Для выполнения этой команды вы должны быть пользователем root.
+  short: Обновить загрузочный раздел
+  forceFlag: Обновление загрузочного раздела без запроса подтверждения
+  updateAvailable: Для вашей системы доступно обновление.
+  noUpdateAvailable: Для вашей системы нет доступных обновлений.
+  checkOnlyFlag: проверить наличие обновлений, но не применять их
