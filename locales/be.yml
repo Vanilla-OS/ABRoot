@@ -1,16 +1,16 @@
 abroot:
-  use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  use: "абарваны"
+  long: "ABRoot забяспечвае поўную нязменнасць і атамарнасць, выконваючы транзакцыі
+    паміж 2 каранёвымі раздзеламі (A<->B)"
+  short: "ABRoot забяспечвае поўную нязменнасць і атамарнасць, выконваючы транзакцыі
+    паміж 2 каранёвымі раздзеламі (A<->B)"
+  verboseFlag: "паказаць больш падрабязны вынік"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "Кіраванне параметрамі ядра."
+  short: "Кіраванне параметрамі ядра."
+  rootRequired: "Вы павінны быць root, каб выканаць гэтую каманду."
   notChanged: No changes were made to kernel parameters.
   applyFailed: "Apply command failed: %s\n"
 rollback:
