@@ -9,46 +9,50 @@ abroot:
 kargs:
   use: "kargs"
   long: "Gestisci i parametri del kernel."
-  short: "Gestisci i parametri del kernel."
+  short: "Gestisci i parametri del kernel"
   rootRequired: "Per eseguire questo comando è necessario essere root."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  notChanged: Non sono stati effettuati cambiamenti ai parametri del kernel.
+  applyFailed: "Applicazione del comando fallita: %s\n"
 rollback:
   use: "rollback"
-  long: "Esegue un rollback del sistema, scartando le modifiche apportate alla root
+  long: "Esegue un rollback del sistema, scartando le modifiche apportate al root
     attuale."
-  short: "Riporta il sistema a uno stato precedente."
+  short: "Riporta il sistema a uno stato precedente"
   rootRequired: "Per eseguire questo comando è necessario essere root."
 pkg:
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
+  short: Gestisci pacchetti
+  rootRequired: Per eseguire questo comando è necessario essere root.
+  noPackageNameProvided: Per questa operazione è necessario provvedere un nome di
+    un pacchetto.
   use: pkg
-  long: Install and manage packages.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  long: Installa e gestisci pacchetti.
+  addedMsg: "Aggiunto(i) %s pacchetto(i).\n"
+  applyFailed: "Applicazione del comando fallita: %s\n"
+  removedMsg: "Rimosso(i) %s pacchetto(i)\n"
+  listMsg: "Pacchetti aggiunti:\n%s\nPacchetti rimossi:\n%s\n"
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: Mostra lo stato attuale di ABRoot.
+  short: Mostra lo Stato
+  jsonFlag: Mostra l'output in formato JSON
+  dumpFlag: Scarica lo stato ABRoot in un archivio
+  rootRequired: Per eseguire questo comando è necessario essere root.
+  infoMsg: "Partizioni ABRoot:\n  - Presente: %s ◄\n  - Futura: %s\n\nConfigurazioni
+    caricate: %s\n\nSpecifiche del dispositivo:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
+    %s\n\nABImage:\n  - Digest: %s\n  - Timestamp: %s\n  - Immagine: %s\n\nParametri
+    del Kernel: %s\n\nPacchetti:\n  - Aggiunti: %s\n  - Rimossi: %s\n  - Impreparati:
+    %s%s\n"
+  unstagedFoundMsg: "\n\t\tCi sono %d pacchetti impreparati. Esegui 'abroot pkg apply'
+    per applicarli."
+  dumpMsg: "Scaricato lo stato di ABRoot in %s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Aggiorna la partizione di boot per scopi di manutenzione (solo per utenti
+    avanzati)
+  short: Aggiorna la partizione di boot
+  forceFlag: forza l'aggiornamento della partizione di boot senza chiedere per una
+    conferma
+  rootRequired: Per eseguire questo comando è necessario essere root.
+  updateAvailable: È disponibile un aggiornamento per il tuo sistema.
+  noUpdateAvailable: Non è disponibile nessun aggiornamento per il tuo sistema.
+  checkOnlyFlag: controlla per aggiornamenti ma non applicarli
