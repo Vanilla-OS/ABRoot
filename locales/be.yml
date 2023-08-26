@@ -11,34 +11,35 @@ kargs:
   long: "Кіраванне параметрамі ядра."
   short: "Кіраванне параметрамі ядра."
   rootRequired: "Вы павінны быць root, каб выканаць гэтую каманду."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  notChanged: Змены параметраў ядра не рабіліся.
+  applyFailed: "Не атрымалася ўжыць каманду: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Выполняет откат системы, отбрасывая изменения, внесенные в текущий корень."
+  short: "Зварот сістэмы ў папярэдні стан"
+  rootRequired: "Для выканання гэтай каманды неабходна быць карыстачом root."
 pkg:
   use: pkg
-  long: Install and manage packages.
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
+  long: Устаноўка пакетаў і кіраванне імі.
+  listMsg: "Дададзены пакеты:\n%s\nВыдаленыя пакеты:\n%s\n"
+  short: Кіраванне пакетамі
+  rootRequired: Вы павінны быць root, каб выканаць гэтую каманду.
+  noPackageNameProvided: Вы павінны ўказаць хаця б адно імя пакета для гэтай аперацыі.
+  addedMsg: "Пакет(-ы) %s дададзены.\n"
+  applyFailed: "Збой прымянення каманды: %s\n"
+  removedMsg: "Пакет(ы) %s выдалены.\n"
 status:
-  use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  use: статус
+  long: Адлюстраванне бягучага стану ABRoot.
+  short: Адлюстраванне стану
+  jsonFlag: Паказаць вывад у фармаце JSON
+  dumpFlag: Выгрузка стану ABRoot у архіў
+  rootRequired: Для выканання гэтай каманды неабходна быць карыстачом root.
+  infoMsg: "ABRoot Partitions:\n   - Сапраўднае: %s ◄\n   - Будучыня: %s\n\nЗагружаная
+    канфігурацыя: %s\n\nХарактарыстыкі ПК:\n   - CPU: %s\n   - GPU:%s\n   - Памяць:
+    %s\n\nABImage:\n   - Дайджэст: %s\n   - Часавая пазнака: %s\n   - Выява: %s\n\n
+    Аргументы ядра: %s\n\nПакеты:\n   - Паведамленні: %s\n   - Выдалена: %s\n   -
+    Неўстаноўленыя: %s%s\n"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
   dumpMsg: "Dumped ABRoot status to %s\n"
