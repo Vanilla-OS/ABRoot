@@ -1,54 +1,56 @@
 abroot:
   use: "abroot"
-  long: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen
-    zwischen 2 Root-Partitionen (A<->B) durchführt."
-  short: "ABRoot bietet volle Unveränderlichkeit und Atomarität, indem Transaktionen
-    zwischen 2 Root-Partitionen (A<->B) durchgeführt werden."
-  verboseFlag: "Zeige eine detailliertere Ausgabe"
+  long: "ABRoot bietet vollständige Immutability und Atomizität, indem es Transaktionen
+    zwischen 2 Root-Partitionen (A<->B) durchführt"
+  short: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen
+    zwischen 2 Root-Partitionen (A<->B) durchführt"
+  verboseFlag: "Detailliertere Ausgabe anzeigen"
 
 kargs:
   use: "kargs"
-  long: "Verwalten von Kernel-Parametern."
-  short: "Verwalten von Kernel-Parametern."
-  rootRequired: "Sie müssen als Root angemeldet sein, um diesen Befehl auszuführen."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "Kernel-Parameter verwalten."
+  short: "Kernel-Parameter verwalten"
+  rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
+  notChanged: Es wurden keine Änderungen an Kernel-Parametern vorgenommen.
+  applyFailed: "Befehl anwenden fehlgeschlagen: %\n"
 rollback:
   use: "rollback"
   long: "Führt ein System-Rollback aus, wobei Änderungen an der aktuellen Root verworfen
     werden."
-  short: "Versetzt das System in einen früheren Zustand."
-  rootRequired: "Sie müssen root sein, um diesen Befehl auszuführen."
+  short: "Versetzt das System in einen früheren Zustand"
+  rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
 pkg:
-  short: Manage packages
-  addedMsg: "Package(s) %s added.\n"
+  short: Pakete verwalten
+  addedMsg: "Paket(e) % hinzugefügt.\n"
   use: pkg
-  applyFailed: "Apply command failed: %s\n"
-  long: Install and manage packages.
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  applyFailed: "Befehl anwenden fehlgeschlagen: %\n"
+  long: Installieren und verwalten Sie Pakete.
+  rootRequired: Sie müssen Root sein, um diesen Befehl auszuführen.
+  noPackageNameProvided: Sie müssen mindestens einen Paketnamen für diese Operation
+    zur Verfügung stellen.
+  removedMsg: "Paket(e) % entfernt.\n"
+  listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
 upgrade:
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  use: upgrade
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
+    Benutzer)
+  short: Boot-Partition aktualisieren
+  forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
+  rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
+  use: aktualisieren
+  updateAvailable: Es gibt ein Update für Ihr System.
+  noUpdateAvailable: Für Ihr System ist kein Update verfügbar.
+  checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
 status:
-  use: status
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
+  use: Status
+  unstagedFoundMsg: "\n\t\tEs gibt %d unstaged Pakete. Bitte führen Sie 'abroot pkg
+    apply' aus um sie anzuwenden."
+  long: Aktuellen ABRoot-Status anzeigen.
+  short: Anzeigestatus
+  jsonFlag: Ausgabe in JSON-Format anzeigen
+  dumpFlag: ABRoot-Status in einem Archiv ablegen
+  rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
     %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  dumpMsg: "ABRoot-Status abgelegt in %s\n"
