@@ -4,7 +4,7 @@ abroot:
     între 2 partiții root (rădăcină) (A<->B)"
   short: "ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții
     între 2 partiții root (rădăcină) (A<->B)"
-  verboseFlag: "afișează detalii"
+  verboseFlag: "afișează o ieșire mai detaliată"
 
 kargs:
   use: "kargs"
