@@ -36,7 +36,7 @@ upgrade:
   short: Boot-Partition aktualisieren
   forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
-  use: aktualisieren
+  use: upgrade
   updateAvailable: Es gibt ein Update für Ihr System.
   noUpdateAvailable: Für Ihr System ist kein Update verfügbar.
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
