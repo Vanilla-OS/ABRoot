@@ -29,7 +29,7 @@ pkg:
   applyFailed: "Збой прымянення каманды: %s\n"
   removedMsg: "Пакет(ы) %s выдалены.\n"
 status:
-  use: статус
+  use: status
   long: Адлюстраванне бягучага стану ABRoot.
   short: Адлюстраванне стану
   jsonFlag: Паказаць вывад у фармаце JSON

@@ -43,9 +43,9 @@ status:
       - Present: %s ◄
       - Future: %s
 
-    Loaded configuration: %s
+    Loaded Configuration: %s
 
-    PC Specs:
+    Device Specifications:
       - CPU: %s
       - GPU:%s
       - Memory: %s
