@@ -391,6 +391,7 @@ mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%
 mount -o bind /var/home /home
 mount -o bind /var/opt /opt
 mount -o bind,ro /.system/usr /usr
+mount -o bind /var/lib/abroot/etc/%s/locales /usr/lib/locale
 `
 	mountExtCmd := ""
 	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
@@ -399,7 +400,7 @@ mount -o bind,ro /.system/usr /usr
 	} else {
 		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
 	}
-	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label)
+	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label, root.Label)
 
 	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
