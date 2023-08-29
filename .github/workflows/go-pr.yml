@@ -35,10 +35,15 @@ jobs:
     - name: Compress
       run: tar -czvf abrootv2.tar.gz abrootv2
 
+    - name: Compress-manpage
+      run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
+
     - uses: actions/upload-artifact@v3
       with:
         name: abrootv2
-        path: abrootv2.tar.gz
+        path: |
+          abrootv2.tar.gz
+          abroot-man.tar.gz
 
   sonar:
     name: Sonar
