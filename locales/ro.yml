@@ -2,22 +2,22 @@ abroot:
   use: "abroot"
   long: "ABRoot oferă imuabilitate completă și atomicitate prin efectuarea de tranzacții
     între 2 partiții root (rădăcină) (A<->B)"
-  short: "ABRoot oferă imuabilitate și atomicitate complete prin efectuarea de tranzacții
-    între 2 partiții root (rădăcină) (A<->B)"
+  short: "ABRoot asigură imuabilitatea și atomicitatea completă prin efectuarea de
+    tranzacții între 2 partiții rădăcină (A<->B)"
   verboseFlag: "afișează o ieșire mai detaliată"
 
 kargs:
   use: "kargs"
-  long: "Gestionează parametrii de kernel."
-  short: "Gestionează parametrii de kernel."
+  long: "Gestionați parametrii nucleului."
+  short: "Gestionați parametrii nucleului"
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
-  applyFailed: "Apply command failed: %s\n"
-  notChanged: No changes were made to kernel parameters.
+  applyFailed: "A eșuat comanda de aplicare: %s\n"
+  notChanged: Nu au fost făcute schimbări la parametrii kernel-ului.
 rollback:
   use: "rollback"
   long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina
     actuală."
-  short: "Readuceți sistemul la o stare anterioară."
+  short: "Readuceți sistemul la o stare anterioară"
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
 
 pkg:
@@ -27,30 +27,31 @@ pkg:
   addedMsg: "Pachet(e) %s adăugate.\n"
   removedMsg: "Pachet(e) %s șterse.\n"
   listMsg: "Pachete adăugate:\n%s\nPachete șsterse:\n%s\n"
-  applyFailed: "Apply command failed: %s\n"
+  applyFailed: "A eșuat comanda de aplicare: %s\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
+  long: Instalați și gestionați pachete.
+  short: Gestionați pachete
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: Afișați starea ABRoot curentă.
+  short: Afișați starea
+  jsonFlag: Afișați ieșirea in format JSON
+  dumpFlag: Transferați starea ABRoot într-o arhivă
+  unstagedFoundMsg: "\n\t\tSunt %d pachete nestagiate. Rulați \"abroot pkg apply\"\
+    \ pentru a le aplica."
+  rootRequired: Trebuie să fiți root pentru a executa această comandă.
+  infoMsg: "Partiții ABRoot:\n  - Prezent: %s ◄\n  - Viitor: %s\n\nConfigurații incărcate:
+    %s\n\nSpecificații PC:\n  - CPU: %s\n  - GPU:%s\n  - Memorie: %s\n\nABImage:\n\
+    \  - Digest: %s\n  - Timestamp: %s\n  - Image: %s\n\nArgumente kernel: %s\n\n\
+    Pachete:\n  - Adăugate: %s\n  - Îndepărtate: %s\n  - Unstaged: %s%s\n"
+  dumpMsg: "Starea ABRoot descărcată în %s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Actualizați partiția de boot în scopuri de întreținere (doar pentru utilizatorii
+    avansați)
+  short: Actualizați partiția de boot
+  forceFlag: forțați actualizarea partiției de boot fără a cere confirmare
+  rootRequired: Trebuie să fiți root pentru a executa această comandă.
+  updateAvailable: Există o actualizare pentru sistemul dumneavoastră.
+  noUpdateAvailable: Nu este disponibilă nicio actualizare pentru sistemul dumneavoastră.
+  checkOnlyFlag: verifică dacă există actualizări, dar nu le aplică

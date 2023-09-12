@@ -9,46 +9,49 @@ abroot:
 kargs:
   use: "kargs"
   long: "Gerenciar os parâmetros do kernel."
-  short: "Gerenciar os parâmetros do kernel."
+  short: "Gerenciar os parâmetros do kernel"
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
-  applyFailed: "Apply command failed: %s\n"
-  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Falha ao aplicar comando: %s\n"
+  notChanged: Nenhuma alteração foi feita nos parâmetros do kernel.
 rollback:
   use: "rollback"
   long: "Executa um rollback do sistema, descartando as alterações feitas na raiz
     atual."
-  short: "Retorna o sistema a um estado anterior."
+  short: "Retorna o sistema a um estado anterior"
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
 pkg:
-  rootRequired: You must be root to run this command.
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  noPackageNameProvided: You must provide at least one package name for this operation.
+  rootRequired: Você deve ser um administrador (root) para executar este comando.
+  listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
+  noPackageNameProvided: Você deve fornecer pelo menos um nome de pacote para esta
+    operação.
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
+  long: Instalar e gerenciar pacotes.
+  short: Gerenciar pacotes
+  addedMsg: "Pacote(s) %s adicionado(s).\n"
+  applyFailed: "Falha ao aplicar comando: %s\n"
+  removedMsg: "Pacote(s) %s removido(s).\n"
 status:
-  long: Display the current ABRoot status.
-  short: Display status
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: Exibir o status atual do ABRoot.
+  short: Exibir status
+  dumpFlag: Despejar o status ABRoot em um arquivo morto
+  rootRequired: Você deve ser um administrador (root) para executar este comando.
+  unstagedFoundMsg: "\n\t\tHá %d pacotes não preparados. Por favor, execute 'abroot
+    pkg apply' para aplicá-los."
+  dumpMsg: "Status ABRoot despejado para %s\n"
   use: status
-  jsonFlag: Show output in JSON format
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  jsonFlag: Mostrar saída no formato JSON
+  infoMsg: "Partições do ABRoot:\n  - Atuais: %s ◄\n  - Futuras: %s\n\nConfiguração
+    carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memória:
+    %s\n\nABImage:\n  - Síntese: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
+    do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Removidos: %s\n  - Não preparados:
+    %s%s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Atualizar a partição de inicialização para fins de manutenção (somente para
+    usuários avançados)
+  short: Atualizar a partição de inicialização
+  forceFlag: forçar a atualização da partição de inicialização sem pedir confirmação
+  rootRequired: Você deve ser um administrador (root) para executar este comando.
+  updateAvailable: Há uma atualização para o seu sistema.
+  noUpdateAvailable: Nenhuma atualização está disponível para o seu sistema.
+  checkOnlyFlag: verificar se há atualizações, mas não aplicá-las

@@ -9,46 +9,46 @@ abroot:
 kargs:
   use: "kargs"
   long: "Hantera kärnparametrar."
-  short: "Hantera kärnparametrar."
+  short: "Hantera kärnparametrar"
   rootRequired: "Du måste vara root för att köra detta kommando."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  notChanged: Inga ändringar har gjorts till kärnparametrarna.
+  applyFailed: "Verkställ kommando misslyckades: %s\n"
 rollback:
   use: "rollback"
   long: "Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande
     rooten."
-  short: "Återställ systemet till ett tidigare tillstånd."
+  short: "Återställ systemet till ett tidigare tillstånd"
   rootRequired: "Du måste vara root för att köra detta kommando."
 status:
-  long: Display the current ABRoot status.
-  short: Display status
+  long: Visa nuvarande ABRoot-status.
+  short: Visa status
   use: status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  jsonFlag: Visa utdata i JSON-format
+  dumpFlag: Dumpa ABRoot-status till ett arkiv
+  rootRequired: Du måste vara root för att köra detta kommando.
+  infoMsg: "ABRoot Partitioner:\n  - Nuvarande: %s ◄\n  - Framtid: %s\n\nLaddad konfiguration:
+    %s\n\nEnhetsspecifikationer:\n  - CPU: %s\n  - GPU:%s\n  - Minne: %s\n\nABImage:\n\
+    \  - Sammanfattning: %s\n  - Tidsstämpel: %s\n  - Avbild: %s\n\nKärnargument:
+    %s\n\nPaket:\n  - Tillagda: %s\n  - Borttagna: %s\n  - Oscensatta: %s%s\n"
+  unstagedFoundMsg: "\n\t\tDet finns %d oscensatta paket. Vänligen kör 'abroot pkg
+    apply' för att tillämpa dem."
+  dumpMsg: "Dumpade ABRoot-status till %s\n"
 pkg:
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  long: Installera och hantera paket.
+  short: Hantera paket
+  rootRequired: Du måste vara root för att köra detta kommando.
+  noPackageNameProvided: Du måste ange minst ett paketnamn för denna operation.
+  addedMsg: "Paket(en) %s har lagts till.\n"
+  applyFailed: "Verkställ kommando misslyckades: %s\n"
+  removedMsg: "Paket(en) %s har tagits bort.\n"
+  listMsg: "Tillagda paket:\n%s\nBorttagna paket:\n%s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Uppdatera startpartitionen för underhållsändamål (endast för avancerade användare)
+  short: Uppdatera startpartitionen
+  forceFlag: tvinga uppdatering av startpartitionen utan att be om bekräftelse
+  rootRequired: Du måste vara root för att köra detta kommando.
+  updateAvailable: Det finns en uppdatering för ditt system.
+  noUpdateAvailable: Ingen uppdatering är tillgänglig för ditt system.
+  checkOnlyFlag: leta efter uppdateringar men tillämpa dem inte

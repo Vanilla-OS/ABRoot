@@ -9,45 +9,48 @@ abroot:
 kargs:
   use: "kargs"
   long: "Gérer les paramètres du noyau."
-  short: "Gérer les paramètres du noyau."
-  rootRequired: "You must be root to run this command."
-  applyFailed: "Apply command failed: %s\n"
-  notChanged: No changes were made to kernel parameters.
+  short: "Gestion des paramètres du noyau"
+  rootRequired: "Vous devez être root pour exécuter cette commande."
+  applyFailed: "Échec de la commande appliquer : %s\n"
+  notChanged: Aucune modification n'a été apportée aux paramètres du noyau.
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Exécute un rollback du système, en supprimant les modifications apportées
+    à la racine actuelle."
+  short: "Retour à un état antérieur du système"
+  rootRequired: "Vous devez être root pour exécuter cette commande."
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: Affiche l'état actuel d'ABRoot.
+  short: État de l'affichage
+  jsonFlag: Afficher la sortie au format JSON
+  dumpFlag: Décharger l'état d'ABRoot dans une archive
+  rootRequired: Vous devez être root pour exécuter cette commande.
+  infoMsg: "ABRoot Partitions :\n  - Présente : %s ◄\n  - Futures : %s\n\nConfiguration
+    chargée : %s\n\nSpécifications de l'appareil :\n  - CPU : %s\n  - GPU:%s\n  -
+    Mémoire : %s\n\nABImage :\n  - Digest : %s\n  - Horodatage : %s\n  - Image : %s\n
+    \nArguments du noyau : %s\n\nPaquets :\n  - Ajoutés : %s\n  - Supprimés : %s\n\
+    \  - Non stabilisé : %s%s\n"
+  unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
+    pkg apply' pour les appliquer."
+  dumpMsg: "L'état de l'ABRoot a été récupéré dans %s\n"
 pkg:
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  long: Installer et gérer les paquets.
+  short: Gérer les paquets
+  rootRequired: Vous devez être root pour exécuter cette commande.
+  noPackageNameProvided: Vous devez fournir au moins un nom de paquet pour cette opération.
+  addedMsg: "Paquet(s) %s ajouté(s).\n"
+  applyFailed: "Échec de la commande appliquée : %s\n"
+  removedMsg: "Paquet(s) %s supprimé(s).\n"
+  listMsg: "Ajout de paquets :\n%s\nPaquets supprimés :\n%s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Mettre à jour la partition de démarrage à des fins de maintenance (pour les
+    utilisateurs avancés uniquement)
+  short: Mise à jour de la partition de démarrage
+  forceFlag: forcer la mise à jour de la partition de démarrage sans demander de confirmation
+  rootRequired: Vous devez être root pour exécuter cette commande.
+  updateAvailable: Il y a une mise à jour pour votre système.
+  noUpdateAvailable: Aucune mise à jour n'est disponible pour votre système.
+  checkOnlyFlag: vérifie les mises à jour mais ne les applique pas

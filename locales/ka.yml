@@ -1,23 +1,24 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
+  long: "ABRoot უზრუნველყოფს სრულ უცვლელობას და ატომურობას ტრანზაქციების შესრულებით
+    2 root დანაყოფს შორის (A<->B)"
+  short: "ABRoot უზრუნველყოფს სრულ უცვლელობას და ატომურობას ტრანზაქციების შესრულებით
+    2 root დანაყოფს შორის (A<->B)"
   verboseFlag: "show more detailed output"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "ბირთვის პარამეტრების მართვა."
+  short: "ბირთვის პარამეტრების მართვა"
+  rootRequired: "ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ."
+  notChanged: ბირთვის პარამეტრები არ შეცვლილა.
+  applyFailed: "გადატარების ბრძანება ჩავარდა: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "ახორციელებს სისტემის დაბრუნებას, უგულებელყოფს მიმდინარე ძირითად საქაღალდეში
+    განხორციელებულ ცვლილებებს."
+  short: "სისტემის დაბრუნება წინა მდგომარეობაში"
+  rootRequired: "ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ."
 status:
   use: status
   rootRequired: You must be root to run this command.
@@ -34,10 +35,10 @@ status:
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
 pkg:
   use: pkg
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  long: Install and manage packages.
-  short: Manage packages
+  rootRequired: ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ.
+  noPackageNameProvided: ამ ოპერაციისთვის აუცილებელია სულ ცოტა, ერთი პაკეტის მითითება.
+  long: პაკეტების დაყენება და მართვა.
+  short: პაკეტების მართვა
   addedMsg: "Package(s) %s added.\n"
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"

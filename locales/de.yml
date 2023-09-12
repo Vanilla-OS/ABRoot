@@ -43,14 +43,15 @@ upgrade:
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d unstaged Pakete. Bitte führen Sie 'abroot pkg
-    apply' aus um sie anzuwenden."
+    apply' aus, um sie anzuwenden."
   long: Aktuellen ABRoot-Status anzeigen.
   short: Anzeigestatus
   jsonFlag: Ausgabe in JSON-Format anzeigen
   dumpFlag: ABRoot-Status in einem Archiv ablegen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  infoMsg: "ABRoot-Partitionen:\n  - Vorhanden: %s ◄\n  - Future: %s\n\nGeladene Konfigurationen:
+    %s\n\nEigenschaften des Computers:\n  - Prozessor: %s\n  - Grafikkarte:%s\n  -
+    Arbeitsspeicher: %s\n\nABImage:\n  - Hash: %s\n  - Zeitstempel: %s\n  - Image:
+    %s\n\nKernelargumente: %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n\
+    \  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
