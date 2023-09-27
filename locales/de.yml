@@ -49,9 +49,8 @@ status:
   jsonFlag: Ausgabe in JSON-Format anzeigen
   dumpFlag: ABRoot-Status in einem Archiv ablegen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
-  infoMsg: "ABRoot-Partitionen:\n  - Vorhanden: %s ◄\n  - Future: %s\n\nGeladene Konfigurationen:
-    %s\n\nEigenschaften des Computers:\n  - Prozessor: %s\n  - Grafikkarte:%s\n  -
-    Arbeitsspeicher: %s\n\nABImage:\n  - Hash: %s\n  - Zeitstempel: %s\n  - Image:
-    %s\n\nKernelargumente: %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n\
-    \  - Unstaged: %s%s\n"
+  infoMsg: "ABRoot Partitionen:\n  - Gegenwärtig: %s ◄\n  - Zukünftige: %s\n\nGeladene
+    Konfiguration: %s\n\nComputer-Spezifikationen:\n  - CPU: %s\n  - GPU:%s\n  - Arbeitsspeicher:
+    %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
+    %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
