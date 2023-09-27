@@ -14,7 +14,7 @@
 ## Help
 
 ```md
-ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
+ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B).
 
 Usage:
   abroot [command]
