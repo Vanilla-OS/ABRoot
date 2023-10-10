@@ -22,7 +22,7 @@ rollback:
 pkg:
   long: Install and manage packages.
   addedMsg: "Package(s) %s added.\n"
-  short: Manage packages
+  short: Pakketten beheren
   rootRequired: You must be root to run this command.
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
@@ -34,7 +34,7 @@ status:
   long: Display the current ABRoot status.
   dumpFlag: Dump the ABRoot status to an archive
   jsonFlag: Show output in JSON format
-  short: Display status
+  short: Weergave­status
   rootRequired: You must be root to run this command.
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
