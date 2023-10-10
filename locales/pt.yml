@@ -1,53 +1,57 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot fornece total imutabilidade e atomicidade realizando transações entre
+    2 partições raiz (A<->B)"
+  short: "ABRoot fornece total imutabilidade e atomicidade realizando transações entre
+    2 partições raiz (A<->B)"
+  verboseFlag: "mostrar um output mais detalhado"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "Gerir parâmetros do kernel."
+  short: "Gerir parâmetros do kernel"
+  rootRequired: "Tens que ser root para executar este comando."
+  notChanged: Não foram feitas alterações nos parâmetros do kernel.
+  applyFailed: "Comando de aplicar falhou: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "Executa um rollback do sistema, descartando as alterações feitas no atual
+    root."
+  short: "Retornar o sistema para um estado anterior"
+  rootRequired: "Tens que ser root para executar este comando."
 upgrade:
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
+  short: Atualizar a partição de boot
+  forceFlag: forçar atualização da partição de boot sem pedir confirmação
+  rootRequired: Tens que ser root para executar este comando.
+  updateAvailable: Há uma atualização para o teu sistema.
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  long: Atualizar a partição de boot para fins de manutenção (apenas para usuários
+    avançados)
+  noUpdateAvailable: Nenhuma atualização está disponível para o teu sistema.
+  checkOnlyFlag: verificar para atualizações, mas não aplicá-las
 pkg:
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  removedMsg: "Pacote(s) %s removido(s).\n"
+  listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
+  long: Instalar e gerir pacotes.
+  short: Gerir pacotes
+  rootRequired: Tens que ser root para executar este comando.
+  noPackageNameProvided: Tens de fornecer pelo menos um nome de um pacote para esta
+    operação.
+  addedMsg: "Pacote(s) %s adicionado(s).\n"
+  applyFailed: "Comando de aplicar falhou: %s\n"
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: Mostrar o status atual do ABRoot.
+  short: Mostrar status
+  jsonFlag: Mostrar o output em formato JSON
+  dumpFlag: Despejar o status do ABRoot para um arquivo
+  rootRequired: Tens que ser root para executar este comando.
+  infoMsg: "Partições ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguração
+    carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
+    %s\n\nABImage:\n  - Digest: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
+    do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Remoidos: %s\n  - Unstaged:
+    %s%s\n"
+  unstagedFoundMsg: "\n\t\tExistem %d pacotes unstaged. Por favor execute 'abroot
+    pkg apply' para os aplicar."
+  dumpMsg: "Despejar o status do ABRoot para %s\n"
