@@ -42,8 +42,8 @@ upgrade:
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
 status:
   use: Status
-  unstagedFoundMsg: "\n\t\tEs gibt %d unstaged Pakete. Bitte führen Sie 'abroot pkg
-    apply' aus, um sie anzuwenden."
+  unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
+    pkg apply' aus, um sie anzuwenden."
   long: Aktuellen ABRoot-Status anzeigen.
   short: Anzeigestatus
   jsonFlag: Ausgabe in JSON-Format anzeigen
