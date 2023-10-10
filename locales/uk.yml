@@ -1,9 +1,9 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
+  long: "ABRoot забезпечує повну незмінність та атомарність, виконуючи транзакції
+    між двома кореневими розділами (A<->B)"
+  short: "ABRoot забезпечує повну незмінність та атомарність, виконуючи транзакції
+    між двома кореневими розділами (A<->B)"
   verboseFlag: "show more detailed output"
 
 kargs:
@@ -11,12 +11,12 @@ kargs:
   long: "Manage kernel parameters."
   short: "Manage kernel parameters."
   rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
+  notChanged: До параметрів ядра не було внесено жодних змін.
   applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
+  short: "Повернути систему до попереднього стану"
   rootRequired: "You must be root to run this command."
 pkg:
   applyFailed: "Apply command failed: %s\n"
@@ -25,13 +25,14 @@ pkg:
   long: Install and manage packages.
   short: Manage packages
   rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  noPackageNameProvided: Ви повинні вказати принаймні одну назву пакунка для цієї
+    операції.
+  listMsg: "Додано пакунків:\n%s\nВидалено пакунків:\n%s\n"
   addedMsg: "Package(s) %s added.\n"
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
+  long: Показати поточний стан ABRoot.
+  short: Показати стан
   dumpFlag: Dump the ABRoot status to an archive
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
@@ -39,7 +40,7 @@ status:
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
-  jsonFlag: Show output in JSON format
+  jsonFlag: Показати результат у форматі JSON
   rootRequired: You must be root to run this command.
   dumpMsg: "Dumped ABRoot status to %s\n"
 upgrade:
@@ -48,6 +49,6 @@ upgrade:
   long: Update the boot partition for maintenance purposes (for advanced users only)
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
-  noUpdateAvailable: No update is available for your system.
+  updateAvailable: Вийшло оновлення для вашої системи.
+  noUpdateAvailable: Для вашої системи немає оновлень.
   checkOnlyFlag: check for updates but do not apply them
