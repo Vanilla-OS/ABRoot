@@ -1,21 +1,21 @@
 abroot:
-  use: "abroot"
-  long: "ABRoot 透過在兩個 Root 分割區（A<->B）之間執行事務以提供完全的不可變性及原子性"
-  short: "ABRoot 透過在兩個 Root 分割區（A<->B）之間執行事務以提供完全的不可變性及原子性"
+  use: "原子更新"
+  long: "ABRoot 透過在兩個 Root 分割區（A<->B）之間執行系統變更以提供完全的不可變性及原子性"
+  short: "ABRoot 透過在兩個 Root 分割區（A<->B）之間執行系統變更以提供完全的不可變性及原子性"
   verboseFlag: "顯示更詳細的輸出"
 
 kargs:
   use: "kargs"
-  long: "管理作業系統核心參數。"
-  short: "管理作業系統核心參數"
-  rootRequired: "必須是 root 使用者才能執行此命令。"
-  notChanged: 沒有對作業系統核心參數作出任何變更。
+  long: "管理作業系統内核參數。"
+  short: "管理内核参数"
+  rootRequired: "您必須是 root 使用者才能執行此命令."
+  notChanged: 沒有對作業系統內核參數作出任何變更.
   applyFailed: "套用命令失敗：%s\n"
 rollback:
   use: "rollback"
-  long: "執行系統復原，捨棄對目前 Root 分割區的變更。"
+  long: "執行系統復原，捨棄對目前 Root 分區的變更."
   short: "將系統復原到先前的狀態"
-  rootRequired: "必須是 root 使用者才能執行此命令。"
+  rootRequired: "您必須是 root 使用者才能執行此命令。"
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 個軟體包尚未套用變更。請執行 'abroot pkg apply' 套用變更。"
