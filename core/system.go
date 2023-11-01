@@ -394,9 +394,8 @@ mount -o bind,ro /.system/usr /usr
 mount -o bind /var/lib/abroot/etc/%s/locales /usr/lib/locale
 `
 	mountExtCmd := ""
-	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
-		parent := s.RootM.VarPartition.Parent
-		mountExtCmd = fmt.Sprintf("/dev/mapper/luks-%s", parent.Uuid)
+	if s.RootM.VarPartition.IsDevMapper() {
+		mountExtCmd = fmt.Sprintf("/dev/mapper/%s", s.RootM.VarPartition.Device)
 	} else {
 		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
 	}
@@ -558,7 +557,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.3: %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.3): %s", err)
 		return err
 	}
 
