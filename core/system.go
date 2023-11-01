@@ -755,12 +755,28 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	s.RunCleanUpQueue("closeChroot")
 
+	var rootUuid string
+	// If Thin-Provisioning, mount init partition
+	if settings.Cnf.ThinProvisioning {
+		initPartition, err := s.RootM.GetInit()
+		if err != nil {
+			PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
+			return err
+		}
+
+		initPartition.Mount("/.system/boot/init")
+		rootUuid = initPartition.Uuid
+	} else {
+		rootUuid = partFuture.Partition.Uuid
+	}
+
 	err = generateABGrubConf( // *2 but we don't care about grub.cfg
 		systemNew,
-		partFuture.Partition.Uuid,
+		rootUuid,
+		partFuture.Label,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(7.3): %s", err)
 		return err
 	}
 

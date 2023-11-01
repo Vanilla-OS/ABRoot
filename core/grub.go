@@ -19,6 +19,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/vanilla-os/abroot/settings"
 )
 
 type Grub struct {
@@ -28,7 +30,7 @@ type Grub struct {
 
 // generateABGrubConf generates a new grub config with the given details
 // kernel version is automatically detected
-func generateABGrubConf(rootPath string, rootUuid string) error {
+func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) error {
 	PrintVerbose("generateABGrubConf: generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
@@ -37,7 +39,14 @@ func generateABGrubConf(rootPath string, rootUuid string) error {
 		return err
 	}
 
-	grubPath := filepath.Join(rootPath, "boot", "grub")
+	// Changes: New abroot.cfg location, root, kernel and initrd locations
+	var grubPath string
+	if settings.Cnf.ThinProvisioning {
+		grubPath = filepath.Join(rootPath, "boot", "init", rootLabel)
+	} else {
+		grubPath = filepath.Join(rootPath, "boot", "grub")
+	}
+
 	confPath := filepath.Join(grubPath, "abroot.cfg")
 	template := `insmod gzio
 insmod part_gpt

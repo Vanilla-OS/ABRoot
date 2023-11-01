@@ -73,8 +73,8 @@ func (d *DiskManager) GetPartitionByLabel(label string) (Partition, error) {
 	}
 
 	for _, part := range partitions {
-		PrintVerbose("DiskManager.GetPartitionByLabel: Partition with UUID %s has label %s", part.Uuid, label)
 		if part.Label == label {
+			PrintVerbose("DiskManager.GetPartitionByLabel: Partition with UUID %s has label %s", part.Uuid, label)
 			return part, nil
 		}
 	}

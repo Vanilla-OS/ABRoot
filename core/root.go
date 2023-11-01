@@ -206,3 +206,25 @@ func (a *ABRootManager) GetBoot() (partition Partition, err error) {
 	PrintVerbose("ABRootManager.GetBoot: successfully got boot partition")
 	return part, nil
 }
+
+// GetInit gets the init volume when using LVM Thin-Provisioning
+func (a *ABRootManager) GetInit() (partition Partition, err error) {
+	PrintVerbose("ABRootManager.GetInit: running...")
+
+	// Make sure Thin-Provisioning is properly configured
+	if !settings.Cnf.ThinProvisioning || settings.Cnf.ThinInitVolume == "" {
+		return Partition{}, errors.New("ABRootManager.GetInit: error: system is not configured for thin-provisioning")
+	}
+
+	diskM := NewDiskManager()
+	part, err := diskM.GetPartitionByLabel(settings.Cnf.ThinInitVolume)
+	if err != nil {
+		err = errors.New("init volume not found")
+		PrintVerbose("ABRootManager.GetInit: error: %s", err)
+
+		return Partition{}, err
+	}
+
+	PrintVerbose("ABRootManager.GetBoot: successfully got init volume")
+	return part, nil
+}
