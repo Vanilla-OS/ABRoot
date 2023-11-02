@@ -163,8 +163,6 @@ func (p *Partition) Mount(destination string) error {
 	}
 	devicePath += p.Device
 
-	PrintVerbose(devicePath)
-
 	err := syscall.Mount(devicePath, destination, p.FsType, 0, "")
 	if err != nil {
 		PrintVerbose("Partition.Mount: error(2): %s", err)
@@ -172,7 +170,7 @@ func (p *Partition) Mount(destination string) error {
 	}
 
 	p.MountPoint = destination
-	PrintVerbose("Partition.Mount: successfully mounted partition")
+	PrintVerbose("Partition.Mount: successfully mounted %s at %s", devicePath, p.MountPoint)
 	return nil
 }
 
@@ -187,12 +185,14 @@ func (p *Partition) Unmount() error {
 
 	err := syscall.Unmount(p.MountPoint, 0)
 	if err != nil {
+		PrintVerbose("Partition.Unmount: failed to unmount %s", p.MountPoint)
 		PrintVerbose("Partition.Unmount: error(2): %s", err)
 		return err
 	}
 
+	PrintVerbose("Partition.Unmount: successfully unmounted %s", p.MountPoint)
 	p.MountPoint = ""
-	PrintVerbose("Partition.Unmount: successfully unmounted partition")
+
 	return nil
 }
 
