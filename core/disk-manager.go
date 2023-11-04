@@ -19,31 +19,26 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"strings"
 	"syscall"
 )
 
 // DiskManager represents a disk
 type DiskManager struct{}
 
-// Disk represents a disk
-type Disk struct {
-	Device     string
-	Partitions []Partition
-}
-
-// Partition represents a standard partition
+// Partition represents either a standard partition or a device-mapper partition.
 type Partition struct {
 	Label        string
 	MountPoint   string
 	MountOptions string
 	Uuid         string
 	FsType       string
-	Device       string // e.g. sda1, nvme0n1p1
 
-	// If the partition is LUKS-encrypted, the logical volume opened in /dev/mapper/
-	// will be a child of the physical partiiton in /dev/.
+	// If standard partition, Device will be the partition's name (e.g. sda1, nvme0n1p1).
+	// If LUKS-encrypted or LVM volume, Device will be the name in device-mapper.
+	Device string
+
+	// If the partition is LUKS-encrypted or an LVM volume, the logical volume
+	// opened in /dev/mapper will be a child of the physical partiiton in /dev.
 	// Otherwise, the partition will be a direct child of the block device, and
 	// therefore Parent will be nil.
 	Parent *Partition
@@ -66,77 +61,25 @@ func NewDiskManager() *DiskManager {
 	return &DiskManager{}
 }
 
-// GetDisk gets a disk by device
-func (d *DiskManager) GetDisk(device string) (Disk, error) {
-	PrintVerbose("DiskManager.GetDisk: running...")
-	partitions, err := d.getPartitions(device)
+// GetPartitionByLabel finds a partition by searching for its label.
+//
+// If no partition can be found with the given label, returns error.
+func (d *DiskManager) GetPartitionByLabel(label string) (Partition, error) {
+	PrintVerbose("DiskManager.GetPartitionByLabel: retrieving partitions")
+
+	partitions, err := d.getPartitions("")
 	if err != nil {
-		PrintVerbose("DiskManager.GetDisk:err: %s", err)
-		return Disk{}, err
+		return Partition{}, err
 	}
 
-	PrintVerbose("DiskManager.GetDisk: successfully got disk %s", device)
-
-	return Disk{
-		Device:     device,
-		Partitions: partitions,
-	}, nil
-}
-
-// GetDiskByPartition gets a disk by partition
-func (d *DiskManager) GetDiskByPartition(partition string) (Disk, error) {
-	PrintVerbose("DiskManager.GetDiskByPartition: running...")
-
-	output, err := exec.Command("lsblk", "-n", "-o", "PKNAME", "/dev/"+partition).Output()
-	if err != nil {
-		PrintVerbose("DiskManager.GetDiskByPartition:err: %s", err)
-		return Disk{}, err
+	for _, part := range partitions {
+		if part.Label == label {
+			PrintVerbose("DiskManager.GetPartitionByLabel: Partition with UUID %s has label %s", part.Uuid, label)
+			return part, nil
+		}
 	}
 
-	device := strings.TrimSpace(string(output))
-
-	PrintVerbose("DiskManager.GetDiskByPartition: successfully got disk %s", device)
-
-	return d.GetDisk(device)
-}
-
-// GetCurrentDisk gets the current disk
-func (d *DiskManager) GetCurrentDisk() (Disk, error) {
-	PrintVerbose("DiskManager.GetCurrentDisk: running...")
-
-	// we need to evaluate symlinks to get the real root path
-	// in case of weird setups
-	root, err := filepath.EvalSymlinks("/")
-	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:err(2): %s", err)
-		return Disk{}, err
-	}
-
-	output, err := exec.Command("df", "-P", root).Output()
-	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:err(3): %s", err)
-		return Disk{}, err
-	}
-
-	lines := strings.Split(string(output), "\n")
-	if len(lines) < 2 {
-		err := errors.New("could not determine device name for " + root)
-		PrintVerbose("DiskManager.GetCurrentDisk:err(4): %s", err)
-		return Disk{}, err
-	}
-
-	fields := strings.Fields(lines[1])
-	if len(fields) < 6 {
-		err := errors.New("could not determine device name for " + root)
-		PrintVerbose("DiskManager.GetCurrentDisk:err(5): %s", err)
-		return Disk{}, err
-	}
-
-	device := filepath.Base(fields[0])
-
-	PrintVerbose("DiskManager.GetCurrentDisk: successfully got disk %s", device)
-
-	return d.GetDiskByPartition(device)
+	return Partition{}, fmt.Errorf("could not find partition with label %s", label)
 }
 
 // iterChildren iterates through the children of a device or partition recursively
@@ -166,7 +109,7 @@ func iterChildren(childs *[]Children, result *[]Partition) {
 	}
 }
 
-// getPartitions gets a disk's partitions
+// getPartitions gets a disk's partitions. If device is an empty string, gets all partitions from all disks.
 func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	PrintVerbose("DiskManager.getPartitions: running...")
 
@@ -191,7 +134,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 
 	var result []Partition
 	for _, blockDevice := range partitions.BlockDevices {
-		if blockDevice.Name != device {
+		if device != "" && blockDevice.Name != device {
 			continue
 		}
 
@@ -214,14 +157,20 @@ func (p *Partition) Mount(destination string) error {
 		}
 	}
 
-	err := syscall.Mount(fmt.Sprintf("/dev/%s", p.Device), destination, p.FsType, 0, "")
+	devicePath := "/dev/"
+	if p.IsDevMapper() {
+		devicePath += "mapper/"
+	}
+	devicePath += p.Device
+
+	err := syscall.Mount(devicePath, destination, p.FsType, 0, "")
 	if err != nil {
 		PrintVerbose("Partition.Mount: error(2): %s", err)
 		return err
 	}
 
 	p.MountPoint = destination
-	PrintVerbose("Partition.Mount: successfully mounted partition")
+	PrintVerbose("Partition.Mount: successfully mounted %s at %s", devicePath, p.MountPoint)
 	return nil
 }
 
@@ -236,11 +185,18 @@ func (p *Partition) Unmount() error {
 
 	err := syscall.Unmount(p.MountPoint, 0)
 	if err != nil {
+		PrintVerbose("Partition.Unmount: failed to unmount %s", p.MountPoint)
 		PrintVerbose("Partition.Unmount: error(2): %s", err)
 		return err
 	}
 
+	PrintVerbose("Partition.Unmount: successfully unmounted %s", p.MountPoint)
 	p.MountPoint = ""
-	PrintVerbose("Partition.Unmount: successfully unmounted partition")
+
 	return nil
+}
+
+// Returns whether the partition is a device-mapper virtual partition
+func (p *Partition) IsDevMapper() bool {
+	return p.Parent != nil
 }

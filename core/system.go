@@ -41,9 +41,9 @@ type QueuedFunction struct {
 }
 
 const (
-	UPGRADE      = "upgrade"
-	FOCE_UPGRADE = "force-upgrade"
-	APPLY        = "package-apply"
+	UPGRADE       = "upgrade"
+	FORCE_UPGRADE = "force-upgrade"
+	APPLY         = "package-apply"
 )
 
 const (
@@ -246,11 +246,19 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(5): %s", err)
 				return err
 			}
+		case "umountInit":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountInit")
+			initPart := Partition{MountPoint: "/part-future/.system/boot/init"}
+			err := initPart.Unmount()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
+				return err
+			}
 		case "unlockUpgrade":
 			PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
 			err := s.UnlockUpgrade()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
 				return err
 			}
 		case "clearUnstagedPackages":
@@ -258,7 +266,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 			pkgM := NewPackageManager(false)
 			err := pkgM.ClearUnstagedPackages()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(8): %s", err)
 				return err
 			}
 		}
@@ -394,9 +402,8 @@ mount -o bind,ro /.system/usr /usr
 mount -o bind /var/lib/abroot/etc/%s/locales /usr/lib/locale
 `
 	mountExtCmd := ""
-	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
-		parent := s.RootM.VarPartition.Parent
-		mountExtCmd = fmt.Sprintf("/dev/mapper/luks-%s", parent.Uuid)
+	if s.RootM.VarPartition.IsDevMapper() {
+		mountExtCmd = fmt.Sprintf("/dev/mapper/%s", s.RootM.VarPartition.Device)
 	} else {
 		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
 	}
@@ -516,7 +523,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		var res bool
 		imageDigest, res = s.CheckUpdate()
 		if !res {
-			if operation != FOCE_UPGRADE {
+			if operation != FORCE_UPGRADE {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
 				return NoUpdateError
 			}
@@ -558,7 +565,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.3: %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(2.3): %s", err)
 		return err
 	}
 
@@ -756,12 +763,56 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	s.RunCleanUpQueue("closeChroot")
 
+	var rootUuid string
+	// If Thin-Provisioning set, mount init partition and move linux and initrd images to it
+	if settings.Cnf.ThinProvisioning {
+		initPartition, err := s.RootM.GetInit()
+		if err != nil {
+			PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
+			return err
+		}
+
+		initMountpoint := filepath.Join(systemNew, "boot", "init")
+		err = initPartition.Mount(initMountpoint)
+		if err != nil {
+			PrintVerbose("ABSystem.RunOperation:err(7.3): %s", err)
+			return err
+		}
+		s.AddToCleanUpQueue("umountInit", 80)
+
+		kernelVersion := getKernelVersion(filepath.Join(systemNew, "boot"))
+		err = CopyFile(
+			filepath.Join(systemNew, "boot", "vmlinuz-"+kernelVersion),
+			filepath.Join(initMountpoint, partFuture.Label, "vmlinuz-"+kernelVersion),
+		)
+		if err != nil {
+			PrintVerbose("ABSystem.RunOperation:err(7.4): %s", err)
+			return err
+		}
+		err = CopyFile(
+			filepath.Join(systemNew, "boot", "initrd.img-"+kernelVersion),
+			filepath.Join(initMountpoint, partFuture.Label, "initrd.img-"+kernelVersion),
+		)
+		if err != nil {
+			PrintVerbose("ABSystem.RunOperation:err(7.5): %s", err)
+			return err
+		}
+
+		os.Remove(filepath.Join(systemNew, "boot", "vmlinuz-"+kernelVersion))
+		os.Remove(filepath.Join(systemNew, "boot", "initrd.img-"+kernelVersion))
+
+		rootUuid = initPartition.Uuid
+	} else {
+		rootUuid = partFuture.Partition.Uuid
+	}
+
 	err = generateABGrubConf( // *2 but we don't care about grub.cfg
 		systemNew,
-		partFuture.Partition.Uuid,
+		rootUuid,
+		partFuture.Label,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(7.6): %s", err)
 		return err
 	}
 

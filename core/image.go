@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -77,7 +78,7 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 		suffix = "-" + suffix
 	}
 	imageName := "abimage" + suffix + ".abr"
-	imagePath := fmt.Sprintf("%s/%s", dest, imageName)
+	imagePath := filepath.Join(dest, imageName)
 
 	abimage, err := json.Marshal(a)
 	if err != nil {

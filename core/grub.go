@@ -19,6 +19,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/vanilla-os/abroot/settings"
 )
 
 type Grub struct {
@@ -28,7 +30,7 @@ type Grub struct {
 
 // generateABGrubConf generates a new grub config with the given details
 // kernel version is automatically detected
-func generateABGrubConf(rootPath string, rootUuid string) error {
+func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) error {
 	PrintVerbose("generateABGrubConf: generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
@@ -37,16 +39,35 @@ func generateABGrubConf(rootPath string, rootUuid string) error {
 		return err
 	}
 
-	grubPath := filepath.Join(rootPath, "boot", "grub")
+	var grubPath, bootPrefix, bootPath, systemRoot string
+	if settings.Cnf.ThinProvisioning {
+		grubPath = filepath.Join(rootPath, "boot", "init", rootLabel)
+		bootPrefix = "/" + rootLabel
+		bootPath = grubPath
+
+		diskM := NewDiskManager()
+		sysRootPart, err := diskM.GetPartitionByLabel(rootLabel)
+		if err != nil {
+			PrintVerbose("generateABGrubConf:err(3): %s", err)
+			return err
+		}
+		systemRoot = "/dev/mapper/" + sysRootPart.Device
+	} else {
+		grubPath = filepath.Join(rootPath, "boot", "grub")
+		bootPrefix = "/.system/boot"
+		bootPath = filepath.Join(rootPath, "boot")
+		systemRoot = "UUID=" + rootUuid
+	}
+
 	confPath := filepath.Join(grubPath, "abroot.cfg")
 	template := `insmod gzio
 insmod part_gpt
 insmod ext2
 search --no-floppy --fs-uuid --set=root %s
-linux   /.system/boot/vmlinuz-%s root=UUID=%s %s
-initrd  /.system/boot/initrd.img-%s`
+linux   %s/vmlinuz-%s root=%s %s
+initrd  %s/initrd.img-%s`
 
-	kernelVersion := getKernelVersion(rootPath)
+	kernelVersion := getKernelVersion(bootPath)
 	if kernelVersion == "" {
 		err := errors.New("could not get kernel version")
 		PrintVerbose("generateABGrubConf:err: %s", err)
@@ -61,7 +82,7 @@ initrd  /.system/boot/initrd.img-%s`
 
 	err = os.WriteFile(
 		confPath,
-		[]byte(fmt.Sprintf(template, rootUuid, kernelVersion, rootUuid, kargs, kernelVersion)),
+		[]byte(fmt.Sprintf(template, rootUuid, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)),
 		0644,
 	)
 	if err != nil {
@@ -73,10 +94,10 @@ initrd  /.system/boot/initrd.img-%s`
 }
 
 // getKernelVersion returns the latest kernel version available in the root
-func getKernelVersion(rootPath string) string {
+func getKernelVersion(bootPath string) string {
 	PrintVerbose("getKernelVersion: getting kernel version")
 
-	kernelDir := filepath.Join(rootPath, "boot", "vmlinuz-*")
+	kernelDir := filepath.Join(bootPath, "vmlinuz-*")
 	files, err := filepath.Glob(kernelDir)
 	if err != nil {
 		PrintVerbose("getKernelVersion:err: %s", err)

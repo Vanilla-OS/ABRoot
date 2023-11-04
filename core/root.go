@@ -29,7 +29,6 @@ type ABRootManager struct {
 type ABRootPartition struct {
 	Label        string // a,b
 	IdentifiedAs string // present,future
-	Device       string
 	Partition    Partition
 	MountPoint   string
 	MountOptions string
@@ -53,36 +52,39 @@ func (a *ABRootManager) GetPartitions() error {
 	PrintVerbose("ABRootManager.GetRootPartitions: running...")
 
 	diskM := NewDiskManager()
-	disk, err := diskM.GetCurrentDisk()
+	rootLabels := []string{settings.Cnf.PartLabelA, settings.Cnf.PartLabelB}
+	for _, label := range rootLabels {
+		partition, err := diskM.GetPartitionByLabel(label)
+		if err != nil {
+			PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
+			return err
+		}
+
+		identifier, err := a.IdentifyPartition(partition)
+		if err != nil {
+			PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
+			return err
+		}
+
+		isCurrent := a.IsCurrent(partition)
+		a.Partitions = append(a.Partitions, ABRootPartition{
+			Label:        partition.Label,
+			IdentifiedAs: identifier,
+			Partition:    partition,
+			MountPoint:   partition.MountPoint,
+			MountOptions: partition.MountOptions,
+			Uuid:         partition.Uuid,
+			FsType:       partition.FsType,
+			Current:      isCurrent,
+		})
+	}
+
+	partition, err := diskM.GetPartitionByLabel(settings.Cnf.PartLabelVar)
 	if err != nil {
 		PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
 		return err
 	}
-
-	for _, partition := range disk.Partitions {
-		if partition.Label == settings.Cnf.PartLabelA || partition.Label == settings.Cnf.PartLabelB {
-			identifier, err := a.IdentifyPartition(partition)
-			if err != nil {
-				PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
-				return err
-			}
-
-			isCurrent := a.IsCurrent(partition)
-			a.Partitions = append(a.Partitions, ABRootPartition{
-				Label:        partition.Label,
-				IdentifiedAs: identifier,
-				Device:       disk.Device,
-				Partition:    partition,
-				MountPoint:   partition.MountPoint,
-				MountOptions: partition.MountOptions,
-				Uuid:         partition.Uuid,
-				FsType:       partition.FsType,
-				Current:      isCurrent,
-			})
-		} else if partition.Label == settings.Cnf.PartLabelVar {
-			a.VarPartition = partition
-		}
-	}
+	a.VarPartition = partition
 
 	PrintVerbose("ABRootManager.GetRootPartitions: successfully got root partitions")
 
@@ -193,20 +195,36 @@ func (a *ABRootManager) GetBoot() (partition Partition, err error) {
 	PrintVerbose("ABRootManager.GetBoot: running...")
 
 	diskM := NewDiskManager()
-	disk, err := diskM.GetCurrentDisk()
+	part, err := diskM.GetPartitionByLabel(settings.Cnf.PartLabelBoot)
 	if err != nil {
+		err = errors.New("boot partition not found")
 		PrintVerbose("ABRootManager.GetBoot: error: %s", err)
+
 		return Partition{}, err
 	}
 
-	for _, partition := range disk.Partitions {
-		if partition.Label == settings.Cnf.PartLabelBoot {
-			PrintVerbose("ABRootManager.GetBoot: successfully got boot partition")
-			return partition, nil
-		}
+	PrintVerbose("ABRootManager.GetBoot: successfully got boot partition")
+	return part, nil
+}
+
+// GetInit gets the init volume when using LVM Thin-Provisioning
+func (a *ABRootManager) GetInit() (partition Partition, err error) {
+	PrintVerbose("ABRootManager.GetInit: running...")
+
+	// Make sure Thin-Provisioning is properly configured
+	if !settings.Cnf.ThinProvisioning || settings.Cnf.ThinInitVolume == "" {
+		return Partition{}, errors.New("ABRootManager.GetInit: error: system is not configured for thin-provisioning")
 	}
 
-	err = errors.New("boot partition not found")
-	PrintVerbose("ABRootManager.GetBoot: error: %s", err)
-	return Partition{}, err
+	diskM := NewDiskManager()
+	part, err := diskM.GetPartitionByLabel(settings.Cnf.ThinInitVolume)
+	if err != nil {
+		err = errors.New("init volume not found")
+		PrintVerbose("ABRootManager.GetInit: error: %s", err)
+
+		return Partition{}, err
+	}
+
+	PrintVerbose("ABRootManager.GetBoot: successfully got init volume")
+	return part, nil
 }

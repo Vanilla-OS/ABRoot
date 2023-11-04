@@ -87,7 +87,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 
 	var operation core.ABSystemOperation
 	if force {
-		operation = core.FOCE_UPGRADE
+		operation = core.FORCE_UPGRADE
 	} else {
 		operation = core.UPGRADE
 	}
