@@ -15,12 +15,17 @@ package core
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/vanilla-os/orchid/cmdr"
 )
 
 var logFile *os.File
+
+var printLog = log.New(os.Stdout, "(Verbose) ", 0)
 
 func init() {
 	PrintVerboseNoLog("NewLogFile: running...")
@@ -57,8 +62,9 @@ func init() {
 }
 
 func IsVerbose() bool {
-	_, res := os.LookupEnv("ABROOT_VERBOSE")
-	return res
+	flag := cmdr.FlagValBool("verbose")
+	_, arg := os.LookupEnv("ABROOT_VERBOSE")
+	return flag || arg
 }
 
 func PrintVerbose(msg string, args ...interface{}) {
@@ -71,8 +77,8 @@ func PrintVerbose(msg string, args ...interface{}) {
 
 func PrintVerboseNoLog(msg string, args ...interface{}) {
 	if IsVerbose() {
-		fmt.Printf("(Verbose) "+msg, args...)
-		fmt.Println()
+		printLog.Printf(msg, args...)
+		printLog.Println()
 	}
 }
 

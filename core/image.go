@@ -28,12 +28,16 @@ type ABImage struct {
 }
 
 // NewABImage returns a new ABImage struct
-func NewABImage(digest string, image string) *ABImage {
+func NewABImage(digest string, image string) (*ABImage, error) {
+	if digest == "" {
+		return nil, fmt.Errorf("NewABImage: digest is empty")
+	}
+
 	return &ABImage{
 		Digest:    digest,
 		Timestamp: time.Now(),
 		Image:     image,
-	}
+	}, nil
 }
 
 // NewABImageFromRoot returns the current ABImage from /abimage.abr

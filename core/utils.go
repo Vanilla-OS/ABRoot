@@ -15,7 +15,9 @@ package core
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"os/exec"
 )
 
 var abrootDir = "/etc/abroot"
@@ -66,4 +68,55 @@ func isLink(path string) bool {
 
 	PrintVerbose("Path is not a link: " + path)
 	return false
+}
+
+// CopyFile copies a file from source to dest
+func CopyFile(source, dest string) error {
+	PrintVerbose("CopyFile: running...")
+
+	PrintVerbose("CopyFile: Opening source file")
+	srcFile, err := os.Open(source)
+	if err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
+	defer srcFile.Close()
+
+	PrintVerbose("CopyFile: Opening destination file")
+	destFile, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
+	defer destFile.Close()
+
+	PrintVerbose("CopyFile: Performing copy operation")
+	if _, err := io.Copy(destFile, srcFile); err != nil {
+		PrintVerbose("CopyFile:err: " + err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// isDeviceLUKSEncrypted checks whether a device specified by devicePath is a LUKS-encrypted device
+func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
+	PrintVerbose("Verifying if %s is encrypted", devicePath)
+
+	isLuksCmd := "cryptsetup isLuks %s"
+
+	cmd := exec.Command("sh", "-c", fmt.Sprintf(isLuksCmd, devicePath))
+	err := cmd.Run()
+	if err != nil {
+		// We expect the command to return exit status 1 if partition isn't
+		// LUKS-encrypted
+		if exitError, ok := err.(*exec.ExitError); ok {
+			if exitError.ExitCode() == 1 {
+				return false, nil
+			}
+		}
+		return false, fmt.Errorf("Failed to check if %s is LUKS-encrypted: %s", devicePath, err)
+	}
+
+	return true, nil
 }

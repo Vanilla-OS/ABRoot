@@ -11,7 +11,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: registry.vanillaos.org/vanillaos/pico:main
+      image: ghcr.io/vanilla-os/pico:main
 
     steps:
     - uses: actions/checkout@v3
@@ -31,6 +31,15 @@ jobs:
     
     - name: Test
       run: go test -v ./tests/..
+    
+    - name: Compress
+      run: tar -czvf abrootv2.tar.gz abrootv2
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: abrootv2
+        path: abrootv2.tar.gz
+
   sonar:
     name: Sonar
     runs-on: ubuntu-latest

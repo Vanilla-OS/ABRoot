@@ -28,12 +28,10 @@ const (
 	_defaultTransport = "docker://"
 
 	// _defaultImageVolumeMode is a mode to handle built-in image volumes.
-	_defaultImageVolumeMode = "bind"
+	_defaultImageVolumeMode = _typeBind
 )
 
 var (
-	// DefaultInitPath is the default path to the container-init binary.
-	DefaultInitPath = "/usr/libexec/podman/catatonit"
 	// DefaultInfraImage is the default image to run as infrastructure containers in pods.
 	DefaultInfraImage = ""
 	// DefaultRootlessSHMLockPath is the default path for rootless SHM locks.
@@ -215,12 +213,13 @@ func DefaultConfig() (*Config, error) {
 			UserNSSize: DefaultUserNSSize, // Deprecated
 		},
 		Network: NetworkConfig{
-			DefaultNetwork:     "podman",
-			DefaultSubnet:      DefaultSubnet,
-			DefaultSubnetPools: DefaultSubnetPools,
-			DNSBindPort:        0,
-			CNIPluginDirs:      DefaultCNIPluginDirs,
-			NetavarkPluginDirs: DefaultNetavarkPluginDirs,
+			DefaultNetwork:            "podman",
+			DefaultSubnet:             DefaultSubnet,
+			DefaultSubnetPools:        DefaultSubnetPools,
+			DefaultRootlessNetworkCmd: "slirp4netns",
+			DNSBindPort:               0,
+			CNIPluginDirs:             DefaultCNIPluginDirs,
+			NetavarkPluginDirs:        DefaultNetavarkPluginDirs,
 		},
 		Engine:  *defaultEngineConfig,
 		Secrets: defaultSecretConfig(),
@@ -283,6 +282,7 @@ func defaultConfigFromMemory() (*EngineConfig, error) {
 	c.VolumePath = filepath.Join(storeOpts.GraphRoot, "volumes")
 
 	c.VolumePluginTimeout = DefaultVolumePluginTimeout
+	c.CompressionFormat = "gzip"
 
 	c.HelperBinariesDir = defaultHelperBinariesDir
 	if additionalHelperBinariesDir != "" {

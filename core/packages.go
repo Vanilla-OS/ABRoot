@@ -16,6 +16,7 @@ package core
 import (
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,13 +25,17 @@ import (
 )
 
 // PackageManager struct
-type PackageManager struct{}
+type PackageManager struct {
+	dryRun  bool
+	baseDir string
+}
 
 const (
-	PackagesBaseDir      = "/etc/abroot"
-	PackagesAddFile      = "packages.add"
-	PackagesRemoveFile   = "packages.remove"
-	PackagesUnstagedFile = "packages.unstaged"
+	PackagesBaseDir       = "/etc/abroot"
+	DryRunPackagesBaseDir = "/tmp/abroot"
+	PackagesAddFile       = "packages.add"
+	PackagesRemoveFile    = "packages.remove"
+	PackagesUnstagedFile  = "packages.unstaged"
 )
 
 const (
@@ -49,19 +54,24 @@ type UnstagedPackage struct {
 }
 
 // NewPackageManager returns a new PackageManager struct
-func NewPackageManager() *PackageManager {
+func NewPackageManager(dryRun bool) *PackageManager {
 	PrintVerbose("PackageManager.NewPackageManager: running...")
 
-	err := os.MkdirAll(PackagesBaseDir, 0755)
+	baseDir := PackagesBaseDir
+	if dryRun {
+		baseDir = DryRunPackagesBaseDir
+	}
+
+	err := os.MkdirAll(baseDir, 0755)
 	if err != nil {
 		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
 		panic(err)
 	}
 
-	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesAddFile))
+	_, err = os.Stat(filepath.Join(baseDir, PackagesAddFile))
 	if err != nil {
 		err = os.WriteFile(
-			filepath.Join(PackagesBaseDir, PackagesAddFile),
+			filepath.Join(baseDir, PackagesAddFile),
 			[]byte(""),
 			0644,
 		)
@@ -71,10 +81,10 @@ func NewPackageManager() *PackageManager {
 		}
 	}
 
-	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesRemoveFile))
+	_, err = os.Stat(filepath.Join(baseDir, PackagesRemoveFile))
 	if err != nil {
 		err = os.WriteFile(
-			filepath.Join(PackagesBaseDir, PackagesRemoveFile),
+			filepath.Join(baseDir, PackagesRemoveFile),
 			[]byte(""),
 			0644,
 		)
@@ -84,10 +94,10 @@ func NewPackageManager() *PackageManager {
 		}
 	}
 
-	_, err = os.Stat(filepath.Join(PackagesBaseDir, PackagesUnstagedFile))
+	_, err = os.Stat(filepath.Join(baseDir, PackagesUnstagedFile))
 	if err != nil {
 		err = os.WriteFile(
-			filepath.Join(PackagesBaseDir, PackagesUnstagedFile),
+			filepath.Join(baseDir, PackagesUnstagedFile),
 			[]byte(""),
 			0644,
 		)
@@ -97,12 +107,21 @@ func NewPackageManager() *PackageManager {
 		}
 	}
 
-	return &PackageManager{}
+	return &PackageManager{dryRun, baseDir}
 }
 
 // Add adds a package to the packages.add file
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerbose("PackageManager.Add: running...")
+
+	// Check if package exists in repo
+	for _, _pkg := range strings.Split(pkg, " ") {
+		err := p.ExistsInRepo(_pkg)
+		if err != nil {
+			PrintVerbose("PackageManager.Add:err: " + err.Error())
+			return err
+		}
+	}
 
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
@@ -191,7 +210,7 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
 	pkgs, err := p.getPackages(PackagesUnstagedFile)
 	if err != nil {
-		PrintVerbose("PackageManager.GetUnstagedPackages:err: ", err.Error())
+		PrintVerbose("PackageManager.GetUnstagedPackages:err: " + err.Error())
 		return nil, err
 	}
 
@@ -203,6 +222,24 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 
 		splits := strings.SplitN(line, " ", 2)
 		unstagedList = append(unstagedList, UnstagedPackage{splits[1], splits[0]})
+	}
+
+	return unstagedList, nil
+}
+
+// GetUnstagedPackagesPlain returns the package changes that are yet to be applied
+// as strings
+func (p *PackageManager) GetUnstagedPackagesPlain() ([]string, error) {
+	PrintVerbose("PackageManager.GetUnstagedPackagesPlain: running...")
+	pkgs, err := p.GetUnstagedPackages()
+	if err != nil {
+		PrintVerbose("PackageManager.GetUnstagedPackagesPlain:err: " + err.Error())
+		return nil, err
+	}
+
+	unstagedList := []string{}
+	for _, pkg := range pkgs {
+		unstagedList = append(unstagedList, pkg.Name)
 	}
 
 	return unstagedList, nil
@@ -244,7 +281,7 @@ func (p *PackageManager) getPackages(file string) ([]string, error) {
 	PrintVerbose("PackageManager.getPackages: running...")
 
 	pkgs := []string{}
-	f, err := os.Open(filepath.Join(PackagesBaseDir, file))
+	f, err := os.Open(filepath.Join(p.baseDir, file))
 	if err != nil {
 		PrintVerbose("PackageManager.getPackages:err: " + err.Error())
 		return pkgs, err
@@ -304,7 +341,7 @@ func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
 func (p *PackageManager) writePackages(file string, pkgs []string) error {
 	PrintVerbose("PackageManager.writePackages: running...")
 
-	f, err := os.Create(filepath.Join(PackagesBaseDir, file))
+	f, err := os.Create(filepath.Join(p.baseDir, file))
 	if err != nil {
 		PrintVerbose("PackageManager.writePackages:err: " + err.Error())
 		return err
@@ -395,11 +432,6 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 	if operation == APPLY {
 		finalAddPkgs, finalRemovePkgs = p.processApplyPackages()
 	} else {
-		err := p.ClearUnstagedPackages()
-		if err != nil {
-			PrintVerbose("PackageManager.GetFinalCmd:err: %s", err.Error())
-			panic(err)
-		}
 		finalAddPkgs, finalRemovePkgs = p.processUpgradePackages()
 	}
 
@@ -428,4 +460,34 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 
 	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)
 	return cmd
+}
+
+func (p *PackageManager) ExistsInRepo(pkg string) error {
+	PrintVerbose("PackageManager.ExistsInRepo: running...")
+
+	if settings.Cnf.IPkgMngApi == "" {
+		PrintVerbose("PackageManager.ExistsInRepo: no API url set, will not check if package exists. This could lead to errors")
+		return nil
+	}
+
+	if !strings.Contains(settings.Cnf.IPkgMngApi, "{packageName}") {
+		return fmt.Errorf("PackageManager.ExistsInRepo: API url does not contain {packageName} placeholder. ABRoot is probably misconfigured, please report the issue to the maintainers of the distribution")
+	}
+
+	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
+	PrintVerbose("PackageManager.ExistsInRepo: checking if package exists in repo: " + url)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		PrintVerbose("PackageManager.ExistsInRepo:err: " + err.Error())
+		return err
+	}
+
+	if resp.StatusCode != 200 {
+		PrintVerbose("PackageManager.ExistsInRepo: package does not exist in repo")
+		return fmt.Errorf("package does not exist in repo: %s", pkg)
+	}
+
+	PrintVerbose("PackageManager.ExistsInRepo: package exists in repo")
+	return nil
 }

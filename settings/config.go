@@ -15,6 +15,7 @@ package settings
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -27,6 +28,7 @@ type Config struct {
 	// Registry
 	Registry           string `json:"registry"`
 	RegistryAPIVersion string `json:"registryAPIVersion"`
+	RegistryService    string `json:"registryService"`
 	Name               string `json:"name"`
 	Tag                string `json:"tag"`
 
@@ -35,6 +37,7 @@ type Config struct {
 	IPkgMngPost string `json:"iPkgMngPost"`
 	IPkgMngAdd  string `json:"iPkgMngAdd"`
 	IPkgMngRm   string `json:"iPkgMngRm"`
+	IPkgMngApi  string `json:"iPkgMngApi"`
 
 	// Partitions
 	PartLabelVar  string `json:"partLabelVar"`
@@ -51,25 +54,30 @@ type Config struct {
 }
 
 var Cnf *Config
+var CnfFileUsed string
 
 func init() {
+	// user paths
+	homedir, _ := os.UserHomeDir()
+	viper.AddConfigPath(homedir + "/.config/abroot/")
+
+	// dev paths
+	viper.AddConfigPath("config/")
+	viper.AddConfigPath("../config/")
+
 	// prod paths
 	viper.AddConfigPath("/etc/abroot/")
 	viper.AddConfigPath("/usr/share/abroot/")
 
-	// dev paths
-	viper.AddConfigPath("config/")
-
-	// tests paths
-	viper.AddConfigPath("../config/")
-
 	viper.SetConfigName("abroot")
 	viper.SetConfigType("json")
-	err := viper.ReadInConfig()
 
+	err := viper.ReadInConfig()
 	if err != nil {
 		return
 	}
+
+	CnfFileUsed = viper.ConfigFileUsed()
 
 	Cnf = &Config{
 		// Common
@@ -79,6 +87,7 @@ func init() {
 		// Registry
 		Registry:           viper.GetString("registry"),
 		RegistryAPIVersion: viper.GetString("registryAPIVersion"),
+		RegistryService:    viper.GetString("registryService"),
 		Name:               viper.GetString("name"),
 		Tag:                viper.GetString("tag"),
 
@@ -87,6 +96,7 @@ func init() {
 		IPkgMngPost: viper.GetString("iPkgMngPost"),
 		IPkgMngAdd:  viper.GetString("iPkgMngAdd"),
 		IPkgMngRm:   viper.GetString("iPkgMngRm"),
+		IPkgMngApi:  viper.GetString("iPkgMngApi"),
 
 		// Partitions
 		PartLabelVar:  viper.GetString("partLabelVar"),

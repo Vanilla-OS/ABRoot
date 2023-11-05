@@ -19,21 +19,33 @@ import (
 	"os/exec"
 )
 
-// MergeDiff merges the diff lines between source and dest
-func MergeDiff(sourceFile, destFile string) error {
-	PrintVerbose("MergeDiff: merging %s -> %s", sourceFile, destFile)
+// MergeDiff merges the diff lines between the first and second files into destination
+func MergeDiff(firstFile, secondFile, destination string) error {
+	PrintVerbose("MergeDiff: merging %s + %s -> %s", firstFile, secondFile, destination)
 
 	// get the diff lines
-	diffLines, err := DiffFiles(sourceFile, destFile)
+	diffLines, err := DiffFiles(firstFile, secondFile)
 	if err != nil {
 		PrintVerbose("MergeDiff:err: %s", err)
 		return err
 	}
 
-	// write the diff to the destination
-	err = WriteDiff(destFile, diffLines)
+	// copy second file to destination to apply patch
+	secondFileContents, err := os.ReadFile(secondFile)
 	if err != nil {
-		PrintVerbose("MergeDiff:err: %s", err)
+		PrintVerbose("MergeDiff:err(2): %s", err)
+		return err
+	}
+	err = os.WriteFile(destination, secondFileContents, 0644)
+	if err != nil {
+		PrintVerbose("MergeDiff:err(3): %s", err)
+		return err
+	}
+
+	// write the diff to the destination
+	err = WriteDiff(destination, diffLines)
+	if err != nil {
+		PrintVerbose("MergeDiff:err(4): %s", err)
 		return err
 	}
 

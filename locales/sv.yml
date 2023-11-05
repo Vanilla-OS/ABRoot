@@ -1,74 +1,54 @@
 abroot:
   use: "abroot"
-  long: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rootpartitioner (A<->B)"
-  short: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner mellan 2 rotpartitioner (A<->B)"
+  long: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner
+    mellan 2 rootpartitioner (A<->B)"
+  short: "ABRoot ger full oföränderlighet och atomicitet genom att utföra transaktioner
+    mellan 2 rotpartitioner (A<->B)"
   verboseFlag: "visa mer detaljerad utdata"
-
-update:
-  use: "_update-boot"
-  long: "Uppdatera uppstartspartitionen i underhållssyfte (endast för avancerade användare)"
-  short: "Uppdatera uppstartspartitionen"
-  forceUpdateFlag: "tvinga uppdatering av uppstartspartitionen utan att be om bekräftelse"
-  confirm: "Är du säker på att du vill fortsätta?\nUppstartspartitionen bör endast uppdateras om en transaktion lyckades. Detta\nkommando bör endast användas av avancerade användare i underhållssyfte."
-  rootRequired: "Du måste vara root för att köra detta kommando."
-
-get:
-  use: "get"
-  long: "Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)"
-  short: "Matar ut nuvarande eller framtida rootpartitionstillstånd (A eller B)"
-  rootRequired: "Du måste vara root för att köra detta kommando."
 
 kargs:
   use: "kargs"
   long: "Hantera kärnparametrar."
   short: "Hantera kärnparametrar."
   rootRequired: "Du måste vara root för att köra detta kommando."
-  nextReboot: "Kärnparametrar kommer att tillämpas vid nästa start."
-  failedTransaction: "Misslyckades att starta transaktionsskalet"
-  stateRequired: "Vänligen ange ett tillstånd (nuvarande eller framtida)"
-  params: "Nuvarande partitions parametrar:\n%s\n"
-  futureParams: "Framtida partitions parametrar:\n%s\n"
-  unknownState: "Okänt tillstånd: %s\n"
-  unknownParam: "Okänd parameter: %s\n"
-  transactionsLocked: "En annan transaktion har redan utförts, du måste starta om ditt system innan du startar en ny transaktion."
-
-edit:
-  use: "edit"
-  long: "Redigera kärnparametrar."
-  short: "Redigera kärnparametrar."
-  rootRequired: "Du måste vara root för att köra detta kommando."
-
-exec:
-  use: "exec"
-  long: "Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart"
-  short: "Kör ett kommando i ett transaktionsskal i den framtida rooten och växla till det vid nästa uppstart"
-  rootRequired: "Du måste vara root för att köra detta kommando."
-  skipDiffFlag: "Hoppa över diffkontrollen i slutet av transaktionen"
-  forceRunFlag: "Tvinga kommandot att köras utan att be om bekräftelse"
-  confirm: "\n===============================================================================\nPLÄS NOGGRANT INNAN DU FORTSÄTTER\n========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida rooten på nästa uppstart på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är det tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
-  start: "Ny transaktion startade. Detta kan ta ett tag...\nStarta inte om eller avbryt inte transaktionen förrän den är klar."
-  success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
-  failed: "Misslyckades att starta transaktionsskalet:"
-
-shell:
-  use: "shell"
-  long: "Gå med i ett transaktionsskal i den framtida rootpartitionen och byt root vid nästa uppstart"
-  short: "Gå med i ett transaktionsskal"
-  rootRequired: "Du måste vara root för att köra detta kommando."
-  forceOpenFlag: "Tvinga öppnande av skalet utan att be om bekräftelse"
-  confirm: "\n===============================================================================\nLÄS NOGGRANT INNAN DU FORTSÄTTER\n=========================================== =====================================\nÄndringar som görs i skalet kommer att tillämpas på den framtida roten på nästa start på\nslyckad.\nKörning av ett kommando i ett transaktionsskal är tänkt att användas av avancerade användare\nför underhållsändamål.\n\nOm du hamnade här och försökte installera ett program, överväg att använda\nFlatpak/Appimage eller Apx ( apx installationspaket) istället.\n\nLäs mer om ABRoot på [https://documentation.vanillaos.org/docs/ABRoot/].\n\nÄr du säker på att du vill fortsätta?"
-  start: "Ny transaktion startade. Detta kan ta ett tag...\nStarta inte om eller avbryt inte transaktionen förrän den är klar."
-  success: "Transaktionen slutförd. Starta om för att tillämpa ändringar."
-  failed: "Misslyckades att starta transaktionsskalet:"
-
-diff:
-  use: "diff"
-  long: "Lista modifikationer som gjorts i filsystemet i den senaste transaktionen"
-  short: "Visa modifikationer från senaste transaktionen."
-  rootRequired: "Du måste vara root för att köra detta kommando."
-
+  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
-  long: "Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande rooten."
+  long: "Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande
+    rooten."
   short: "Återställ systemet till ett tidigare tillstånd."
   rootRequired: "Du måste vara root för att köra detta kommando."
+status:
+  long: Display the current ABRoot status.
+  short: Display status
+  use: status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Dumped ABRoot status to %s\n"
+pkg:
+  use: pkg
+  long: Install and manage packages.
+  short: Manage packages
+  rootRequired: You must be root to run this command.
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  addedMsg: "Package(s) %s added.\n"
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+upgrade:
+  use: upgrade
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them

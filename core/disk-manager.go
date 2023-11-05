@@ -40,7 +40,25 @@ type Partition struct {
 	MountOptions string
 	Uuid         string
 	FsType       string
-	Device       string
+	Device       string // e.g. sda1, nvme0n1p1
+
+	// If the partition is LUKS-encrypted, the logical volume opened in /dev/mapper/
+	// will be a child of the physical partiiton in /dev/.
+	// Otherwise, the partition will be a direct child of the block device, and
+	// therefore Parent will be nil.
+	Parent *Partition
+}
+
+// The children a block device or partition may have
+type Children struct {
+	MountPoint   string     `json:"mountpoint"`
+	FsType       string     `json:"fstype"`
+	Label        string     `json:"label"`
+	Uuid         string     `json:"uuid"`
+	LogicalName  string     `json:"name"`
+	Size         string     `json:"size"`
+	MountOptions string     `json:"mountopts"`
+	Children     []Children `json:"children"`
 }
 
 // NewDiskManager creates a new DiskManager
@@ -86,15 +104,9 @@ func (d *DiskManager) GetDiskByPartition(partition string) (Disk, error) {
 func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	PrintVerbose("DiskManager.GetCurrentDisk: running...")
 
-	root, err := os.Getwd()
-	if err != nil {
-		PrintVerbose("DiskManager.GetCurrentDisk:err: %s", err)
-		return Disk{}, err
-	}
-
 	// we need to evaluate symlinks to get the real root path
 	// in case of weird setups
-	root, err = filepath.EvalSymlinks(root)
+	root, err := filepath.EvalSymlinks("/")
 	if err != nil {
 		PrintVerbose("DiskManager.GetCurrentDisk:err(2): %s", err)
 		return Disk{}, err
@@ -127,6 +139,33 @@ func (d *DiskManager) GetCurrentDisk() (Disk, error) {
 	return d.GetDiskByPartition(device)
 }
 
+// iterChildren iterates through the children of a device or partition recursively
+func iterChildren(childs *[]Children, result *[]Partition) {
+	for _, child := range *childs {
+		*result = append(*result, Partition{
+			Label:        child.Label,
+			MountPoint:   child.MountPoint,
+			MountOptions: child.MountOptions,
+			Uuid:         child.Uuid,
+			FsType:       child.FsType,
+			Device:       child.LogicalName,
+		})
+
+		detectedPartitions := len(*result)
+
+		iterChildren(&child.Children, result)
+
+		if detectedPartitions == 0 {
+			return
+		}
+
+		// Populate children's reference to parent
+		for i := 0; i < len(*result)-detectedPartitions; i++ {
+			(*result)[detectedPartitions+i].Parent = &(*result)[detectedPartitions-1]
+		}
+	}
+}
+
 // getPartitions gets a disk's partitions
 func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	PrintVerbose("DiskManager.getPartitions: running...")
@@ -139,17 +178,9 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 
 	var partitions struct {
 		BlockDevices []struct {
-			Name     string `json:"name"`
-			Type     string `json:"type"`
-			Children []struct {
-				MountPoint   string `json:"mountpoint"`
-				FsType       string `json:"fstype"`
-				Label        string `json:"label"`
-				Uuid         string `json:"uuid"`
-				LogicalName  string `json:"name"`
-				Size         string `json:"size"`
-				MountOptions string `json:"mountopts"`
-			} `json:"children"`
+			Name     string     `json:"name"`
+			Type     string     `json:"type"`
+			Children []Children `json:"children"`
 		} `json:"blockdevices"`
 	}
 
@@ -164,16 +195,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 			continue
 		}
 
-		for _, child := range blockDevice.Children {
-			result = append(result, Partition{
-				Label:        child.Label,
-				MountPoint:   child.MountPoint,
-				MountOptions: child.MountOptions,
-				Uuid:         child.Uuid,
-				FsType:       child.FsType,
-				Device:       child.LogicalName,
-			})
-		}
+		iterChildren(&blockDevice.Children, &result)
 	}
 
 	PrintVerbose("DiskManager.getPartitions: successfully got partitions for disk %s", device)

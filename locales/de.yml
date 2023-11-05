@@ -1,109 +1,54 @@
 abroot:
   use: "abroot"
-  long: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen\
-    \ zwischen 2 Root-Partitionen (A<->B) durchführt."
-  short: "ABRoot bietet volle Unveränderlichkeit und Atomarität, indem Transaktionen\
-    \ zwischen 2 Root-Partitionen (A<->B) durchgeführt werden."
+  long: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen
+    zwischen 2 Root-Partitionen (A<->B) durchführt."
+  short: "ABRoot bietet volle Unveränderlichkeit und Atomarität, indem Transaktionen
+    zwischen 2 Root-Partitionen (A<->B) durchgeführt werden."
   verboseFlag: "Zeige eine detailliertere Ausgabe"
-
-update:
-  use: "_update-boot"
-  long: "Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene\
-    \ Benutzer)."
-  short: "Aktualisiere die Boot-Partition"
-  forceUpdateFlag: "Aktualisiere die Boot-Partition ohne eine Bestätigung abzufragen."
-  confirm: "Sind Sie sicher, dass Sie fortfahren möchten?\nDie Boot-Partition sollte\
-    \ nur aktualisiert werden, wenn eine Transaktion erfolgreich abgeschlossen wurde.\
-    \ Dieser Befehl sollte von fortgeschrittenen Benutzern nur für Wartungszwecke\
-    \ verwendet werden."
-  rootRequired: "Du musst als Root angemeldet sein, um diesen Befehl auszuführen."
-
-get:
-  use: "get"
-  long: "Gibt den aktuellen oder zukünftigen Zustand der Root-Partition aus (A oder\
-    \ B)."
-  short: "Gibt den aktuellen oder zukünftigen Zustand der Root-Partition aus (A oder\
-    \ B)."
-  rootRequired: "Du musst Root-Rechte haben, um diesen Befehl auszuführen."
 
 kargs:
   use: "kargs"
   long: "Verwalten von Kernel-Parametern."
   short: "Verwalten von Kernel-Parametern."
   rootRequired: "Sie müssen als Root angemeldet sein, um diesen Befehl auszuführen."
-  nextReboot: "Kernel-Parameter werden beim nächsten Start angewendet."
-  failedTransaction: "Konnte keine Transaktions-Shell starten:"
-  stateRequired: "Bitte geben Sie einen Zustand an (Gegenwart oder Zukunft)."
-  params: "Parameter der aktuellen Partition:\n%s\n"
-  futureParams: "Zukünftige Parameter der Partition:\n%s\n"
-  unknownState: "unbekannter Zustand: %s\n"
-  unknownParam: "unbekannter Parameter: %s\n"
-  transactionsLocked: "Eine weitere Transaktion wurde bereits ausgeführt. Sie müssen\
-    \ Ihr System neu starten, bevor Sie eine neue Transaktion starten können."
-
-edit:
-  use: "edit"
-  long: "Editiere Kernel-Parameter."
-  short: "Editiere Kernel-Parameter."
-  rootRequired: "Sie müssen Root-Benutzer sein, um diesen Befehl auszuführen."
-
-exec:
-  use: "exec"
-  long: "Führen Sie einen Befehl in einer transaktionalen Shell im zukünftigen Root\
-    \ aus und wechseln Sie beim nächsten Neustart zu ihm."
-  short: "Führen Sie einen Befehl in einer transaktionalen Shell im zukünftigen Root\
-    \ aus und wechseln Sie beim nächsten Neustart zu ihm."
-  rootRequired: "Sie müssen als Root angemeldet sein, um diesen Befehl auszuführen."
-  skipDiffFlag: "Überspringen Sie die Diff-Überprüfung am Ende der Transaktion."
-  forceRunFlag: "Führe den Befehl ohne Bestätigung aus."
-  confirm: "\n===============================================================================\n\
-    BITTE SORGFÄLTIG LESEN, BEVOR SIE WEITERMACHEN\n===============================================================================\n\
-    Änderungen, die in der Shell vorgenommen werden, werden bei erfolgreichem Start\
-    \ auf die zukünftige Root angewendet.\nDas Ausführen eines Befehls in einer transaktionalen\
-    \ Shell ist für fortgeschrittene Benutzer zur Wartung vorgesehen.\n\nWenn Sie\
-    \ hier gelandet sind, um eine Anwendung zu installieren, sollten Sie Flatpak /\
-    \ Appimage oder Apx (apx install package) in Betracht ziehen.\n\nLesen Sie mehr\
-    \ über ABRoot unter [https://documentation.vanillaos.org/docs/ABRoot/].\n\nSind\
-    \ Sie sicher, dass Sie fortfahren möchten?"
-  start: "New transaction started. This may take a while...\nDo not reboot or cancel\
-    \ the transaction until it is finished."
-  success: "Transaktion erfolgreich abgeschlossen. Starten Sie neu, um die Änderungen\
-    \ anzuwenden."
-  failed: "Konnte die transaktionale Shell nicht starten:"
-
-shell:
-  use: "shell"
-  long: "Starten Sie eine transaktionale Shell in der zukünftigen Root-Partition und\
-    \ wechseln Sie beim nächsten Start des Systems zur Root-Partition."
-  short: "Starte eine transaktionale Shell."
-  rootRequired: "Du musst als Root angemeldet sein, um diesen Befehl auszuführen."
-  forceOpenFlag: "Erzwinge das Öffnen der Shell ohne nach Bestätigung zu fragen"
-  confirm: "\n===============================================================================\n\
-    BITTE SORGFÄLTIG DURCHLESEN, BEVOR SIE FORTFAHREN\n===============================================================================\n\
-    Änderungen, die in der Shell vorgenommen wurden, werden erfolgreich auf die zukünftige\
-    \ Root-Dateisystem angewendet, wenn das nächste Booten erfolgt.\nDas Ausführen\
-    \ eines Befehls in einer Transaktions-Shell ist für fortgeschrittene Benutzer\
-    \ zur Wartungszwecken vorgesehen.\n\nWenn Sie hierher gekommen sind, um eine Anwendung\
-    \ zu installieren, sollten Sie stattdessen Flatpak/Appimage oder Apx (apx install\
-    \ package) in Betracht ziehen.\n\nWeitere Informationen zu ABRoot finden Sie unter\
-    \ [https://documentation.vanillaos.org/docs/ABRoot/].\n\nSind Sie sicher, dass\
-    \ Sie fortfahren möchten?"
-  start: "Neue Transaktion gestartet. Dies kann eine Weile dauern...\nStarten Sie\
-    \ das System nicht neu und brechen Sie die Transaktion nicht ab, bis sie abgeschlossen\
-    \ ist."
-  success: "Transaktion erfolgreich abgeschlossen. Neustarten, um Änderungen anzuwenden."
-  failed: "Konnte die transaktionale Shell nicht starten:"
-
-diff:
-  use: "diff"
-  long: "Auflistung der Änderungen, die bei der letzten Übertragung am Dateisystem\
-    \ vorgenommen wurden"
-  short: "Änderungen der letzten Transaktion anzeigen."
-  rootRequired: "Sie müssen root sein, um diesen Befehl auszuführen."
-
+  notChanged: No changes were made to kernel parameters.
+  applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
-  long: "Führt ein System-Rollback aus, wobei Änderungen an der aktuellen Root verworfen\
-    \ werden."
+  long: "Führt ein System-Rollback aus, wobei Änderungen an der aktuellen Root verworfen
+    werden."
   short: "Versetzt das System in einen früheren Zustand."
   rootRequired: "Sie müssen root sein, um diesen Befehl auszuführen."
+pkg:
+  short: Manage packages
+  addedMsg: "Package(s) %s added.\n"
+  use: pkg
+  applyFailed: "Apply command failed: %s\n"
+  long: Install and manage packages.
+  rootRequired: You must be root to run this command.
+  noPackageNameProvided: You must provide at least one package name for this operation.
+  removedMsg: "Package(s) %s removed.\n"
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+upgrade:
+  long: Update the boot partition for maintenance purposes (for advanced users only)
+  short: Update the boot partition
+  forceFlag: force update the boot partition without asking for confirmation
+  rootRequired: You must be root to run this command.
+  use: upgrade
+  updateAvailable: There is an update for your system.
+  noUpdateAvailable: No update is available for your system.
+  checkOnlyFlag: check for updates but do not apply them
+status:
+  use: status
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  long: Display the current ABRoot status.
+  short: Display status
+  jsonFlag: Show output in JSON format
+  dumpFlag: Dump the ABRoot status to an archive
+  rootRequired: You must be root to run this command.
+  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
+    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
+    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+  dumpMsg: "Dumped ABRoot status to %s\n"

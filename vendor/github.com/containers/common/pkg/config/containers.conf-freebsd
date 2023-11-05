@@ -29,6 +29,11 @@
 #
 #base_hosts_file = ""
 
+# The database backend of Podman.  Supported values are "boltdb" (default) and
+# "sqlite". Please run `podman-system-reset` prior to changing the database
+# backend of an existing deployment, to make sure Podman can operate correctly.
+#database_backend="boltdb"
+
 # List of default capabilities for containers. If it is empty or commented out,
 # the default capabilities defined in the container engine will be added.
 #
@@ -302,9 +307,16 @@ default_sysctls = [
 #active_service = production
 
 # The compression format to use when pushing an image.
-# Valid options are: `gzip`, `zstd` and `zstd:chunked`.
+# Valid options are: `gzip` and `zstd`.
 #
 #compression_format = "gzip"
+
+# The compression level to use when pushing an image.
+# Valid options depend on the compression format used.
+# For gzip, valid options are 1-9, with a default of 5.
+# For zstd, valid options are 1-20, with a default of 3.
+#
+#compression_level = 5
 
 # Environment variables to pass into conmon
 #

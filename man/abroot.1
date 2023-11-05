@@ -1,4 +1,4 @@
-.TH ABROOT 1 "2023-03-03" "abroot" "User Manual"
+.TH ABROOT 1 "2023-08-24" "abroot" "User Manual"
 .SH NAME
 .RS 4
 abroot - ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
@@ -12,38 +12,33 @@ abroot [command] [flags] [arguments]
 ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
 .RE
 .SH OPTIONS
-  -v, --verbose   show more detailed output
+  -v, --verbose   Show more detailed output
 .PP
 .SH ABROOT COMMANDS
 .RS 4
-\fBget\fP
+\fBupgrade\fP
 .RS 4
-Outputs the present or future root partition state (A or B)
-.PP
-.RE
-\fBexec\fP
-.RS 4
-Execute a command in a transactional shell in the future root and switch to it on next boot
-.PP
-.RE
-\fBshell\fP
-.RS 4
-Enter a transactional shell
+Update the boot partition
 .PP
 .RE
 \fBkargs\fP
 .RS 4
-Manage kernel parameters\&.
+Manage kernel parameters
 .PP
 .RE
-\fBdiff\fP
+\fBpkg\fP
 .RS 4
-Show modifications from latest transaction\&.
+Manage packages
 .PP
 .RE
 \fBrollback\fP
 .RS 4
-Return the system to a previous state\&.
+Return the system to a previous state
+.PP
+.RE
+\fBstatus\fP
+.RS 4
+Display status
 .PP
 .RE
 .RE
@@ -57,80 +52,34 @@ https://github\&.com/vanilla-os/abroot/issues
 .PP
 GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
 .SH ABROOT SUBCOMMANDS
-.SH SUBCOMMAND GET
+.SH SUBCOMMAND UPGRADE
 .RS 4
-Outputs the present or future root partition state (A or B)
+Update the boot partition
 .RE
 .SS SYNOPSIS
 .RS 4
-\fBget\fP [command] [flags] [arguments]
+\fBupgrade\fP [command] [flags] [arguments]
 .RE
 .SS DESCRIPTION
 .RS 4
 .TP 4
-Outputs the present or future root partition state (A or B)
+Update the boot partition for maintenance purposes (for advanced users only)
 .RE
 .SS OPTIONS
+  -c, --check-only   check for updates but do not apply them
+.PP
+  -f, --force        force update the boot partition without asking for confirmation
+.PP
 .SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
+  -v, --verbose   Show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
-abroot get present
-.PP
-abroot get future
-.RE
-.SH SUBCOMMAND EXEC
-.RS 4
-Execute a command in a transactional shell in the future root and switch to it on next boot
-.RE
-.SS SYNOPSIS
-.RS 4
-\fBexec\fP [command] [flags] [arguments]
-.RE
-.SS DESCRIPTION
-.RS 4
-.TP 4
-Execute a command in a transactional shell in the future root and switch to it on next boot
-.RE
-.SS OPTIONS
-  -f, --force-run   Force run the command without asking for confirmation
-.PP
-  -s, --skip-diff   Skip the diff check at the end of the transaction
-.PP
-.SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
-.PP
-.SS EXAMPLES
-.RS 4
-abroot exec apt-get update
-.RE
-.SH SUBCOMMAND SHELL
-.RS 4
-Enter a transactional shell
-.RE
-.SS SYNOPSIS
-.RS 4
-\fBshell\fP [command] [flags] [arguments]
-.RE
-.SS DESCRIPTION
-.RS 4
-.TP 4
-Enter a transactional shell in the future root partition and switch root on the next boot
-.RE
-.SS OPTIONS
-  -f, --force-open   Force open the shell without asking for confirmation
-.PP
-.SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
-.PP
-.SS EXAMPLES
-.RS 4
-abroot shell
+abroot upgrade
 .RE
 .SH SUBCOMMAND KARGS
 .RS 4
-Manage kernel parameters\&.
+Manage kernel parameters
 .RE
 .SS SYNOPSIS
 .RS 4
@@ -143,38 +92,36 @@ Manage kernel parameters\&.
 .RE
 .SS OPTIONS
 .SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
+  -v, --verbose   Show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
 abroot kargs edit
-.PP
-abroot kargs get future
 .RE
-.SH SUBCOMMAND DIFF
+.SH SUBCOMMAND PKG
 .RS 4
-Show modifications from latest transaction\&.
+Manage packages
 .RE
 .SS SYNOPSIS
 .RS 4
-\fBdiff\fP [command] [flags] [arguments]
+\fBpkg\fP [command] [flags] [arguments]
 .RE
 .SS DESCRIPTION
 .RS 4
 .TP 4
-List modifications made to the filesystem in the latest transiction
+Install and manage packages\&.
 .RE
 .SS OPTIONS
 .SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
+  -v, --verbose   Show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
-abroot diff
+abroot pkg add <pkg>
 .RE
 .SH SUBCOMMAND ROLLBACK
 .RS 4
-Return the system to a previous state\&.
+Return the system to a previous state
 .RE
 .SS SYNOPSIS
 .RS 4
@@ -187,10 +134,35 @@ Executes a system rollback, discarding changes made to the present root\&.
 .RE
 .SS OPTIONS
 .SS GLOBAL OPTIONS
-  -v, --verbose   show more detailed output
+  -v, --verbose   Show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
 abroot rollback
+.RE
+.SH SUBCOMMAND STATUS
+.RS 4
+Display status
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBstatus\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Display the current ABRoot status\&.
+.RE
+.SS OPTIONS
+  -d, --dump   Dump the ABRoot status to an archive
+.PP
+  -j, --json   Show output in JSON format
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   Show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot status
 .RE
 

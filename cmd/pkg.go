@@ -46,7 +46,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	pkgM := core.NewPackageManager()
+	pkgM := core.NewPackageManager(false)
 
 	switch args[0] {
 	case "add":
@@ -97,7 +97,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 
 		err = aBsys.RunOperation(core.APPLY)
 		if err != nil {
-			cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
+			cmdr.Error.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err
 		}
 	}

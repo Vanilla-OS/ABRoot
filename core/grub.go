@@ -31,13 +31,19 @@ type Grub struct {
 func generateABGrubConf(rootPath string, rootUuid string) error {
 	PrintVerbose("generateABGrubConf: generating grub config for ABRoot")
 
+	kargs, err := KargsRead()
+	if err != nil {
+		PrintVerbose("generateABGrubConf:err: %s", err)
+		return err
+	}
+
 	grubPath := filepath.Join(rootPath, "boot", "grub")
 	confPath := filepath.Join(grubPath, "abroot.cfg")
 	template := `insmod gzio
 insmod part_gpt
 insmod ext2
 search --no-floppy --fs-uuid --set=root %s
-linux   /.system/boot/vmlinuz-%s root=UUID=%s quiet splash bgrt_disable $vt_handoff
+linux   /.system/boot/vmlinuz-%s root=UUID=%s %s
 initrd  /.system/boot/initrd.img-%s`
 
 	kernelVersion := getKernelVersion(rootPath)
@@ -47,7 +53,7 @@ initrd  /.system/boot/initrd.img-%s`
 		return err
 	}
 
-	err := os.MkdirAll(grubPath, 0755)
+	err = os.MkdirAll(grubPath, 0755)
 	if err != nil {
 		PrintVerbose("generateABGrubConf:err(2): %s", err)
 		return err
@@ -55,7 +61,7 @@ initrd  /.system/boot/initrd.img-%s`
 
 	err = os.WriteFile(
 		confPath,
-		[]byte(fmt.Sprintf(template, rootUuid, kernelVersion, rootUuid, kernelVersion)),
+		[]byte(fmt.Sprintf(template, rootUuid, kernelVersion, rootUuid, kargs, kernelVersion)),
 		0644,
 	)
 	if err != nil {

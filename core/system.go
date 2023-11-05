@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/google/uuid"
@@ -43,6 +44,13 @@ const (
 	UPGRADE      = "upgrade"
 	FOCE_UPGRADE = "force-upgrade"
 	APPLY        = "package-apply"
+)
+
+const (
+	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
+	MountUnitDir     = "/etc/systemd/system"
+	SystemDTargetDir = "/etc/systemd/system/%s.target.wants"
+	MountUnitFile    = "/abroot-mount.service"
 )
 
 type ABSystemOperation string
@@ -98,37 +106,30 @@ func (s *ABSystem) CheckUpdate() (string, bool) {
 
 // SyncEtc syncs /.system/etc -> /part-future/.system/etc
 func (s *ABSystem) SyncEtc(newEtc string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newEtc)
+	PrintVerbose("ABSystem.SyncEtc: syncing /.system/etc -> %s", newLowerEtc)
 
 	err := EtcBuilder.ExtBuildCommand("/etc", newEtc, fmt.Sprintf("/var/lib/abroot/etc/%s", root.Label))
-	if err != nil {
-		PrintVerbose("ABSystem.SyncEtc:err(3): %s", err)
-		return err
-	}
-
-	PrintVerbose("ABSystem.SyncEtc: sync completed")
-	return nil
 }
 
 // RunCleanUpQueue runs the functions in the queue or only the specified one
 func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 	PrintVerbose("ABSystem.RunCleanUpQueue: running...")
 
-	for i := 0; i < len(queue); i++ {
-		for j := 0; j < len(queue)-1; j++ {
-			if queue[j].Priority > queue[j+1].Priority {
-				queue[j], queue[j+1] = queue[j+1], queue[j]
-			}
-		}
-	}
+	sort.Slice(queue, func(i, j int) bool {
+		return queue[i].Priority < queue[j].Priority
+	})
 
-	for _, f := range queue {
+	itemsToRemove := []int{}
+	for i, f := range queue {
 		if fnName != "" && f.Name != fnName {
 			continue
 		}
 
+		itemsToRemove = append(itemsToRemove, i)
+
 		switch f.Name {
 		case "umountFuture":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountFuture")
 			futurePart := f.Values[0].(ABRootPartition)
 			err := futurePart.Partition.Unmount()
 			if err != nil {
@@ -136,9 +137,11 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "closeChroot":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing closeChroot")
 			chroot := f.Values[0].(*Chroot)
 			chroot.Close() // safe to ignore, already closed
 		case "removeNewSystem":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewSystem")
 			newSystem := f.Values[0].(string)
 			err := os.RemoveAll(newSystem)
 			if err != nil {
@@ -146,6 +149,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "removeNewABImage":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewABImage")
 			newImage := f.Values[0].(string)
 			err := os.RemoveAll(newImage)
 			if err != nil {
@@ -153,6 +157,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "umountBoot":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountBoot")
 			bootPart := f.Values[0].(Partition)
 			err := bootPart.Unmount()
 			if err != nil {
@@ -160,15 +165,28 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 				return err
 			}
 		case "unlockUpgrade":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
 			err := s.UnlockUpgrade()
 			if err != nil {
 				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
 				return err
 			}
+		case "clearUnstagedPackages":
+			PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
+			pkgM := NewPackageManager(false)
+			err := pkgM.ClearUnstagedPackages()
+			if err != nil {
+				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
+				return err
+			}
 		}
 	}
 
-	s.ResetQueue()
+	// Remove matched items in reverse order to avoid changing indices
+	for i := len(itemsToRemove) - 1; i >= 0; i-- {
+		removeIdx := itemsToRemove[i]
+		queue = append(queue[:removeIdx], queue[removeIdx+1:]...)
+	}
 
 	PrintVerbose("ABSystem.RunCleanUpQueue: completed")
 	return nil
@@ -224,15 +242,65 @@ UUID=%s  /  %s  defaults  0  0
 	return nil
 }
 
-// GenerateSbinInit generates a usr/sbin/init file for the future root
-func (s *ABSystem) GenerateSbinInit(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateSbinInit: generating init")
+// GenerateCrypttab identifies which devices are encrypted and generates
+// the /etc/crypttab file for the specified root
+func (s *ABSystem) GenerateCrypttab(rootPath string) error {
+	PrintVerbose("ABSystem.GenerateCrypttab: generating crypttab")
+
+	cryptEntries := [][]string{}
+
+	// Check for encrypted roots
+	for _, rootDevice := range s.RootM.Partitions {
+		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
+			parent := rootDevice.Partition.Parent
+			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+
+			cryptEntries = append(cryptEntries, []string{
+				fmt.Sprintf("luks-%s", parent.Uuid),
+				fmt.Sprintf("UUID=%s", parent.Uuid),
+				"none",
+				"luks,discard",
+			})
+		}
+	}
+
+	// Check for encrypted /var
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		parent := s.RootM.VarPartition.Parent
+		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+
+		cryptEntries = append(cryptEntries, []string{
+			fmt.Sprintf("luks-%s", parent.Uuid),
+			fmt.Sprintf("UUID=%s", parent.Uuid),
+			"none",
+			"luks,discard",
+		})
+	}
+
+	crypttabContent := ""
+	for _, entry := range cryptEntries {
+		fmtEntry := strings.Join(entry, " ")
+		crypttabContent += fmtEntry + "\n"
+	}
+
+	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateCrypttab:err(3): %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// GenerateMountpointsScript generates a /usr/sbin/.abroot-mountpoints file for the future root
+func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsScript: generating script")
 
 	template := `#!/usr/bin/bash
 echo "ABRoot: Initializing mount points..."
 
 # /var mount
-mount -U %s /var
+mount %s /var
 
 # /etc overlay
 mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
@@ -241,35 +309,82 @@ mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%
 mount -o bind /var/home /home
 mount -o bind /var/opt /opt
 mount -o bind,ro /.system/usr /usr
-
-echo "ABRoot: Starting systemd..."
-
-# Start systemd
-exec /lib/systemd/systemd
 `
+	mountExtCmd := ""
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		parent := s.RootM.VarPartition.Parent
+		mountExtCmd = fmt.Sprintf("/dev/mapper/luks-%s", parent.Uuid)
+	} else {
+		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
+	}
+	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label)
 
-	init := fmt.Sprintf(
-		template,
-		s.RootM.VarPartition.Uuid,
-		root.Label,
-		root.Label,
-	)
-
-	os.Remove(rootPath + "/usr/sbin/init")
-
-	err := os.WriteFile(rootPath+"/usr/sbin/init", []byte(init), 0755)
+	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err: %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
 		return err
 	}
 
-	err = os.Chmod(rootPath+"/usr/sbin/init", 0755)
+	err = os.Chmod(rootPath+MountScriptPath, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateSbinInit:err(2): %s", err)
+		PrintVerbose("ABSystem.GenerateMountpointsScript:err(4): %s", err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.GenerateSbinInit: init generated")
+	PrintVerbose("ABSystem.GenerateMountpointsScript: script generated")
+	return nil
+}
+
+// GenerateMountpointsSystemDUnit creates a SystemD unit to setup the /var partition and its
+// derivatives such as /home, /opt, and /etc.
+// This unit must run as soon as all encrypted partitions (if any) have been decrupted.
+func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: generating script")
+
+	depTarget := "local-fs"
+	template := `[Unit]
+Description=Mount partitions
+Requires=%s.target
+After=%s.target
+
+[Service]
+Type=oneshot
+ExecStart=%s
+`
+	// Check for encrypted roots
+	for _, rootDevice := range s.RootM.Partitions {
+		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
+			depTarget = "cryptsetup"
+			break
+		}
+	}
+
+	// Check for encrypted var
+	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
+		depTarget = "cryptsetup"
+	}
+
+	unit := fmt.Sprintf(template, depTarget, depTarget, MountScriptPath)
+
+	err := os.WriteFile(rootPath+MountUnitDir+MountUnitFile, []byte(unit), 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(2): %s", err)
+		return err
+	}
+
+	err = os.MkdirAll(rootPath+fmt.Sprintf(SystemDTargetDir, depTarget), 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
+		return err
+	}
+
+	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
+	if err != nil {
+		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: unit generated")
 	return nil
 }
 
@@ -282,6 +397,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	PrintVerbose("ABSystem.RunOperation: starting %s", operation)
 
 	s.ResetQueue()
+
+	defer s.RunCleanUpQueue("")
 
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
@@ -318,7 +435,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if !res {
 			if operation != FOCE_UPGRADE {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
-				s.RunCleanUpQueue("")
 				return NoUpdateError
 			}
 			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
@@ -395,7 +511,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		"ABRoot.root": futurePartition.Label,
 	}
 	args := map[string]string{}
-	pkgM := NewPackageManager()
+	pkgM := NewPackageManager(false)
 	pkgsFinal := pkgM.GetFinalCmd(operation)
 	if pkgsFinal == "" {
 		pkgsFinal = "true"
@@ -419,7 +535,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			imageName = settings.Cnf.FullImageName
 		}
 	} else {
-		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0] + "@" + imageDigest
+		imageName = settings.Cnf.FullImageName + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest
 	}
 
@@ -450,6 +566,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	abrootTrans := filepath.Join(partFuture.Partition.MountPoint, "abroot-trans")
 	systemOld := filepath.Join(partFuture.Partition.MountPoint, ".system")
 	systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system.new")
+	if os.Getenv("ABROOT_FREE_SPACE") != "" {
+		PrintVerbose("ABSystemRunOperation: ABROOT_FREE_SPACE is set, deleting future system to free space, this is potentially harmful, assuming we are in a test environment")
+		err := os.RemoveAll(systemOld)
+		if err != nil {
+			PrintVerbose("ABSystemRunOperation:err(4.0): %s", err)
+			return err
+		}
+		err = os.MkdirAll(systemOld, 0755)
+		if err != nil {
+			PrintVerbose("ABSystemRunOperation:err(4.0.1): %s", err)
+			return err
+		}
+	}
+
 	err = OciExportRootFs(
 		"abroot-"+uuid.New().String(),
 		imageRecipe,
@@ -461,9 +591,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	s.AddToCleanUpQueue("clearUnstagedPackages", 10)
+
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
-	PrintVerbose("[Stage 5] ABSystemRunOperation")
+	PrintVerbose("[Stage 5] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
@@ -471,14 +603,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	abimage := NewABImage(imageDigest, settings.Cnf.FullImageName)
-	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
+	abimage, err := NewABImage(imageDigest, settings.Cnf.FullImageName)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(5.1): %s", err)
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab and /usr/sbin/init
+	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(5.2): %s", err)
+		return err
+	}
+
+	// Stage 6: Generate /etc/fstab, /etc/crypttab, /usr/sbin/.abroot-mountpoints, and the
+	// SystemD unit to setup mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -488,9 +626,21 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = s.GenerateSbinInit(systemNew, partFuture)
+	err = s.GenerateCrypttab(systemNew)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsScript(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.2): %s", err)
+		return err
+	}
+
+	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(6.3): %s", err)
 		return err
 	}
 
@@ -522,7 +672,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	s.RunCleanUpQueue("closeChroot")
-	s.RemoveFromCleanUpQueue("closeChroot")
 
 	err = generateABGrubConf( // *2 but we don't care about grub.cfg
 		systemNew,
@@ -539,10 +688,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	newEtc := filepath.Join(systemNew, "/etc")
 	err = s.SyncEtc(newEtc, partFuture)
-	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
-		return err
-	}
 
 	// Stage 9: Mount boot partition
 	// ------------------------------------------------
@@ -644,7 +789,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	PrintVerbose("ABSystem.RunOperation: upgrade completed")
-	s.RunCleanUpQueue("")
 	return nil
 }
 
