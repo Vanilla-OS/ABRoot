@@ -40,7 +40,19 @@ type Partition struct {
 	// If the partition is LUKS-encrypted or an LVM volume, the logical volume
 	// opened in /dev/mapper will be a child of the physical partiiton in /dev.
 	// Otherwise, the partition will be a direct child of the block device, and
-	// therefore Parent will be nil.
+	// its Parent will be nil.
+	//
+	// The same logic applies for encrypted LVM volumes. When this is the case,
+	// the filesystem hirearchy is as follows:
+	//
+	//         NAME               FSTYPE
+	//   -- sda1                LVM2_member
+	//    |-- myVG-myLV         crypto_LUKS
+	//      |-- luks-volume     btrfs
+	//
+	// In this case, the parent of "luks-volume" is "myVG-myLV", which,
+	// in turn, has "sda1" as parent. Since "sda1" is a physical partition,
+	// its parent is nil.
 	Parent *Partition
 }
 
@@ -94,17 +106,15 @@ func iterChildren(childs *[]Children, result *[]Partition) {
 			Device:       child.LogicalName,
 		})
 
-		detectedPartitions := len(*result)
-
+		currentPartitions := len(*result)
 		iterChildren(&child.Children, result)
-
-		if detectedPartitions == 0 {
-			return
-		}
+		detectedPartitions := len(*result) - currentPartitions
 
 		// Populate children's reference to parent
-		for i := 0; i < len(*result)-detectedPartitions; i++ {
-			(*result)[detectedPartitions+i].Parent = &(*result)[detectedPartitions-1]
+		for i := currentPartitions; i < len(*result); i++ {
+			if (*result)[i].Parent == nil {
+				(*result)[i].Parent = &(*result)[len(*result)-detectedPartitions-1]
+			}
 		}
 	}
 }
