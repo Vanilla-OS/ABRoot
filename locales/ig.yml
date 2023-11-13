@@ -1,0 +1,51 @@
+abroot:
+  use: ""
+  long: ""
+  short: ""
+  verboseFlag: ""
+
+kargs:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+  notChanged: ""
+  applyFailed: ""
+
+rollback:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+
+pkg:
+  use: ""
+  long: ""
+  short: ""
+  rootRequired: ""
+  noPackageNameProvided: ""
+  addedMsg: ""
+  applyFailed: ""
+  removedMsg: ""
+  listMsg: ""
+
+status:
+  use: ""
+  long: ""
+  short: ""
+  jsonFlag: ""
+  dumpFlag: ""
+  rootRequired: ""
+  infoMsg: |
+  unstagedFoundMsg: ""
+  dumpMsg: ""
+
+upgrade:
+  use: ""
+  long: ""
+  short: ""
+  forceFlag: ""
+  rootRequired: ""
+  updateAvailable: ""
+  noUpdateAvailable: ""
+  checkOnlyFlag: ""
