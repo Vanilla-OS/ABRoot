@@ -9,9 +9,9 @@ abroot:
 kargs:
   use: "kargs"
   long: "Zarządzaj parametrami jądra."
-  short: "Zarządzaj parametrami jądra."
+  short: "Zarządzaj parametrami jądra"
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  notChanged: No changes were made to kernel parameters.
+  notChanged: Nie dokonano żadnych zmian w parametrach jądra
   applyFailed: "Apply command failed: %s\n"
 rollback:
   use: "rollback"
@@ -20,7 +20,7 @@ rollback:
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
 pkg:
   use: pkg
-  long: Install and manage packages.
+  long: Instaluj i zarządzaj pakietami
   short: Manage packages
   rootRequired: You must be root to run this command.
   addedMsg: "Package(s) %s added.\n"
