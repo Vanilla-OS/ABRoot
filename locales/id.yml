@@ -8,15 +8,16 @@ abroot:
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "Mengelola parameter kernel."
+  short: "Mengelola parameter kernel"
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  notChanged: Tidak ada perubahan yang dilakukan pada parameter kernel.
+  applyFailed: "Gagal menerapkan perintah: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
+  long: "Menjalankan rollback sistem, membuang perubahan yang dibuat pada root saat
+    ini."
+  short: "Mengembalikan sistem ke kondisi sebelumnya"
   rootRequired: "You must be root to run this command."
 pkg:
   noPackageNameProvided: You must provide at least one package name for this operation.
