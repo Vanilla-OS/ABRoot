@@ -4,51 +4,54 @@ abroot:
     між двома кореневими розділами (A<->B)"
   short: "ABRoot забезпечує повну незмінність та атомарність, виконуючи транзакції
     між двома кореневими розділами (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "показати більш детальний висновок"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
+  long: "Керування параметрами ядра."
+  short: "Керування параметрами ядра"
+  rootRequired: "Щоб запустити цю команду, ви повинні мати права користувача root."
   notChanged: До параметрів ядра не було внесено жодних змін.
-  applyFailed: "Apply command failed: %s\n"
+  applyFailed: "Не вдалося застосувати команду: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
+  long: "Виконує відкат системи, відкидаючи зміни, внесені до поточного кореневого
+    розділу."
   short: "Повернути систему до попереднього стану"
-  rootRequired: "You must be root to run this command."
+  rootRequired: "Щоб запустити цю команду, ви повинні мати права користувача root."
 pkg:
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
+  applyFailed: "Не вдалося застосувати команду: %s\n"
+  removedMsg: "Видалено пакунків: %s.\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
+  long: Встановлення та керування пакунками.
+  short: Керування пакунками
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   noPackageNameProvided: Ви повинні вказати принаймні одну назву пакунка для цієї
     операції.
   listMsg: "Додано пакунків:\n%s\nВидалено пакунків:\n%s\n"
-  addedMsg: "Package(s) %s added.\n"
+  addedMsg: "Додано пакунків: %s.\n"
 status:
   use: status
   long: Показати поточний стан ABRoot.
   short: Показати стан
-  dumpFlag: Dump the ABRoot status to an archive
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
+  dumpFlag: Зберегти стан ABRoot у архів
+  infoMsg: "Розділи ABRoot:\n  - Теперішне: %s ◄\n  - Майбутнє: %s\n\nЗавантажена
+    конфігурація: %s\n\nХарактеристики пристрою:\n  - Процесор: %s\n  - Графічний
+    процесор:%s\n  - Пам'ять: %s\n\nABImage:\n  - Підсумок: %s\n  - Позначка часу:
+    %s\n  - Зображення: %s\n\nПараметри ядра: %s\n\nПакунки:\n  - Додано: %s\n  -
+    Видалено: %s\n  - В очікуванні: %s%s\n"
+  unstagedFoundMsg: "\n\t\tЄ %d пакунків, які ще не застосовані. Щоб застосувати їх,
+    будь ласка, виконайте 'abroot pkg apply'."
   jsonFlag: Показати результат у форматі JSON
-  rootRequired: You must be root to run this command.
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
+  dumpMsg: "Стан ABRoot збережено у %s\n"
 upgrade:
   use: upgrade
-  short: Update the boot partition
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
+  short: Оновити завантажувальний розділ
+  long: Оновити завантажувальний розділ для технічного обслуговування (тільки для
+    досвідчених користувачів)
+  forceFlag: примусово оновити завантажувальний розділ без запиту на підтвердження
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   updateAvailable: Вийшло оновлення для вашої системи.
   noUpdateAvailable: Для вашої системи немає оновлень.
-  checkOnlyFlag: check for updates but do not apply them
+  checkOnlyFlag: перевіряти оновлення, але не застосовувати їх
