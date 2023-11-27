@@ -39,6 +39,9 @@ type Config struct {
 	IPkgMngRm   string `json:"iPkgMngRm"`
 	IPkgMngApi  string `json:"iPkgMngApi"`
 
+	// Package diff API (Differ)
+	DifferURL string `json:"differURL"`
+
 	// Partitions
 	PartLabelVar  string `json:"partLabelVar"`
 	PartLabelA    string `json:"partLabelA"`
