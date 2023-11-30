@@ -436,6 +436,7 @@ func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPa
 Description=Mount partitions
 Requires=%s.target
 After=%s.target
+Before=nss-user-lookup.target
 
 [Service]
 Type=oneshot
