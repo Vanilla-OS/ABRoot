@@ -14,11 +14,14 @@ package cmd
 */
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/differ/diff"
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
@@ -50,11 +53,6 @@ func NewUpgradeCommand() *cmdr.Command {
 }
 
 func upgrade(cmd *cobra.Command, args []string) error {
-	if !core.RootCheck(false) {
-		cmdr.Error.Println(abroot.Trans("upgrade.rootRequired"))
-		return nil
-	}
-
 	checkOnly, err := cmd.Flags().GetBool("check-only")
 	if err != nil {
 		cmdr.Error.Println(err)
@@ -68,14 +66,29 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
-		_, res := aBsys.CheckUpdate()
+		newDigest, res := aBsys.CheckUpdate()
 		if res {
 			cmdr.Info.Println(abroot.Trans("upgrade.updateAvailable"))
+
+			added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
+			if err != nil {
+				return err
+			}
+			err = renderPackageDiff(added, upgraded, downgraded, removed)
+			if err != nil {
+				return err
+			}
+
 			os.Exit(0)
 		} else {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
 			os.Exit(1)
 		}
+		return nil
+	}
+
+	if !core.RootCheck(false) {
+		cmdr.Error.Println(abroot.Trans("upgrade.rootRequired"))
 		return nil
 	}
 
@@ -94,7 +107,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 
 	err = aBsys.RunOperation(operation)
 	if err != nil {
-		if err == core.NoUpdateError {
+		if err == core.ErrNoUpdate {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
 			return err
 		}
@@ -104,5 +117,45 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	os.Exit(0)
+	return nil
+}
+
+func renderPackageDiff(added, upgraded, downgraded, removed []diff.PackageDiff) error {
+	pkgFmt := "%s  '%s' -> '%s'"
+
+	// Calculate largest string for proper alignment
+	largestPkgName := 0
+	for _, pkgSet := range [][]diff.PackageDiff{added, upgraded, downgraded, removed} {
+		for _, pkg := range pkgSet {
+			if len(pkg.Name) > largestPkgName {
+				largestPkgName = len(pkg.Name)
+			}
+		}
+	}
+
+	for _, pkgSet := range []struct {
+		Set    []diff.PackageDiff
+		Header string
+		Color  cmdr.Color
+	}{
+		{added, abroot.Trans("upgrade.added"), cmdr.FgGreen},
+		{upgraded, abroot.Trans("upgrade.upgraded"), cmdr.FgBlue},
+		{downgraded, abroot.Trans("upgrade.downgraded"), cmdr.FgYellow},
+		{removed, abroot.Trans("upgrade.removed"), cmdr.FgRed},
+	} {
+		cmdr.NewStyle(cmdr.Bold, pkgSet.Color).Println(pkgSet.Header + ":")
+		bulletItems := []cmdr.BulletListItem{}
+		for _, pkg := range pkgSet.Set {
+			bulletItems = append(bulletItems, cmdr.BulletListItem{
+				Level: 1,
+				Text:  fmt.Sprintf(pkgFmt, pkg.Name+strings.Repeat(" ", largestPkgName-len(pkg.Name)), pkg.PreviousVersion, pkg.NewVersion),
+			})
+		}
+		err := cmdr.BulletList.WithItems(bulletItems).Render()
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

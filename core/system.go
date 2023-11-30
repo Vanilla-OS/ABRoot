@@ -56,10 +56,10 @@ const (
 type ABSystemOperation string
 
 var (
-	queue         []QueuedFunction
-	lockFile      string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
-	userLockFile  string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
-	NoUpdateError error  = errors.New("no update available")
+	queue        []QueuedFunction
+	lockFile     string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
+	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
+	ErrNoUpdate  error  = errors.New("no update available")
 )
 
 // NewABSystem creates a new system
@@ -525,7 +525,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if !res {
 			if operation != FORCE_UPGRADE {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
-				return NoUpdateError
+				return ErrNoUpdate
 			}
 			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
 		}
