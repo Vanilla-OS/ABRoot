@@ -702,6 +702,9 @@ github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/hash
 github.com/ulikunitz/xz/internal/xlog
 github.com/ulikunitz/xz/lzma
+# github.com/vanilla-os/differ/diff v0.0.0-20231129233121-c5fad5988d30
+## explicit; go 1.21.4
+github.com/vanilla-os/differ/diff
 # github.com/vanilla-os/orchid v0.4.0
 ## explicit; go 1.19
 github.com/vanilla-os/orchid

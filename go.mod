@@ -1,12 +1,13 @@
 module github.com/vanilla-os/abroot
 
-go 1.18
+go 1.21.4
 
 require (
 	github.com/containers/buildah v1.31.2
 	github.com/containers/storage v1.48.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.7.0
+	github.com/vanilla-os/differ/diff v0.0.0-20231129233121-c5fad5988d30
 	github.com/vanilla-os/orchid v0.4.0
 	github.com/vanilla-os/prometheus v0.1.6
 	golang.org/x/sys v0.14.0

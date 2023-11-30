@@ -82,3 +82,15 @@ func TestBaseImagePackageDiff(t *testing.T) {
 
 	fmt.Println(packages)
 }
+
+func TestOverlayPackageDiff(t *testing.T) {
+	added, upgraded, downgraded, removed, err := core.OverlayPackageDiff()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Added: %v\n", added)
+	fmt.Printf("Upgraded: %v\n", upgraded)
+	fmt.Printf("Downgraded: %v\n", downgraded)
+	fmt.Printf("Removed: %v\n", removed)
+}
