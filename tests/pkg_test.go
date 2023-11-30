@@ -75,12 +75,15 @@ func TestBaseImagePackageDiff(t *testing.T) {
 	oldDigest := "sha256:a99e4593b23fd07e3761639e9db38c0315e198d6e39dad6070e0e0e88be3de0b"
 	newDigest := "sha256:a99e4593b23fd07e3761639e9db38c0315e198d6e39dad6070e0e0e88be3de0c"
 
-	packages, err := core.BaseImagePackageDiff(oldDigest, newDigest)
+	added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(oldDigest, newDigest)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(packages)
+	fmt.Printf("Added: %v\n", added)
+	fmt.Printf("Upgraded: %v\n", upgraded)
+	fmt.Printf("Downgraded: %v\n", downgraded)
+	fmt.Printf("Removed: %v\n", removed)
 }
 
 func TestOverlayPackageDiff(t *testing.T) {

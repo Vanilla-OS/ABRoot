@@ -25,25 +25,12 @@ import (
 	"github.com/vanilla-os/differ/diff"
 )
 
-type PackageDiff struct {
-	Added []struct {
-		Name       string
-		NewVersion string `json:"new_version"`
-	}
-	Removed []struct {
-		Name       string
-		OldVersion string `json:"old_version"`
-	}
-	Upgraded, Downgraded []struct {
-		Name       string
-		OldVersion string `json:"new_version"`
-		NewVersion string `json:"old_version"`
-	}
-}
-
 // BaseImagePackageDiff retrieves the added, removed, upgraded and downgraded
 // base packages (the ones bundled with the image).
-func BaseImagePackageDiff(currentDigest, newDigest string) (PackageDiff, error) {
+func BaseImagePackageDiff(currentDigest, newDigest string) (
+	added, upgraded, downgraded, removed []diff.PackageDiff,
+	err error,
+) {
 	PrintVerbose("BaseImagePackageDiff: running...")
 
 	imageComponents := strings.Split(settings.Cnf.Name, "/")
@@ -54,32 +41,41 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (PackageDiff, error) 
 	request, err := http.NewRequest(http.MethodGet, reqUrl, strings.NewReader(body))
 	if err != nil {
 		PrintVerbose("PackageDiff.BaseImagePackageDiff:err: %s", err)
-		return PackageDiff{}, err
+		return
 	}
 	defer request.Body.Close()
 
 	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
 		PrintVerbose("PackageDiff.BaseImagePackageDiff(1):err: %s", err)
-		return PackageDiff{}, err
+		return
 	}
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		PrintVerbose("PackageDiff.BaseImagePackageDiff(2):err: %s", err)
-		return PackageDiff{}, err
+		return
 	}
 
-	diff := PackageDiff{}
-	err = json.Unmarshal(contents, &diff)
+	pkgDiff := struct {
+		Added, Upgraded, Downgraded, Removed []diff.PackageDiff
+	}{}
+	err = json.Unmarshal(contents, &pkgDiff)
 	if err != nil {
 		PrintVerbose("PackageDiff.BaseImagePackageDiff(3):err: %s", err)
-		return PackageDiff{}, err
+		return
 	}
 
-	return diff, nil
+	added = pkgDiff.Added
+	upgraded = pkgDiff.Upgraded
+	downgraded = pkgDiff.Downgraded
+	removed = pkgDiff.Removed
+
+	return
 }
 
+// OverlayPackageDiff retrieves the added, removed, upgraded and downgraded
+// overlay packages (the ones added manually via `abroot pkg add`).
 func OverlayPackageDiff() (
 	added, upgraded, downgraded, removed []diff.PackageDiff,
 	err error,
