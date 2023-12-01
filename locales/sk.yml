@@ -4,7 +4,7 @@ abroot:
     partíciami (A<->B)"
   short: "ABRoot poskytuje úplnú rigiditu a atomicitu vykonávaním pohybov medzi koreňovými
     partíciami (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "ukáž viac detailný výstup"
 
 kargs:
   use: "kargs"
