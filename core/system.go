@@ -469,7 +469,7 @@ ExecStart=%s
 		return err
 	}
 
-	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
+	err = os.Symlink(".."+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
 		return err
