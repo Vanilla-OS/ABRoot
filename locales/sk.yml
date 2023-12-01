@@ -1,18 +1,18 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot poskytuje úplnú rigiditu a atomicitu vykonávaním pohybov medzi koreňovými
+    partíciami (A<->B)"
+  short: "ABRoot poskytuje úplnú rigiditu a atomicitu vykonávaním pohybov medzi koreňovými
+    partíciami (A<->B)"
+  verboseFlag: "ukáž viac detailný výstup"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "Správa parametrov kernelu."
+  short: "Správa parametrov kernelu"
+  rootRequired: "Na spustenie tohoto prīkazu musíte byť root."
+  notChanged: Parametre kernelu neboli zmenené.
+  applyFailed: "Spustenie príkazu zlyhalo: %s\n"
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
