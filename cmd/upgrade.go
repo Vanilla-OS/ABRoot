@@ -66,9 +66,12 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
+		cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
+
+		// Check for image updates
 		newDigest, res := aBsys.CheckUpdate()
 		if res {
-			cmdr.Info.Println(abroot.Trans("upgrade.updateAvailable"))
+			cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
 
 			added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
 			if err != nil {
@@ -78,12 +81,29 @@ func upgrade(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-
-			os.Exit(0)
 		} else {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
-			os.Exit(1)
 		}
+
+		// Check for package updates
+		cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
+		added, upgraded, downgraded, removed, err := core.OverlayPackageDiff()
+		if err != nil {
+			return err
+		}
+
+		sumChanges := len(added) + len(upgraded) + len(downgraded) + len(removed)
+		if sumChanges == 0 {
+			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
+		} else {
+			cmdr.Info.Sprintf(abroot.Trans("upgrade.packageUpdateAvailable"), sumChanges)
+
+			err = renderPackageDiff(added, upgraded, downgraded, removed)
+			if err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}
 

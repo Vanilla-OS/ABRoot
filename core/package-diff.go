@@ -96,11 +96,16 @@ func OverlayPackageDiff() (
 	}
 
 	remoteAdded := map[string]string{}
-	version := ""
+	var pkgInfo map[string]any
 	for i := 0; i < len(addedPkgs); i++ {
-		version, err = pkgM.GetRepoContentsForPkg(addedPkgs[i])
+		pkgInfo, err = GetRepoContentsForPkg(addedPkgs[i])
 		if err != nil {
 			PrintVerbose("PackageDiff.OverlayPackageDiff(1):err: %s", err)
+			return
+		}
+		version, ok := pkgInfo["version"].(string)
+		if !ok {
+			err = fmt.Errorf("PackageDiff.OverlayPackageDiff(2):err: Unexpected value when retrieving upstream version of '%s'", addedPkgs[i])
 			return
 		}
 		remoteAdded[addedPkgs[i]] = version

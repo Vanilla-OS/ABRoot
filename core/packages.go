@@ -377,9 +377,10 @@ func (p *PackageManager) processApplyPackages() (string, string) {
 
 	var addPkgs, removePkgs []string
 	for _, pkg := range unstaged {
-		if pkg.Status == ADD {
+		switch pkg.Status {
+		case ADD:
 			addPkgs = append(addPkgs, pkg.Name)
-		} else if pkg.Status == REMOVE {
+		case REMOVE:
 			removePkgs = append(removePkgs, pkg.Name)
 		}
 	}
@@ -515,15 +516,16 @@ func (p *PackageManager) ExistsInRepo(pkg string) error {
 	return nil
 }
 
-func (p *PackageManager) GetRepoContentsForPkg(pkg string) (string, error) {
+// GetRepoContentsForPkg retrieves package information from the repository API
+func GetRepoContentsForPkg(pkg string) (map[string]any, error) {
 	PrintVerbose("PackageManager.GetRepoContentsForPkg: running...")
 
 	ok, err := assertPkgMngApiSetUp()
 	if err != nil {
-		return "", err
+		return map[string]any{}, err
 	}
 	if !ok {
-		return "", errors.New("PackageManager.GetRepoContentsForPkg: no API url set, cannot query package information")
+		return map[string]any{}, errors.New("PackageManager.GetRepoContentsForPkg: no API url set, cannot query package information")
 	}
 
 	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
@@ -532,27 +534,21 @@ func (p *PackageManager) GetRepoContentsForPkg(pkg string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		PrintVerbose("PackageManager.GetRepoContentsForPkg:err: " + err.Error())
-		return "", err
+		return map[string]any{}, err
 	}
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		PrintVerbose("PackageManager.GetRepoContentsForPkg(2):err: %s", err)
-		return "", err
+		return map[string]any{}, err
 	}
 
 	pkgInfo := map[string]any{}
 	err = json.Unmarshal(contents, &pkgInfo)
 	if err != nil {
 		PrintVerbose("PackageManager.GetRepoContentsForPkg(3):err: %s", err)
-		return "", err
+		return map[string]any{}, err
 	}
 
-	version, ok := pkgInfo["version"].(string)
-	if !ok {
-		PrintVerbose(":err: %s", err)
-		return "", fmt.Errorf("PackageManager.GetRepoContentsForPkg(3):err: Could not find version for package %s", pkg)
-	}
-
-	return version, nil
+	return pkgInfo, nil
 }
