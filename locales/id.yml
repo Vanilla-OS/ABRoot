@@ -18,14 +18,15 @@ rollback:
   long: "Menjalankan rollback sistem, membuang perubahan yang dibuat pada root saat
     ini."
   short: "Mengembalikan sistem ke kondisi sebelumnya"
-  rootRequired: "You must be root to run this command."
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
 pkg:
-  noPackageNameProvided: You must provide at least one package name for this operation.
+  noPackageNameProvided: Anda harus memberikan setidaknya satu nama paket untuk operasi
+    ini.
   addedMsg: "Package(s) %s added.\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
+  long: Menginstal dan mengelola paket.
+  short: Mengelola paket
+  rootRequired: Anda harus menjadi root untuk menjalankan perintah ini.
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"

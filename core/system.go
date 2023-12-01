@@ -436,6 +436,7 @@ func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPa
 Description=Mount partitions
 Requires=%s.target
 After=%s.target
+Before=nss-user-lookup.target
 
 [Service]
 Type=oneshot
@@ -468,7 +469,7 @@ ExecStart=%s
 		return err
 	}
 
-	err = os.Symlink(rootPath+MountUnitDir+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
+	err = os.Symlink(".."+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
 		return err
