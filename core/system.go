@@ -47,10 +47,7 @@ const (
 )
 
 const (
-	MountScriptPath  = "/usr/sbin/.abroot-mountpoints"
-	MountUnitDir     = "/etc/systemd/system"
-	SystemDTargetDir = "/etc/systemd/system/%s.target.wants"
-	MountUnitFile    = "/abroot-mount.service"
+	MountUnitDir = "/etc/systemd/system"
 )
 
 type ABSystemOperation string
@@ -315,14 +312,24 @@ func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error {
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 UUID=%s  /  %s  defaults  0  0
+/.system/usr  /.system/usr  none  bind,ro
+%s  /var  auto  defaults  0  0
 `
+	varSource := ""
+	if s.RootM.VarPartition.IsDevMapper() {
+		varSource = fmt.Sprintf("/dev/mapper/%s", s.RootM.VarPartition.Device)
+	} else {
+		varSource = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
+	}
+
 	fstab := fmt.Sprintf(
 		template,
 		root.Partition.Uuid,
 		root.Partition.FsType,
+		varSource,
 	)
 
-	err := os.WriteFile(rootPath+"/etc/fstab", []byte(fstab), 0644)
+	err := os.WriteFile(filepath.Join(rootPath, "/etc/fstab"), []byte(fstab), 0644)
 	if err != nil {
 		PrintVerbose("ABSystem.GenerateFstab:err: %s", err)
 		return err
@@ -382,100 +389,77 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	return nil
 }
 
-// GenerateMountpointsScript generates a /usr/sbin/.abroot-mountpoints file for the future root
-func (s *ABSystem) GenerateMountpointsScript(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateMountpointsScript: generating script")
+// GenerateSystemdUnits generates systemd units that mount the mutable parts of the system
+func (s *ABSystem) GenerateSystemdUnits(rootPath string, root ABRootPartition) error {
+	PrintVerbose("ABSystem.GenerateSystemdUnits: generating units")
 
-	template := `#!/usr/bin/bash
-echo "ABRoot: Initializing mount points..."
+	extraDepends := ""
+	if root.Partition.IsEncrypted() || s.RootM.VarPartition.IsEncrypted() {
+		extraDepends = "cryptsetup.target"
+	}
 
-# /var mount
-mount %s /var
+	type varmount struct {
+		source      string
+		destination string
+		fsType      string
+		options     string
+	}
 
-# /etc overlay
-mount -t overlay overlay -o lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/%s,workdir=/var/lib/abroot/etc/%s-work /etc
+	mounts := []varmount{
+		{"/var/home", "/home", "none", "bind"},
+		{"/var/opt", "/opt", "none", "bind"},
+		{"/var/lib/abroot/etc/" + root.Label + "/locales", "/.system/usr/lib/locale", "none", "bind"},
+		{"overlay", "/.system/etc", "overlay", "lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/" + root.Label + ",workdir=/var/lib/abroot/etc/" + root.Label + "-work"},
+	}
 
-# /var binds
-mount -o bind /var/home /home
-mount -o bind /var/opt /opt
-mount -o bind,ro /.system/usr /usr
-mount -o bind /var/lib/abroot/etc/%s/locales /usr/lib/locale
+	afterVarTemplate := `[Unit]
+Description=Mounts %s from var
+After=local-fs-pre.target %s
+Before=local-fs.target nss-user-lookup.target
+RequiresMountsFor=/var
+
+[Mount]
+What=%s
+Where=%s
+Type=%s
+Options=%s
 `
-	mountExtCmd := ""
-	if s.RootM.VarPartition.IsDevMapper() {
-		mountExtCmd = fmt.Sprintf("/dev/mapper/%s", s.RootM.VarPartition.Device)
-	} else {
-		mountExtCmd = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
-	}
-	mountpoints := fmt.Sprintf(template, mountExtCmd, root.Label, root.Label, root.Label)
 
-	err := os.WriteFile(rootPath+MountScriptPath, []byte(mountpoints), 0755)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsScript:err(3): %s", err)
-		return err
-	}
+	for _, mount := range mounts {
+		PrintVerbose("ABSystem.GenerateSystemdUnits: generating unit for %s", mount.destination)
 
-	err = os.Chmod(rootPath+MountScriptPath, 0755)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsScript:err(4): %s", err)
-		return err
-	}
+		unit := fmt.Sprintf(afterVarTemplate, mount.destination, extraDepends, mount.source, mount.destination, mount.fsType, mount.options)
 
-	PrintVerbose("ABSystem.GenerateMountpointsScript: script generated")
-	return nil
-}
+		// the unit file needs to have the escaped mount point as its name
+		out, err := exec.Command("systemd-escape", "--path", mount.destination).Output()
+		if err != nil {
+			PrintVerbose("ABSystem.GenerateSystemdUnits:err(1): failed to determine escaped path: %s", err)
+			return err
+		}
+		mountUnitFile := "/" + strings.Replace(string(out), "\n", "", -1) + ".mount"
 
-// GenerateMountpointsSystemDUnit creates a SystemD unit to setup the /var partition and its
-// derivatives such as /home, /opt, and /etc.
-// This unit must run as soon as all encrypted partitions (if any) have been decrupted.
-func (s *ABSystem) GenerateMountpointsSystemDUnit(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: generating script")
+		err = os.WriteFile(filepath.Join(rootPath, MountUnitDir, mountUnitFile), []byte(unit), 0644)
+		if err != nil {
+			PrintVerbose("ABSystem.GenerateSystemdUnits:err(2): %s", err)
+			return err
+		}
 
-	depTarget := "local-fs"
-	template := `[Unit]
-Description=Mount partitions
-Requires=%s.target
-After=%s.target
-Before=nss-user-lookup.target
+		const targetWants string = "/local-fs.target.wants"
 
-[Service]
-Type=oneshot
-ExecStart=%s
-`
-	// Check for encrypted roots
-	for _, rootDevice := range s.RootM.Partitions {
-		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
-			depTarget = "cryptsetup"
-			break
+		err = os.MkdirAll(filepath.Join(rootPath, MountUnitDir, targetWants), 0755)
+		if err != nil {
+			PrintVerbose("ABSystem.GenerateSystemdUnits:err(3): %s", err)
+			return err
+		}
+
+		err = os.Symlink(filepath.Join("../", mountUnitFile), filepath.Join(rootPath, MountUnitDir, targetWants, mountUnitFile))
+		if err != nil {
+			PrintVerbose("ABSystem.GenerateSystemdUnits:err(4): failed to create symlink: %s", err)
+			return err
 		}
 	}
 
-	// Check for encrypted var
-	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
-		depTarget = "cryptsetup"
-	}
-
-	unit := fmt.Sprintf(template, depTarget, depTarget, MountScriptPath)
-
-	err := os.WriteFile(rootPath+MountUnitDir+MountUnitFile, []byte(unit), 0755)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(2): %s", err)
-		return err
-	}
-
-	err = os.MkdirAll(rootPath+fmt.Sprintf(SystemDTargetDir, depTarget), 0755)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(3): %s", err)
-		return err
-	}
-
-	err = os.Symlink(".."+MountUnitFile, rootPath+fmt.Sprintf(SystemDTargetDir, depTarget)+MountUnitFile)
-	if err != nil {
-		PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit:err(4): %s", err)
-		return err
-	}
-
-	PrintVerbose("ABSystem.GenerateMountpointsSystemDUnit: unit generated")
+	PrintVerbose("ABSystem.GenerateSystemdUnits: units generated")
 	return nil
 }
 
@@ -706,8 +690,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	// Stage 6: Generate /etc/fstab, /etc/crypttab, /usr/sbin/.abroot-mountpoints, and the
-	// SystemD unit to setup mountpoints
+	// Stage 6: Generate /etc/fstab, /etc/crypttab, and the
+	// SystemD units to setup mountpoints
 	// ------------------------------------------------
 	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
 
@@ -723,15 +707,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = s.GenerateMountpointsScript(systemNew, partFuture)
+	err = s.GenerateSystemdUnits(systemNew, partFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(6.2): %s", err)
-		return err
-	}
-
-	err = s.GenerateMountpointsSystemDUnit(systemNew, partFuture)
-	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(6.3): %s", err)
+		PrintVerbose("ABSystem.RunOperation:err(6.2): Failed to Generate SystemdUnits: %s", err)
 		return err
 	}
 

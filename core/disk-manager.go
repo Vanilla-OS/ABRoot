@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 )
 
@@ -209,4 +210,9 @@ func (p *Partition) Unmount() error {
 // Returns whether the partition is a device-mapper virtual partition
 func (p *Partition) IsDevMapper() bool {
 	return p.Parent != nil
+}
+
+// IsEncrypted returns whether the partition is encrypted
+func (p *Partition) IsEncrypted() bool {
+	return strings.HasPrefix(p.Device, "luks-")
 }
