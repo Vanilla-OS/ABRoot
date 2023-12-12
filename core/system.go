@@ -628,7 +628,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		}
 	} else {
 		imageName = settings.Cnf.FullImageName + "@" + imageDigest
-		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest
+		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
 
 	// Delete old image
