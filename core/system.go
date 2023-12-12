@@ -703,6 +703,19 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerboseErr("ABSystemRunOperation", 4.1, err)
 			return err
 		}
+	} else {
+		PrintVerboseInfo("ABSystemRunOperation", "Creating a reflink clone of the old system to copy into")
+		err := os.RemoveAll(systemNew)
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 4.11, "could not cleanup old systemNew folder", err)
+			return err
+		}
+		err = exec.Command("cp", "--reflink", "-a", systemOld, systemNew).Run()
+		if err != nil {
+			PrintVerboseWarn("ABSystemRunOperation", 4.12, "reflink copy of system failed, falling back to slow copy because:", err)
+			// can be safely ignored
+			// file system doesn't support CoW
+		}
 	}
 
 	err = OciExportRootFs(
