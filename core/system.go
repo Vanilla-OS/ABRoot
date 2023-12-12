@@ -528,6 +528,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
 				return NoUpdateError
 			}
+			imageDigest = s.CurImage.Digest
 			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
 		}
 	} else {
