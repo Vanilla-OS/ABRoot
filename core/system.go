@@ -528,6 +528,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
 				return NoUpdateError
 			}
+			imageDigest = s.CurImage.Digest
 			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
 		}
 	} else {
@@ -627,7 +628,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		}
 	} else {
 		imageName = settings.Cnf.FullImageName + "@" + imageDigest
-		labels["ABRoot.BaseImageDigest"] = s.CurImage.Digest
+		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
 
 	// Delete old image
