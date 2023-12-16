@@ -69,7 +69,6 @@ func TestPackageManager(t *testing.T) {
 }
 
 func TestBaseImagePackageDiff(t *testing.T) {
-	settings.Cnf.DifferURL = "http://0.0.0.0:8080"
 	settings.Cnf.Name = "vanilla-os/pico"
 
 	oldDigest := "sha256:a99e4593b23fd07e3761639e9db38c0315e198d6e39dad6070e0e0e88be3de0b"

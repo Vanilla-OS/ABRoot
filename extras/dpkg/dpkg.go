@@ -9,7 +9,6 @@ package dpkg
 import "C"
 import (
 	"errors"
-	"strconv"
 )
 
 var DpkgInstanced bool
@@ -39,21 +38,13 @@ func DpkgDispose() error {
 
 func getPackageVersion(pkgName string) string {
 	pkgInfo := C.pkg_hash_find_singleton(C.CString(pkgName))
+	version := C.GoString(C.versiondescribe(&pkgInfo.configversion, C.vdew_nonambig))
 
-	versionEpoch := int(pkgInfo.configversion.epoch)
-	version := C.GoString(pkgInfo.configversion.version)
-	versionRevision := C.GoString(pkgInfo.configversion.revision)
-
-	versionStr := ""
-	if versionEpoch != 0 {
-		versionStr += strconv.Itoa(versionEpoch) + ":"
-	}
-	versionStr += version
-	if versionRevision != "" {
-		versionStr += "-" + versionRevision
+	if version == "<none>" {
+		version = ""
 	}
 
-	return versionStr
+	return version
 }
 
 func DpkgGetPackageVersion(pkgName string) string {

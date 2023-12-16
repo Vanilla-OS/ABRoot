@@ -105,6 +105,9 @@ func init() {
 		IPkgMngRm:   viper.GetString("iPkgMngRm"),
 		IPkgMngApi:  viper.GetString("iPkgMngApi"),
 
+		// Package diff API (Differ)
+		DifferURL: viper.GetString("differURL"),
+
 		// Partitions
 		PartLabelVar:  viper.GetString("partLabelVar"),
 		PartLabelA:    viper.GetString("partLabelA"),

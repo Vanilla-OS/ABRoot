@@ -72,7 +72,7 @@ upgrade:
   forceFlag: "force update the boot partition without asking for confirmation"
   rootRequired: "You must be root to run this command."
   checkingSystemUpdate: "Checking for system updates..."
-  checkingSystemUpdate: "Checking for package updates..."
+  checkingPackageUpdate: "Checking for package updates..."
   systemUpdateAvailable: "There is an update for your system."
   packageUpdateAvailable: "There are %d package updates."
   noUpdateAvailable: "No update available."

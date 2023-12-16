@@ -31,12 +31,14 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (
 	added, upgraded, downgraded, removed []diff.PackageDiff,
 	err error,
 ) {
-	PrintVerbose("BaseImagePackageDiff: running...")
+	PrintVerbose("PackageDiff.BaseImagePackageDiff: running...")
 
 	imageComponents := strings.Split(settings.Cnf.Name, "/")
 	imageName := imageComponents[len(imageComponents)-1]
 	reqUrl := fmt.Sprintf("%s/images/%s/diff", settings.Cnf.DifferURL, imageName)
 	body := fmt.Sprintf("{\"old_digest\": \"%s\", \"new_digest\": \"%s\"}", currentDigest, newDigest)
+
+	PrintVerbose("PackageDiff.BaseImagePackageDiff: Requesting base image diff to %s with body:\n%s", reqUrl, body)
 
 	request, err := http.NewRequest(http.MethodGet, reqUrl, strings.NewReader(body))
 	if err != nil {
@@ -92,23 +94,25 @@ func OverlayPackageDiff() (
 	localAddedVersions := dpkg.DpkgBatchGetPackageVersion(addedPkgs)
 	localAdded := map[string]string{}
 	for i := 0; i < len(addedPkgs); i++ {
-		localAdded[addedPkgs[i]] = localAddedVersions[i]
+		if localAddedVersions[i] != "" {
+			localAdded[addedPkgs[i]] = localAddedVersions[i]
+		}
 	}
 
 	remoteAdded := map[string]string{}
 	var pkgInfo map[string]any
-	for i := 0; i < len(addedPkgs); i++ {
-		pkgInfo, err = GetRepoContentsForPkg(addedPkgs[i])
+	for pkgName := range localAdded {
+		pkgInfo, err = GetRepoContentsForPkg(pkgName)
 		if err != nil {
 			PrintVerbose("PackageDiff.OverlayPackageDiff(1):err: %s", err)
 			return
 		}
 		version, ok := pkgInfo["version"].(string)
 		if !ok {
-			err = fmt.Errorf("PackageDiff.OverlayPackageDiff(2):err: Unexpected value when retrieving upstream version of '%s'", addedPkgs[i])
+			err = fmt.Errorf("PackageDiff.OverlayPackageDiff(2):err: Unexpected value when retrieving upstream version of '%s'", pkgName)
 			return
 		}
-		remoteAdded[addedPkgs[i]] = version
+		remoteAdded[pkgName] = version
 	}
 
 	added, upgraded, downgraded, removed = diff.DiffPackages(localAdded, remoteAdded)
