@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"regexp"
 	"strconv"
+	"sync"
 )
 
 type Package map[string]string
@@ -82,58 +83,69 @@ func CompareVersions(a, b string) int {
 	return compResult
 }
 
+func processPackage(pkg, oldVersion, newVersion string, c chan<- struct {
+	PackageDiff
+	int
+}, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	result := CompareVersions(oldVersion, newVersion)
+	c <- struct {
+		PackageDiff
+		int
+	}{PackageDiff{pkg, newVersion, oldVersion}, result}
+}
+
 // PackageDiff returns the difference in packages between two images, organized into
 // four slices: Added, Upgraded, Downgraded, and Removed packages, respectively.
 func DiffPackages(oldPackages, newPackages Package) ([]PackageDiff, []PackageDiff, []PackageDiff, []PackageDiff) {
+	var wg sync.WaitGroup
 	c := make(chan struct {
 		PackageDiff
 		int
-	})
-
-	newPkgsCopy := make(Package, len(newPackages))
-	for k, v := range newPackages {
-		newPkgsCopy[k] = v
-	}
+	}, len(oldPackages))
 
 	for pkg, oldVersion := range oldPackages {
-		if newVersion, ok := newPkgsCopy[pkg]; ok {
-			go func(diff PackageDiff) {
-				result := CompareVersions(diff.PreviousVersion, diff.NewVersion)
-				c <- struct {
-					PackageDiff
-					int
-				}{diff, result}
-			}(PackageDiff{pkg, newVersion, oldVersion})
-		} else {
-			go func(diff PackageDiff) {
-				c <- struct {
-					PackageDiff
-					int
-				}{diff, 2}
-			}(PackageDiff{pkg, oldVersion, ""})
-		}
+		wg.Add(1)
 
-		// Clear package from copy so we can later check for removed packages
-		delete(newPkgsCopy, pkg)
+		if newVersion, ok := newPackages[pkg]; ok {
+			go processPackage(pkg, oldVersion, newVersion, c, &wg)
+		} else {
+			c <- struct {
+				PackageDiff
+				int
+			}{PackageDiff{pkg, oldVersion, ""}, 2}
+			wg.Done()
+		}
 	}
 
 	removed := []PackageDiff{}
-	for pkg, version := range newPkgsCopy {
-		removed = append(removed, PackageDiff{pkg, "", version})
-	}
+	wg.Add(1)
+	go func() {
+		for pkg, version := range newPackages {
+			if _, ok := oldPackages[pkg]; !ok {
+				removed = append(removed, PackageDiff{pkg, "", version})
+			}
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		wg.Wait()
+		close(c)
+	}()
 
 	added := []PackageDiff{}
 	upgraded := []PackageDiff{}
 	downgraded := []PackageDiff{}
-	for i := 0; i < len(oldPackages); i++ {
-		pkg := <-c
-		switch pkg.int {
+	for pkgResult := range c {
+		switch pkgResult.int {
 		case -1:
-			downgraded = append(downgraded, pkg.PackageDiff)
+			downgraded = append(downgraded, pkgResult.PackageDiff)
 		case 1:
-			upgraded = append(upgraded, pkg.PackageDiff)
+			upgraded = append(upgraded, pkgResult.PackageDiff)
 		case 2:
-			added = append(added, pkg.PackageDiff)
+			added = append(added, pkgResult.PackageDiff)
 		}
 	}
 

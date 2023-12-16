@@ -18,8 +18,8 @@ const (
 	defaultRefreshRate = 150 * time.Millisecond
 )
 
-// DoneError represents an error when `*mpb.Progress` is done but its functionality is requested.
-var DoneError = fmt.Errorf("%T instance can't be reused after it's done", (*Progress)(nil))
+// DoneError represents use after `(*Progress).Wait()` error.
+var DoneError = fmt.Errorf("%T instance can't be reused after %[1]T.Wait()", (*Progress)(nil))
 
 // Progress represents a container that renders one or more progress bars.
 type Progress struct {
@@ -55,27 +55,30 @@ type pState struct {
 }
 
 // New creates new Progress container instance. It's not possible to
-// reuse instance after (*Progress).Wait method has been called.
+// reuse instance after `(*Progress).Wait` method has been called.
 func New(options ...ContainerOption) *Progress {
 	return NewWithContext(context.Background(), options...)
 }
 
 // NewWithContext creates new Progress container instance with provided
-// context. It's not possible to reuse instance after (*Progress).Wait
+// context. It's not possible to reuse instance after `(*Progress).Wait`
 // method has been called.
 func NewWithContext(ctx context.Context, options ...ContainerOption) *Progress {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	ctx, cancel := context.WithCancel(ctx)
+	delayRC := make(chan struct{}, 1)
+	delayRC <- struct{}{}
 	s := &pState{
 		ctx:         ctx,
 		hm:          make(heapManager),
 		dropS:       make(chan struct{}),
 		dropD:       make(chan struct{}),
 		renderReq:   make(chan time.Time),
-		refreshRate: defaultRefreshRate,
 		popPriority: math.MinInt32,
+		refreshRate: defaultRefreshRate,
+		delayRC:     delayRC,
 		queueBars:   make(map[*Bar]*Bar),
 		output:      os.Stdout,
 		debugOut:    io.Discard,
@@ -133,8 +136,7 @@ func (p *Progress) New(total int64, builder BarFillerBuilder, options ...BarOpti
 
 // MustAdd creates a bar which renders itself by provided BarFiller.
 // If `total <= 0` triggering complete event by increment methods is
-// disabled. Panics if *Progress instance is done, i.e. called after
-// (*Progress).Wait().
+// disabled. Panics if called after `(*Progress).Wait()`.
 func (p *Progress) MustAdd(total int64, filler BarFiller, options ...BarOption) *Bar {
 	bar, err := p.Add(total, filler, options...)
 	if err != nil {
@@ -145,8 +147,8 @@ func (p *Progress) MustAdd(total int64, filler BarFiller, options ...BarOption) 
 
 // Add creates a bar which renders itself by provided BarFiller.
 // If `total <= 0` triggering complete event by increment methods
-// is disabled. If *Progress instance is done, i.e. called after
-// (*Progress).Wait(), return error == DoneError.
+// is disabled. If called after `(*Progress).Wait()` then
+// `(nil, DoneError)` is returned.
 func (p *Progress) Add(total int64, filler BarFiller, options ...BarOption) (*Bar, error) {
 	if filler == nil {
 		filler = NopStyle().Build()
@@ -192,7 +194,7 @@ func (p *Progress) traverseBars(cb func(b *Bar) bool) {
 	select {
 	case p.operateState <- func(s *pState) { s.hm.iter(iter, drop) }:
 		for b := range iter {
-			if cb(b) {
+			if !cb(b) {
 				close(drop)
 				break
 			}
@@ -201,18 +203,23 @@ func (p *Progress) traverseBars(cb func(b *Bar) bool) {
 	}
 }
 
-// UpdateBarPriority same as *Bar.SetPriority(int).
-func (p *Progress) UpdateBarPriority(b *Bar, priority int) {
+// UpdateBarPriority either immediately or lazy.
+// With lazy flag order is updated after the next refresh cycle.
+// If you don't care about laziness just use `(*Bar).SetPriority(int)`.
+func (p *Progress) UpdateBarPriority(b *Bar, priority int, lazy bool) {
+	if b == nil {
+		return
+	}
 	select {
-	case p.operateState <- func(s *pState) { s.hm.fix(b, priority) }:
+	case p.operateState <- func(s *pState) { s.hm.fix(b, priority, lazy) }:
 	case <-p.done:
 	}
 }
 
 // Write is implementation of io.Writer.
-// Writing to `*mpb.Progress` will print lines above a running bar.
+// Writing to `*Progress` will print lines above a running bar.
 // Writes aren't flushed immediately, but at next refresh cycle.
-// If Write is called after `*mpb.Progress` is done, `mpb.DoneError`
+// If called after `(*Progress).Wait()` then `(0, DoneError)`
 // is returned.
 func (p *Progress) Write(b []byte) (int, error) {
 	type result struct {
@@ -233,7 +240,7 @@ func (p *Progress) Write(b []byte) (int, error) {
 }
 
 // Wait waits for all bars to complete and finally shutdowns container. After
-// this method has been called, there is no way to reuse (*Progress) instance.
+// this method has been called, there is no way to reuse `*Progress` instance.
 func (p *Progress) Wait() {
 	// wait for user wg, if any
 	if p.uwg != nil {
@@ -244,9 +251,9 @@ func (p *Progress) Wait() {
 	p.Shutdown()
 }
 
-// Shutdown cancels any running bar immediately and then shutdowns (*Progress)
+// Shutdown cancels any running bar immediately and then shutdowns `*Progress`
 // instance. Normally this method shouldn't be called unless you know what you
-// are doing. Proper way to shutdown is to call (*Progress).Wait() instead.
+// are doing. Proper way to shutdown is to call `(*Progress).Wait()` instead.
 func (p *Progress) Shutdown() {
 	p.cancel()
 	p.pwg.Wait()
@@ -254,34 +261,52 @@ func (p *Progress) Shutdown() {
 
 func (p *Progress) serve(s *pState, cw *cwriter.Writer) {
 	defer p.pwg.Done()
-	render := func() error { return s.render(cw) }
 	var err error
+	w := cwriter.New(io.Discard)
+	renderReq := s.renderReq
+	operateState := p.operateState
+	interceptIO := p.interceptIO
 
 	for {
 		select {
-		case op := <-p.operateState:
+		case <-s.delayRC:
+			w, cw = cw, nil
+			s.delayRC = nil
+		case op := <-operateState:
 			op(s)
-		case fn := <-p.interceptIO:
-			fn(cw)
-		case <-s.renderReq:
-			e := render()
-			if e != nil {
+		case fn := <-interceptIO:
+			fn(w)
+		case <-renderReq:
+			err = s.render(w)
+			if err != nil {
+				// (*pState).(autoRefreshListener|manualRefreshListener) may block
+				// if not launching following short lived goroutine
+				go func() {
+					for {
+						select {
+						case <-s.renderReq:
+						case <-p.done:
+							return
+						}
+					}
+				}()
 				p.cancel() // cancel all bars
-				render = func() error { return nil }
-				err = e
+				renderReq = nil
+				operateState = nil
+				interceptIO = nil
 			}
 		case <-p.done:
-			update := make(chan bool)
-			for s.autoRefresh && err == nil {
-				s.hm.state(update)
-				if <-update {
-					err = render()
-				} else {
-					break
-				}
-			}
 			if err != nil {
 				_, _ = fmt.Fprintln(s.debugOut, err.Error())
+			} else if s.autoRefresh {
+				update := make(chan bool)
+				for i := 0; i == 0 || <-update; i++ {
+					if err := s.render(w); err != nil {
+						_, _ = fmt.Fprintln(s.debugOut, err.Error())
+						break
+					}
+					s.hm.state(update)
+				}
 			}
 			s.hm.end(s.shutdownNotifier)
 			return
@@ -289,10 +314,7 @@ func (p *Progress) serve(s *pState, cw *cwriter.Writer) {
 	}
 }
 
-func (s pState) autoRefreshListener(done chan struct{}) {
-	if s.delayRC != nil {
-		<-s.delayRC
-	}
+func (s *pState) autoRefreshListener(done chan struct{}) {
 	ticker := time.NewTicker(s.refreshRate)
 	defer ticker.Stop()
 	for {
@@ -306,7 +328,7 @@ func (s pState) autoRefreshListener(done chan struct{}) {
 	}
 }
 
-func (s pState) manualRefreshListener(done chan struct{}) {
+func (s *pState) manualRefreshListener(done chan struct{}) {
 	for {
 		select {
 		case x := <-s.manualRC:
@@ -338,9 +360,9 @@ func (s *pState) render(cw *cwriter.Writer) (err error) {
 		if s.reqWidth > 0 {
 			width = s.reqWidth
 		} else {
-			width = 100
+			width = 80
 		}
-		height = 100
+		height = width
 	}
 
 	for b := range iter {
@@ -352,7 +374,7 @@ func (s *pState) render(cw *cwriter.Writer) (err error) {
 
 func (s *pState) flush(cw *cwriter.Writer, height int) error {
 	var wg sync.WaitGroup
-	defer wg.Wait() // waiting for all s.hm.push to complete
+	defer wg.Wait() // waiting for all s.push to complete
 
 	var popCount int
 	var rows []io.Reader
@@ -376,40 +398,34 @@ func (s *pState) flush(cw *cwriter.Writer, height int) error {
 				_, _ = io.Copy(io.Discard, row)
 			}
 		}
-		if frame.shutdown != 0 && !frame.done {
+
+		switch frame.shutdown {
+		case 1:
+			b.cancel()
 			if qb, ok := s.queueBars[b]; ok {
-				b.cancel()
 				delete(s.queueBars, b)
 				qb.priority = b.priority
 				wg.Add(1)
-				go func(b *Bar) {
-					s.hm.push(b, true)
-					wg.Done()
-				}(qb)
-				continue
+				go s.push(&wg, qb, true)
+			} else if s.popCompleted && !frame.noPop {
+				b.priority = s.popPriority
+				s.popPriority++
+				wg.Add(1)
+				go s.push(&wg, b, false)
+			} else if !frame.rmOnComplete {
+				wg.Add(1)
+				go s.push(&wg, b, false)
 			}
+		case 2:
 			if s.popCompleted && !frame.noPop {
-				switch frame.shutdown {
-				case 1:
-					b.priority = s.popPriority
-					s.popPriority++
-				default:
-					b.cancel()
-					popCount += usedRows
-					continue
-				}
-			} else if frame.rmOnComplete {
-				b.cancel()
+				popCount += usedRows
 				continue
-			} else {
-				b.cancel()
 			}
+			fallthrough
+		default:
+			wg.Add(1)
+			go s.push(&wg, b, false)
 		}
-		wg.Add(1)
-		go func(b *Bar) {
-			s.hm.push(b, false)
-			wg.Done()
-		}(b)
 	}
 
 	for i := len(rows) - 1; i >= 0; i-- {
@@ -420,6 +436,11 @@ func (s *pState) flush(cw *cwriter.Writer, height int) error {
 	}
 
 	return cw.Flush(len(rows) - popCount)
+}
+
+func (s *pState) push(wg *sync.WaitGroup, b *Bar, sync bool) {
+	s.hm.push(b, sync)
+	wg.Done()
 }
 
 func (s pState) makeBarState(total int64, filler BarFiller, options ...BarOption) *bState {

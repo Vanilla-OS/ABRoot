@@ -16,12 +16,16 @@ import (
 	"github.com/containers/buildah/copier"
 	"github.com/containers/buildah/define"
 	"github.com/containers/buildah/internal"
+	"github.com/containers/buildah/internal/tmpdir"
 	"github.com/containers/buildah/pkg/jail"
+	"github.com/containers/buildah/pkg/overlay"
 	"github.com/containers/buildah/pkg/parse"
+	butil "github.com/containers/buildah/pkg/util"
 	"github.com/containers/buildah/util"
 	"github.com/containers/common/libnetwork/resolvconf"
 	nettypes "github.com/containers/common/libnetwork/types"
 	"github.com/containers/common/pkg/config"
+	cutil "github.com/containers/common/pkg/util"
 	"github.com/containers/storage/pkg/idtools"
 	"github.com/containers/storage/pkg/lockfile"
 	"github.com/containers/storage/pkg/stringid"
@@ -70,7 +74,7 @@ func setChildProcess() error {
 }
 
 func (b *Builder) Run(command []string, options RunOptions) error {
-	p, err := os.MkdirTemp("", Package)
+	p, err := os.MkdirTemp(tmpdir.GetTempDir(), define.Package)
 	if err != nil {
 		return err
 	}
@@ -152,7 +156,11 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 
 	containerName := Package + "-" + filepath.Base(path)
 	if configureNetwork {
-		g.AddAnnotation("org.freebsd.parentJail", containerName+"-vnet")
+		if jail.NeedVnetJail() {
+			g.AddAnnotation("org.freebsd.parentJail", containerName+"-vnet")
+		} else {
+			g.AddAnnotation("org.freebsd.jail.vnet", "new")
+		}
 	}
 
 	homeDir, err := b.configureUIDGID(g, mountPoint, options)
@@ -195,7 +203,7 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 	rootIDPair := &idtools.IDPair{UID: int(rootUID), GID: int(rootGID)}
 
 	hostFile := ""
-	if !options.NoHosts && !contains(volumes, config.DefaultHostsFile) && options.ConfigureNetwork != define.NetworkDisabled {
+	if !options.NoHosts && !cutil.StringInSlice(config.DefaultHostsFile, volumes) && options.ConfigureNetwork != define.NetworkDisabled {
 		hostFile, err = b.generateHosts(path, rootIDPair, mountPoint, spec)
 		if err != nil {
 			return err
@@ -203,7 +211,7 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 		bindFiles[config.DefaultHostsFile] = hostFile
 	}
 
-	if !contains(volumes, resolvconf.DefaultResolvConf) && options.ConfigureNetwork != define.NetworkDisabled && !(len(b.CommonBuildOpts.DNSServers) == 1 && strings.ToLower(b.CommonBuildOpts.DNSServers[0]) == "none") {
+	if !cutil.StringInSlice(resolvconf.DefaultResolvConf, volumes) && options.ConfigureNetwork != define.NetworkDisabled && !(len(b.CommonBuildOpts.DNSServers) == 1 && strings.ToLower(b.CommonBuildOpts.DNSServers[0]) == "none") {
 		resolvFile, err := b.addResolvConf(path, rootIDPair, b.CommonBuildOpts.DNSServers, b.CommonBuildOpts.DNSSearch, b.CommonBuildOpts.DNSOptions, nil)
 		if err != nil {
 			return err
@@ -243,9 +251,11 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 
 	defer b.cleanupTempVolumes()
 
-	// If we are creating a network, make the vnet here so that we
-	// can execute the OCI runtime inside it.
-	if configureNetwork {
+	// If we are creating a network, make the vnet here so that we can
+	// execute the OCI runtime inside it. For FreeBSD-13.3 and later, we can
+	// configure the container network settings from outside the jail, which
+	// removes the need for a separate jail to manage the vnet.
+	if configureNetwork && jail.NeedVnetJail() {
 		mynetns := containerName + "-vnet"
 
 		jconf := jail.NewConfig()
@@ -295,7 +305,7 @@ func addCommonOptsToSpec(commonOpts *define.CommonBuildOptions, g *generate.Gene
 		return fmt.Errorf("failed to get container config: %w", err)
 	}
 	// Other process resource limits
-	if err := addRlimits(commonOpts.Ulimit, g, defaultContainerConfig.Containers.DefaultUlimits); err != nil {
+	if err := addRlimits(commonOpts.Ulimit, g, defaultContainerConfig.Containers.DefaultUlimits.Get()); err != nil {
 		return err
 	}
 
@@ -322,13 +332,22 @@ func (b *Builder) runSetupVolumeMounts(mountLabel string, volumeMounts []string,
 	}
 
 	parseMount := func(mountType, host, container string, options []string) (specs.Mount, error) {
-		var foundrw, foundro bool
+		var foundrw, foundro, foundO bool
+		var upperDir string
 		for _, opt := range options {
 			switch opt {
 			case "rw":
 				foundrw = true
 			case "ro":
 				foundro = true
+			case "O":
+				foundO = true
+			}
+			if strings.HasPrefix(opt, "upperdir") {
+				splitOpt := strings.SplitN(opt, "=", 2)
+				if len(splitOpt) > 1 {
+					upperDir = splitOpt[1]
+				}
 			}
 		}
 		if !foundrw && !foundro {
@@ -336,6 +355,30 @@ func (b *Builder) runSetupVolumeMounts(mountLabel string, volumeMounts []string,
 		}
 		if mountType == "bind" || mountType == "rbind" {
 			mountType = "nullfs"
+		}
+		if foundO {
+			containerDir, err := b.store.ContainerDirectory(b.ContainerID)
+			if err != nil {
+				return specs.Mount{}, err
+			}
+
+			contentDir, err := overlay.TempDir(containerDir, idMaps.rootUID, idMaps.rootGID)
+			if err != nil {
+				return specs.Mount{}, fmt.Errorf("failed to create TempDir in the %s directory: %w", containerDir, err)
+			}
+
+			overlayOpts := overlay.Options{
+				RootUID:                idMaps.rootUID,
+				RootGID:                idMaps.rootGID,
+				UpperDirOptionFragment: upperDir,
+				GraphOpts:              b.store.GraphOptions(),
+			}
+
+			overlayMount, err := overlay.MountWithOptions(contentDir, host, container, &overlayOpts)
+			if err == nil {
+				b.TempVolumes[contentDir] = true
+			}
+			return overlayMount, err
 		}
 		return specs.Mount{
 			Destination: container,
@@ -389,7 +432,12 @@ func (b *Builder) runConfigureNetwork(pid int, isolation define.Isolation, optio
 	}
 	logrus.Debugf("configureNetworks: %v", configureNetworks)
 
-	mynetns := containerName + "-vnet"
+	var mynetns string
+	if jail.NeedVnetJail() {
+		mynetns = containerName + "-vnet"
+	} else {
+		mynetns = containerName
+	}
 
 	networks := make(map[string]nettypes.PerNetworkOptions, len(configureNetworks))
 	for i, network := range configureNetworks {
@@ -525,7 +573,7 @@ func addRlimits(ulimit []string, g *generate.Generator, defaultUlimits []string)
 
 	ulimit = append(defaultUlimits, ulimit...)
 	for _, u := range ulimit {
-		if ul, err = units.ParseUlimit(u); err != nil {
+		if ul, err = butil.ParseUlimit(u); err != nil {
 			return fmt.Errorf("ulimit option %q requires name=SOFT:HARD, failed to be parsed: %w", u, err)
 		}
 

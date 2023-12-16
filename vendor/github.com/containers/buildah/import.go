@@ -22,7 +22,7 @@ func importBuilderDataFromImage(ctx context.Context, store storage.Store, system
 		return nil, errors.New("Internal error: imageID is empty in importBuilderDataFromImage")
 	}
 
-	storeopts, err := storage.DefaultStoreOptions(false, 0)
+	storeopts, err := storage.DefaultStoreOptions()
 	if err != nil {
 		return nil, err
 	}
@@ -107,6 +107,7 @@ func importBuilderDataFromImage(ctx context.Context, store storage.Store, system
 			GIDMap:         gidmap,
 		},
 		NetworkInterface: netInt,
+		CommonBuildOpts:  &CommonBuildOptions{},
 	}
 
 	if err := builder.initConfig(ctx, image, systemContext); err != nil {

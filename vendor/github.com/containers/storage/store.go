@@ -1,6 +1,7 @@
 package storage
 
 import (
+	_ "embed"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	// register all of the built-in drivers
@@ -142,6 +144,7 @@ type Store interface {
 	// settings that were passed to GetStore() when the object was created.
 	RunRoot() string
 	GraphRoot() string
+	ImageStore() string
 	TransientStore() bool
 	GraphDriverName() string
 	GraphOptions() []string
@@ -862,6 +865,10 @@ func (s *store) GraphRoot() string {
 	return s.graphRoot
 }
 
+func (s *store) ImageStore() string {
+	return s.imageStoreDir
+}
+
 func (s *store) TransientStore() bool {
 	return s.transientStore
 }
@@ -955,6 +962,10 @@ func (s *store) load() error {
 		} else {
 			ris, err = newROImageStore(gipath)
 			if err != nil {
+				if errors.Is(err, syscall.EROFS) {
+					logrus.Debugf("Ignoring creation of lockfiles on read-only file systems %q, %v", gipath, err)
+					continue
+				}
 				return err
 			}
 		}
@@ -1459,6 +1470,7 @@ func (s *store) PutLayer(id, parent string, names []string, mountLabel string, w
 	layerOptions := LayerOptions{
 		OriginalDigest:     options.OriginalDigest,
 		UncompressedDigest: options.UncompressedDigest,
+		Flags:              options.Flags,
 	}
 	if s.canUseShifting(uidMap, gidMap) {
 		layerOptions.IDMappingOptions = types.IDMappingOptions{HostUIDMapping: true, HostGIDMapping: true, UIDMap: nil, GIDMap: nil}
@@ -2660,34 +2672,23 @@ func (s *store) DeleteContainer(id string) error {
 		}
 
 		var wg multierror.Group
-		wg.Go(func() error { return s.containerStore.Delete(id) })
 
 		middleDir := s.graphDriverName + "-containers"
 
 		wg.Go(func() error {
 			gcpath := filepath.Join(s.GraphRoot(), middleDir, container.ID)
-			// attempt a simple rm -rf first
-			if err := os.RemoveAll(gcpath); err == nil {
-				return nil
-			}
-			// and if it fails get to the more complicated cleanup
 			return system.EnsureRemoveAll(gcpath)
 		})
 
 		wg.Go(func() error {
 			rcpath := filepath.Join(s.RunRoot(), middleDir, container.ID)
-			// attempt a simple rm -rf first
-			if err := os.RemoveAll(rcpath); err == nil {
-				return nil
-			}
-			// and if it fails get to the more complicated cleanup
 			return system.EnsureRemoveAll(rcpath)
 		})
 
 		if multierr := wg.Wait(); multierr != nil {
 			return multierr.ErrorOrNil()
 		}
-		return nil
+		return s.containerStore.Delete(id)
 	})
 }
 
@@ -2746,7 +2747,13 @@ func (s *store) Status() ([][2]string, error) {
 	return rlstore.Status()
 }
 
+//go:embed VERSION
+var storageVersion string
+
 func (s *store) Version() ([][2]string, error) {
+	if trimmedVersion := strings.TrimSpace(storageVersion); trimmedVersion != "" {
+		return [][2]string{{"Version", trimmedVersion}}, nil
+	}
 	return [][2]string{}, nil
 }
 
@@ -3412,16 +3419,16 @@ func (s *store) Shutdown(force bool) ([]string, error) {
 		err = fmt.Errorf("a layer is mounted: %w", ErrLayerUsedByContainer)
 	}
 	if err == nil {
-		err = s.graphDriver.Cleanup()
 		// We don’t retain the lastWrite value, and treat this update as if someone else did the .Cleanup(),
 		// so that we reload after a .Shutdown() the same way other processes would.
 		// Shutdown() is basically an error path, so reliability is more important than performance.
 		if _, err2 := s.graphLock.RecordWrite(); err2 != nil {
-			if err == nil {
-				err = err2
-			} else {
-				err = fmt.Errorf("(graphLock.RecordWrite failed: %v) %w", err2, err)
-			}
+			err = fmt.Errorf("graphLock.RecordWrite failed: %w", err2)
+		}
+		// Do the Cleanup() only after we are sure that the change was recorded with RecordWrite(), so that
+		// the next user picks it.
+		if err == nil {
+			err = s.graphDriver.Cleanup()
 		}
 	}
 	return mounted, err
@@ -3550,8 +3557,8 @@ func SetDefaultConfigFilePath(path string) {
 }
 
 // DefaultConfigFile returns the path to the storage config file used
-func DefaultConfigFile(rootless bool) (string, error) {
-	return types.DefaultConfigFile(rootless)
+func DefaultConfigFile() (string, error) {
+	return types.DefaultConfigFile()
 }
 
 // ReloadConfigurationFile parses the specified configuration file and overrides
