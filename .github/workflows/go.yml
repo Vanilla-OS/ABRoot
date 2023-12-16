@@ -23,7 +23,7 @@ jobs:
     - name: Install build dependencies
       run: |
           apt-get update
-          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
+          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
 
     - name: Build
       run: go build -o abrootv2
