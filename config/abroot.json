@@ -14,6 +14,8 @@
     "iPkgMngRm": "apt remove -y",
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
 
+    "differURL": "https://differ.vanillaos.org",
+
     "partLabelVar": "vos-var",
     "partLabelA": "vos-a",
     "partLabelB": "vos-b",

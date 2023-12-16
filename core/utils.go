@@ -115,7 +115,7 @@ func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
 				return false, nil
 			}
 		}
-		return false, fmt.Errorf("Failed to check if %s is LUKS-encrypted: %s", devicePath, err)
+		return false, fmt.Errorf("failed to check if %s is LUKS-encrypted: %s", devicePath, err)
 	}
 
 	return true, nil

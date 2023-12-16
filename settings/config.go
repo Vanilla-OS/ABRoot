@@ -39,6 +39,9 @@ type Config struct {
 	IPkgMngRm   string `json:"iPkgMngRm"`
 	IPkgMngApi  string `json:"iPkgMngApi"`
 
+	// Package diff API (Differ)
+	DifferURL string `json:"differURL"`
+
 	// Partitions
 	PartLabelVar  string `json:"partLabelVar"`
 	PartLabelA    string `json:"partLabelA"`
@@ -101,6 +104,9 @@ func init() {
 		IPkgMngAdd:  viper.GetString("iPkgMngAdd"),
 		IPkgMngRm:   viper.GetString("iPkgMngRm"),
 		IPkgMngApi:  viper.GetString("iPkgMngApi"),
+
+		// Package diff API (Differ)
+		DifferURL: viper.GetString("differURL"),
 
 		// Partitions
 		PartLabelVar:  viper.GetString("partLabelVar"),

@@ -14,9 +14,12 @@ package core
 */
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -294,7 +297,7 @@ func (p *PackageManager) getPackages(file string) ([]string, error) {
 		return pkgs, err
 	}
 
-	pkgs = strings.Split(string(b), "\n")
+	pkgs = strings.Split(strings.TrimSpace(string(b)), "\n")
 
 	PrintVerbose("PackageManager.getPackages: returning packages")
 	return pkgs, nil
@@ -374,9 +377,10 @@ func (p *PackageManager) processApplyPackages() (string, string) {
 
 	var addPkgs, removePkgs []string
 	for _, pkg := range unstaged {
-		if pkg.Status == ADD {
+		switch pkg.Status {
+		case ADD:
 			addPkgs = append(addPkgs, pkg.Name)
-		} else if pkg.Status == REMOVE {
+		case REMOVE:
 			removePkgs = append(removePkgs, pkg.Name)
 		}
 	}
@@ -462,16 +466,36 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 	return cmd
 }
 
-func (p *PackageManager) ExistsInRepo(pkg string) error {
-	PrintVerbose("PackageManager.ExistsInRepo: running...")
-
+// assertPkgMngApiSetUp checks whether the repo API is properly configured.
+// If a configuration exists but is malformed, returns an error.
+func assertPkgMngApiSetUp() (bool, error) {
 	if settings.Cnf.IPkgMngApi == "" {
-		PrintVerbose("PackageManager.ExistsInRepo: no API url set, will not check if package exists. This could lead to errors")
-		return nil
+		PrintVerbose("PackageManager.assertPkgMngApiSetUp: no API url set, will not check if package exists. This could lead to errors")
+		return false, nil
+	}
+
+	_, err := url.ParseRequestURI(settings.Cnf.IPkgMngApi)
+	if err != nil {
+		return false, fmt.Errorf("PackageManager.assertPkgMngApiSetUp: Value set as API url (%s) is not a valid URL", settings.Cnf.IPkgMngApi)
 	}
 
 	if !strings.Contains(settings.Cnf.IPkgMngApi, "{packageName}") {
-		return fmt.Errorf("PackageManager.ExistsInRepo: API url does not contain {packageName} placeholder. ABRoot is probably misconfigured, please report the issue to the maintainers of the distribution")
+		return false, fmt.Errorf("PackageManager.assertPkgMngApiSetUp: API url does not contain {packageName} placeholder. ABRoot is probably misconfigured, please report the issue to the maintainers of the distribution")
+	}
+
+	PrintVerbose("PackageManager.assertPkgMngApiSetUp: Repo is set up properly")
+	return true, nil
+}
+
+func (p *PackageManager) ExistsInRepo(pkg string) error {
+	PrintVerbose("PackageManager.ExistsInRepo: running...")
+
+	ok, err := assertPkgMngApiSetUp()
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return nil
 	}
 
 	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
@@ -490,4 +514,41 @@ func (p *PackageManager) ExistsInRepo(pkg string) error {
 
 	PrintVerbose("PackageManager.ExistsInRepo: package exists in repo")
 	return nil
+}
+
+// GetRepoContentsForPkg retrieves package information from the repository API
+func GetRepoContentsForPkg(pkg string) (map[string]any, error) {
+	PrintVerbose("PackageManager.GetRepoContentsForPkg: running...")
+
+	ok, err := assertPkgMngApiSetUp()
+	if err != nil {
+		return map[string]any{}, err
+	}
+	if !ok {
+		return map[string]any{}, errors.New("PackageManager.GetRepoContentsForPkg: no API url set, cannot query package information")
+	}
+
+	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
+	PrintVerbose("PackageManager.GetRepoContentsForPkg: fetching package information in: " + url)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		PrintVerbose("PackageManager.GetRepoContentsForPkg:err: " + err.Error())
+		return map[string]any{}, err
+	}
+
+	contents, err := io.ReadAll(resp.Body)
+	if err != nil {
+		PrintVerbose("PackageManager.GetRepoContentsForPkg(2):err: %s", err)
+		return map[string]any{}, err
+	}
+
+	pkgInfo := map[string]any{}
+	err = json.Unmarshal(contents, &pkgInfo)
+	if err != nil {
+		PrintVerbose("PackageManager.GetRepoContentsForPkg(3):err: %s", err)
+		return map[string]any{}, err
+	}
+
+	return pkgInfo, nil
 }
