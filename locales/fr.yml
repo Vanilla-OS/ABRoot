@@ -53,3 +53,11 @@ upgrade:
   rootRequired: Vous devez être root pour exécuter cette commande.
   noUpdateAvailable: Aucune mise à jour n'est disponible pour votre système.
   checkOnlyFlag: vérifie les mises à jour mais ne les applique pas
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

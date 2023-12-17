@@ -28,6 +28,14 @@ upgrade:
     avançados)
   noUpdateAvailable: Nenhuma atualização está disponível para o teu sistema.
   checkOnlyFlag: verificar para atualizações, mas não aplicá-las
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...
 pkg:
   removedMsg: "Pacote(s) %s removido(s).\n"
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"

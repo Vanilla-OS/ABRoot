@@ -54,3 +54,11 @@ upgrade:
   rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   noUpdateAvailable: Для вашої системи немає оновлень.
   checkOnlyFlag: перевіряти оновлення, але не застосовувати їх
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

@@ -46,3 +46,11 @@ upgrade:
   rootRequired: 必须是 root 用户才能运行此命令。
   noUpdateAvailable: 您的系统暂时没有可用的更新。
   checkOnlyFlag: 检查更新但不立即应用
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...
