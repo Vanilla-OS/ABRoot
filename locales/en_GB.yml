@@ -48,6 +48,5 @@ upgrade:
   long: Update the boot partition for maintenance purposes (for advanced users only)
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
-  updateAvailable: There is an update for your system.
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them

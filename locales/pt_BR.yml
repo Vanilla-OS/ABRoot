@@ -52,6 +52,5 @@ upgrade:
   short: Atualizar a partição de inicialização
   forceFlag: forçar a atualização da partição de inicialização sem pedir confirmação
   rootRequired: Você deve ser um administrador (root) para executar este comando.
-  updateAvailable: Há uma atualização para o seu sistema.
   noUpdateAvailable: Nenhuma atualização está disponível para o seu sistema.
   checkOnlyFlag: verificar se há atualizações, mas não aplicá-las

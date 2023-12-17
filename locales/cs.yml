@@ -19,7 +19,6 @@ rollback:
   short: "Return the system to a previous state."
   rootRequired: "You must be root to run this command."
 upgrade:
-  updateAvailable: There is an update for your system.
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them
   use: upgrade

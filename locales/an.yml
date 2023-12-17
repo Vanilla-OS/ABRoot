@@ -37,7 +37,6 @@ upgrade:
   rootRequired: You must be root to run this command.
   long: Update the boot partition for maintenance purposes (for advanced users only)
   short: Update the boot partition
-  updateAvailable: There is an update for your system.
   noUpdateAvailable: No update is available for your system.
   forceFlag: force update the boot partition without asking for confirmation
   checkOnlyFlag: check for updates but do not apply them

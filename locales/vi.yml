@@ -33,7 +33,6 @@ status:
     %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
 upgrade:
-  updateAvailable: There is an update for your system.
   checkOnlyFlag: check for updates but do not apply them
   noUpdateAvailable: No update is available for your system.
   use: upgrade

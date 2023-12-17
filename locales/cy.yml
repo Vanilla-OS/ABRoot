@@ -44,7 +44,6 @@ status:
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
 upgrade:
   short: Update the boot partition
-  updateAvailable: There is an update for your system.
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
   noUpdateAvailable: No update is available for your system.

@@ -45,7 +45,6 @@ status:
 upgrade:
   use: upgrade
   rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
   checkOnlyFlag: check for updates but do not apply them
   noUpdateAvailable: No update is available for your system.
   long: Update the boot partition for maintenance purposes (for advanced users only)

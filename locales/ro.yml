@@ -52,6 +52,5 @@ upgrade:
   short: Actualizați partiția de boot
   forceFlag: forțați actualizarea partiției de boot fără a cere confirmare
   rootRequired: Trebuie să fiți root pentru a executa această comandă.
-  updateAvailable: Există o actualizare pentru sistemul dumneavoastră.
   noUpdateAvailable: Nu este disponibilă nicio actualizare pentru sistemul dumneavoastră.
   checkOnlyFlag: verifică dacă există actualizări, dar nu le aplică

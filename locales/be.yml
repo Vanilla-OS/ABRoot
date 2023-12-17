@@ -50,5 +50,4 @@ upgrade:
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
   noUpdateAvailable: No update is available for your system.
-  updateAvailable: There is an update for your system.
   checkOnlyFlag: check for updates but do not apply them

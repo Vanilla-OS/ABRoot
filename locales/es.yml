@@ -46,7 +46,6 @@ status:
     %s\n  - Desactivado: %s%s\n"
   dumpMsg: "El estado del ABRoot fue volcado a %s\n"
 upgrade:
-  updateAvailable: Hay una actualización para tu sistema.
   use: upgrade
   long: Actualizar la partición de arranque con fines de mantenimiento (sólo para
     usuarios avanzados)

@@ -36,7 +36,6 @@ upgrade:
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
 status:
   use: status
   long: Display the current ABRoot status.

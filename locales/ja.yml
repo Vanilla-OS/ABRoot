@@ -47,7 +47,6 @@ upgrade:
   rootRequired: You must be root to run this command.
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
-  updateAvailable: There is an update for your system.
   short: Update the boot partition
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them

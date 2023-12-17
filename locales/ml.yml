@@ -38,7 +38,6 @@ upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
   short: Update the boot partition
-  updateAvailable: There is an update for your system.
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them
 pkg:
