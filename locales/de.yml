@@ -37,9 +37,16 @@ upgrade:
   forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   use: upgrade
-  updateAvailable: Es gibt ein Update für Ihr System.
   noUpdateAvailable: Für Ihr System ist kein Update verfügbar.
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot

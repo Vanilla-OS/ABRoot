@@ -49,6 +49,13 @@ upgrade:
   short: Uppdatera startpartitionen
   forceFlag: tvinga uppdatering av startpartitionen utan att be om bekräftelse
   rootRequired: Du måste vara root för att köra detta kommando.
-  updateAvailable: Det finns en uppdatering för ditt system.
   noUpdateAvailable: Ingen uppdatering är tillgänglig för ditt system.
   checkOnlyFlag: leta efter uppdateringar men tillämpa dem inte
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

@@ -53,6 +53,13 @@ upgrade:
   forceFlag: forza l'aggiornamento della partizione di boot senza chiedere per una
     conferma
   rootRequired: Per eseguire questo comando è necessario essere root.
-  updateAvailable: È disponibile un aggiornamento per il tuo sistema.
   noUpdateAvailable: Non è disponibile nessun aggiornamento per il tuo sistema.
   checkOnlyFlag: controlla per aggiornamenti ma non applicarli
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

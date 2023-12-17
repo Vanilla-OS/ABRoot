@@ -43,7 +43,6 @@ status:
   dumpMsg: "Dumped ABRoot status to %s\n"
   use: status
 upgrade:
-  updateAvailable: There is an update for your system.
   use: upgrade
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
@@ -51,3 +50,11 @@ upgrade:
   short: Update the boot partition
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

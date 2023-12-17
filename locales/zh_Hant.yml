@@ -45,5 +45,12 @@ upgrade:
   checkOnlyFlag: 檢查更新但不立即套用
   forceFlag: 強制更新開機磁碟分割而不要求確認
   rootRequired: 必須是 root 使用者才能執行此命令。
-  updateAvailable: 您的系統有更新可用。
   noUpdateAvailable: 您的系統暫時沒有可用更新。
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...

@@ -39,8 +39,15 @@ upgrade:
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
-  updateAvailable: There is an update for your system.
   noUpdateAvailable: No update is available for your system.
+  removed: Removed
+  downgraded: Downgraded
+  packageUpdateAvailable: There are %d package updates.
+  systemUpdateAvailable: There is an update for your system.
+  upgraded: Upgraded
+  added: Added
+  checkingPackageUpdate: Checking for package updates...
+  checkingSystemUpdate: Checking for system updates...
 pkg:
   use: pkg
   long: Install and manage packages.
