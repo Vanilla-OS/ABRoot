@@ -28,6 +28,7 @@ pkg:
   addedMsg: "Package(s) %s added.\n"
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   jsonFlag: Show output in JSON format
   rootRequired: You must be root to run this command.
@@ -58,3 +59,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

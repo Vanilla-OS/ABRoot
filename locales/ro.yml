@@ -31,6 +31,7 @@ pkg:
   use: pkg
   long: Instalați și gestionați pachete.
   short: Gestionați pachete
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   long: Afișați starea ABRoot curentă.
@@ -62,3 +63,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

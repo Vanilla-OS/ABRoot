@@ -28,6 +28,7 @@ pkg:
   noPackageNameProvided: You must provide at least one package name for this operation.
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
@@ -44,6 +45,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 status:
   use: status
   long: Display the current ABRoot status.

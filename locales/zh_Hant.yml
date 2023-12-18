@@ -38,6 +38,7 @@ pkg:
   addedMsg: "已新增軟體包 %s。\n"
   applyFailed: "套用命令失敗：%s\n"
   removedMsg: "已移除軟體包 %s。\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   use: upgrade
   long: 出於維護目的更新開機磁碟分割（僅限進階使用者）
@@ -54,3 +55,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

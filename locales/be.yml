@@ -28,6 +28,7 @@ pkg:
   addedMsg: "Пакет(-ы) %s дададзены.\n"
   applyFailed: "Збой прымянення каманды: %s\n"
   removedMsg: "Пакет(ы) %s выдалены.\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   use: Статус
   long: Адлюстраванне бягучага стану ABRoot.
@@ -59,3 +60,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

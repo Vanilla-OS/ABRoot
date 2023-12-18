@@ -26,6 +26,7 @@ pkg:
   short: 管理软件包
   rootRequired: 必须是 root 用户才能运行此命令。
   addedMsg: "已添加软件包 %s。\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"
@@ -54,3 +55,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

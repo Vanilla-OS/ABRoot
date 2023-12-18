@@ -43,6 +43,7 @@ pkg:
   applyFailed: "Verkställ kommando misslyckades: %s\n"
   removedMsg: "Paket(en) %s har tagits bort.\n"
   listMsg: "Tillagda paket:\n%s\nBorttagna paket:\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   use: upgrade
   long: Uppdatera startpartitionen för underhållsändamål (endast för avancerade användare)
@@ -59,3 +60,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
