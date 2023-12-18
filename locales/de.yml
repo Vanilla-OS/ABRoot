@@ -30,6 +30,7 @@ pkg:
     zur Verfügung stellen.
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
     Benutzer)
@@ -47,6 +48,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot

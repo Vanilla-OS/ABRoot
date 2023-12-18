@@ -48,6 +48,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 pkg:
   use: pkg
   removedMsg: "Package(s) %s removed.\n"
@@ -58,3 +60,4 @@ pkg:
   noPackageNameProvided: You must provide at least one package name for this operation.
   addedMsg: "Package(s) %s added.\n"
   applyFailed: "Apply command failed: %s\n"
+  dryRunFlag: perform a dry run of the operation

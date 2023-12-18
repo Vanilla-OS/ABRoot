@@ -29,6 +29,7 @@ pkg:
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
   use: pkg
   noPackageNameProvided: You must provide at least one package name for this operation.
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   long: Display the current ABRoot status.
@@ -59,3 +60,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

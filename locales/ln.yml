@@ -28,6 +28,7 @@ pkg:
   addedMsg: "Package(s) %s added.\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
@@ -44,6 +45,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 status:
   dumpMsg: "Dumped ABRoot status to %s\n"
   use: status

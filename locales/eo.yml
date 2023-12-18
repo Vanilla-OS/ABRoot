@@ -28,6 +28,7 @@ pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Forigis pako(j)n %s.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
@@ -58,3 +59,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

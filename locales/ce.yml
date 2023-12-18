@@ -34,6 +34,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 pkg:
   rootRequired: You must be root to run this command.
   noPackageNameProvided: You must provide at least one package name for this operation.
@@ -44,6 +46,7 @@ pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   long: Display the current ABRoot status.
   short: Display status

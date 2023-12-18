@@ -28,6 +28,7 @@ pkg:
   addedMsg: "Package(s) %s added.\n"
   applyFailed: "Apply command failed: %s\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   dumpMsg: "Dumped ABRoot status to %s\n"
@@ -58,3 +59,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

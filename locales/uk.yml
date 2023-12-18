@@ -30,6 +30,7 @@ pkg:
     операції.
   listMsg: "Додано пакунків:\n%s\nВидалено пакунків:\n%s\n"
   addedMsg: "Додано пакунків: %s.\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   long: Показати поточний стан ABRoot.
@@ -62,3 +63,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

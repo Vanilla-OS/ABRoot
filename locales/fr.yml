@@ -44,6 +44,7 @@ pkg:
   applyFailed: "Échec de la commande appliquée : %s\n"
   removedMsg: "Paquet(s) %s supprimé(s).\n"
   listMsg: "Ajout de paquets :\n%s\nPaquets supprimés :\n%s\n"
+  dryRunFlag: perform a dry run of the operation
 upgrade:
   use: upgrade
   long: Mettre à jour la partition de démarrage à des fins de maintenance (pour les
@@ -61,3 +62,5 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.

@@ -36,6 +36,8 @@ upgrade:
   added: Added
   checkingPackageUpdate: Checking for package updates...
   checkingSystemUpdate: Checking for system updates...
+  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Dry run completed successfully.
 pkg:
   removedMsg: "Pacote(s) %s removido(s).\n"
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -47,6 +49,7 @@ pkg:
     operação.
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Comando de aplicar falhou: %s\n"
+  dryRunFlag: perform a dry run of the operation
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
