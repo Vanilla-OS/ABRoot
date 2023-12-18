@@ -33,6 +33,13 @@ func NewPkgCommand() *cmdr.Command {
 		pkg,
 	)
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"dry-run",
+			"d",
+			abroot.Trans("pkg.dryRunFlag"),
+			false))
+
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.ValidArgs = validPkgArgs
 	cmd.Example = "abroot pkg add <pkg>"
@@ -44,6 +51,12 @@ func pkg(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println(abroot.Trans("pkg.rootRequired"))
 		return nil
+	}
+
+	dryRun, err := cmd.Flags().GetBool("dry-run")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
 	}
 
 	pkgM := core.NewPackageManager(false)
@@ -95,7 +108,11 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		err = aBsys.RunOperation(core.APPLY)
+		if dryRun {
+			err = aBsys.RunOperation(core.DRY_RUN_APPLY)
+		} else {
+			err = aBsys.RunOperation(core.APPLY)
+		}
 		if err != nil {
 			cmdr.Error.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err

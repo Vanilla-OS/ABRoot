@@ -42,6 +42,13 @@ func NewUpgradeCommand() *cmdr.Command {
 
 	cmd.WithBoolFlag(
 		cmdr.NewBoolFlag(
+			"dry-run",
+			"d",
+			abroot.Trans("upgrade.dryRunFlag"),
+			false))
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
 			"force",
 			"f",
 			abroot.Trans("upgrade.forceFlag"),
@@ -54,6 +61,12 @@ func NewUpgradeCommand() *cmdr.Command {
 
 func upgrade(cmd *cobra.Command, args []string) error {
 	checkOnly, err := cmd.Flags().GetBool("check-only")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	dryRun, err := cmd.Flags().GetBool("dry-run")
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
@@ -121,6 +134,8 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	var operation core.ABSystemOperation
 	if force {
 		operation = core.FORCE_UPGRADE
+	} else if dryRun {
+		operation = core.DRY_RUN_UPGRADE
 	} else {
 		operation = core.UPGRADE
 	}

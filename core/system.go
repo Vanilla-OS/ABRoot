@@ -41,9 +41,11 @@ type QueuedFunction struct {
 }
 
 const (
-	UPGRADE       = "upgrade"
-	FORCE_UPGRADE = "force-upgrade"
-	APPLY         = "package-apply"
+	UPGRADE         = "upgrade"
+	FORCE_UPGRADE   = "force-upgrade"
+	DRY_RUN_UPGRADE = "dry-run-upgrade"
+	APPLY           = "package-apply"
+	DRY_RUN_APPLY   = "dry-run-package-apply"
 )
 
 const (
@@ -595,7 +597,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	content := `RUN ` + pkgsFinal
 
 	var imageName string
-	if operation == APPLY {
+	if operation == APPLY || operation == DRY_RUN_APPLY {
 		presentPartition, err := s.RootM.GetPresent()
 		if err != nil {
 			PrintVerbose("ABSystemRunOperation:err(3.2): %s", err)
@@ -613,13 +615,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	} else {
 		imageName = settings.Cnf.FullImageName + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = imageDigest
-	}
-
-	// Delete old image
-	err = DeleteImageForRoot(futurePartition.Label)
-	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(3.4): %s", err)
-		return err
 	}
 
 	imageRecipe := NewImageRecipe(
@@ -711,6 +706,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	err = s.GenerateSystemdUnits(systemNew, partFuture)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(6.2): Failed to Generate SystemdUnits: %s", err)
+		return err
+	}
+
+	// Stage (dry): If dry-run, exit here before writing to disk
+	// ------------------------------------------------
+	if operation == DRY_RUN_UPGRADE || operation == DRY_RUN_APPLY {
+		PrintVerbose("ABSystem.RunOperation: dry-run completed")
+		return nil
+	}
+
+	// Stage 6.3: Delete old image
+	err = DeleteImageForRoot(futurePartition.Label)
+	if err != nil {
+		PrintVerbose("ABSystemRunOperation:err(6.3): %s", err)
 		return err
 	}
 
