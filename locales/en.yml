@@ -79,6 +79,7 @@ upgrade:
   noUpdateAvailable: "No update available."
   checkOnlyFlag: "check for updates but do not apply them"
   dryRunFlag: "perform a dry run of the operation"
+  dryRunSuccess: "Dry run completed successfully."
   added: "Added"
   upgraded: "Upgraded"
   downgraded: "Downgraded"
