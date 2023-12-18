@@ -30,6 +30,7 @@ pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: "perform a dry run of the operation"
 
 status:
   use: "status"
@@ -77,6 +78,7 @@ upgrade:
   packageUpdateAvailable: "There are %d package updates."
   noUpdateAvailable: "No update available."
   checkOnlyFlag: "check for updates but do not apply them"
+  dryRunFlag: "perform a dry run of the operation"
   added: "Added"
   upgraded: "Upgraded"
   downgraded: "Downgraded"
