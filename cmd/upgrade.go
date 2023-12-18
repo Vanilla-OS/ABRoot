@@ -151,6 +151,10 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	if dryRun {
+		cmdr.Info.Println(abroot.Trans("upgrade.dryRunSuccess"))
+	}
+
 	os.Exit(0)
 	return nil
 }
