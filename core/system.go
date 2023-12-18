@@ -617,13 +617,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
 
-	// Delete old image
-	err = DeleteImageForRoot(futurePartition.Label)
-	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(3.4): %s", err)
-		return err
-	}
-
 	imageRecipe := NewImageRecipe(
 		imageName,
 		labels,
@@ -716,6 +709,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	// Stage (dry): If dry-run, exit here before writing to disk
+	// ------------------------------------------------
+	if operation == DRY_RUN_UPGRADE || operation == DRY_RUN_APPLY {
+		PrintVerbose("ABSystem.RunOperation: dry-run completed")
+		return nil
+	}
+
+	// Stage 6.3: Delete old image
+	err = DeleteImageForRoot(futurePartition.Label)
+	if err != nil {
+		PrintVerbose("ABSystemRunOperation:err(6.3): %s", err)
+		return err
+	}
+
 	// Stage 7: Update the bootloader
 	// ------------------------------------------------
 	PrintVerbose("[Stage 7] -------- ABSystemRunOperation")
@@ -796,13 +803,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(7.6): %s", err)
 		return err
-	}
-
-	// Stage (dry): If dry-run, exit here before writing to disk
-	// ------------------------------------------------
-	if operation == DRY_RUN_UPGRADE || operation == DRY_RUN_APPLY {
-		PrintVerbose("ABSystem.RunOperation: dry-run completed")
-		return nil
 	}
 
 	// Stage 8: Sync /etc
