@@ -80,23 +80,24 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
-		_, raw := os.LookupEnv("ABROOT_RAW_OUTPUT")
+		_, raw := os.LookupEnv("ABROOT_JSON_OUTPUT")
 		if !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
 		}
 
 		// Check for image updates
 		newDigest, res := aBsys.CheckUpdate()
+		var sysAdded, sysUpgraded, sysDowngraded, sysRemoved []diff.PackageDiff
 		if res {
 			if !raw {
 				cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
 			}
 
-			added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
+			sysAdded, sysUpgraded, sysDowngraded, sysRemoved, err = core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
 			if err != nil {
 				return err
 			}
-			err = renderPackageDiff(added, upgraded, downgraded, removed)
+			err = renderPackageDiff(sysAdded, sysUpgraded, sysDowngraded, sysRemoved)
 			if err != nil {
 				return err
 			}
@@ -108,27 +109,44 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		if !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
 		}
-		added, upgraded, downgraded, removed, err := core.OverlayPackageDiff()
+		ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved, err := core.OverlayPackageDiff()
 		if err != nil {
 			return err
 		}
 
-		sumChanges := len(added) + len(upgraded) + len(downgraded) + len(removed)
+		sumChanges := len(ovlAdded) + len(ovlUpgraded) + len(ovlDowngraded) + len(ovlRemoved)
 		if sumChanges == 0 && !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
 		} else if !raw {
 			cmdr.Info.Sprintf(abroot.Trans("upgrade.packageUpdateAvailable"), sumChanges)
 
-			err = renderPackageDiff(added, upgraded, downgraded, removed)
+			err = renderPackageDiff(ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved)
 			if err != nil {
 				return err
 			}
 		}
 
 		if raw {
-			// TODO: Output json
+			newDigestIfHasUpdate := ""
+			if res {
+				newDigestIfHasUpdate = newDigest
+			}
+
 			out, err := json.Marshal(map[string]any{
 				"hasUpdate": res,
+				"newDigest": newDigestIfHasUpdate,
+				"systemPackageDiff": map[string][]diff.PackageDiff{
+					"added":      sysAdded,
+					"upgraded":   sysUpgraded,
+					"downgraded": sysDowngraded,
+					"removed":    sysRemoved,
+				},
+				"overlayPackageDiff": map[string][]diff.PackageDiff{
+					"added":      ovlAdded,
+					"upgraded":   ovlUpgraded,
+					"downgraded": ovlDowngraded,
+					"removed":    ovlRemoved,
+				},
 			})
 			if err != nil {
 				cmdr.Error.Println(err)
