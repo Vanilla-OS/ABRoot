@@ -14,6 +14,7 @@ package cmd
 */
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -79,12 +80,17 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
-		cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
+		_, raw := os.LookupEnv("ABROOT_RAW_OUTPUT")
+		if !raw {
+			cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
+		}
 
 		// Check for image updates
 		newDigest, res := aBsys.CheckUpdate()
 		if res {
-			cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
+			if !raw {
+				cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
+			}
 
 			added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
 			if err != nil {
@@ -94,27 +100,41 @@ func upgrade(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-		} else {
+		} else if !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
 		}
 
 		// Check for package updates
-		cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
+		if !raw {
+			cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
+		}
 		added, upgraded, downgraded, removed, err := core.OverlayPackageDiff()
 		if err != nil {
 			return err
 		}
 
 		sumChanges := len(added) + len(upgraded) + len(downgraded) + len(removed)
-		if sumChanges == 0 {
+		if sumChanges == 0 && !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
-		} else {
+		} else if !raw {
 			cmdr.Info.Sprintf(abroot.Trans("upgrade.packageUpdateAvailable"), sumChanges)
 
 			err = renderPackageDiff(added, upgraded, downgraded, removed)
 			if err != nil {
 				return err
 			}
+		}
+
+		if raw {
+			// TODO: Output json
+			out, err := json.Marshal(map[string]any{
+				"hasUpdate": res,
+			})
+			if err != nil {
+				cmdr.Error.Println(err)
+			}
+
+			fmt.Println(string(out))
 		}
 
 		return nil
