@@ -97,9 +97,11 @@ func upgrade(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			err = renderPackageDiff(sysAdded, sysUpgraded, sysDowngraded, sysRemoved)
-			if err != nil {
-				return err
+			if !raw {
+				err = renderPackageDiff(sysAdded, sysUpgraded, sysDowngraded, sysRemoved)
+				if err != nil {
+					return err
+				}
 			}
 		} else if !raw {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
