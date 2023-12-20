@@ -107,7 +107,7 @@ The following table describes each of the configuration options:
 | `partLabelBoot` | The label of the partition dedicated to the master boot. |
 | `partLabelEfi` | The label of the partition dedicated to the EFI boot. |
 | `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
-| `thinInitVolume` | The init partition of the thin provisioning setup. |
+| `thinInitVolume` | The init volume of the thin provisioning setup. |
 | `libPathStates` | NOT_IMPLEMENTED |
 
 ## How it works
