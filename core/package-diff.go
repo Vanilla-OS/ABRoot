@@ -52,10 +52,17 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (
 		PrintVerbose("PackageDiff.BaseImagePackageDiff(1):err: %s", err)
 		return
 	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		PrintVerbose("PackageDiff.BaseImagePackageDiff(2):err: received non-ok status %s", resp.Status)
+		err = fmt.Errorf("package diff server returned non-OK status %s", resp.Status)
+		return
+	}
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(2):err: %s", err)
+		PrintVerbose("PackageDiff.BaseImagePackageDiff(3):err: %s", err)
 		return
 	}
 
@@ -64,7 +71,7 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (
 	}{}
 	err = json.Unmarshal(contents, &pkgDiff)
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(3):err: %s", err)
+		PrintVerbose("PackageDiff.BaseImagePackageDiff(4):err: %s", err)
 		return
 	}
 
