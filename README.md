@@ -106,8 +106,8 @@ The following table describes each of the configuration options:
 | `partLabelB` | The label of the partition dedicated to the system's `B` root. |
 | `partLabelBoot` | The label of the partition dedicated to the master boot. |
 | `partLabelEfi` | The label of the partition dedicated to the EFI boot. |
-| `thinProvisioning` | If set to `true`, ABRoot will use thin provisioning when creating the transaction volume. Check the section about [thin provisioning](#thin-provisioning) for more information. |
-| `thinInitVolume` | The command to run to initialize the transaction volume. This is mandatory if `thinProvisioning` is set to `true`. |
+| `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
+| `thinInitVolume` | The init partition of the thin provisioning setup. |
 | `libPathStates` | NOT_IMPLEMENTED |
 
 ## How it works
