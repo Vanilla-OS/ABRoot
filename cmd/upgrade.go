@@ -87,7 +87,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 
 		// Check for image updates
 		newDigest, res := aBsys.CheckUpdate()
-		var sysAdded, sysUpgraded, sysDowngraded, sysRemoved []diff.PackageDiff
+		sysAdded, sysUpgraded, sysDowngraded, sysRemoved := []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}
 		if res {
 			if !raw {
 				cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
