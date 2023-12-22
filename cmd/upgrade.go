@@ -157,7 +157,11 @@ func upgrade(cmd *cobra.Command, args []string) error {
 			fmt.Println(string(out))
 		}
 
-		return nil
+		if !res && sumChanges == 0 {
+			os.Exit(1) // No update available
+		} else {
+			os.Exit(0) // Update available
+		}
 	}
 
 	if !core.RootCheck(false) {
