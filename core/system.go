@@ -908,7 +908,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	if grub.futureRoot != partFuture.Label {
+	// Only swap grub entries if we're booted into the present partition
+	isPresent, err := grub.IsBootedIntoPresentRoot()
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(11.1): %s", err)
+		return err
+	}
+	if isPresent {
 		grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
 		grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
 
@@ -918,11 +924,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 			grubCfgContents, err := os.ReadFile(grubCfgCurrent)
 			if err != nil {
-				PrintVerbose("ABSystem.RunOperation:err(11.1): %s", err)
+				PrintVerbose("ABSystem.RunOperation:err(11.2): %s", err)
 			}
 
 			var replacerPairs []string
-			if grub.futureRoot == "a" {
+			if grub.FutureRoot == "a" {
 				replacerPairs = []string{
 					"default=1", "default=0",
 					"A (previous)", "A (current)",
@@ -942,7 +948,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(11.2): %s", err)
+			PrintVerbose("ABSystem.RunOperation:err(11.3): %s", err)
 			return err
 		}
 	}

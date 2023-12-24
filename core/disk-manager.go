@@ -39,9 +39,9 @@ type Partition struct {
 	Device string
 
 	// If the partition is LUKS-encrypted or an LVM volume, the logical volume
-	// opened in /dev/mapper will be a child of the physical partiiton in /dev.
+	// opened in /dev/mapper will be a child of the physical partition in /dev.
 	// Otherwise, the partition will be a direct child of the block device, and
-	// its Parent will be nil.
+	// Parent will be nil.
 	//
 	// The same logic applies for encrypted LVM volumes. When this is the case,
 	// the filesystem hirearchy is as follows:

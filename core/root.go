@@ -27,8 +27,8 @@ type ABRootManager struct {
 
 // ABRootPartition represents an ABRoot partition
 type ABRootPartition struct {
-	Label        string // a,b
-	IdentifiedAs string // present,future
+	Label        string // Matches `partLabelA` and `partLabelB` settings entries
+	IdentifiedAs string // Either `present` or `future`
 	Partition    Partition
 	MountPoint   string
 	MountOptions string

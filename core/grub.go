@@ -24,8 +24,8 @@ import (
 )
 
 type Grub struct {
-	presentRoot string
-	futureRoot  string
+	PresentRoot string
+	FutureRoot  string
 }
 
 // generateABGrubConf generates a new grub config with the given details
@@ -160,7 +160,21 @@ func NewGrub(bootPart Partition) (*Grub, error) {
 	}
 
 	return &Grub{
-		presentRoot: presentRoot,
-		futureRoot:  futureRoot,
+		PresentRoot: presentRoot,
+		FutureRoot:  futureRoot,
 	}, nil
+}
+
+func (g *Grub) IsBootedIntoPresentRoot() (bool, error) {
+	a := NewABRootManager()
+	future, err := a.GetFuture()
+	if err != nil {
+		return false, err
+	}
+
+	if g.FutureRoot == "a" {
+		return future.Label == settings.Cnf.PartLabelA, nil
+	} else {
+		return future.Label == settings.Cnf.PartLabelB, nil
+	}
 }
