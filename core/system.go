@@ -57,6 +57,7 @@ type ABSystemOperation string
 var (
 	queue        []QueuedFunction
 	lockFile     string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
+	stageFile    string = filepath.Join("/tmp", "ABSystem.Upgrade.stage")
 	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
 	ErrNoUpdate  error  = errors.New("no update available")
 )
@@ -493,6 +494,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	// here we create the stage file, which is used to determine if
+	// the upgrade can be interrupted or not. If the stage file is
+	// present, it means that the upgrade is in a state where it is
+	// still possible to interrupt it, otherwise it is not. This is
+	// useful for third-party applications like update managers.
+	err = s.CreateStageFile()
+	if err != nil {
+		PrintVerbose("ABSystemRunOperation:err(0.2): %s", err)
+		return err
+	}
+
 	s.AddToCleanUpQueue("unlockUpgrade", 200)
 
 	// Stage 1: Check if there is an update available
@@ -683,6 +695,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(5.2): %s", err)
+		return err
+	}
+
+	// from this point on, it is not possible to stop the upgrade
+	// so we remove the stage file. Note that interrupting the upgrade
+	// from this point on will not leave the system in an inconsistent
+	// state, but it could leave the future partition in a dirty state
+	// preventing it from booting.
+	err = s.RemoveStageFile()
+	if err != nil {
+		PrintVerbose("ABSystemRunOperation:err(5.3): %s", err)
 		return err
 	}
 
@@ -994,5 +1017,27 @@ func (s *ABSystem) UnlockUpgrade() error {
 	}
 
 	PrintVerbose("ABSystem.UnlockUpgrade: lock file removed")
+	return nil
+}
+
+func (s *ABSystem) CreateStageFile() error {
+	_, err := os.Create(stageFile)
+	if err != nil {
+		PrintVerbose("ABSystem.CreateStageFile: %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.CreateStageFile: stage file created")
+	return nil
+}
+
+func (s *ABSystem) RemoveStageFile() error {
+	err := os.Remove(stageFile)
+	if err != nil {
+		PrintVerbose("ABSystem.RemoveStageFile: %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.RemoveStageFile: stage file removed")
 	return nil
 }
