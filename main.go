@@ -55,6 +55,9 @@ func main() {
 	status := cmd.NewStatusCommand()
 	root.AddCommand(status)
 
+	updateInitramfs := cmd.NewUpdateInitfsCommand()
+	root.AddCommand(updateInitramfs)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {

@@ -68,9 +68,9 @@ status:
 
 upgrade:
   use: "upgrade"
-  long: "Update the boot partition for maintenance purposes (for advanced users only)"
-  short: "Update the boot partition"
-  forceFlag: "force update the boot partition without asking for confirmation"
+  long: "Check for a new system image and apply it."
+  short: "Upgrade the system"
+  forceFlag: "force update even if the system is up to date"
   rootRequired: "You must be root to run this command."
   checkingSystemUpdate: "Checking for system updates..."
   checkingPackageUpdate: "Checking for package updates..."
@@ -84,3 +84,11 @@ upgrade:
   upgraded: "Upgraded"
   downgraded: "Downgraded"
   removed: "Removed"
+
+updateInitramfs:
+  use: "update-initramfs"
+  long: "Update the initramfs of the future root."
+  short: "Update the initramfs"
+  rootRequired: "You must be root to run this command."
+  updateSuccess: "Updated initramfs of future root."
+  updateFailed: "Failed to update initramfs of future root.\n"

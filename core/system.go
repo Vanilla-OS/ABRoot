@@ -41,11 +41,13 @@ type QueuedFunction struct {
 }
 
 const (
-	UPGRADE         = "upgrade"
-	FORCE_UPGRADE   = "force-upgrade"
-	DRY_RUN_UPGRADE = "dry-run-upgrade"
-	APPLY           = "package-apply"
-	DRY_RUN_APPLY   = "dry-run-package-apply"
+	UPGRADE           = "upgrade"
+	FORCE_UPGRADE     = "force-upgrade"
+	DRY_RUN_UPGRADE   = "dry-run-upgrade"
+	APPLY             = "package-apply"
+	DRY_RUN_APPLY     = "dry-run-package-apply"
+	INITRAMFS         = "initramfs"
+	DRY_RUN_INITRAMFS = "dry-run-initramfs"
 )
 
 const (
@@ -471,6 +473,7 @@ Options=%s
 //	UPGRADE: Upgrades to a new image, if available,
 //	FORCE_UPGRADE: Forces the upgrade operation, even if no new image is available,
 //	APPLY: Applies package changes, but doesn't update the system.
+//	INITRAMFS: Updates the initramfs for the future root, but doesn't update the system.
 func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	PrintVerbose("ABSystem.RunOperation: starting %s", operation)
 
@@ -518,7 +521,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	var imageDigest string
-	if operation != APPLY {
+	if operation != APPLY && operation != INITRAMFS {
 		var res bool
 		imageDigest, res = s.CheckUpdate()
 		if !res {
@@ -609,7 +612,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	content := `RUN ` + pkgsFinal
 
 	var imageName string
-	if operation == APPLY || operation == DRY_RUN_APPLY {
+	switch operation {
+	case APPLY, DRY_RUN_APPLY, INITRAMFS, DRY_RUN_INITRAMFS:
 		presentPartition, err := s.RootM.GetPresent()
 		if err != nil {
 			PrintVerbose("ABSystemRunOperation:err(3.2): %s", err)
@@ -624,7 +628,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if imageName == "" {
 			imageName = settings.Cnf.FullImageName
 		}
-	} else {
+	default:
 		imageName = settings.Cnf.FullImageName + "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
@@ -734,7 +738,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage (dry): If dry-run, exit here before writing to disk
 	// ------------------------------------------------
-	if operation == DRY_RUN_UPGRADE || operation == DRY_RUN_APPLY {
+	switch operation {
+	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
 		PrintVerbose("ABSystem.RunOperation: dry-run completed")
 		return nil
 	}
@@ -770,6 +775,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	)
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(7.1): %s", err)
+		return err
+	}
+
+	err = chroot.ExecuteCmds( // ensure initramfs is updated
+		[]string{
+			"update-initramfs -u",
+			"exit",
+		},
+	)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(7.1.1): %s", err)
 		return err
 	}
 
