@@ -778,12 +778,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	err = chroot.ExecuteCmds( // ensure initramfs is updated
-		[]string{
-			"update-initramfs -u",
-			"exit",
-		},
-	)
+	preExec := settings.Cnf.IPkgMngPre
+	postExec := settings.Cnf.IPkgMngPost
+	initramfsArgs := []string{}
+	if preExec != "" {
+		initramfsArgs = append(initramfsArgs, preExec)
+	}
+	initramfsArgs = append(initramfsArgs, "update-initramfs -u")
+	if postExec != "" {
+		initramfsArgs = append(initramfsArgs, postExec)
+	}
+	initramfsArgs = append(initramfsArgs, "exit")
+	err = chroot.ExecuteCmds(initramfsArgs) // ensure initramfs is updated
 	if err != nil {
 		PrintVerbose("ABSystem.RunOperation:err(7.1.1): %s", err)
 		return err
