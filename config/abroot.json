@@ -10,8 +10,8 @@
 
     "iPkgMngPre": "lpkg --unlock",
     "iPkgMngPost": "lpkg --lock",
-    "iPkgMngAdd": "apt install -y",
-    "iPkgMngRm": "apt remove -y",
+    "iPkgMngAdd": "apt-get install -y",
+    "iPkgMngRm": "apt-get remove -y --autoremove",
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
 
     "differURL": "https://differ.vanillaos.org",
