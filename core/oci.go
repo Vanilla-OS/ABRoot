@@ -16,10 +16,12 @@ package core
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/containers/buildah"
+	"github.com/containers/image/v5/types"
 	cstypes "github.com/containers/storage/types"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
@@ -78,35 +80,67 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		return err
 	}
 
+	// pull image
+	err = pullImageWithProgressbar(pt, dest, imageRecipe)
+	if err != nil {
+		PrintVerbose("OciExportRootFs:err(8): %s", err)
+		return err
+	}
+
 	// build image
 	imageBuild, err := pt.BuildContainerFile(imageRecipePath, buildImageName)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(8): %s", err)
+		PrintVerbose("OciExportRootFs:err(9): %s", err)
 		return err
 	}
 
 	// mount image
 	mountDir, err := pt.MountImage(imageBuild.TopLayer)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(9): %s", err)
+		PrintVerbose("OciExportRootFs:err(10): %s", err)
 		return err
 	}
 
 	// copy mount dir contents to dest
 	err = rsyncCmd(mountDir+"/", dest, []string{}, false)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(10): %s", err)
+		PrintVerbose("OciExportRootFs:err(11): %s", err)
 		return err
 	}
 
 	// unmount image
 	_, err = pt.UnMountImage(imageBuild.TopLayer, true)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(11): %s", err)
+		PrintVerbose("OciExportRootFs:err(12): %s", err)
 		return err
 	}
 
 	return nil
+}
+
+func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *ImageRecipe) error {
+	PrintVerbose("pullImageWithProgressbar: running...")
+
+	progressCh := make(chan types.ProgressProperties)
+	manifestCh := make(chan prometheus.OciManifest)
+
+	defer close(progressCh)
+	defer close(manifestCh)
+
+	err := pt.PullImageAsync(image.From, dest, progressCh, manifestCh)
+	if err != nil {
+		PrintVerbose("pullImageWithProgressbar:err: %s", err)
+		return err
+	}
+
+	for {
+		select {
+		case report := <-progressCh:
+			fmt.Printf("%s: %v/%v\n", report.Artifact.Digest.Encoded()[:12], report.Offset, report.Artifact.Size)
+		case <-manifestCh:
+			return nil
+		}
+	}
 }
 
 // FindImageWithLabel returns the name of the first image containinig the provided key-value pair
