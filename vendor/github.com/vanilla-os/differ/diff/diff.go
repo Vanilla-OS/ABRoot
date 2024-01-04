@@ -17,7 +17,7 @@ type PackageDiff struct {
 
 // This monstruosity is an adaptation of the regex for semver (available in https://semver.org/).
 // It SHOULD be able to capture every type of exoteric versioning scheme out there.
-var versionRegex = regexp.MustCompile(`^(?:(?P<prefix>\d+):)?(?P<major>\d+[a-zA-Z]?)(?:\.(?P<minor>\d+))?(?:\.(?P<patch>\d+))?(?:[-~](?P<prerelease>(?:\d+|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:\d+|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:[+.](?P<buildmetadata>[0-9a-zA-Z-+.]+(?:\.[0-9a-zA-Z-]+)*))?$`)
+var versionRegex = regexp.MustCompile(`^(?:(?P<prefix>\d+):)?(?P<major>\d+[a-zA-Z]?)(?:\.(?P<minor>\d+))?(?:\.(?P<patch>\d+))?(?:[-~](?P<prerelease>(?:\d+|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:\d+|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:[+.](?P<buildmetadata>[0-9a-zA-Z-+.~]+(?:\.[0-9a-zA-Z-]+)*))?$`)
 
 // compareVersions has the same behavior as cmp.Compare, but for package versions. It parses
 // both version strings and checks for differences in major, minor, patch, pre-release, etc.

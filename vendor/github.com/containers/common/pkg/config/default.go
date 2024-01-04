@@ -320,7 +320,7 @@ func defaultEngineConfig() (*EngineConfig, error) {
 			return nil, err
 		}
 	}
-	storeOpts, err := types.DefaultStoreOptions()
+	storeOpts, err := types.DefaultStoreOptions(useUserConfigLocations(), unshare.GetRootlessUID())
 	if err != nil {
 		return nil, err
 	}
