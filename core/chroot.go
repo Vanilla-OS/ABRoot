@@ -21,13 +21,17 @@ import (
 	"syscall"
 )
 
-// Chroot is a struct which represents a chroot environment
+// Chroot represents a chroot instance, which can be used to run commands
+// inside a chroot environment
 type Chroot struct {
 	root       string
 	rootUuid   string
 	rootDevice string
 }
 
+// ReservedMounts is a list of mount points from host which should be
+// mounted inside the chroot environment to ensure it works properly in
+// some cases, such as grub-mkconfig
 var ReservedMounts = []string{
 	"/dev",
 	"/dev/pts",
@@ -36,14 +40,15 @@ var ReservedMounts = []string{
 	"/sys",
 }
 
-// NewChroot creates a new chroot environment
+// NewChroot creates a new chroot environment from the given root path and
+// returns its Chroot instance or an error if something went wrong
 func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error) {
-	PrintVerbose("NewChroot: running...")
+	PrintVerboseInfo("NewChroot", "running...")
 
 	root = strings.ReplaceAll(root, "//", "/")
 
 	if _, err := os.Stat(root); os.IsNotExist(err) {
-		PrintVerbose("NewChroot:err: " + err.Error())
+		PrintVerboseErr("NewChroot", 0, err)
 		return nil, err
 	}
 
@@ -57,30 +62,30 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 	// inside a chroot environment
 	err := chroot.Execute("mount", []string{"--bind", "/", "/"})
 	if err != nil {
-		PrintVerbose("NewChroot:err(2): " + err.Error())
+		PrintVerboseErr("NewChroot", 1, err)
 		return nil, err
 	}
 
 	for _, mount := range ReservedMounts {
-		PrintVerbose("NewChroot: mounting " + mount)
+		PrintVerboseInfo("NewChroot", "mounting", mount)
 		err := syscall.Mount(mount, filepath.Join(root, mount), "", syscall.MS_BIND, "")
 		if err != nil {
-			PrintVerbose("NewChroot:err(3): " + err.Error())
+			PrintVerboseErr("NewChroot", 2, err)
 			return nil, err
 		}
 	}
 
-	PrintVerbose("NewChroot: successfully created.")
+	PrintVerboseInfo("NewChroot", "successfully created.")
 	return chroot, nil
 }
 
-// Close unmounts all the bind mounts
+// Close unmounts all the bind mounts and closes the chroot environment
 func (c *Chroot) Close() error {
-	PrintVerbose("Chroot.Close: running...")
+	PrintVerboseInfo("Chroot.Close", "running...")
 
 	err := syscall.Unmount(filepath.Join(c.root, "/dev/pts"), 0)
 	if err != nil {
-		PrintVerbose("Chroot.Close:err: " + err.Error())
+		PrintVerboseErr("Chroot.Close", 0, err)
 		return err
 	}
 
@@ -93,51 +98,53 @@ func (c *Chroot) Close() error {
 		}
 
 		mountDir := filepath.Join(c.root, mount)
-		PrintVerbose("Chroot.Close: unmounting " + mountDir)
+		PrintVerboseInfo("Chroot.Close", "unmounting", mountDir)
 		err := syscall.Unmount(mountDir, 0)
 		if err != nil {
-			PrintVerbose("Chroot.Close:err: " + err.Error())
+			PrintVerboseErr("Chroot.Close", 1, err)
 			return err
 		}
 	}
 
-	PrintVerbose("Chroot.Close: successfully closed.")
+	PrintVerboseInfo("Chroot.Close", "successfully closed.")
 	return nil
 }
 
-// Execute runs a command in the chroot environment
+// Execute runs a command in the chroot environment, the command is
+// a string and the arguments are a list of strings. If an error occurs
+// it is returned.
 func (c *Chroot) Execute(cmd string, args []string) error {
-	PrintVerbose("Chroot.Execute: running...")
+	PrintVerboseInfo("Chroot.Execute", "running...")
 
 	cmd = strings.Join(append([]string{cmd}, args...), " ")
-	PrintVerbose("Chroot.Execute: running command: " + cmd)
+	PrintVerboseInfo("Chroot.Execute", "running command:", cmd)
 	e := exec.Command("chroot", c.root, "/bin/sh", "-c", cmd)
 	e.Stdout = os.Stdout
 	e.Stderr = os.Stderr
 	e.Stdin = os.Stdin
 	err := e.Run()
 	if err != nil {
-		PrintVerbose("Chroot.Execute:err: " + err.Error())
+		PrintVerboseErr("Chroot.Execute", 0, err)
 		return err
 	}
 
-	PrintVerbose("Chroot.Execute: successfully ran.")
+	PrintVerboseInfo("Chroot.Execute", "successfully ran.")
 	return nil
 }
 
 // ExecuteCmds runs a list of commands in the chroot environment,
 // stops at the first error
 func (c *Chroot) ExecuteCmds(cmds []string) error {
-	PrintVerbose("Chroot.ExecuteCmds: running...")
+	PrintVerboseInfo("Chroot.ExecuteCmds", "running...")
 
 	for _, cmd := range cmds {
 		err := c.Execute(cmd, []string{})
 		if err != nil {
-			PrintVerbose("Chroot.ExecuteCmds:err: " + err.Error())
+			PrintVerboseErr("Chroot.ExecuteCmds", 0, err)
 			return err
 		}
 	}
 
-	PrintVerbose("Chroot.ExecuteCmds: successfully ran.")
+	PrintVerboseInfo("Chroot.ExecuteCmds", "successfully ran.")
 	return nil
 }

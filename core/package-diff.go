@@ -31,38 +31,37 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (
 	added, upgraded, downgraded, removed []diff.PackageDiff,
 	err error,
 ) {
-	PrintVerbose("PackageDiff.BaseImagePackageDiff: running...")
+	PrintVerboseInfo("PackageDiff.BaseImagePackageDiff", "running...")
 
 	imageComponents := strings.Split(settings.Cnf.Name, "/")
 	imageName := imageComponents[len(imageComponents)-1]
 	reqUrl := fmt.Sprintf("%s/images/%s/diff", settings.Cnf.DifferURL, imageName)
 	body := fmt.Sprintf("{\"old_digest\": \"%s\", \"new_digest\": \"%s\"}", currentDigest, newDigest)
 
-	PrintVerbose("PackageDiff.BaseImagePackageDiff: Requesting base image diff to %s with body:\n%s", reqUrl, body)
+	PrintVerboseInfo("PackageDiff.BaseImagePackageDiff", "Requesting base image diff to", reqUrl, "with body", body)
 
 	request, err := http.NewRequest(http.MethodGet, reqUrl, strings.NewReader(body))
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff:err: %s", err)
+		PrintVerboseErr("PackageDiff.BaseImagePackageDiff", 0, err)
 		return
 	}
 	defer request.Body.Close()
 
 	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(1):err: %s", err)
+		PrintVerboseErr("PackageDiff.BaseImagePackageDiff", 1, err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(2):err: received non-ok status %s", resp.Status)
-		err = fmt.Errorf("package diff server returned non-OK status %s", resp.Status)
+		PrintVerboseErr("PackageDiff.BaseImagePackageDiff", 2, fmt.Errorf("received non-OK status %s", resp.Status))
 		return
 	}
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(3):err: %s", err)
+		PrintVerboseErr("PackageDiff.BaseImagePackageDiff", 3, err)
 		return
 	}
 
@@ -71,7 +70,7 @@ func BaseImagePackageDiff(currentDigest, newDigest string) (
 	}{}
 	err = json.Unmarshal(contents, &pkgDiff)
 	if err != nil {
-		PrintVerbose("PackageDiff.BaseImagePackageDiff(4):err: %s", err)
+		PrintVerboseErr("PackageDiff.BaseImagePackageDiff", 4, err)
 		return
 	}
 
@@ -89,12 +88,12 @@ func OverlayPackageDiff() (
 	added, upgraded, downgraded, removed []diff.PackageDiff,
 	err error,
 ) {
-	PrintVerbose("OverlayPackageDiff: running...")
+	PrintVerboseInfo("OverlayPackageDiff", "running...")
 
 	pkgM := NewPackageManager(false)
 	addedPkgs, err := pkgM.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageDiff.OverlayPackageDiff:err: %s", err)
+		PrintVerboseErr("PackageDiff.OverlayPackageDiff", 0, err)
 		return
 	}
 
@@ -107,16 +106,16 @@ func OverlayPackageDiff() (
 	}
 
 	remoteAdded := map[string]string{}
-	var pkgInfo map[string]any
+	var pkgInfo map[string]interface{}
 	for pkgName := range localAdded {
 		pkgInfo, err = GetRepoContentsForPkg(pkgName)
 		if err != nil {
-			PrintVerbose("PackageDiff.OverlayPackageDiff(1):err: %s", err)
+			PrintVerboseErr("PackageDiff.OverlayPackageDiff", 1, err)
 			return
 		}
 		version, ok := pkgInfo["version"].(string)
 		if !ok {
-			err = fmt.Errorf("PackageDiff.OverlayPackageDiff(2):err: Unexpected value when retrieving upstream version of '%s'", pkgName)
+			err = fmt.Errorf("unexpected value when retrieving upstream version of '%s'", pkgName)
 			return
 		}
 		remoteAdded[pkgName] = version

@@ -58,7 +58,7 @@ type UnstagedPackage struct {
 
 // NewPackageManager returns a new PackageManager struct
 func NewPackageManager(dryRun bool) *PackageManager {
-	PrintVerbose("PackageManager.NewPackageManager: running...")
+	PrintVerboseInfo("PackageManager.NewPackageManager", "running...")
 
 	baseDir := PackagesBaseDir
 	if dryRun {
@@ -67,7 +67,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 
 	err := os.MkdirAll(baseDir, 0755)
 	if err != nil {
-		PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
+		PrintVerboseErr("PackageManager.NewPackageManager", 0, err)
 		panic(err)
 	}
 
@@ -79,7 +79,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
+			PrintVerboseErr("PackageManager.NewPackageManager", 1, err)
 			panic(err)
 		}
 	}
@@ -92,7 +92,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
+			PrintVerboseErr("PackageManager.NewPackageManager", 2, err)
 			panic(err)
 		}
 	}
@@ -105,7 +105,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 			0644,
 		)
 		if err != nil {
-			PrintVerbose("PackageManager.NewPackageManager:err: " + err.Error())
+			PrintVerboseErr("PackageManager.NewPackageManager", 3, err)
 			panic(err)
 		}
 	}
@@ -115,13 +115,13 @@ func NewPackageManager(dryRun bool) *PackageManager {
 
 // Add adds a package to the packages.add file
 func (p *PackageManager) Add(pkg string) error {
-	PrintVerbose("PackageManager.Add: running...")
+	PrintVerboseInfo("PackageManager.Add", "running...")
 
 	// Check if package exists in repo
 	for _, _pkg := range strings.Split(pkg, " ") {
 		err := p.ExistsInRepo(_pkg)
 		if err != nil {
-			PrintVerbose("PackageManager.Add:err: " + err.Error())
+			PrintVerboseErr("PackageManager.Add", 0, err)
 			return err
 		}
 	}
@@ -129,50 +129,50 @@ func (p *PackageManager) Add(pkg string) error {
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		PrintVerboseErr("PackageManager.Add", 1, err)
 		return err
 	}
 	upkgs = append(upkgs, UnstagedPackage{pkg, ADD})
 	err = p.writeUnstagedPackages(upkgs)
 	if err != nil {
-		PrintVerbose("PackageManager.Add:err(2): " + err.Error())
+		PrintVerboseErr("PackageManager.Add", 2, err)
 		return err
 	}
 
 	// Modify added packages list
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Add:err(3): " + err.Error())
+		PrintVerboseErr("PackageManager.Add", 3, err)
 		return err
 	}
 
 	for _, p := range pkgs {
 		if p == pkg {
-			PrintVerbose("PackageManager.Add: package already added")
+			PrintVerboseInfo("PackageManager.Add", "package already added")
 			return nil
 		}
 	}
 
 	pkgs = append(pkgs, pkg)
 
-	PrintVerbose("PackageManager.Add: writing packages.add")
+	PrintVerboseInfo("PackageManager.Add", "writing packages.add")
 	return p.writeAddPackages(pkgs)
 }
 
 // Remove removes a package from the packages.add file
 func (p *PackageManager) Remove(pkg string) error {
-	PrintVerbose("PackageManager.Remove: running...")
+	PrintVerboseInfo("PackageManager.Remove", "running...")
 
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Add:err: " + err.Error())
+		PrintVerboseErr("PackageManager.Remove", 0, err)
 		return err
 	}
 	upkgs = append(upkgs, UnstagedPackage{pkg, REMOVE})
 	err = p.writeUnstagedPackages(upkgs)
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:err(2): " + err.Error())
+		PrintVerboseErr("PackageManager.Remove", 1, err)
 		return err
 	}
 
@@ -180,40 +180,40 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Unstaged will take care of the rest
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.Remove:err(3): " + err.Error())
+		PrintVerboseErr("PackageManager.Remove", 2, err)
 		return err
 	}
 	for i, ap := range pkgs {
 		if ap == pkg {
 			pkgs = append(pkgs[:i], pkgs[i+1:]...)
-			PrintVerbose("PackageManager.Remove: removing manually added package")
+			PrintVerboseInfo("PackageManager.Remove", "removing manually added package")
 			return p.writeAddPackages(pkgs)
 		}
 	}
 
 	// Otherwise, add package to packages.remove
-	PrintVerbose("PackageManager.Remove: writing packages.remove")
+	PrintVerboseInfo("PackageManager.Remove", "writing packages.remove")
 	return p.writeRemovePackages(pkg)
 }
 
 // GetAddPackages returns the packages in the packages.add file
 func (p *PackageManager) GetAddPackages() ([]string, error) {
-	PrintVerbose("PackageManager.GetAddPackages: running...")
+	PrintVerboseInfo("PackageManager.GetAddPackages", "running...")
 	return p.getPackages(PackagesAddFile)
 }
 
 // GetRemovePackages returns the packages in the packages.remove file
 func (p *PackageManager) GetRemovePackages() ([]string, error) {
-	PrintVerbose("PackageManager.GetRemovePackages: running...")
+	PrintVerboseInfo("PackageManager.GetRemovePackages", "running...")
 	return p.getPackages(PackagesRemoveFile)
 }
 
 // GetUnstagedPackages returns the package changes that are yet to be applied
 func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
-	PrintVerbose("PackageManager.GetUnstagedPackages: running...")
+	PrintVerboseInfo("PackageManager.GetUnstagedPackages", "running...")
 	pkgs, err := p.getPackages(PackagesUnstagedFile)
 	if err != nil {
-		PrintVerbose("PackageManager.GetUnstagedPackages:err: " + err.Error())
+		PrintVerboseErr("PackageManager.GetUnstagedPackages", 0, err)
 		return nil, err
 	}
 
@@ -233,10 +233,10 @@ func (p *PackageManager) GetUnstagedPackages() ([]UnstagedPackage, error) {
 // GetUnstagedPackagesPlain returns the package changes that are yet to be applied
 // as strings
 func (p *PackageManager) GetUnstagedPackagesPlain() ([]string, error) {
-	PrintVerbose("PackageManager.GetUnstagedPackagesPlain: running...")
+	PrintVerboseInfo("PackageManager.GetUnstagedPackagesPlain", "running...")
 	pkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.GetUnstagedPackagesPlain:err: " + err.Error())
+		PrintVerboseErr("PackageManager.GetUnstagedPackagesPlain", 0, err)
 		return nil, err
 	}
 
@@ -250,88 +250,88 @@ func (p *PackageManager) GetUnstagedPackagesPlain() ([]string, error) {
 
 // ClearUnstagedPackages removes all packages from the unstaged list
 func (p *PackageManager) ClearUnstagedPackages() error {
-	PrintVerbose("PackageManager.ClearUnstagedPackages: running...")
+	PrintVerboseInfo("PackageManager.ClearUnstagedPackages", "running...")
 	return p.writeUnstagedPackages([]UnstagedPackage{})
 }
 
-// GetAddPackages returns the packages in the packages.add file as string
+// GetAddPackagesString returns the packages in the packages.add file as a string
 func (p *PackageManager) GetAddPackagesString(sep string) (string, error) {
-	PrintVerbose("PackageManager.GetAddPackagesString: running...")
+	PrintVerboseInfo("PackageManager.GetAddPackagesString", "running...")
 	pkgs, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.GetAddPackagesString:err: " + err.Error())
+		PrintVerboseErr("PackageManager.GetAddPackagesString", 0, err)
 		return "", err
 	}
 
-	PrintVerbose("PackageManager.GetAddPackagesString: done")
+	PrintVerboseInfo("PackageManager.GetAddPackagesString", "done")
 	return strings.Join(pkgs, sep), nil
 }
 
-// GetRemovePackages returns the packages in the packages.remove file as string
+// GetRemovePackagesString returns the packages in the packages.remove file as a string
 func (p *PackageManager) GetRemovePackagesString(sep string) (string, error) {
-	PrintVerbose("PackageManager.GetRemovePackagesString: running...")
+	PrintVerboseInfo("PackageManager.GetRemovePackagesString", "running...")
 	pkgs, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerbose("PackageManager.GetRemovePackagesString:err: " + err.Error())
+		PrintVerboseErr("PackageManager.GetRemovePackagesString", 0, err)
 		return "", err
 	}
 
-	PrintVerbose("PackageManager.GetRemovePackagesString: done")
+	PrintVerboseInfo("PackageManager.GetRemovePackagesString", "done")
 	return strings.Join(pkgs, sep), nil
 }
 
 func (p *PackageManager) getPackages(file string) ([]string, error) {
-	PrintVerbose("PackageManager.getPackages: running...")
+	PrintVerboseInfo("PackageManager.getPackages", "running...")
 
 	pkgs := []string{}
 	f, err := os.Open(filepath.Join(p.baseDir, file))
 	if err != nil {
-		PrintVerbose("PackageManager.getPackages:err: " + err.Error())
+		PrintVerboseErr("PackageManager.getPackages", 0, err)
 		return pkgs, err
 	}
 	defer f.Close()
 
 	b, err := io.ReadAll(f)
 	if err != nil {
-		PrintVerbose("PackageManager.getPackages:err(2): " + err.Error())
+		PrintVerboseErr("PackageManager.getPackages", 1, err)
 		return pkgs, err
 	}
 
 	pkgs = strings.Split(strings.TrimSpace(string(b)), "\n")
 
-	PrintVerbose("PackageManager.getPackages: returning packages")
+	PrintVerboseInfo("PackageManager.getPackages", "returning packages")
 	return pkgs, nil
 }
 
 func (p *PackageManager) writeAddPackages(pkgs []string) error {
-	PrintVerbose("PackageManager.writeAddPackages: running...")
+	PrintVerboseInfo("PackageManager.writeAddPackages", "running...")
 	return p.writePackages(PackagesAddFile, pkgs)
 }
 
 func (p *PackageManager) writeRemovePackages(pkg string) error {
-	PrintVerbose("PackageManager.writeRemovePackages: running...")
+	PrintVerboseInfo("PackageManager.writeRemovePackages", "running...")
 
 	pkgs, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerbose("PackageManager.writeRemovePackages:err: " + err.Error())
+		PrintVerboseErr("PackageManager.writeRemovePackages", 0, err)
 		return err
 	}
 
 	for _, p := range pkgs {
 		if p == pkg {
-			PrintVerbose("PackageManager.writeRemovePackages: package already added")
+			PrintVerboseInfo("PackageManager.writeRemovePackages", "package already added")
 			return nil
 		}
 	}
 
 	pkgs = append(pkgs, pkg)
 
-	PrintVerbose("PackageManager.writeRemovePackages: writing packages.remove")
+	PrintVerboseInfo("PackageManager.writeRemovePackages", "writing packages.remove")
 	return p.writePackages(PackagesRemoveFile, pkgs)
 }
 
 func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
-	PrintVerbose("PackageManager.writeUnstagedPackages: running...")
+	PrintVerboseInfo("PackageManager.writeUnstagedPackages", "running...")
 
 	pkgFmt := []string{}
 	for _, pkg := range pkgs {
@@ -342,11 +342,11 @@ func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
 }
 
 func (p *PackageManager) writePackages(file string, pkgs []string) error {
-	PrintVerbose("PackageManager.writePackages: running...")
+	PrintVerboseInfo("PackageManager.writePackages", "running...")
 
 	f, err := os.Create(filepath.Join(p.baseDir, file))
 	if err != nil {
-		PrintVerbose("PackageManager.writePackages:err: " + err.Error())
+		PrintVerboseErr("PackageManager.writePackages", 0, err)
 		return err
 	}
 	defer f.Close()
@@ -358,21 +358,21 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 
 		_, err = f.WriteString(fmt.Sprintf("%s\n", pkg))
 		if err != nil {
-			PrintVerbose("PackageManager.writePackages:err(2): " + err.Error())
+			PrintVerboseErr("PackageManager.writePackages", 1, err)
 			return err
 		}
 	}
 
-	PrintVerbose("PackageManager.writePackages: packages written")
+	PrintVerboseInfo("PackageManager.writePackages", "packages written")
 	return nil
 }
 
 func (p *PackageManager) processApplyPackages() (string, string) {
-	PrintVerbose("PackageManager.processApplyPackages: running...")
+	PrintVerboseInfo("PackageManager.processApplyPackages", "running...")
 
 	unstaged, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerbose("PackageManager.processApplyPackages:err: %s", err.Error())
+		PrintVerboseErr("PackageManager.processApplyPackages", 0, err)
 	}
 
 	var addPkgs, removePkgs []string
@@ -401,18 +401,18 @@ func (p *PackageManager) processApplyPackages() (string, string) {
 func (p *PackageManager) processUpgradePackages() (string, string) {
 	addPkgs, err := p.GetAddPackagesString(" ")
 	if err != nil {
-		PrintVerbose("PackageManager.GetFinalCmd:err: " + err.Error())
+		PrintVerboseErr("PackageManager.processUpgradePackages", 0, err)
 		return "", ""
 	}
 
 	removePkgs, err := p.GetRemovePackagesString(" ")
 	if err != nil {
-		PrintVerbose("PackageManager.GetFinalCmd:err(2): " + err.Error())
+		PrintVerboseErr("PackageManager.processUpgradePackages", 1, err)
 		return "", ""
 	}
 
 	if len(addPkgs) == 0 && len(removePkgs) == 0 {
-		PrintVerbose("PackageManager.GetFinalCmd: no packages to install or remove")
+		PrintVerboseInfo("PackageManager.processUpgradePackages", "no packages to install or remove")
 		return "", ""
 	}
 
@@ -430,7 +430,7 @@ func (p *PackageManager) processUpgradePackages() (string, string) {
 }
 
 func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
-	PrintVerbose("PackageManager.GetFinalCmd: running...")
+	PrintVerboseInfo("PackageManager.GetFinalCmd", "running...")
 
 	var finalAddPkgs, finalRemovePkgs string
 	if operation == APPLY {
@@ -462,7 +462,7 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 		cmd = fmt.Sprintf("%s && %s", cmd, postExec)
 	}
 
-	PrintVerbose("PackageManager.GetFinalCmd: returning cmd: " + cmd)
+	PrintVerboseInfo("PackageManager.GetFinalCmd", "returning cmd: "+cmd)
 	return cmd
 }
 
@@ -470,7 +470,7 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 // If a configuration exists but is malformed, returns an error.
 func assertPkgMngApiSetUp() (bool, error) {
 	if settings.Cnf.IPkgMngApi == "" {
-		PrintVerbose("PackageManager.assertPkgMngApiSetUp: no API url set, will not check if package exists. This could lead to errors")
+		PrintVerboseInfo("PackageManager.assertPkgMngApiSetUp", "no API url set, will not check if package exists. This could lead to errors")
 		return false, nil
 	}
 
@@ -483,12 +483,12 @@ func assertPkgMngApiSetUp() (bool, error) {
 		return false, fmt.Errorf("PackageManager.assertPkgMngApiSetUp: API url does not contain {packageName} placeholder. ABRoot is probably misconfigured, please report the issue to the maintainers of the distribution")
 	}
 
-	PrintVerbose("PackageManager.assertPkgMngApiSetUp: Repo is set up properly")
+	PrintVerboseInfo("PackageManager.assertPkgMngApiSetUp", "Repo is set up properly")
 	return true, nil
 }
 
 func (p *PackageManager) ExistsInRepo(pkg string) error {
-	PrintVerbose("PackageManager.ExistsInRepo: running...")
+	PrintVerboseInfo("PackageManager.ExistsInRepo", "running...")
 
 	ok, err := assertPkgMngApiSetUp()
 	if err != nil {
@@ -499,55 +499,55 @@ func (p *PackageManager) ExistsInRepo(pkg string) error {
 	}
 
 	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
-	PrintVerbose("PackageManager.ExistsInRepo: checking if package exists in repo: " + url)
+	PrintVerboseInfo("PackageManager.ExistsInRepo", "checking if package exists in repo: "+url)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		PrintVerbose("PackageManager.ExistsInRepo:err: " + err.Error())
+		PrintVerboseErr("PackageManager.ExistsInRepo", 0, err)
 		return err
 	}
 
 	if resp.StatusCode != 200 {
-		PrintVerbose("PackageManager.ExistsInRepo: package does not exist in repo")
+		PrintVerboseInfo("PackageManager.ExistsInRepo", "package does not exist in repo")
 		return fmt.Errorf("package does not exist in repo: %s", pkg)
 	}
 
-	PrintVerbose("PackageManager.ExistsInRepo: package exists in repo")
+	PrintVerboseInfo("PackageManager.ExistsInRepo", "package exists in repo")
 	return nil
 }
 
 // GetRepoContentsForPkg retrieves package information from the repository API
-func GetRepoContentsForPkg(pkg string) (map[string]any, error) {
-	PrintVerbose("PackageManager.GetRepoContentsForPkg: running...")
+func GetRepoContentsForPkg(pkg string) (map[string]interface{}, error) {
+	PrintVerboseInfo("PackageManager.GetRepoContentsForPkg", "running...")
 
 	ok, err := assertPkgMngApiSetUp()
 	if err != nil {
-		return map[string]any{}, err
+		return map[string]interface{}{}, err
 	}
 	if !ok {
-		return map[string]any{}, errors.New("PackageManager.GetRepoContentsForPkg: no API url set, cannot query package information")
+		return map[string]interface{}{}, errors.New("PackageManager.GetRepoContentsForPkg: no API url set, cannot query package information")
 	}
 
 	url := strings.Replace(settings.Cnf.IPkgMngApi, "{packageName}", pkg, 1)
-	PrintVerbose("PackageManager.GetRepoContentsForPkg: fetching package information in: " + url)
+	PrintVerboseInfo("PackageManager.GetRepoContentsForPkg", "fetching package information in: "+url)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		PrintVerbose("PackageManager.GetRepoContentsForPkg:err: " + err.Error())
-		return map[string]any{}, err
+		PrintVerboseErr("PackageManager.GetRepoContentsForPkg", 0, err)
+		return map[string]interface{}{}, err
 	}
 
 	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("PackageManager.GetRepoContentsForPkg(2):err: %s", err)
-		return map[string]any{}, err
+		PrintVerboseErr("PackageManager.GetRepoContentsForPkg", 1, err)
+		return map[string]interface{}{}, err
 	}
 
-	pkgInfo := map[string]any{}
+	pkgInfo := map[string]interface{}{}
 	err = json.Unmarshal(contents, &pkgInfo)
 	if err != nil {
-		PrintVerbose("PackageManager.GetRepoContentsForPkg(3):err: %s", err)
-		return map[string]any{}, err
+		PrintVerboseErr("PackageManager.GetRepoContentsForPkg", 2, err)
+		return map[string]interface{}{}, err
 	}
 
 	return pkgInfo, nil

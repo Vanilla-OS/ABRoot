@@ -118,16 +118,16 @@ func rsyncDryRun(src, dst string, excluded []string) error {
 // To ensure the changes are applied atomically, we rsync on a _new directory first,
 // and use atomicSwap to replace the _new with the dst directory.
 func AtomicRsync(src, dst string, transitionalPath string, finalPath string, excluded []string, keepUnwanted bool) error {
+	PrintVerboseInfo("AtomicRsync", "Running...")
 	if _, err := os.Stat(transitionalPath); os.IsNotExist(err) {
 		err = os.Mkdir(transitionalPath, 0755)
 		if err != nil {
-			PrintVerbose("err:AtomicRsync: %s", err)
+			PrintVerboseErr("AtomicRsync", 0, err)
 			return err
 		}
 	}
 
-	PrintVerbose("step:  rsyncDryRun")
-
+	PrintVerboseInfo("AtomicRsync", "Starting dry run process...")
 	err := rsyncDryRun(src, transitionalPath, excluded)
 	if err != nil {
 		return err
@@ -145,21 +145,21 @@ func AtomicRsync(src, dst string, transitionalPath string, finalPath string, exc
 		opts = append(opts, "--delete")
 	}
 
-	PrintVerbose("step:  rsyncCmd")
+	PrintVerboseInfo("AtomicRsync", "Starting rsync process...")
 
 	err = rsyncCmd(src, transitionalPath, opts, true)
 	if err != nil {
 		return err
 	}
 
-	PrintVerbose("step:  atomicSwap")
+	PrintVerboseInfo("AtomicRsync", "Starting atomic swap process...")
 
 	err = AtomicSwap(transitionalPath, finalPath)
 	if err != nil {
 		return err
 	}
 
-	PrintVerbose("step:  RemoveAll")
+	PrintVerboseInfo("AtomicRsync", "Removing transitional path...")
 
 	return os.RemoveAll(transitionalPath)
 }

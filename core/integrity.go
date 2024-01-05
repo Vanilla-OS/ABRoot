@@ -29,7 +29,8 @@ type IntegrityCheck struct {
 	etcPaths      []string
 }
 
-// NewIntegrityCheck creates a new IntegrityCheck instance
+// NewIntegrityCheck creates a new IntegrityCheck instance for the given root
+// partition, and returns a pointer to it or an error if something went wrong
 func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
 	systemPath := filepath.Join(root.Partition.MountPoint, "/.system")
 	etcPath := filepath.Join("/var/lib/abroot/etc", root.Label)
@@ -82,9 +83,11 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 	return ic, nil
 }
 
-// check performs an integrity check on the system
+// check performs an integrity check on the system by checking if all the
+// required paths and links are present. If repair is true, it will also
+// try to repair the system by creating missing resources
 func (ic *IntegrityCheck) check(repair bool) error {
-	PrintVerbose("IntegrityCheck.check: Running...")
+	PrintVerboseInfo("IntegrityCheck.check", "Running...")
 	repairPaths := []string{}
 	repairLinks := []string{}
 
@@ -118,10 +121,10 @@ func (ic *IntegrityCheck) check(repair bool) error {
 
 	if repair {
 		for _, path := range repairPaths {
-			PrintVerbose("IntegrityCheck: Repairing path %s", path)
+			PrintVerboseInfo("IntegrityCheck", "Repairing path", path)
 			err := os.MkdirAll(path, 0755)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err(1): %s", err)
+				PrintVerboseErr("IntegrityCheck", 0, err)
 				return err
 			}
 		}
@@ -131,14 +134,14 @@ func (ic *IntegrityCheck) check(repair bool) error {
 			dstPath := filepath.Join(ic.rootPath, link)
 			relSrcPath, err := filepath.Rel(filepath.Dir(dstPath), srcPath)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err(2): %s", err)
+				PrintVerboseErr("IntegrityCheck", 1, err)
 				return err
 			}
 
-			PrintVerbose("IntegrityCheck: Repairing link %s -> %s", relSrcPath, dstPath)
+			PrintVerboseInfo("IntegrityCheck", "Repairing link", relSrcPath, "->", dstPath)
 			err = os.Symlink(relSrcPath, dstPath)
 			if err != nil {
-				PrintVerbose("IntegrityCheck:err(3): %s", err)
+				PrintVerboseErr("IntegrityCheck", 2, err)
 				return err
 			}
 		}

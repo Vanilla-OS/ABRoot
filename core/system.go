@@ -26,20 +26,42 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 )
 
-// ABSystem represents the system
+// An ABSystem allows to perform system operations such as upgrades,
+// package changes and rollback on an ABRoot-compliant system.
 type ABSystem struct {
-	Checks   *Checks
-	RootM    *ABRootManager
+	// Checks contains an instance of Checks which allows to perform
+	// compatibility checks on the system such as filesystem compatibility,
+	// connectivity and root check.
+	Checks *Checks
+
+	// RootM contains an instance of the ABRootManager which allows to
+	// manage the ABRoot partition scheme.
+	RootM *ABRootManager
+
+	// Registry contains an instance of the Registry used to retrieve resources
+	// from the configured Docker registry.
 	Registry *Registry
+
+	// CurImage contains an instance of ABImage which represents the current
+	// image used by the system (abimage.abr).
 	CurImage *ABImage
 }
 
+// QueuedFunction represents a function to be executed in the clean up queue
 type QueuedFunction struct {
-	Name     string
-	Values   []interface{}
+	// The name of the function to be executed, which must match one of the
+	// supported functions in the RunCleanUpQueue function.
+	Name string
+
+	// The values to be passed to the function.
+	Values []interface{}
+
+	// The priority of the function. Functions with lower numbers will be
+	// executed first.
 	Priority int
 }
 
+// Supported ABSystemOperation types
 const (
 	// ABSystem operations
 	UPGRADE           = "upgrade"
@@ -56,28 +78,37 @@ const (
 	ROLLBACK_FAILED      = "rollback-failed"
 )
 
-const (
-	MountUnitDir = "/etc/systemd/system"
-)
-
+// ABSystemOperation represents a system operation to be performed by the
+// ABSystem, must be given as a parameter to the RunOperation function.
 type ABSystemOperation string
+
+// ABRollbackResponse represents the response of a rollback operation
 type ABRollbackResponse string
 
+// Common variables and errors used by the ABSystem
 var (
-	queue        []QueuedFunction
 	lockFile     string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
 	stageFile    string = filepath.Join("/tmp", "ABSystem.Upgrade.stage")
 	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
-	ErrNoUpdate  error  = errors.New("no update available")
+	mountUnitDir        = "/etc/systemd/system"
+
+	// queue is a slice of QueuedFunction which contains the functions to be
+	// executed in the clean up queue.
+	queue []QueuedFunction
+
+	// Errors
+	ErrNoUpdate error = errors.New("no update available")
 )
 
-// NewABSystem creates a new system
+// NewABSystem initializes a new ABSystem, which contains all the functions
+// to perform system operations such as upgrades, package changes and rollback.
+// It returns a pointer to the initialized ABSystem and an error, if any.
 func NewABSystem() (*ABSystem, error) {
-	PrintVerbose("NewABSystem: running...")
+	PrintVerboseInfo("NewABSystem: running...")
 
 	i, err := NewABImageFromRoot()
 	if err != nil {
-		PrintVerbose("NewABSystem:err: %s", err)
+		PrintVerboseErr("NewABSystem", 0, err)
 		return nil, err
 	}
 
@@ -95,28 +126,28 @@ func NewABSystem() (*ABSystem, error) {
 
 // CheckAll performs all checks from the Checks struct
 func (s *ABSystem) CheckAll() error {
-	PrintVerbose("ABSystem.CheckAll: running...")
+	PrintVerboseInfo("ABSystem.CheckAll", "running...")
 
 	err := s.Checks.PerformAllChecks()
 	if err != nil {
-		PrintVerbose("ABSystem.CheckAll:err: %s", err)
+		PrintVerboseErr("ABSystem.CheckAll", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.CheckAll: all checks passed")
+	PrintVerboseInfo("ABSystem.CheckAll", "all checks passed")
 	return nil
 }
 
 // CheckUpdate checks if there is an update available
 func (s *ABSystem) CheckUpdate() (string, bool) {
-	PrintVerbose("ABSystem.CheckUpdate: running...")
+	PrintVerboseInfo("ABSystem.CheckUpdate", "running...")
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
 
 // MergeUserEtcFiles merges user-related files from the new lower etc (/.system/etc)
 // with the old upper etc, if present, saving the result in the new upper etc.
 func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error {
-	PrintVerbose("ABSystem.SyncLowerEtc: syncing /.system/etc -> %s", newLowerEtc)
+	PrintVerboseInfo("ABSystem.SyncLowerEtc", "syncing /.system/etc ->", newLowerEtc)
 
 	etcFiles := []string{
 		"passwd",
@@ -129,7 +160,7 @@ func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc strin
 
 	etcDir := "/.system/etc"
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncLowerEtc:err: %s", err)
+		PrintVerboseErr("ABSystem.SyncLowerEtc", 0, err)
 		return err
 	}
 
@@ -140,7 +171,7 @@ func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc strin
 			if os.IsNotExist(err) { // No changes were made to the file from its image base, skip merge
 				continue
 			} else {
-				PrintVerbose("ABSystem.SyncLowerEtc:err(2): %s", err)
+				PrintVerboseErr("ABSystem.SyncLowerEtc", 1, err)
 				return err
 			}
 		} else {
@@ -151,37 +182,35 @@ func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc strin
 			// write the diff to the destination
 			err = MergeDiff(firstFile, secondFile, destination)
 			if err != nil {
-				PrintVerbose("ABSystem.SyncLowerEtc:err(3): %s", err)
+				PrintVerboseErr("ABSystem.SyncLowerEtc", 2, err)
 				return err
 			}
 		}
 	}
 
-	PrintVerbose("ABSystem.SyncLowerEtc: sync completed")
+	PrintVerboseInfo("ABSystem.SyncLowerEtc", "sync completed")
 	return nil
 }
 
 // SyncUpperEtc syncs the mutable etc directories from /var/lib/abroot/etc
 func (s *ABSystem) SyncUpperEtc(newEtc string) error {
-	PrintVerbose("ABSystem.SyncUpperEtc: Starting")
+	PrintVerboseInfo("ABSystem.SyncUpperEtc", "Starting")
 
 	current_part, err := s.RootM.GetPresent()
 	if err != nil {
-		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
+		PrintVerboseErr("ABSystem.SyncUpperEtc", 0, err)
 		return err
 	}
 
 	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
 	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.SyncEtc:err(2): %s", err)
+		PrintVerboseErr("ABSystem.SyncEtc", 1, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.SyncUpperEtc: syncing /var/lib/abroot/etc/%s -> %s", current_part.Label, newEtc)
+	PrintVerboseInfo("ABSystem.SyncUpperEtc: syncing /var/lib/abroot/etc/%s -> %s", current_part.Label, newEtc)
 
-	err = exec.Command( // TODO: use the Rsync method here
-		"rsync",
-		"-a",
+	opts := []string{
 		"--exclude=passwd",
 		"--exclude=group",
 		"--exclude=shells",
@@ -190,21 +219,20 @@ func (s *ABSystem) SyncUpperEtc(newEtc string) error {
 		"--exclude=subgid",
 		"--exclude=fstab",
 		"--exclude=crypttab",
-		etcDir+"/",
-		newEtc,
-	).Run()
+	}
+	err = rsyncCmd(etcDir+"/", newEtc, opts, false)
 	if err != nil {
-		PrintVerbose("ABSystem.SyncUpperEtc:err: %s", err)
+		PrintVerboseErr("ABSystem.SyncUpperEtc", 2, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.SyncUpperEtc: sync completed")
+	PrintVerboseInfo("ABSystem.SyncUpperEtc", "sync completed")
 	return nil
 }
 
 // RunCleanUpQueue runs the functions in the queue or only the specified one
 func (s *ABSystem) RunCleanUpQueue(fnName string) error {
-	PrintVerbose("ABSystem.RunCleanUpQueue: running...")
+	PrintVerboseInfo("ABSystem.RunCleanUpQueue", "running...")
 
 	sort.Slice(queue, func(i, j int) bool {
 		return queue[i].Priority < queue[j].Priority
@@ -220,62 +248,62 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 
 		switch f.Name {
 		case "umountFuture":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountFuture")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountFuture")
 			futurePart := f.Values[0].(ABRootPartition)
 			err := futurePart.Partition.Unmount()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err: %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 0, err)
 				return err
 			}
 		case "closeChroot":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing closeChroot")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing closeChroot")
 			chroot := f.Values[0].(*Chroot)
 			chroot.Close() // safe to ignore, already closed
 		case "removeNewSystem":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewSystem")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing removeNewSystem")
 			newSystem := f.Values[0].(string)
 			err := os.RemoveAll(newSystem)
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(3): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 1, err)
 				return err
 			}
 		case "removeNewABImage":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing removeNewABImage")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing removeNewABImage")
 			newImage := f.Values[0].(string)
 			err := os.RemoveAll(newImage)
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(4): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 2, err)
 				return err
 			}
 		case "umountBoot":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountBoot")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountBoot")
 			bootPart := f.Values[0].(Partition)
 			err := bootPart.Unmount()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(5): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 3, err)
 				return err
 			}
 		case "umountInit":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing umountInit")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountInit")
 			initPart := Partition{MountPoint: "/part-future/.system/boot/init"}
 			err := initPart.Unmount()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(6): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 4, err)
 				return err
 			}
 		case "unlockUpgrade":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing unlockUpgrade")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing unlockUpgrade")
 			err := s.UnlockUpgrade()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(7): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 5, err)
 				return err
 			}
 		case "clearUnstagedPackages":
-			PrintVerbose("ABSystem.RunCleanUpQueue: Executing clearUnstagedPackages")
+			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing clearUnstagedPackages")
 			pkgM := NewPackageManager(false)
 			err := pkgM.ClearUnstagedPackages()
 			if err != nil {
-				PrintVerbose("ABSystem.RunCleanUpQueue:err(8): %s", err)
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 6, err)
 				return err
 			}
 		}
@@ -287,7 +315,7 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 		queue = append(queue[:removeIdx], queue[removeIdx+1:]...)
 	}
 
-	PrintVerbose("ABSystem.RunCleanUpQueue: completed")
+	PrintVerboseInfo("ABSystem.RunCleanUpQueue", "completed")
 	return nil
 }
 
@@ -317,7 +345,7 @@ func (s *ABSystem) ResetQueue() {
 
 // GenerateFstab generates a fstab file for the future root
 func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateFstab: generating fstab")
+	PrintVerboseInfo("ABSystem.GenerateFstab", "generating fstab")
 
 	template := `# /etc/fstab: static file system information.
 # Generated by ABRoot
@@ -343,18 +371,18 @@ UUID=%s  /  %s  defaults  0  0
 
 	err := os.WriteFile(filepath.Join(rootPath, "/etc/fstab"), []byte(fstab), 0644)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateFstab:err: %s", err)
+		PrintVerboseErr("ABSystem.GenerateFstab", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.GenerateFstab: fstab generated")
+	PrintVerboseInfo("ABSystem.GenerateFstab", "fstab generated")
 	return nil
 }
 
 // GenerateCrypttab identifies which devices are encrypted and generates
 // the /etc/crypttab file for the specified root
 func (s *ABSystem) GenerateCrypttab(rootPath string) error {
-	PrintVerbose("ABSystem.GenerateCrypttab: generating crypttab")
+	PrintVerboseInfo("ABSystem.GenerateCrypttab", "generating crypttab")
 
 	cryptEntries := [][]string{}
 
@@ -362,7 +390,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	for _, rootDevice := range s.RootM.Partitions {
 		if strings.HasPrefix(rootDevice.Partition.Device, "luks-") {
 			parent := rootDevice.Partition.Parent
-			PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+			PrintVerboseInfo("ABSystem.GenerateCrypttab", "Adding", parent.Device, "to crypttab")
 
 			cryptEntries = append(cryptEntries, []string{
 				fmt.Sprintf("luks-%s", parent.Uuid),
@@ -376,7 +404,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 	// Check for encrypted /var
 	if strings.HasPrefix(s.RootM.VarPartition.Device, "luks-") {
 		parent := s.RootM.VarPartition.Parent
-		PrintVerbose("ABSystem.GenerateCrypttab: Adding %s to crypttab", parent.Device)
+		PrintVerboseInfo("ABSystem.GenerateCrypttab", "Adding", parent.Device, "to crypttab")
 
 		cryptEntries = append(cryptEntries, []string{
 			fmt.Sprintf("luks-%s", parent.Uuid),
@@ -394,16 +422,17 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 
 	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
 	if err != nil {
-		PrintVerbose("ABSystem.GenerateCrypttab:err(3): %s", err)
+		PrintVerboseErr("ABSystem.GenerateCrypttab", 3, err)
 		return err
 	}
 
 	return nil
 }
 
-// GenerateSystemdUnits generates systemd units that mount the mutable parts of the system
+// GenerateSystemdUnits generates systemd units that mount the mutable parts
+// of the system to their respective mountpoints
 func (s *ABSystem) GenerateSystemdUnits(rootPath string, root ABRootPartition) error {
-	PrintVerbose("ABSystem.GenerateSystemdUnits: generating units")
+	PrintVerboseInfo("ABSystem.GenerateSystemdUnits", "generating units")
 
 	extraDepends := ""
 	if root.Partition.IsEncrypted() || s.RootM.VarPartition.IsEncrypted() {
@@ -438,51 +467,55 @@ Options=%s
 `
 
 	for _, mount := range mounts {
-		PrintVerbose("ABSystem.GenerateSystemdUnits: generating unit for %s", mount.destination)
+		PrintVerboseInfo("ABSystem.GenerateSystemdUnits", "generating unit for", mount.destination)
 
 		unit := fmt.Sprintf(afterVarTemplate, mount.destination, extraDepends, mount.source, mount.destination, mount.fsType, mount.options)
 
 		// the unit file needs to have the escaped mount point as its name
 		out, err := exec.Command("systemd-escape", "--path", mount.destination).Output()
 		if err != nil {
-			PrintVerbose("ABSystem.GenerateSystemdUnits:err(1): failed to determine escaped path: %s", err)
+			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 0, "failed to determine escaped path", err)
 			return err
 		}
 		mountUnitFile := "/" + strings.Replace(string(out), "\n", "", -1) + ".mount"
 
-		err = os.WriteFile(filepath.Join(rootPath, MountUnitDir, mountUnitFile), []byte(unit), 0644)
+		err = os.WriteFile(filepath.Join(rootPath, mountUnitDir, mountUnitFile), []byte(unit), 0644)
 		if err != nil {
-			PrintVerbose("ABSystem.GenerateSystemdUnits:err(2): %s", err)
+			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 1, err)
 			return err
 		}
 
 		const targetWants string = "/local-fs.target.wants"
 
-		err = os.MkdirAll(filepath.Join(rootPath, MountUnitDir, targetWants), 0755)
+		err = os.MkdirAll(filepath.Join(rootPath, mountUnitDir, targetWants), 0755)
 		if err != nil {
-			PrintVerbose("ABSystem.GenerateSystemdUnits:err(3): %s", err)
+			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 2, err)
 			return err
 		}
 
-		err = os.Symlink(filepath.Join("../", mountUnitFile), filepath.Join(rootPath, MountUnitDir, targetWants, mountUnitFile))
+		err = os.Symlink(filepath.Join("../", mountUnitFile), filepath.Join(rootPath, mountUnitDir, targetWants, mountUnitFile))
 		if err != nil {
-			PrintVerbose("ABSystem.GenerateSystemdUnits:err(4): failed to create symlink: %s", err)
+			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 3, "failed to create symlink", err)
 			return err
 		}
 	}
 
-	PrintVerbose("ABSystem.GenerateSystemdUnits: units generated")
+	PrintVerboseInfo("ABSystem.GenerateSystemdUnits", "units generated")
 	return nil
 }
 
 // RunOperation executes a root-switching operation from the options below:
 //
-//	UPGRADE: Upgrades to a new image, if available,
-//	FORCE_UPGRADE: Forces the upgrade operation, even if no new image is available,
-//	APPLY: Applies package changes, but doesn't update the system.
-//	INITRAMFS: Updates the initramfs for the future root, but doesn't update the system.
+//	UPGRADE:
+//		Upgrades to a new image, if available,
+//	FORCE_UPGRADE:
+//		Forces the upgrade operation, even if no new image is available,
+//	APPLY:
+//		Applies package changes, but doesn't update the system.
+//	INITRAMFS:
+//		Updates the initramfs for the future root, but doesn't update the system.
 func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
-	PrintVerbose("ABSystem.RunOperation: starting %s", operation)
+	PrintVerboseInfo("ABSystem.RunOperation", "starting", operation)
 
 	s.ResetQueue()
 
@@ -490,28 +523,25 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
-	PrintVerbose("[Stage 0] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 0] -------- ABSystemRunOperation")
 
 	if s.UpgradeLockExists() {
 		err := errors.New("upgrades are locked, another is running or need a reboot")
-		PrintVerbose("ABSystemRunOperation:err(0): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 0, err)
 		return err
 	}
 
 	err := s.LockUpgrade()
 	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(0.1): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 0.1, err)
 		return err
 	}
 
-	// here we create the stage file, which is used to determine if
-	// the upgrade can be interrupted or not. If the stage file is
-	// present, it means that the upgrade is in a state where it is
-	// still possible to interrupt it, otherwise it is not. This is
-	// useful for third-party applications like update managers.
+	// here we create the stage file to indicate that the upgrade is in progress
+	// and the process can safely be stopped
 	err = s.CreateStageFile()
 	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(0.2): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 0.2, err)
 		return err
 	}
 
@@ -519,11 +549,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 1: Check if there is an update available
 	// ------------------------------------------------
-	PrintVerbose("[Stage 1] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 1] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemRunOperation:err(1): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 1, err)
 		return err
 	}
 
@@ -533,11 +563,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		imageDigest, res = s.CheckUpdate()
 		if !res {
 			if operation != FORCE_UPGRADE {
-				PrintVerbose("ABSystemRunOperation:err(1.1): %s", err)
+				PrintVerboseErr("ABSystemRunOperation", 1.1, err)
 				return ErrNoUpdate
 			}
 			imageDigest = s.CurImage.Digest
-			PrintVerbose("ABSystemRunOperation: No update available but --force is set. Proceeding...")
+			PrintVerboseWarn("ABSystemRunOperation", 1.2, "No update available but --force is set. Proceeding...")
 		}
 	} else {
 		imageDigest = s.CurImage.Digest
@@ -550,23 +580,23 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// 			before the clean up was done). Finally run
 	// 			the IntegrityCheck on the future root.
 	// ------------------------------------------------
-	PrintVerbose("[Stage 2] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 2] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemRunOperation:err(2): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
 
 	partFuture, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 2.1, err)
 		return err
 	}
 
 	partBoot, err := s.RootM.GetBoot()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.2): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 2.2, err)
 		return err
 	}
 
@@ -575,7 +605,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = partFuture.Partition.Mount("/part-future/")
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.3): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 2.3, err)
 		return err
 	}
 
@@ -586,23 +616,23 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(2.4): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 2.4, err)
 		return err
 	}
 
 	// Stage 3: Make a imageRecipe with user packages
 	// ------------------------------------------------
-	PrintVerbose("[Stage 3] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 3] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemRunOperation:err(3): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 3, err)
 		return err
 	}
 
 	futurePartition, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(3.1): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 3.1, err)
 		return err
 	}
 
@@ -623,15 +653,16 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	case APPLY, DRY_RUN_APPLY, INITRAMFS, DRY_RUN_INITRAMFS:
 		presentPartition, err := s.RootM.GetPresent()
 		if err != nil {
-			PrintVerbose("ABSystemRunOperation:err(3.2): %s", err)
+			PrintVerboseErr("ABSystemRunOperation", 3.2, err)
 			return err
 		}
 		imageName, err = RetrieveImageForRoot(presentPartition.Label)
 		if err != nil {
-			PrintVerbose("ABSystemRunOperation:err(3.3): %s", err)
+			PrintVerboseErr("ABSystemRunOperation", 3.3, err)
 			return err
 		}
-		// Handle case where an image for the current root may not exist in storage
+		// Handle case where an image for the current root may not exist
+		// in storage
 		if imageName == "" {
 			imageName = settings.Cnf.FullImageName
 		}
@@ -649,11 +680,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 4: Extract the rootfs
 	// ------------------------------------------------
-	PrintVerbose("[Stage 4] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 4] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemRunOperation:err(4): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 4, err)
 		return err
 	}
 
@@ -661,15 +692,15 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	systemOld := filepath.Join(partFuture.Partition.MountPoint, ".system")
 	systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system.new")
 	if os.Getenv("ABROOT_FREE_SPACE") != "" {
-		PrintVerbose("ABSystemRunOperation: ABROOT_FREE_SPACE is set, deleting future system to free space, this is potentially harmful, assuming we are in a test environment")
+		PrintVerboseInfo("ABSystemRunOperation", "ABROOT_FREE_SPACE is set, deleting future system to free space, this is potentially harmful, assuming we are in a test environment")
 		err := os.RemoveAll(systemOld)
 		if err != nil {
-			PrintVerbose("ABSystemRunOperation:err(4.0): %s", err)
+			PrintVerboseErr("ABSystemRunOperation", 4, err)
 			return err
 		}
 		err = os.MkdirAll(systemOld, 0755)
 		if err != nil {
-			PrintVerbose("ABSystemRunOperation:err(4.0.1): %s", err)
+			PrintVerboseErr("ABSystemRunOperation", 4.1, err)
 			return err
 		}
 	}
@@ -681,7 +712,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		systemNew,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(4.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 4.2, err)
 		return err
 	}
 
@@ -689,23 +720,23 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
-	PrintVerbose("[Stage 5] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 5] -------- ABSystemRunOperation")
 
 	if s.UserLockRequested() {
 		err := errors.New("upgrade locked per user request")
-		PrintVerbose("ABSystemRunOperation:err(5): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 5, err)
 		return err
 	}
 
 	abimage, err := NewABImage(imageDigest, settings.Cnf.FullImageName)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(5.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 5.1, err)
 		return err
 	}
 
 	err = abimage.WriteTo(partFuture.Partition.MountPoint, "new")
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(5.2): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 5.2, err)
 		return err
 	}
 
@@ -716,30 +747,30 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// preventing it from booting.
 	err = s.RemoveStageFile()
 	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(5.3): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 5.3, err)
 		return err
 	}
 
 	// Stage 6: Generate /etc/fstab, /etc/crypttab, and the
 	// SystemD units to setup mountpoints
 	// ------------------------------------------------
-	PrintVerbose("[Stage 6] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 6] -------- ABSystemRunOperation")
 
 	err = s.GenerateFstab(systemNew, partFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(6): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 6, err)
 		return err
 	}
 
 	err = s.GenerateCrypttab(systemNew)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(6.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 6.1, err)
 		return err
 	}
 
 	err = s.GenerateSystemdUnits(systemNew, partFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(6.2): Failed to Generate SystemdUnits: %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 6.2, "Failed to Generate SystemdUnits", err)
 		return err
 	}
 
@@ -747,20 +778,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	switch operation {
 	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
-		PrintVerbose("ABSystem.RunOperation: dry-run completed")
+		PrintVerboseInfo("ABSystem.RunOperation", "dry-run completed")
 		return nil
 	}
 
 	// Stage 6.3: Delete old image
 	err = DeleteImageForRoot(futurePartition.Label)
 	if err != nil {
-		PrintVerbose("ABSystemRunOperation:err(6.3): %s", err)
+		PrintVerboseErr("ABSystemRunOperation", 6.3, err)
 		return err
 	}
 
 	// Stage 7: Update the bootloader
 	// ------------------------------------------------
-	PrintVerbose("[Stage 7] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 7] -------- ABSystemRunOperation")
 
 	chroot, err := NewChroot(
 		systemNew,
@@ -768,7 +799,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		partFuture.Partition.Device,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 7, err)
 		return err
 	}
 
@@ -781,7 +812,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		},
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 7.1, err)
 		return err
 	}
 
@@ -798,25 +829,26 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	initramfsArgs = append(initramfsArgs, "exit")
 	err = chroot.ExecuteCmds(initramfsArgs) // ensure initramfs is updated
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7.1.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 7.2, err)
 		return err
 	}
 
 	s.RunCleanUpQueue("closeChroot")
 
 	var rootUuid string
-	// If Thin-Provisioning set, mount init partition and move linux and initrd images to it
+	// If Thin-Provisioning set, mount init partition and move linux and initrd
+	// images to it
 	if settings.Cnf.ThinProvisioning {
 		initPartition, err := s.RootM.GetInit()
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(7.2): %s", err)
+			PrintVerboseErr("ABSystem.RunOperation", 7.3, err)
 			return err
 		}
 
 		initMountpoint := filepath.Join(systemNew, "boot", "init")
 		err = initPartition.Mount(initMountpoint)
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(7.3): %s", err)
+			PrintVerboseErr("ABSystem.RunOperation", 7.4, err)
 			return err
 		}
 		s.AddToCleanUpQueue("umountInit", 80)
@@ -827,7 +859,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			filepath.Join(initMountpoint, partFuture.Label, "vmlinuz-"+kernelVersion),
 		)
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(7.4): %s", err)
+			PrintVerboseErr("ABSystem.RunOperation", 7.5, err)
 			return err
 		}
 		err = CopyFile(
@@ -835,7 +867,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			filepath.Join(initMountpoint, partFuture.Label, "initrd.img-"+kernelVersion),
 		)
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(7.5): %s", err)
+			PrintVerboseErr("ABSystem.RunOperation", 7.6, err)
 			return err
 		}
 
@@ -853,22 +885,22 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		partFuture.Label,
 	)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7.6): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 7.7, err)
 		return err
 	}
 
 	// Stage 8: Sync /etc
 	// ------------------------------------------------
-	PrintVerbose("[Stage 8] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 8] -------- ABSystemRunOperation")
 
 	presentEtc, err := s.RootM.GetPresent()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8, err)
 		return err
 	}
 	futureEtc, err := s.RootM.GetFuture()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8.1, err)
 		return err
 	}
 	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
@@ -877,18 +909,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// Clean new upper etc to prevent deleted files from persisting
 	err = os.RemoveAll(newUpperEtc)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.2): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8.2, err)
 		return err
 	}
 	err = os.Mkdir(newUpperEtc, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.3): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8.3, err)
 		return err
 	}
 
 	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.4): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8.4, err)
 		return err
 	}
 
@@ -896,25 +928,25 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	err = s.SyncUpperEtc(newUpperEtc)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(8.5): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 8.6, err)
 		return err
 	}
 
 	// Stage 9: Mount boot partition
 	// ------------------------------------------------
-	PrintVerbose("[Stage 9] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 9] -------- ABSystemRunOperation")
 
 	uuid := uuid.New().String()
 	tmpBootMount := filepath.Join("/tmp", uuid)
 	err = os.Mkdir(tmpBootMount, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(9): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 9, err)
 		return err
 	}
 
 	err = partBoot.Mount(tmpBootMount)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(9.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 9.1, err)
 		return err
 	}
 
@@ -922,11 +954,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 10: Atomic swap the rootfs and abimage.abr
 	// ------------------------------------------------
-	PrintVerbose("[Stage 10] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 10] -------- ABSystemRunOperation")
 
 	err = AtomicSwap(systemOld, systemNew)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(10): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 10, err)
 		return err
 	}
 
@@ -938,13 +970,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// PartFuture may not have /abimage.abr if it got corrupted or was wiped.
 	// In these cases, create a dummy file for the atomic swap.
 	if _, err = os.Stat(oldABImage); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.RunOperation: Creating dummy /part-future/abimage.abr")
+		PrintVerboseInfo("ABSystem.RunOperation", "Creating dummy /part-future/abimage.abr")
 		os.Create(oldABImage)
 	}
 
 	err = AtomicSwap(oldABImage, newABImage)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(10.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 10.1, err)
 		return err
 	}
 
@@ -952,18 +984,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	// Stage 11: Atomic swap the bootloader
 	// ------------------------------------------------
-	PrintVerbose("[Stage 11] -------- ABSystemRunOperation")
+	PrintVerboseSimple("[Stage 11] -------- ABSystemRunOperation")
 
 	grub, err := NewGrub(partBoot)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(11): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 11, err)
 		return err
 	}
 
 	// Only swap grub entries if we're booted into the present partition
 	isPresent, err := grub.IsBootedIntoPresentRoot()
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(11.1): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 11.1, err)
 		return err
 	}
 	if isPresent {
@@ -972,11 +1004,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 		// Just like in Stage 10, tmpBootMount/grub/grub.cfg.future may not exist.
 		if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
-			PrintVerbose("ABSystem.RunOperation: Creating grub.cfg.future")
+			PrintVerboseInfo("ABSystem.RunOperation", "Creating grub.cfg.future")
 
 			grubCfgContents, err := os.ReadFile(grubCfgCurrent)
 			if err != nil {
-				PrintVerbose("ABSystem.RunOperation:err(11.2): %s", err)
+				PrintVerboseErr("ABSystem.RunOperation", 11.2, err)
 			}
 
 			var replacerPairs []string
@@ -1000,18 +1032,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 		if err != nil {
-			PrintVerbose("ABSystem.RunOperation:err(11.3): %s", err)
+			PrintVerboseErr("ABSystem.RunOperation", 11.3, err)
 			return err
 		}
 	}
 
-	PrintVerbose("ABSystem.RunOperation: upgrade completed")
+	PrintVerboseInfo("ABSystem.RunOperation", "upgrade completed")
 	return nil
 }
 
 // Rollback swaps the master grub files if the current root is not the default
 func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
-	PrintVerbose("ABSystem.Rollback: starting")
+	PrintVerboseInfo("ABSystem.Rollback", "starting")
 
 	s.ResetQueue()
 
@@ -1020,13 +1052,13 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 	// we won't allow upgrades while rolling back
 	err = s.LockUpgrade()
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(0): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 0, err)
 		return ROLLBACK_FAILED, err
 	}
 
 	partBoot, err := s.RootM.GetBoot()
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(1): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 1, err)
 		return ROLLBACK_FAILED, err
 	}
 
@@ -1034,13 +1066,13 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 	tmpBootMount := filepath.Join("/tmp", uuid)
 	err = os.Mkdir(tmpBootMount, 0755)
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(2): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 2, err)
 		return ROLLBACK_FAILED, err
 	}
 
 	err = partBoot.Mount(tmpBootMount)
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(3): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 3, err)
 		return ROLLBACK_FAILED, err
 	}
 
@@ -1048,19 +1080,19 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 
 	grub, err := NewGrub(partBoot)
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(4): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 4, err)
 		return ROLLBACK_FAILED, err
 	}
 
 	// Only swap grub entries if we're booted into the present partition
 	isPresent, err := grub.IsBootedIntoPresentRoot()
 	if err != nil {
-		PrintVerbose("ABSystem.Rollback:err(5): %s", err)
+		PrintVerboseErr("ABSystem.Rollback", 5, err)
 		return ROLLBACK_FAILED, err
 	}
 
 	if isPresent {
-		PrintVerbose("ABSystem.Rollback: current root is the default, nothing to do")
+		PrintVerboseInfo("ABSystem.Rollback", "current root is the default, nothing to do")
 		return ROLLBACK_UNNECESSARY, nil
 	}
 
@@ -1069,11 +1101,11 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 
 	// Just like in Stage 10, tmpBootMount/grub/grub.cfg.future may not exist.
 	if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
-		PrintVerbose("ABSystem.Rollback: Creating grub.cfg.future")
+		PrintVerboseInfo("ABSystem.Rollback", "Creating grub.cfg.future")
 
 		grubCfgContents, err := os.ReadFile(grubCfgCurrent)
 		if err != nil {
-			PrintVerbose("ABSystem.Rollback:err(6): %s", err)
+			PrintVerboseErr("ABSystem.Rollback", 6, err)
 		}
 
 		var replacerPairs []string
@@ -1097,72 +1129,85 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 
 	err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 	if err != nil {
-		PrintVerbose("ABSystem.RunOperation:err(7): %s", err)
+		PrintVerboseErr("ABSystem.RunOperation", 7, err)
 		return ROLLBACK_FAILED, err
 	}
 
-	PrintVerbose("ABSystem.Rollback: rollback completed")
+	PrintVerboseInfo("ABSystem.Rollback", "rollback completed")
 	return ROLLBACK_SUCCESS, nil
 }
 
+// UserLockRequested checks if the user lock file exists and returns a boolean
+// note that if the user lock file exists, it means that the user explicitly
+// requested the upgrade to be locked (using an update manager for example)
 func (s *ABSystem) UserLockRequested() bool {
 	if _, err := os.Stat(userLockFile); os.IsNotExist(err) {
 		return false
 	}
 
-	PrintVerbose("ABSystem.UserLockRequested: lock file exists")
+	PrintVerboseInfo("ABSystem.UserLockRequested", "lock file exists")
 	return true
 }
 
+// UpgradeLockExists checks if the lock file exists and returns a boolean
 func (s *ABSystem) UpgradeLockExists() bool {
 	if _, err := os.Stat(lockFile); os.IsNotExist(err) {
 		return false
 	}
 
-	PrintVerbose("ABSystem.UpgradeLockExists: lock file exists")
+	PrintVerboseInfo("ABSystem.UpgradeLockExists", "lock file exists")
 	return true
 }
 
+// LockUpgrade creates a lock file, preventing upgrades from proceeding
 func (s *ABSystem) LockUpgrade() error {
 	_, err := os.Create(lockFile)
 	if err != nil {
-		PrintVerbose("ABSystem.LockUpgrade: %s", err)
+		PrintVerboseErr("ABSystem.LockUpgrade", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.LockUpgrade: lock file created")
+	PrintVerboseInfo("ABSystem.LockUpgrade", "lock file created")
 	return nil
 }
 
+// UnlockUpgrade removes the lock file, allowing upgrades to proceed
 func (s *ABSystem) UnlockUpgrade() error {
 	err := os.Remove(lockFile)
 	if err != nil {
-		PrintVerbose("ABSystem.UnlockUpgrade: %s", err)
+		PrintVerboseErr("ABSystem.UnlockUpgrade", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.UnlockUpgrade: lock file removed")
+	PrintVerboseInfo("ABSystem.UnlockUpgrade", "lock file removed")
 	return nil
 }
 
+// CreateStageFile creates the stage file, which is used to determine if
+// the upgrade can be interrupted or not. If the stage file is present, it
+// means that the upgrade is in a state where it is still possible to
+// interrupt it, otherwise it is not. This is useful for third-party
+// applications like update managers.
 func (s *ABSystem) CreateStageFile() error {
 	_, err := os.Create(stageFile)
 	if err != nil {
-		PrintVerbose("ABSystem.CreateStageFile: %s", err)
+		PrintVerboseErr("ABSystem.CreateStageFile", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.CreateStageFile: stage file created")
+	PrintVerboseInfo("ABSystem.CreateStageFile", "stage file created")
 	return nil
 }
 
+// RemoveStageFile removes the stage file disabling the ability to interrupt
+// the upgrade process
 func (s *ABSystem) RemoveStageFile() error {
 	err := os.Remove(stageFile)
 	if err != nil {
-		PrintVerbose("ABSystem.RemoveStageFile: %s", err)
+		PrintVerboseErr("ABSystem.RemoveStageFile", 0, err)
 		return err
 	}
 
-	PrintVerbose("ABSystem.RemoveStageFile: stage file removed")
+	PrintVerboseInfo("ABSystem.RemoveStageFile", "stage file removed")
 	return nil
 }

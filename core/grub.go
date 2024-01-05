@@ -23,6 +23,9 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 )
 
+// Grub represents a grub instance, it exposes methods to generate a new grub
+// config compatible with ABRoot, and to check if the system is booted into
+// the present root or the future root
 type Grub struct {
 	PresentRoot string
 	FutureRoot  string
@@ -31,11 +34,11 @@ type Grub struct {
 // generateABGrubConf generates a new grub config with the given details
 // kernel version is automatically detected
 func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) error {
-	PrintVerbose("generateABGrubConf: generating grub config for ABRoot")
+	PrintVerboseInfo("generateABGrubConf", "generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
 	if err != nil {
-		PrintVerbose("generateABGrubConf:err: %s", err)
+		PrintVerboseErr("generateABGrubConf", 0, err)
 		return err
 	}
 
@@ -48,7 +51,7 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) erro
 		diskM := NewDiskManager()
 		sysRootPart, err := diskM.GetPartitionByLabel(rootLabel)
 		if err != nil {
-			PrintVerbose("generateABGrubConf:err(3): %s", err)
+			PrintVerboseErr("generateABGrubConf", 3, err)
 			return err
 		}
 		systemRoot = "/dev/mapper/" + sysRootPart.Device
@@ -70,13 +73,13 @@ initrd  %s/initrd.img-%s`
 	kernelVersion := getKernelVersion(bootPath)
 	if kernelVersion == "" {
 		err := errors.New("could not get kernel version")
-		PrintVerbose("generateABGrubConf:err: %s", err)
+		PrintVerboseErr("generateABGrubConf", 1, err)
 		return err
 	}
 
 	err = os.MkdirAll(grubPath, 0755)
 	if err != nil {
-		PrintVerbose("generateABGrubConf:err(2): %s", err)
+		PrintVerboseErr("generateABGrubConf", 2, err)
 		return err
 	}
 
@@ -86,26 +89,27 @@ initrd  %s/initrd.img-%s`
 		0644,
 	)
 	if err != nil {
-		PrintVerbose("generateABGrubConf:err(3): %s", err)
+		PrintVerboseErr("generateABGrubConf", 3, err)
 		return err
 	}
 
+	PrintVerboseInfo("generateABGrubConf", "done")
 	return nil
 }
 
 // getKernelVersion returns the latest kernel version available in the root
 func getKernelVersion(bootPath string) string {
-	PrintVerbose("getKernelVersion: getting kernel version")
+	PrintVerboseInfo("getKernelVersion", "running...")
 
 	kernelDir := filepath.Join(bootPath, "vmlinuz-*")
 	files, err := filepath.Glob(kernelDir)
 	if err != nil {
-		PrintVerbose("getKernelVersion:err: %s", err)
+		PrintVerboseErr("getKernelVersion", 0, err)
 		return ""
 	}
 
 	if len(files) == 0 {
-		PrintVerbose("getKernelVersion:err: no kernel found")
+		PrintVerboseErr("getKernelVersion", 1, errors.New("no kernel found"))
 		return ""
 	}
 
@@ -119,19 +123,20 @@ func getKernelVersion(bootPath string) string {
 
 	maxVersion = maxVersion[8:]
 
+	PrintVerboseInfo("getKernelVersion", "done")
 	return maxVersion
 }
 
 // NewGrub creates a new Grub instance
 func NewGrub(bootPart Partition) (*Grub, error) {
-	PrintVerbose("NewGrub: creating new grub instance")
+	PrintVerboseInfo("NewGrub", "running...")
 
 	grubPath := filepath.Join(bootPart.MountPoint, "grub")
 	confPath := filepath.Join(grubPath, "grub.cfg")
 
 	cfg, err := os.ReadFile(confPath)
 	if err != nil {
-		PrintVerbose("NewGrub:err: %s", err)
+		PrintVerboseErr("NewGrub", 0, err)
 		return nil, err
 	}
 
@@ -155,10 +160,11 @@ func NewGrub(bootPart Partition) (*Grub, error) {
 
 	if presentRoot == "" || futureRoot == "" {
 		err := errors.New("could not find root partitions")
-		PrintVerbose("NewGrub:err(2): %s", err)
+		PrintVerboseErr("NewGrub", 1, err)
 		return nil, err
 	}
 
+	PrintVerboseInfo("NewGrub", "done")
 	return &Grub{
 		PresentRoot: presentRoot,
 		FutureRoot:  futureRoot,
@@ -166,6 +172,8 @@ func NewGrub(bootPart Partition) (*Grub, error) {
 }
 
 func (g *Grub) IsBootedIntoPresentRoot() (bool, error) {
+	PrintVerboseInfo("Grub.IsBootedIntoPresentRoot", "running...")
+
 	a := NewABRootManager()
 	future, err := a.GetFuture()
 	if err != nil {
@@ -173,8 +181,10 @@ func (g *Grub) IsBootedIntoPresentRoot() (bool, error) {
 	}
 
 	if g.FutureRoot == "a" {
+		PrintVerboseInfo("Grub.IsBootedIntoPresentRoot", "done")
 		return future.Label == settings.Cnf.PartLabelA, nil
 	} else {
+		PrintVerboseInfo("Grub.IsBootedIntoPresentRoot", "done")
 		return future.Label == settings.Cnf.PartLabelB, nil
 	}
 }

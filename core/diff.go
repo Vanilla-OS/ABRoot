@@ -19,43 +19,46 @@ import (
 	"os/exec"
 )
 
-// MergeDiff merges the diff lines between the first and second files into destination
+// MergeDiff merges the diff lines between the first and second files into
+// the destination file. If any errors occur, they are returned.
 func MergeDiff(firstFile, secondFile, destination string) error {
-	PrintVerbose("MergeDiff: merging %s + %s -> %s", firstFile, secondFile, destination)
+	PrintVerboseInfo("MergeDiff", "merging", firstFile, "+", secondFile, "->", destination)
 
 	// get the diff lines
 	diffLines, err := DiffFiles(firstFile, secondFile)
 	if err != nil {
-		PrintVerbose("MergeDiff:err: %s", err)
+		PrintVerboseErr("MergeDiff", 0, err)
 		return err
 	}
 
 	// copy second file to destination to apply patch
 	secondFileContents, err := os.ReadFile(secondFile)
 	if err != nil {
-		PrintVerbose("MergeDiff:err(2): %s", err)
+		PrintVerboseErr("MergeDiff", 1, err)
 		return err
 	}
 	err = os.WriteFile(destination, secondFileContents, 0644)
 	if err != nil {
-		PrintVerbose("MergeDiff:err(3): %s", err)
+		PrintVerboseErr("MergeDiff", 2, err)
 		return err
 	}
 
 	// write the diff to the destination
 	err = WriteDiff(destination, diffLines)
 	if err != nil {
-		PrintVerbose("MergeDiff:err(4): %s", err)
+		PrintVerboseErr("MergeDiff", 3, err)
 		return err
 	}
 
-	PrintVerbose("MergeDiff: merge completed")
+	PrintVerboseInfo("MergeDiff", "merge completed")
 	return nil
 }
 
-// DiffFiles returns the diff lines between source and dest files.
+// DiffFiles returns the diff lines between source and dest files using the
+// diff command (assuming it is installed). If no diff is found, nil is
+// returned. If any errors occur, they are returned.
 func DiffFiles(sourceFile, destFile string) ([]byte, error) {
-	PrintVerbose("DiffFiles: diffing %s -> %s", sourceFile, destFile)
+	PrintVerboseInfo("DiffFiles", "diffing", sourceFile, "and", destFile)
 
 	cmd := exec.Command("diff", "-u", sourceFile, destFile)
 	var out bytes.Buffer
@@ -68,20 +71,22 @@ func DiffFiles(sourceFile, destFile string) ([]byte, error) {
 		}
 	}
 
+	// diff returns 1 if there are differences
 	if errCode == 1 {
-		PrintVerbose("DiffFiles: diff found")
+		PrintVerboseInfo("DiffFiles", "diff found")
 		return out.Bytes(), nil
 	}
 
-	PrintVerbose("DiffFiles: no diff found")
+	PrintVerboseInfo("DiffFiles", "no diff found")
 	return nil, nil
 }
 
-// WriteDiff applies the diff lines to the destination file.
+// WriteDiff applies the diff lines to the destination file using the patch
+// command (assuming it is installed). If any errors occur, they are returned.
 func WriteDiff(destFile string, diffLines []byte) error {
-	PrintVerbose("WriteDiff: applying diff to %s", destFile)
+	PrintVerboseInfo("WriteDiff", "applying diff to", destFile)
 	if len(diffLines) == 0 {
-		PrintVerbose("WriteDiff: no changes to apply")
+		PrintVerboseInfo("WriteDiff", "no changes to apply")
 		return nil // no changes to apply
 	}
 
@@ -91,10 +96,10 @@ func WriteDiff(destFile string, diffLines []byte) error {
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		PrintVerbose("WriteDiff:err: %s", err)
+		PrintVerboseErr("WriteDiff", 0, err)
 		return err
 	}
 
-	PrintVerbose("WriteDiff: diff applied")
+	PrintVerboseInfo("WriteDiff", "diff applied")
 	return nil
 }

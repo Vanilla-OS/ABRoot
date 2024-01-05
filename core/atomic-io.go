@@ -22,27 +22,28 @@ import (
 
 // atomicSwap allows swapping 2 files or directories in-place and atomically,
 // using the renameat2 syscall. This should be used instead of os.Rename,
-// which is not atomic at all.
+// which is not atomic at all
 func AtomicSwap(src, dst string) error {
-	PrintVerbose("AtomicSwap: %s -> %s", src, dst)
+	PrintVerboseInfo("AtomicSwap", "running...")
 
 	orig, err := os.Open(src)
 	if err != nil {
-		PrintVerbose("AtomicSwap:err: %s", err)
+		PrintVerboseErr("AtomicSwap", 0, err)
 		return err
 	}
 
 	newfile, err := os.Open(dst)
 	if err != nil {
-		PrintVerbose("AtomicSwap:err(2): %s", err)
+		PrintVerboseErr("AtomicSwap", 1, err)
 		return err
 	}
 
 	err = unix.Renameat2(int(orig.Fd()), src, int(newfile.Fd()), dst, unix.RENAME_EXCHANGE)
 	if err != nil {
-		PrintVerbose("AtomicSwap:err(3): %s", err)
+		PrintVerboseErr("AtomicSwap", 2, err)
 		return err
 	}
 
+	PrintVerboseInfo("AtomicSwap", "done")
 	return nil
 }
