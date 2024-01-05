@@ -47,12 +47,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		return err
 	}
 
-	// cleanup dest
-	err = os.RemoveAll(dest)
-	if err != nil {
-		PrintVerboseErr("OciExportRootFs", 2, err)
-		return err
-	}
+	// create dest if it doesn't exist
 	err = os.MkdirAll(dest, 0755)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 3, err)
@@ -93,7 +88,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// copy mount dir contents to dest
-	err = rsyncCmd(mountDir+"/", dest, []string{}, false)
+	err = rsyncCmd(mountDir+"/", dest, []string{"--delete"}, false)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 9, err)
 		return err
