@@ -18,6 +18,7 @@ import (
 	"os"
 )
 
+// An ImageRecipe represents a Dockerfile/Containerfile-like recipe
 type ImageRecipe struct {
 	From    string
 	Labels  map[string]string
@@ -25,9 +26,9 @@ type ImageRecipe struct {
 	Content string
 }
 
-// NewImageRecipe creates a new ImageRecipe struct
+// NewImageRecipe creates a new ImageRecipe instance and returns a pointer to it
 func NewImageRecipe(image string, labels map[string]string, args map[string]string, content string) *ImageRecipe {
-	PrintVerbose("NewImageRecipe: running...")
+	PrintVerboseInfo("NewImageRecipe", "running...")
 
 	return &ImageRecipe{
 		From:    image,
@@ -37,14 +38,14 @@ func NewImageRecipe(image string, labels map[string]string, args map[string]stri
 	}
 }
 
-// Write writes a ImageRecipe to a path
+// Write writes a ImageRecipe to the given path, returning an error if any
 func (c *ImageRecipe) Write(path string) error {
-	PrintVerbose("ImageRecipe.Write: running...")
+	PrintVerboseInfo("ImageRecipe.Write", "running...")
 
 	// create file
 	file, err := os.Create(path)
 	if err != nil {
-		PrintVerbose("ImageRecipe.Write:err: %s", err)
+		PrintVerboseErr("ImageRecipe.Write", 0, err)
 		return err
 	}
 	defer file.Close()
@@ -52,7 +53,7 @@ func (c *ImageRecipe) Write(path string) error {
 	// write from
 	_, err = file.WriteString(fmt.Sprintf("FROM %s\n", c.From))
 	if err != nil {
-		PrintVerbose("ImageRecipe.Write:err(2): %s", err)
+		PrintVerboseErr("ImageRecipe.Write", 1, err)
 		return err
 	}
 
@@ -60,7 +61,7 @@ func (c *ImageRecipe) Write(path string) error {
 	for key, value := range c.Labels {
 		_, err = file.WriteString(fmt.Sprintf("LABEL %s=%s\n", key, value))
 		if err != nil {
-			PrintVerbose("ImageRecipe.Write:err(3): %s", err)
+			PrintVerboseErr("ImageRecipe.Write", 2, err)
 			return err
 		}
 	}
@@ -69,7 +70,7 @@ func (c *ImageRecipe) Write(path string) error {
 	for key, value := range c.Args {
 		_, err = file.WriteString(fmt.Sprintf("ARG %s=%s\n", key, value))
 		if err != nil {
-			PrintVerbose("ImageRecipe.Write:err(4): %s", err)
+			PrintVerboseErr("ImageRecipe.Write", 3, err)
 			return err
 		}
 	}
@@ -77,10 +78,10 @@ func (c *ImageRecipe) Write(path string) error {
 	// write content
 	_, err = file.WriteString(c.Content)
 	if err != nil {
-		PrintVerbose("ImageRecipe.Write:err(5): %s", err)
+		PrintVerboseErr("ImageRecipe.Write", 4, err)
 		return err
 	}
 
-	PrintVerbose("ImageRecipe.Write: successfully wrote.")
+	PrintVerboseInfo("ImageRecipe.Write", "done")
 	return nil
 }

@@ -15,6 +15,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"os"
 	"os/exec"
@@ -51,68 +52,72 @@ func (c *Checks) PerformAllChecks() error {
 	return nil
 }
 
-// CheckCompatibilityFS checks if the filesystem is compatible
+// CheckCompatibilityFS checks if the filesystem is compatible with ABRoot v2
+// if not, it returns an error. Note that currently only ext4, btrfs and xfs
+// are supported/tested. Here we assume some utilities are installed, such as
+// findmnt and lsblk
 func (c *Checks) CheckCompatibilityFS() error {
-	PrintVerbose("Checks.CheckCompatibilityFS: running...")
+	PrintVerboseInfo("Checks.CheckCompatibilityFS", "running...")
 
 	var fs []string
 	if runtime.GOOS == "linux" {
 		fs = []string{"ext4", "btrfs", "xfs"}
 	} else {
-		PrintVerbose("Checks.CheckCompatibilityFS:err: " + runtime.GOOS + " is not supported")
-		return errors.New(`your OS ("` + runtime.GOOS + `") is not supported)`)
+		err := fmt.Errorf("your OS (%s) is not supported", runtime.GOOS)
+		PrintVerboseErr("Checks.CheckCompatibilityFS", 0, err)
+		return err
 	}
 
 	cmd, err := exec.Command("findmnt", "-n", "-o", "source", "/").Output()
 	if err != nil {
-		PrintVerbose("Checks.CheckCompatibilityFS:err(2): " + err.Error())
+		PrintVerboseErr("Checks.CheckCompatibilityFS", 1, err)
 		return err
 	}
 	device := string([]byte(cmd[:len(cmd)-1]))
 
 	cmd, err = exec.Command("lsblk", "-o", "fstype", "-n", device).Output()
 	if err != nil {
-		PrintVerbose("Checks.CheckCompatibilityFS:err(3): " + err.Error())
+		PrintVerboseErr("Checks.CheckCompatibilityFS", 2, err)
 		return err
 	}
 	fsType := string([]byte(cmd[:len(cmd)-1]))
 
 	for _, f := range fs {
 		if f == string(fsType) {
-			PrintVerbose("CheckCompatibilityFS: " + fsType + " is supported")
+			PrintVerboseInfo("CheckCompatibilityFS", fsType, "is supported")
 			return nil
 		}
 	}
 
-	err = errors.New(`the filesystem ("` + fsType + `") is not supported`)
-	PrintVerbose("Checks.CheckCompatibilityFS:err(4): " + err.Error())
+	err = fmt.Errorf("the filesystem (%s) is not supported", fsType)
+	PrintVerboseErr("Checks.CheckCompatibilityFS", 3, err)
 	return err
 }
 
 // CheckConnectivity checks if the system is connected to the internet
 func (c *Checks) CheckConnectivity() error {
-	PrintVerbose("Checks.CheckConnectivity: running...")
+	PrintVerboseInfo("Checks.CheckConnectivity", "running...")
 
 	timeout := 5 * time.Second
 	_, err := net.DialTimeout("tcp", "vanillaos.org:80", timeout)
 	if err != nil {
-		PrintVerbose("Checks.CheckConnectivity:err(1): " + err.Error())
+		PrintVerboseErr("Checks.CheckConnectivity", 1, err)
 		return err
 	}
 
 	return nil
 }
 
-// CheckRoot checks if the user is root
+// CheckRoot checks if the user is root and returns an error if not
 func (c *Checks) CheckRoot() error {
-	PrintVerbose("Checks.CheckRoot: running...")
+	PrintVerboseInfo("Checks.CheckRoot", "running...")
 
 	if os.Geteuid() == 0 {
-		PrintVerbose("Checks.CheckRoot: you are root")
+		PrintVerboseInfo("Checks.CheckRoot", "you are root")
 		return nil
 	}
 
 	err := errors.New("not root")
-	PrintVerbose("Checks.CheckRoot:err(1): " + err.Error())
+	PrintVerboseErr("Checks.CheckRoot", 1, err)
 	return err
 }
