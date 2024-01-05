@@ -47,8 +47,8 @@ func rollback(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	respomse, err := aBsys.Rollback()
-	switch respomse {
+	response, err := aBsys.Rollback()
+	switch response {
 	case core.ROLLBACK_UNNECESSARY:
 		cmdr.Info.Println(abroot.Trans("rollback.rollbackUnnecessary"))
 		os.Exit(0)
