@@ -19,6 +19,11 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state"
   rootRequired: "You must be root to run this command."
+  rollbackUnnecessary: "Rollback is not necessary, current root is already the present one."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: "Rollback completed successfully."
+  canRollback: "It is possible to rollback to the previous root."
+  cannotRollback: "It is not possible to rollback to the previous root."
 
 pkg:
   use: "pkg"
@@ -80,6 +85,7 @@ upgrade:
   checkOnlyFlag: "check for updates but do not apply them"
   dryRunFlag: "perform a dry run of the operation"
   dryRunSuccess: "Dry run completed successfully."
+  success: "Upgrade completed successfully."
   added: "Added"
   upgraded: "Upgraded"
   downgraded: "Downgraded"

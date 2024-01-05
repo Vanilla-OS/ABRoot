@@ -51,48 +51,48 @@ func RootCheck(display bool) bool {
 // fileExists checks if a file exists
 func fileExists(path string) bool {
 	if _, err := os.Stat(path); err == nil {
-		PrintVerbose("File exists: " + path)
+		PrintVerboseInfo("fileExists", "File exists:", path)
 		return true
 	}
 
-	PrintVerbose("File does not exist: " + path)
+	PrintVerboseInfo("fileExists", "File does not exist:", path)
 	return false
 }
 
 // isLink checks if a path is a link
 func isLink(path string) bool {
 	if _, err := os.Lstat(path); err == nil {
-		PrintVerbose("Path is a link: " + path)
+		PrintVerboseInfo("isLink", "Path is a link:", path)
 		return true
 	}
 
-	PrintVerbose("Path is not a link: " + path)
+	PrintVerboseInfo("isLink", "Path is not a link:", path)
 	return false
 }
 
 // CopyFile copies a file from source to dest
 func CopyFile(source, dest string) error {
-	PrintVerbose("CopyFile: running...")
+	PrintVerboseInfo("CopyFile", "Running...")
 
-	PrintVerbose("CopyFile: Opening source file")
+	PrintVerboseInfo("CopyFile", "Opening source file")
 	srcFile, err := os.Open(source)
 	if err != nil {
-		PrintVerbose("CopyFile:err: " + err.Error())
+		PrintVerboseErr("CopyFile", 0, err)
 		return err
 	}
 	defer srcFile.Close()
 
-	PrintVerbose("CopyFile: Opening destination file")
+	PrintVerboseInfo("CopyFile", "Opening destination file")
 	destFile, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
-		PrintVerbose("CopyFile:err: " + err.Error())
+		PrintVerboseErr("CopyFile", 1, err)
 		return err
 	}
 	defer destFile.Close()
 
-	PrintVerbose("CopyFile: Performing copy operation")
+	PrintVerboseInfo("CopyFile", "Performing copy operation")
 	if _, err := io.Copy(destFile, srcFile); err != nil {
-		PrintVerbose("CopyFile:err: " + err.Error())
+		PrintVerboseErr("CopyFile", 2, err)
 		return err
 	}
 
@@ -101,7 +101,7 @@ func CopyFile(source, dest string) error {
 
 // isDeviceLUKSEncrypted checks whether a device specified by devicePath is a LUKS-encrypted device
 func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
-	PrintVerbose("Verifying if %s is encrypted", devicePath)
+	PrintVerboseInfo("isDeviceLUKSEncrypted", "Verifying if", devicePath, "is encrypted")
 
 	isLuksCmd := "cryptsetup isLuks %s"
 
@@ -115,7 +115,9 @@ func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
 				return false, nil
 			}
 		}
-		return false, fmt.Errorf("failed to check if %s is LUKS-encrypted: %s", devicePath, err)
+		err = fmt.Errorf("failed to check if %s is LUKS-encrypted: %s", devicePath, err)
+		PrintVerboseErr("isDeviceLUKSEncrypted", 0, err)
+		return false, err
 	}
 
 	return true, nil

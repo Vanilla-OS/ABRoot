@@ -19,13 +19,21 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 )
 
-// ABRootManager represents the ABRoot manager
+// ABRootManager exposes methods to manage ABRoot partitions, this includes
+// getting the present and future partitions, the boot partition, the init
+// volume (when using LVM Thin-Provisioning), and the other partition. If you
+// need to operate on an ABRoot partition, you should use this struct, each
+// partition is a pointer to a Partition struct, which contains methods to
+// operate on the partition itself
 type ABRootManager struct {
-	Partitions   []ABRootPartition
+	// Partitions is a list of partitions managed by ABRoot
+	Partitions []ABRootPartition
+
+	// VarPartition is the partition where /var is mounted
 	VarPartition Partition
 }
 
-// ABRootPartition represents an ABRoot partition
+// ABRootPartition represents a partition managed by ABRoot
 type ABRootPartition struct {
 	Label        string // Matches `partLabelA` and `partLabelB` settings entries
 	IdentifiedAs string // Either `present` or `future`
@@ -39,7 +47,7 @@ type ABRootPartition struct {
 
 // NewABRootManager creates a new ABRootManager
 func NewABRootManager() *ABRootManager {
-	PrintVerbose("NewABRootManager: running...")
+	PrintVerboseInfo("NewABRootManager", "running...")
 
 	a := &ABRootManager{}
 	a.GetPartitions()
@@ -49,20 +57,20 @@ func NewABRootManager() *ABRootManager {
 
 // GetPartitions gets the root partitions from the current device
 func (a *ABRootManager) GetPartitions() error {
-	PrintVerbose("ABRootManager.GetRootPartitions: running...")
+	PrintVerboseInfo("ABRootManager.GetRootPartitions", "running...")
 
 	diskM := NewDiskManager()
 	rootLabels := []string{settings.Cnf.PartLabelA, settings.Cnf.PartLabelB}
 	for _, label := range rootLabels {
 		partition, err := diskM.GetPartitionByLabel(label)
 		if err != nil {
-			PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
+			PrintVerboseErr("ABRootManager.GetRootPartitions", 0, err)
 			return err
 		}
 
 		identifier, err := a.IdentifyPartition(partition)
 		if err != nil {
-			PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
+			PrintVerboseErr("ABRootManager.GetRootPartitions", 1, err)
 			return err
 		}
 
@@ -81,135 +89,135 @@ func (a *ABRootManager) GetPartitions() error {
 
 	partition, err := diskM.GetPartitionByLabel(settings.Cnf.PartLabelVar)
 	if err != nil {
-		PrintVerbose("ABRootManager.GetRootPartitions: error: %s", err)
+		PrintVerboseErr("ABRootManager.GetRootPartitions", 2, err)
 		return err
 	}
 	a.VarPartition = partition
 
-	PrintVerbose("ABRootManager.GetRootPartitions: successfully got root partitions")
+	PrintVerboseInfo("ABRootManager.GetRootPartitions", "successfully got root partitions")
 
 	return nil
 }
 
 // IsCurrent checks if a partition is the current one
 func (a *ABRootManager) IsCurrent(partition Partition) bool {
-	PrintVerbose("ABRootManager.IsCurrent: running...")
+	PrintVerboseInfo("ABRootManager.IsCurrent", "running...")
 
 	if partition.MountPoint == "/" {
-		PrintVerbose("ABRootManager.IsCurrent: partition is current")
+		PrintVerboseInfo("ABRootManager.IsCurrent", "partition is current")
 		return true
 	}
 
-	PrintVerbose("ABRootManager.IsCurrent: partition is not current")
+	PrintVerboseInfo("ABRootManager.IsCurrent", "partition is not current")
 	return false
 }
 
 // IdentifyPartition identifies a partition
 func (a *ABRootManager) IdentifyPartition(partition Partition) (identifiedAs string, err error) {
-	PrintVerbose("ABRootManager.IdentifyPartition: running...")
+	PrintVerboseInfo("ABRootManager.IdentifyPartition", "running...")
 
 	if partition.Label == settings.Cnf.PartLabelA || partition.Label == settings.Cnf.PartLabelB {
 		if partition.MountPoint == "/" {
-			PrintVerbose("ABRootManager.IdentifyPartition: partition is present")
+			PrintVerboseInfo("ABRootManager.IdentifyPartition", "partition is present")
 			return "present", nil
 		}
 
-		PrintVerbose("ABRootManager.IdentifyPartition: partition is future")
+		PrintVerboseInfo("ABRootManager.IdentifyPartition", "partition is future")
 		return "future", nil
 	}
 
 	err = errors.New("partition is not managed by ABRoot")
-	PrintVerbose("ABRootManager.IdentifyPartition: error: %s", err)
+	PrintVerboseErr("ABRootManager.IdentifyPartition", 0, err)
 	return "", err
 }
 
 // GetPresent gets the present partition
 func (a *ABRootManager) GetPresent() (partition ABRootPartition, err error) {
-	PrintVerbose("ABRootManager.GetPresent: running...")
+	PrintVerboseInfo("ABRootManager.GetPresent", "running...")
 
 	for _, partition := range a.Partitions {
 		if partition.IdentifiedAs == "present" {
-			PrintVerbose("ABRootManager.GetPresent: successfully got present partition")
+			PrintVerboseInfo("ABRootManager.GetPresent", "successfully got present partition")
 			return partition, nil
 		}
 	}
 
 	err = errors.New("present partition not found")
-	PrintVerbose("ABRootManager.GetPresent: error: %s", err)
+	PrintVerboseErr("ABRootManager.GetPresent", 0, err)
 	return ABRootPartition{}, err
 }
 
 // GetFuture gets the future partition
 func (a *ABRootManager) GetFuture() (partition ABRootPartition, err error) {
-	PrintVerbose("ABRootManager.GetFuture: running...")
+	PrintVerboseInfo("ABRootManager.GetFuture", "running...")
 
 	for _, partition := range a.Partitions {
 		if partition.IdentifiedAs == "future" {
-			PrintVerbose("ABRootManager.GetFuture: successfully got future partition")
+			PrintVerboseInfo("ABRootManager.GetFuture", "successfully got future partition")
 			return partition, nil
 		}
 	}
 
 	err = errors.New("future partition not found")
-	PrintVerbose("ABRootManager.GetFuture: error: %s", err)
+	PrintVerboseErr("ABRootManager.GetFuture", 0, err)
 	return ABRootPartition{}, err
 }
 
 // GetOther gets the other partition
 func (a *ABRootManager) GetOther() (partition ABRootPartition, err error) {
-	PrintVerbose("ABRootManager.GetOther: running...")
+	PrintVerboseInfo("ABRootManager.GetOther", "running...")
 
 	present, err := a.GetPresent()
 	if err != nil {
-		PrintVerbose("ABRootManager.GetOther: error: %s", err)
+		PrintVerboseErr("ABRootManager.GetOther", 0, err)
 		return ABRootPartition{}, err
 	}
 
 	if present.Label == settings.Cnf.PartLabelA {
-		PrintVerbose("ABRootManager.GetOther: successfully got other partition")
+		PrintVerboseInfo("ABRootManager.GetOther", "successfully got other partition")
 		return a.GetPartition(settings.Cnf.PartLabelB)
 	}
 
-	PrintVerbose("ABRootManager.GetOther: successfully got other partition")
+	PrintVerboseInfo("ABRootManager.GetOther", "successfully got other partition")
 	return a.GetPartition(settings.Cnf.PartLabelA)
 }
 
 // GetPartition gets a partition by label
 func (a *ABRootManager) GetPartition(label string) (partition ABRootPartition, err error) {
-	PrintVerbose("ABRootManager.GetPartition: running...")
+	PrintVerboseInfo("ABRootManager.GetPartition", "running...")
 
 	for _, partition := range a.Partitions {
 		if partition.Label == label {
-			PrintVerbose("ABRootManager.GetPartition: successfully got partition")
+			PrintVerboseInfo("ABRootManager.GetPartition", "successfully got partition")
 			return partition, nil
 		}
 	}
 
 	err = errors.New("partition not found")
-	PrintVerbose("ABRootManager.GetPartition: error: %s", err)
+	PrintVerboseErr("ABRootManager.GetPartition", 0, err)
 	return ABRootPartition{}, err
 }
 
 // GetBoot gets the boot partition from the current device
 func (a *ABRootManager) GetBoot() (partition Partition, err error) {
-	PrintVerbose("ABRootManager.GetBoot: running...")
+	PrintVerboseInfo("ABRootManager.GetBoot", "running...")
 
 	diskM := NewDiskManager()
 	part, err := diskM.GetPartitionByLabel(settings.Cnf.PartLabelBoot)
 	if err != nil {
 		err = errors.New("boot partition not found")
-		PrintVerbose("ABRootManager.GetBoot: error: %s", err)
+		PrintVerboseErr("ABRootManager.GetBoot", 0, err)
 
 		return Partition{}, err
 	}
 
-	PrintVerbose("ABRootManager.GetBoot: successfully got boot partition")
+	PrintVerboseInfo("ABRootManager.GetBoot", "successfully got boot partition")
 	return part, nil
 }
 
 // GetInit gets the init volume when using LVM Thin-Provisioning
 func (a *ABRootManager) GetInit() (partition Partition, err error) {
-	PrintVerbose("ABRootManager.GetInit: running...")
+	PrintVerboseInfo("ABRootManager.GetInit", "running...")
 
 	// Make sure Thin-Provisioning is properly configured
 	if !settings.Cnf.ThinProvisioning || settings.Cnf.ThinInitVolume == "" {
@@ -220,11 +228,11 @@ func (a *ABRootManager) GetInit() (partition Partition, err error) {
 	part, err := diskM.GetPartitionByLabel(settings.Cnf.ThinInitVolume)
 	if err != nil {
 		err = errors.New("init volume not found")
-		PrintVerbose("ABRootManager.GetInit: error: %s", err)
+		PrintVerboseErr("ABRootManager.GetInit", 0, err)
 
 		return Partition{}, err
 	}
 
-	PrintVerbose("ABRootManager.GetBoot: successfully got init volume")
+	PrintVerboseInfo("ABRootManager.GetInit", "successfully got init volume")
 	return part, nil
 }

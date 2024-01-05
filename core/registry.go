@@ -21,48 +21,53 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 )
 
-// Registry struct
+// A Registry instance exposes functions to interact with the configured
+// Docker registry
 type Registry struct {
 	API string
 }
 
-// Manifest struct
+// Manifest is the struct used to parse the manifest response from the registry
+// it contains the manifest itself, the digest and the list of layers. This
+// should be compatible with most registries, but it's not guaranteed
 type Manifest struct {
 	Manifest []byte
 	Digest   string
 	Layers   []string
 }
 
-// NewRegistry returns a new Registry struct
+// NewRegistry returns a new Registry instance, exposing functions to
+// interact with the configured Docker registry
 func NewRegistry() *Registry {
-	PrintVerbose("NewRegistry: running...")
+	PrintVerboseInfo("NewRegistry", "running...")
 	return &Registry{
 		API: fmt.Sprintf("https://%s/%s", settings.Cnf.Registry, settings.Cnf.RegistryAPIVersion),
 	}
 }
 
 // HasUpdate checks if the image/tag from the registry has a different digest
+// it returns the new digest and a boolean indicating if an update is available
 func (r *Registry) HasUpdate(digest string) (string, bool) {
-	PrintVerbose("Registry.HasUpdate: Checking for updates ...")
+	PrintVerboseInfo("Registry.HasUpdate", "Checking for updates ...")
 
 	token, err := GetToken()
 	if err != nil {
-		PrintVerbose("Registry.HasUpdate:err: %s", err)
+		PrintVerboseErr("Registry.HasUpdate", 0, err)
 		return "", false
 	}
 
 	manifest, err := r.GetManifest(token)
 	if err != nil {
-		PrintVerbose("Registry.HasUpdate(1):err: %s", err)
+		PrintVerboseErr("Registry.HasUpdate", 1, err)
 		return "", false
 	}
 
 	if manifest.Digest == digest {
-		PrintVerbose("Registry.HasUpdate(2): no update available")
+		PrintVerboseInfo("Registry.HasUpdate", "no update available")
 		return "", false
 	}
 
-	PrintVerbose("Registry.HasUpdate(3): update available. Old digest: %s, new digest: %s", digest, manifest.Digest)
+	PrintVerboseInfo("Registry.HasUpdate", "update available. Old digest", digest, "new digest", manifest.Digest)
 	return manifest.Digest, true
 }
 
@@ -74,7 +79,7 @@ func GetToken() (string, error) {
 		settings.Cnf.Name,
 		settings.Cnf.RegistryService,
 	)
-	PrintVerbose("Registry.GetToken: call uri is %s", requestUrl)
+	PrintVerboseInfo("Registry.GetToken", "call URI is", requestUrl)
 
 	resp, err := http.Get(requestUrl)
 	if err != nil {
@@ -91,6 +96,7 @@ func GetToken() (string, error) {
 		return "", err
 	}
 
+	// Parse token from response
 	var tokenResponse struct {
 		Token string `json:"token"`
 	}
@@ -103,16 +109,17 @@ func GetToken() (string, error) {
 	return token, nil
 }
 
-// GetManifest returns the manifest of the image
+// GetManifest returns the manifest of the image, a token is required
+// to perform the request and is generated using GetToken()
 func (r *Registry) GetManifest(token string) (*Manifest, error) {
-	PrintVerbose("Registry.GetManifest: running...")
+	PrintVerboseInfo("Registry.GetManifest", "running...")
 
 	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
-	PrintVerbose("Registry.GetManifest: call uri is %s", manifestAPIUrl)
+	PrintVerboseInfo("Registry.GetManifest", "call URI is", manifestAPIUrl)
 
 	req, err := http.NewRequest("GET", manifestAPIUrl, nil)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:err: %s", err)
+		PrintVerboseErr("Registry.GetManifest", 0, err)
 		return nil, err
 	}
 
@@ -121,32 +128,35 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:err(2): %s", err)
+		PrintVerboseErr("Registry.GetManifest", 1, err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest:err(3): %s", err)
+		PrintVerboseErr("Registry.GetManifest", 2, err)
 		return nil, err
 	}
 
 	m := make(map[string]interface{})
 	err = json.Unmarshal(body, &m)
 	if err != nil {
-		PrintVerbose("Registry.GetManifest(:err4): %s", err)
+		PrintVerboseErr("Registry.GetManifest", 3, err)
 		return nil, err
 	}
 
+	// digest is stored in the header
 	digest := resp.Header.Get("Docker-Content-Digest")
+
+	// we need to parse the layers to get the digests
 	layers := m["layers"].([]interface{})
 	var layerDigests []string
 	for _, layer := range layers {
 		layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
 	}
 
-	PrintVerbose("Registry.GetManifest: success")
+	PrintVerboseInfo("Registry.GetManifest", "success")
 	manifest := &Manifest{
 		Manifest: body,
 		Digest:   digest,

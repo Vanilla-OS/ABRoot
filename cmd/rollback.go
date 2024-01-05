@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -28,6 +30,13 @@ func NewRollbackCommand() *cmdr.Command {
 		rollback,
 	)
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"check-only",
+			"c",
+			abroot.Trans("rollback.checkOnlyFlag"),
+			false))
+
 	cmd.Example = "abroot rollback"
 
 	return cmd
@@ -37,6 +46,41 @@ func rollback(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println(abroot.Trans("rollback.rootRequired"))
 		return nil
+	}
+
+	checkOnly, err := cmd.Flags().GetBool("check-only")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	aBsys, err := core.NewABSystem()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	response, err := aBsys.Rollback(checkOnly)
+	switch response {
+	case core.ROLLBACK_RES_YES:
+		// NOTE: the following strings could lead to misinterpretation, with
+		// "can" and "cannot", we don't mean "is it possible to rollback?",
+		// but "is it necessary to rollback?"
+		cmdr.Info.Println(abroot.Trans("rollback.canRollback"))
+		os.Exit(0)
+	case core.ROLLBACK_RES_NO:
+		cmdr.Info.Println(abroot.Trans("rollback.cannotRollback"))
+		os.Exit(1)
+	case core.ROLLBACK_UNNECESSARY:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackUnnecessary"))
+		os.Exit(0)
+	case core.ROLLBACK_SUCCESS:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackSuccess"))
+		os.Exit(0)
+	case core.ROLLBACK_FAILED:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackFailed", err))
+		os.Exit(1)
+		return err
 	}
 
 	return nil

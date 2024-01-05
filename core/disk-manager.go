@@ -23,10 +23,12 @@ import (
 	"syscall"
 )
 
-// DiskManager represents a disk
+// DiskManager exposes functions to interact with the system's disks
+// and partitions (e.g. mount, unmount, get partitions, etc.)
 type DiskManager struct{}
 
-// Partition represents either a standard partition or a device-mapper partition.
+// Partition represents either a standard partition or a device-mapper
+// partition, such as an LVM volume
 type Partition struct {
 	Label        string
 	MountPoint   string
@@ -69,33 +71,37 @@ type Children struct {
 	Children     []Children `json:"children"`
 }
 
-// NewDiskManager creates a new DiskManager
+// NewDiskManager creates and returns a pointer to a new DiskManager instance
+// from which you can interact with the system's disks and partitions
 func NewDiskManager() *DiskManager {
 	return &DiskManager{}
 }
 
 // GetPartitionByLabel finds a partition by searching for its label.
-//
 // If no partition can be found with the given label, returns error.
 func (d *DiskManager) GetPartitionByLabel(label string) (Partition, error) {
-	PrintVerbose("DiskManager.GetPartitionByLabel: retrieving partitions")
+	PrintVerboseInfo("DiskManager.GetPartitionByLabel", "retrieving partitions")
 
 	partitions, err := d.getPartitions("")
 	if err != nil {
+		PrintVerboseErr("DiskManager.GetPartitionByLabel", 0, err)
 		return Partition{}, err
 	}
 
 	for _, part := range partitions {
 		if part.Label == label {
-			PrintVerbose("DiskManager.GetPartitionByLabel: Partition with UUID %s has label %s", part.Uuid, label)
+			PrintVerboseInfo("DiskManager.GetPartitionByLabel", "Partition with UUID", part.Uuid, "has label", label)
 			return part, nil
 		}
 	}
 
-	return Partition{}, fmt.Errorf("could not find partition with label %s", label)
+	errMsg := fmt.Errorf("could not find partition with label %s", label)
+	PrintVerboseErr("DiskManager.GetPartitionByLabel", 1, errMsg)
+	return Partition{}, errMsg
 }
 
-// iterChildren iterates through the children of a device or partition recursively
+// iterChildren iterates through the children of a device or partition
+// recursively
 func iterChildren(childs *[]Children, result *[]Partition) {
 	for _, child := range *childs {
 		*result = append(*result, Partition{
@@ -120,13 +126,14 @@ func iterChildren(childs *[]Children, result *[]Partition) {
 	}
 }
 
-// getPartitions gets a disk's partitions. If device is an empty string, gets all partitions from all disks.
+// getPartitions gets a disk's partitions. If device is an empty string, gets
+// all partitions from all disks
 func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
-	PrintVerbose("DiskManager.getPartitions: running...")
+	PrintVerboseInfo("DiskManager.getPartitions", "running...")
 
 	output, err := exec.Command("lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID").Output()
 	if err != nil {
-		PrintVerbose("DiskManager.getPartitions:err: %s", err)
+		PrintVerboseErr("DiskManager.getPartitions", 0, err)
 		return nil, err
 	}
 
@@ -139,7 +146,7 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 	}
 
 	if err := json.Unmarshal(output, &partitions); err != nil {
-		PrintVerbose("DiskManager.getPartitions:err(2): %s", err)
+		PrintVerboseErr("DiskManager.getPartitions", 1, err)
 		return nil, err
 	}
 
@@ -152,18 +159,18 @@ func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
 		iterChildren(&blockDevice.Children, &result)
 	}
 
-	PrintVerbose("DiskManager.getPartitions: successfully got partitions for disk %s", device)
+	PrintVerboseInfo("DiskManager.getPartitions", "successfully got partitions for disk", device)
 
 	return result, nil
 }
 
-// Mount mounts a partition to a directory
+// Mount mounts a partition to a directory, returning an error if any occurs
 func (p *Partition) Mount(destination string) error {
-	PrintVerbose("Partition.Mount: running...")
+	PrintVerboseInfo("Partition.Mount", "running...")
 
 	if _, err := os.Stat(destination); os.IsNotExist(err) {
 		if err := os.MkdirAll(destination, 0755); err != nil {
-			PrintVerbose("Partition.Mount: error: %s", err)
+			PrintVerboseErr("Partition.Mount", 0, err)
 			return err
 		}
 	}
@@ -176,32 +183,31 @@ func (p *Partition) Mount(destination string) error {
 
 	err := syscall.Mount(devicePath, destination, p.FsType, 0, "")
 	if err != nil {
-		PrintVerbose("Partition.Mount: error(2): %s", err)
+		PrintVerboseErr("Partition.Mount", 1, err)
 		return err
 	}
 
 	p.MountPoint = destination
-	PrintVerbose("Partition.Mount: successfully mounted %s at %s", devicePath, p.MountPoint)
+	PrintVerboseInfo("Partition.Mount", "successfully mounted", devicePath, "to", destination)
 	return nil
 }
 
 // Unmount unmounts a partition
 func (p *Partition) Unmount() error {
-	PrintVerbose("Partition.Unmount: running...")
+	PrintVerboseInfo("Partition.Unmount", "running...")
 
 	if p.MountPoint == "" {
-		PrintVerbose("Partition.Unmount: error: no mount point")
+		PrintVerboseErr("Partition.Unmount", 0, errors.New("no mount point"))
 		return errors.New("no mount point")
 	}
 
 	err := syscall.Unmount(p.MountPoint, 0)
 	if err != nil {
-		PrintVerbose("Partition.Unmount: failed to unmount %s", p.MountPoint)
-		PrintVerbose("Partition.Unmount: error(2): %s", err)
+		PrintVerboseErr("Partition.Unmount", 1, err)
 		return err
 	}
 
-	PrintVerbose("Partition.Unmount: successfully unmounted %s", p.MountPoint)
+	PrintVerboseInfo("Partition.Unmount", "successfully unmounted", p.MountPoint)
 	p.MountPoint = ""
 
 	return nil

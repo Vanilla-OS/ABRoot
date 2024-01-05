@@ -27,9 +27,9 @@ import (
 	"github.com/vanilla-os/prometheus"
 )
 
-// OciExportRootFs generates a rootfs from a image recipe file
+// OciExportRootFs generates a rootfs from an image recipe file
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
-	PrintVerbose("OciExportRootFs: running...")
+	PrintVerboseInfo("OciExportRootFs", "running...")
 
 	pt, err := prometheus.NewPrometheus(
 		"/var/lib/abroot/storage",
@@ -37,7 +37,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		settings.Cnf.MaxParallelDownloads,
 	)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err: %s", err)
+		PrintVerboseErr("OciExportRootFs", 0, err)
 		return err
 	}
 
@@ -45,73 +45,68 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 
 	if transDir == dest {
 		err := errors.New("transDir and dest cannot be the same")
-		PrintVerbose("OciExportRootFs:err(2): %s", err)
+		PrintVerboseErr("OciExportRootFs", 1, err)
 		return err
 	}
 
-	// cleanup dest
-	err = os.RemoveAll(dest)
-	if err != nil {
-		PrintVerbose("OciExportRootFs:err(3): %s", err)
-		return err
-	}
+	// create dest if it doesn't exist
 	err = os.MkdirAll(dest, 0755)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(4): %s", err)
+		PrintVerboseErr("OciExportRootFs", 3, err)
 		return err
 	}
 
 	// cleanup transDir
 	err = os.RemoveAll(transDir)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(5): %s", err)
+		PrintVerboseErr("OciExportRootFs", 4, err)
 		return err
 	}
 	err = os.MkdirAll(transDir, 0755)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(6): %s", err)
+		PrintVerboseErr("OciExportRootFs", 5, err)
 		return err
 	}
 
 	// write imageRecipe
 	err = imageRecipe.Write(imageRecipePath)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(7): %s", err)
+		PrintVerboseErr("OciExportRootFs", 6, err)
 		return err
 	}
 
 	// pull image
 	err = pullImageWithProgressbar(pt, dest, imageRecipe)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(8): %s", err)
+		PrintVerboseErr("OciExportRootFs", 6.1, err)
 		return err
 	}
 
 	// build image
 	imageBuild, err := pt.BuildContainerFile(imageRecipePath, buildImageName)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(9): %s", err)
+		PrintVerboseErr("OciExportRootFs", 7, err)
 		return err
 	}
 
 	// mount image
 	mountDir, err := pt.MountImage(imageBuild.TopLayer)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(10): %s", err)
+		PrintVerboseErr("OciExportRootFs", 8, err)
 		return err
 	}
 
 	// copy mount dir contents to dest
-	err = rsyncCmd(mountDir+"/", dest, []string{}, false)
+	err = rsyncCmd(mountDir+"/", dest, []string{"--delete"}, false)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(11): %s", err)
+		PrintVerboseErr("OciExportRootFs", 9, err)
 		return err
 	}
 
 	// unmount image
 	_, err = pt.UnMountImage(imageBuild.TopLayer, true)
 	if err != nil {
-		PrintVerbose("OciExportRootFs:err(12): %s", err)
+		PrintVerboseErr("OciExportRootFs", 10, err)
 		return err
 	}
 
@@ -119,7 +114,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 }
 
 func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *ImageRecipe) error {
-	PrintVerbose("pullImageWithProgressbar: running...")
+	PrintVerboseInfo("pullImageWithProgressbar", "running...")
 
 	progressCh := make(chan types.ProgressProperties)
 	manifestCh := make(chan prometheus.OciManifest)
@@ -129,7 +124,7 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *Ima
 
 	err := pt.PullImageAsync(image.From, dest, progressCh, manifestCh)
 	if err != nil {
-		PrintVerbose("pullImageWithProgressbar:err: %s", err)
+		PrintVerboseErr("pullImageWithProgressbar", 0, err)
 		return err
 	}
 
@@ -145,8 +140,10 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *Ima
 
 // FindImageWithLabel returns the name of the first image containinig the provided key-value pair
 // or an empty string if none was found
+// FindImageWithLabel returns the name of the first image containing the
+// provided key-value pair or an empty string if none was found
 func FindImageWithLabel(key, value string) (string, error) {
-	PrintVerbose("FindImageWithLabel: running...")
+	PrintVerboseInfo("FindImageWithLabel", "running...")
 
 	pt, err := prometheus.NewPrometheus(
 		"/var/lib/abroot/storage",
@@ -154,13 +151,13 @@ func FindImageWithLabel(key, value string) (string, error) {
 		settings.Cnf.MaxParallelDownloads,
 	)
 	if err != nil {
-		PrintVerbose("FindImageWithLabel:err: %s", err)
+		PrintVerboseErr("FindImageWithLabel", 0, err)
 		return "", err
 	}
 
 	images, err := pt.Store.Images()
 	if err != nil {
-		PrintVerbose("FindImageWithLabel:err(2): %s", err)
+		PrintVerboseErr("FindImageWithLabel", 1, err)
 		return "", err
 	}
 
@@ -168,7 +165,7 @@ func FindImageWithLabel(key, value string) (string, error) {
 		// This is the only way I could find to get the labels form an image
 		builder, err := buildah.ImportBuilderFromImage(context.Background(), pt.Store, buildah.ImportFromImageOptions{Image: img.ID})
 		if err != nil {
-			PrintVerbose("FindImageWithLabel:err(3): %s", err)
+			PrintVerboseErr("FindImageWithLabel", 2, err)
 			return "", err
 		}
 
@@ -181,24 +178,26 @@ func FindImageWithLabel(key, value string) (string, error) {
 	return "", nil
 }
 
-// RetrieveImageForRoot retrieves the image created for the provided root ("vos-a"|"vos-b")
+// RetrieveImageForRoot retrieves the image created for the provided root
+// based on the label. Note for distro maintainers: labels must follow those
+// defined in the ABRoot config file
 func RetrieveImageForRoot(root string) (string, error) {
-	PrintVerbose("ApplyInImageForRoot: running...")
+	PrintVerboseInfo("RetrieveImageForRoot", "running...")
 
 	image, err := FindImageWithLabel("ABRoot.root", root)
 	if err != nil {
-		PrintVerbose("ApplyInImageForRoot:err: %s", err)
+		PrintVerboseErr("RetrieveImageForRoot", 0, err)
 		return "", err
 	}
 
 	return image, nil
 }
 
-// DeleteImageForRoot deletes the image created for the provided root ("vos-a"|"vos-b")
+// DeleteImageForRoot deletes the image created for the provided root
 func DeleteImageForRoot(root string) error {
 	image, err := RetrieveImageForRoot(root)
 	if err != nil {
-		PrintVerbose("DeleteImageForRoot:err: %s", err)
+		PrintVerboseErr("DeleteImageForRoot", 0, err)
 		return err
 	}
 
@@ -208,13 +207,13 @@ func DeleteImageForRoot(root string) error {
 		settings.Cnf.MaxParallelDownloads,
 	)
 	if err != nil {
-		PrintVerbose("DeleteImageForRoot:err(2): %s", err)
+		PrintVerboseErr("DeleteImageForRoot", 1, err)
 		return err
 	}
 
 	_, err = pt.Store.DeleteImage(image, true)
 	if err != nil && err != cstypes.ErrNotAnImage {
-		PrintVerbose("DeleteImageForRoot:err(3): %s", err)
+		PrintVerboseErr("DeleteImageForRoot", 2, err)
 		return err
 	}
 
