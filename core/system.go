@@ -1002,6 +1002,102 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	return nil
 }
 
+// Rollback swaps the master grub files if the current root is not the default
+func (s *ABSystem) Rollback() error {
+	PrintVerbose("ABSystem.Rollback: starting")
+
+	s.ResetQueue()
+
+	defer s.RunCleanUpQueue("")
+
+	// we won't allow upgrades while rolling back
+	err := s.LockUpgrade()
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(0): %s", err)
+		return err
+	}
+
+	partBoot, err := s.RootM.GetBoot()
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(1): %s", err)
+		return err
+	}
+
+	uuid := uuid.New().String()
+	tmpBootMount := filepath.Join("/tmp", uuid)
+	err = os.Mkdir(tmpBootMount, 0755)
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(2): %s", err)
+		return err
+	}
+
+	err = partBoot.Mount(tmpBootMount)
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(3): %s", err)
+		return err
+	}
+
+	s.AddToCleanUpQueue("umountBoot", 100, partBoot)
+
+	grub, err := NewGrub(partBoot)
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(4): %s", err)
+		return err
+	}
+
+	// Only swap grub entries if we're booted into the present partition
+	isPresent, err := grub.IsBootedIntoPresentRoot()
+	if err != nil {
+		PrintVerbose("ABSystem.Rollback:err(5): %s", err)
+		return err
+	}
+
+	if isPresent {
+		PrintVerbose("ABSystem.Rollback: current root is the default, nothing to do")
+		return nil
+	}
+
+	grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
+	grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
+
+	// Just like in Stage 10, tmpBootMount/grub/grub.cfg.future may not exist.
+	if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
+		PrintVerbose("ABSystem.Rollback: Creating grub.cfg.future")
+
+		grubCfgContents, err := os.ReadFile(grubCfgCurrent)
+		if err != nil {
+			PrintVerbose("ABSystem.Rollback:err(6): %s", err)
+		}
+
+		var replacerPairs []string
+		if grub.FutureRoot == "a" {
+			replacerPairs = []string{
+				"default=1", "default=0",
+				"A (previous)", "A (current)",
+				"B (current)", "B (previous)",
+			}
+		} else {
+			replacerPairs = []string{
+				"default=0", "default=1",
+				"A (current)", "A (previous)",
+				"B (previous)", "B (current)",
+			}
+		}
+
+		replacer := strings.NewReplacer(replacerPairs...)
+		os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0644)
+	}
+
+	err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
+	if err != nil {
+		PrintVerbose("ABSystem.RunOperation:err(7): %s", err)
+		return err
+	}
+
+	PrintVerbose("ABSystem.Rollback: rollback completed")
+	return nil
+}
+
 func (s *ABSystem) UserLockRequested() bool {
 	if _, err := os.Stat(userLockFile); os.IsNotExist(err) {
 		return false
