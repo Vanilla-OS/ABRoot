@@ -46,7 +46,7 @@ func NewPkgCommand() *cmdr.Command
 ```
 
 
-## <a name="NewRollbackCommand">func</a> [NewRollbackCommand](/src/target/rollback.go?s=526:565#L23)
+## <a name="NewRollbackCommand">func</a> [NewRollbackCommand](/src/target/rollback.go?s=533:572#L25)
 ``` go
 func NewRollbackCommand() *cmdr.Command
 ```
