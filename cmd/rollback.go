@@ -47,13 +47,19 @@ func rollback(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	err = aBsys.Rollback()
-	if err != nil {
-		cmdr.Error.Println(abroot.Trans("rollback.rollbackFailed", err))
+	respomse, err := aBsys.Rollback()
+	switch respomse {
+	case core.ROLLBACK_UNNECESSARY:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackUnnecessary"))
+		os.Exit(0)
+	case core.ROLLBACK_SUCCESS:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackSuccess"))
+		os.Exit(0)
+	case core.ROLLBACK_FAILED:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackFailed", err))
+		os.Exit(1)
 		return err
 	}
 
-	cmdr.Info.Println(abroot.Trans("rollback.success"))
-	os.Exit(0)
 	return nil
 }

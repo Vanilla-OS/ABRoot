@@ -19,8 +19,9 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state"
   rootRequired: "You must be root to run this command."
+  rollbackUnnecessary: "Rollback is not necessary, current root is already the present one."
   rollbackFailed: "Rollback failed: %s\n"
-  success: "Rollback completed successfully."
+  rollbackSuccess: "Rollback completed successfully."
 
 pkg:
   use: "pkg"
