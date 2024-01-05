@@ -679,6 +679,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
 
+	// Stage 3.1: Delete old image
+	switch operation {
+	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
+	default:
+		err = DeleteImageForRoot(futurePartition.Label)
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 3.4, err)
+			return err
+		}
+	}
+
 	imageRecipe := NewImageRecipe(
 		imageName,
 		labels,
@@ -801,13 +812,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
 		PrintVerboseInfo("ABSystem.RunOperation", "dry-run completed")
 		return nil
-	}
-
-	// Stage 6.3: Delete old image
-	err = DeleteImageForRoot(futurePartition.Label)
-	if err != nil {
-		PrintVerboseErr("ABSystemRunOperation", 6.3, err)
-		return err
 	}
 
 	// Stage 7: Update the bootloader
