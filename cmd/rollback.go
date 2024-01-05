@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -37,6 +39,26 @@ func rollback(cmd *cobra.Command, args []string) error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println(abroot.Trans("rollback.rootRequired"))
 		return nil
+	}
+
+	aBsys, err := core.NewABSystem()
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	response, err := aBsys.Rollback()
+	switch response {
+	case core.ROLLBACK_UNNECESSARY:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackUnnecessary"))
+		os.Exit(0)
+	case core.ROLLBACK_SUCCESS:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackSuccess"))
+		os.Exit(0)
+	case core.ROLLBACK_FAILED:
+		cmdr.Info.Println(abroot.Trans("rollback.rollbackFailed", err))
+		os.Exit(1)
+		return err
 	}
 
 	return nil
