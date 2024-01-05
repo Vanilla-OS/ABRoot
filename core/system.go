@@ -71,8 +71,16 @@ const (
 	DRY_RUN_APPLY     = "dry-run-package-apply"
 	INITRAMFS         = "initramfs"
 	DRY_RUN_INITRAMFS = "dry-run-initramfs"
+)
 
-	// ABSystem rollback response
+// ABSystem rollback response
+const (
+	// can rollback
+	ROLLBACK_RES_YES = "rollback-yes"
+
+	// can't rollback
+	ROLLBACK_RES_NO = "rollback-no"
+
 	ROLLBACK_UNNECESSARY = "rollback-unnecessary"
 	ROLLBACK_SUCCESS     = "rollback-success"
 	ROLLBACK_FAILED      = "rollback-failed"
@@ -1055,7 +1063,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 }
 
 // Rollback swaps the master grub files if the current root is not the default
-func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
+func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err error) {
 	PrintVerboseInfo("ABSystem.Rollback", "starting")
 
 	s.ResetQueue()
@@ -1102,6 +1110,15 @@ func (s *ABSystem) Rollback() (response ABRollbackResponse, err error) {
 	if err != nil {
 		PrintVerboseErr("ABSystem.Rollback", 5, err)
 		return ROLLBACK_FAILED, err
+	}
+
+	// If checkOnly is true, we stop here and return the appropriate response
+	if checkOnly {
+		response = ROLLBACK_RES_YES
+		if isPresent {
+			response = ROLLBACK_RES_NO
+		}
+		return response, nil
 	}
 
 	if isPresent {

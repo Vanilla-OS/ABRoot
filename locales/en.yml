@@ -22,6 +22,8 @@ rollback:
   rollbackUnnecessary: "Rollback is not necessary, current root is already the present one."
   rollbackFailed: "Rollback failed: %s\n"
   rollbackSuccess: "Rollback completed successfully."
+  canRollback: "It is possible to rollback to the previous root."
+  cannotRollback: "It is not possible to rollback to the previous root."
 
 pkg:
   use: "pkg"
