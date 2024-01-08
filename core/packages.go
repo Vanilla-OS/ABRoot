@@ -117,12 +117,31 @@ func NewPackageManager(dryRun bool) *PackageManager {
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerboseInfo("PackageManager.Add", "running...")
 
-	// Check if package exists in repo
-	for _, _pkg := range strings.Split(pkg, " ") {
-		err := p.ExistsInRepo(_pkg)
-		if err != nil {
-			PrintVerboseErr("PackageManager.Add", 0, err)
-			return err
+	// Check if package was removed before
+	packageWasRemoved := false
+	removedIndex := -1
+	pkgsRemove, err := p.GetRemovePackages()
+	if err != nil {
+		PrintVerboseErr("PackageManager.Add", 2.1, err)
+		return err
+	}
+	for i, rp := range pkgsRemove {
+		if rp == pkg {
+			packageWasRemoved = true
+			removedIndex = i
+			break
+		}
+	}
+
+	// packages that have been removed by the user aren't always in the repo
+	if !packageWasRemoved {
+		// Check if package exists in repo
+		for _, _pkg := range strings.Split(pkg, " ") {
+			err := p.ExistsInRepo(_pkg)
+			if err != nil {
+				PrintVerboseErr("PackageManager.Add", 0, err)
+				return err
+			}
 		}
 	}
 
@@ -139,24 +158,31 @@ func (p *PackageManager) Add(pkg string) error {
 		return err
 	}
 
-	// Modify added packages list
-	pkgs, err := p.GetAddPackages()
+	// If package was removed by the user, simply remove it from packages.remove
+	// Unstaged will take care of the rest
+	if packageWasRemoved {
+		pkgsRemove = append(pkgsRemove[:removedIndex], pkgsRemove[removedIndex+1:]...)
+		PrintVerboseInfo("PackageManager.Add", "unsetting manually removed package")
+		return p.writeRemovePackages(pkgsRemove)
+	}
+
+	// Abort if package is already added
+	pkgsAdd, err := p.GetAddPackages()
 	if err != nil {
 		PrintVerboseErr("PackageManager.Add", 3, err)
 		return err
 	}
-
-	for _, p := range pkgs {
+	for _, p := range pkgsAdd {
 		if p == pkg {
 			PrintVerboseInfo("PackageManager.Add", "package already added")
 			return nil
 		}
 	}
 
-	pkgs = append(pkgs, pkg)
+	pkgsAdd = append(pkgsAdd, pkg)
 
 	PrintVerboseInfo("PackageManager.Add", "writing packages.add")
-	return p.writeAddPackages(pkgs)
+	return p.writeAddPackages(pkgsAdd)
 }
 
 // Remove removes a package from the packages.add file
@@ -178,22 +204,37 @@ func (p *PackageManager) Remove(pkg string) error {
 
 	// If package was added by the user, simply remove it from packages.add
 	// Unstaged will take care of the rest
-	pkgs, err := p.GetAddPackages()
+	pkgsAdd, err := p.GetAddPackages()
 	if err != nil {
 		PrintVerboseErr("PackageManager.Remove", 2, err)
 		return err
 	}
-	for i, ap := range pkgs {
+	for i, ap := range pkgsAdd {
 		if ap == pkg {
-			pkgs = append(pkgs[:i], pkgs[i+1:]...)
+			pkgsAdd = append(pkgsAdd[:i], pkgsAdd[i+1:]...)
 			PrintVerboseInfo("PackageManager.Remove", "removing manually added package")
-			return p.writeAddPackages(pkgs)
+			return p.writeAddPackages(pkgsAdd)
 		}
 	}
 
+	// Abort if package is already removed
+	pkgsRemove, err := p.GetRemovePackages()
+	if err != nil {
+		PrintVerboseErr("PackageManager.Remove", 2.1, err)
+		return err
+	}
+	for _, p := range pkgsRemove {
+		if p == pkg {
+			PrintVerboseInfo("PackageManager.Remove", "package already removed")
+			return nil
+		}
+	}
+
+	pkgsRemove = append(pkgsRemove, pkg)
+
 	// Otherwise, add package to packages.remove
 	PrintVerboseInfo("PackageManager.Remove", "writing packages.remove")
-	return p.writeRemovePackages(pkg)
+	return p.writeRemovePackages(pkgsRemove)
 }
 
 // GetAddPackages returns the packages in the packages.add file
@@ -308,33 +349,39 @@ func (p *PackageManager) writeAddPackages(pkgs []string) error {
 	return p.writePackages(PackagesAddFile, pkgs)
 }
 
-func (p *PackageManager) writeRemovePackages(pkg string) error {
+func (p *PackageManager) writeRemovePackages(pkgs []string) error {
 	PrintVerboseInfo("PackageManager.writeRemovePackages", "running...")
-
-	pkgs, err := p.GetRemovePackages()
-	if err != nil {
-		PrintVerboseErr("PackageManager.writeRemovePackages", 0, err)
-		return err
-	}
-
-	for _, p := range pkgs {
-		if p == pkg {
-			PrintVerboseInfo("PackageManager.writeRemovePackages", "package already added")
-			return nil
-		}
-	}
-
-	pkgs = append(pkgs, pkg)
-
-	PrintVerboseInfo("PackageManager.writeRemovePackages", "writing packages.remove")
 	return p.writePackages(PackagesRemoveFile, pkgs)
 }
 
 func (p *PackageManager) writeUnstagedPackages(pkgs []UnstagedPackage) error {
 	PrintVerboseInfo("PackageManager.writeUnstagedPackages", "running...")
 
-	pkgFmt := []string{}
+	// create slice without redundant entries
+	pkgsCleaned := []UnstagedPackage{}
 	for _, pkg := range pkgs {
+		isDuplicate := false
+		for iCmp, pkgCmp := range pkgsCleaned {
+			if pkg.Name == pkgCmp.Name {
+				isDuplicate = true
+
+				// remove complement (+ then - or - then +)
+				if pkg.Status != pkgCmp.Status {
+					pkgsCleaned = append(pkgsCleaned[:iCmp], pkgsCleaned[iCmp+1:]...)
+				}
+
+				break
+			}
+		}
+
+		// don't add duplicate
+		if !isDuplicate {
+			pkgsCleaned = append(pkgsCleaned, pkg)
+		}
+	}
+
+	pkgFmt := []string{}
+	for _, pkg := range pkgsCleaned {
 		pkgFmt = append(pkgFmt, fmt.Sprintf("%s %s", pkg.Status, pkg.Name))
 	}
 
