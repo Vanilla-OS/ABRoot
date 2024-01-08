@@ -116,6 +116,10 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	return nil
 }
 
+// pullImageWithProgressbar pulls the image specified in the provided recipe
+// and reports the download progress using pterm progressbars. Each blob has
+// its own bar, similar to how docker and podman report downloads in their
+// respective CLIs
 func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *ImageRecipe) error {
 	PrintVerboseInfo("pullImageWithProgressbar", "running...")
 
