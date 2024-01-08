@@ -19,10 +19,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/containers/buildah"
 	"github.com/containers/image/v5/types"
 	cstypes "github.com/containers/storage/types"
+	humanize "github.com/dustin/go-humanize"
+	"github.com/pterm/pterm"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
@@ -76,7 +79,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// pull image
-	err = pullImageWithProgressbar(pt, dest, imageRecipe)
+	err = pullImageWithProgressbar(pt, buildImageName, imageRecipe)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 6.1, err)
 		return err
@@ -113,7 +116,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	return nil
 }
 
-func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *ImageRecipe) error {
+func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *ImageRecipe) error {
 	PrintVerboseInfo("pullImageWithProgressbar", "running...")
 
 	progressCh := make(chan types.ProgressProperties)
@@ -122,17 +125,44 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, dest string, image *Ima
 	defer close(progressCh)
 	defer close(manifestCh)
 
-	err := pt.PullImageAsync(image.From, dest, progressCh, manifestCh)
+	err := pt.PullImageAsync(image.From, name, progressCh, manifestCh)
 	if err != nil {
 		PrintVerboseErr("pullImageWithProgressbar", 0, err)
 		return err
 	}
 
+	multi := pterm.DefaultMultiPrinter
+	bars := map[string]*pterm.ProgressbarPrinter{}
+
+	multi.Start()
+
+	barFmt := "%s [%s/%s]"
 	for {
 		select {
 		case report := <-progressCh:
-			fmt.Printf("%s: %v/%v\n", report.Artifact.Digest.Encoded()[:12], report.Offset, report.Artifact.Size)
+			digest := report.Artifact.Digest.Encoded()
+			if pb, ok := bars[digest]; ok {
+				progressBytes := humanize.Bytes(uint64(report.Offset))
+				totalBytes := humanize.Bytes(uint64(report.Artifact.Size))
+
+				pb.Add(int(report.Offset) - pb.Current)
+
+				title := fmt.Sprintf(barFmt, digest[:12], progressBytes, totalBytes)
+				pb.UpdateTitle(title + strings.Repeat(" ", 28-len(title)))
+			} else {
+				totalBytes := humanize.Bytes(uint64(report.Artifact.Size))
+
+				title := fmt.Sprintf(barFmt, digest[:12], "0", totalBytes)
+				newPb, err := pterm.DefaultProgressbar.WithTotal(int(report.Artifact.Size)).WithWriter(multi.NewWriter()).WithMaxWidth(120).WithShowCount(false).Start(title + strings.Repeat(" ", 28-len(title)))
+				if err != nil {
+					PrintVerboseErr("pullImageWithProgressbar", 1, err)
+					return err
+				}
+
+				bars[digest] = newPb
+			}
 		case <-manifestCh:
+			multi.Stop()
 			return nil
 		}
 	}

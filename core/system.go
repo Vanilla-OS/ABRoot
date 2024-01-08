@@ -675,7 +675,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			imageName = settings.Cnf.FullImageName
 		}
 	default:
-		imageName = settings.Cnf.FullImageName + "@" + imageDigest
+		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0]
+		imageName += "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
 

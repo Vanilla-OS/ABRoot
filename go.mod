@@ -4,7 +4,9 @@ go 1.21.4
 
 require (
 	github.com/containers/buildah v1.33.2
+	github.com/containers/image/v5 v5.29.0
 	github.com/containers/storage v1.51.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.8.0
 	github.com/vanilla-os/differ/diff v0.0.0-20231226220222-4f9298cef551
@@ -33,7 +35,6 @@ require (
 	github.com/containernetworking/cni v1.1.2 // indirect
 	github.com/containernetworking/plugins v1.4.0 // indirect
 	github.com/containers/common v0.57.1 // indirect
-	github.com/containers/image/v5 v5.29.0 // indirect
 	github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 // indirect
 	github.com/containers/luksy v0.0.0-20231127213545-c2b9b9dbf004 // indirect
 	github.com/containers/ocicrypt v1.1.9 // indirect
@@ -157,7 +158,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
-	github.com/pterm/pterm v0.12.74 // indirect
+	github.com/pterm/pterm v0.12.74
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
