@@ -2,12 +2,6 @@
 
 # Changelog
 
-## v1.34.0 (2023-12-11)
-
-    vendor: update c/{common,image,storage}
-    run: Allow using just one jail per container on FreeBSD
-    Remove makefile targets entrypoint{,.gz} for non x86_64
-
 ## v1.33.2 (2023-11-22)
 
     Update minimum to golang 1.20
