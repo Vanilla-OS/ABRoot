@@ -79,10 +79,12 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// pull image
-	err = pullImageWithProgressbar(pt, buildImageName, imageRecipe)
-	if err != nil {
-		PrintVerboseErr("OciExportRootFs", 6.1, err)
-		return err
+	if !strings.HasPrefix(imageRecipe.From, "localhost/") {
+		err = pullImageWithProgressbar(pt, buildImageName, imageRecipe)
+		if err != nil {
+			PrintVerboseErr("OciExportRootFs", 6.1, err)
+			return err
+		}
 	}
 
 	// build image
