@@ -33,11 +33,12 @@ type Config struct {
 	Tag                string `json:"tag"`
 
 	// Package manager
-	IPkgMngPre  string `json:"iPkgMngPre"`
-	IPkgMngPost string `json:"iPkgMngPost"`
-	IPkgMngAdd  string `json:"iPkgMngAdd"`
-	IPkgMngRm   string `json:"iPkgMngRm"`
-	IPkgMngApi  string `json:"iPkgMngApi"`
+	IPkgMngPre    string `json:"iPkgMngPre"`
+	IPkgMngPost   string `json:"iPkgMngPost"`
+	IPkgMngAdd    string `json:"iPkgMngAdd"`
+	IPkgMngRm     string `json:"iPkgMngRm"`
+	IPkgMngApi    string `json:"iPkgMngApi"`
+	IPkgMngStatus int    `json:"iPkgMngStatus"`
 
 	// Package diff API (Differ)
 	DifferURL string `json:"differURL"`
@@ -99,11 +100,12 @@ func init() {
 		Tag:                viper.GetString("tag"),
 
 		// Package manager
-		IPkgMngPre:  viper.GetString("iPkgMngPre"),
-		IPkgMngPost: viper.GetString("iPkgMngPost"),
-		IPkgMngAdd:  viper.GetString("iPkgMngAdd"),
-		IPkgMngRm:   viper.GetString("iPkgMngRm"),
-		IPkgMngApi:  viper.GetString("iPkgMngApi"),
+		IPkgMngPre:    viper.GetString("iPkgMngPre"),
+		IPkgMngPost:   viper.GetString("iPkgMngPost"),
+		IPkgMngAdd:    viper.GetString("iPkgMngAdd"),
+		IPkgMngRm:     viper.GetString("iPkgMngRm"),
+		IPkgMngApi:    viper.GetString("iPkgMngApi"),
+		IPkgMngStatus: viper.GetInt("iPkgMngStatus"),
 
 		// Package diff API (Differ)
 		DifferURL: viper.GetString("differURL"),

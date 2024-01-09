@@ -68,6 +68,7 @@ The configuration file is a JSON file with the following structure:
     "iPkgMngAdd": "apt install -y",
     "iPkgMngRm": "apt remove -y",
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
+    "IPkgMngStatus": 0,
 
     "differURL": "https://differ.vanillaos.org",
 
@@ -100,6 +101,7 @@ The following table describes each of the configuration options:
 | `iPkgMngAdd` | The command to run when adding a package. It can be a command or a script. |
 | `iPkgMngRm` | The command to run when removing a package. It can be a command or a script. |
 | `iPkgMngApi` | The API endpoint to use when querying for package information. If not set, ABRoot will not check if a package exists before installing it. This could lead to errors. Take a look at our [Eratosthenes API](https://github.com/Vanilla-OS/Eratosthenes/blob/388e6f724dcda94ee60964e7b12a78ad79fb8a40/eratosthenes.py#L52) for an example. |
+| `IPkgMngStatus` | The status of the package manager feature. The value '0' means that the feature is disabled, the value '1' means enabled and the value '2' means that it will require user agreement the first time it is used. If the feature is disabled, it will not appear in the commands list. |
 | `differURL` | The URL of the [Differ API](https://github.com/Vanilla-OS/Differ) service to use when comparing two OCI images. |
 | `partLabelVar` | The label of the partition dedicated to the system's `/var` directory. |
 | `partLabelA` | The label of the partition dedicated to the system's `A` root. |

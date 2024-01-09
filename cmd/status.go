@@ -96,7 +96,12 @@ func status(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	pkgMngAgreementStatus := false
 	pkgMng := core.NewPackageManager(false)
+	if pkgMng.Status == core.PKG_MNG_REQ_AGREEMENT {
+		err = pkgMng.CheckStatus()
+		pkgMngAgreementStatus = err == nil
+	}
 	pkgsAdd, err := pkgMng.GetAddPackages()
 	if err != nil {
 		return err
@@ -112,31 +117,35 @@ func status(cmd *cobra.Command, args []string) error {
 
 	if jsonFlag || dumpFlag {
 		type status struct {
-			Present   string       `json:"present"`
-			Future    string       `json:"future"`
-			CnfFile   string       `json:"cnfFile"`
-			CPU       string       `json:"cpu"`
-			GPU       []string     `json:"gpu"`
-			Memory    string       `json:"memory"`
-			ABImage   core.ABImage `json:"abimage"`
-			Kargs     string       `json:"kargs"`
-			PkgsAdd   []string     `json:"pkgsAdd"`
-			PkgsRm    []string     `json:"pkgsRm"`
-			PkgsUnstg []string     `json:"pkgsUnstg"`
+			Present         string       `json:"present"`
+			Future          string       `json:"future"`
+			CnfFile         string       `json:"cnfFile"`
+			CPU             string       `json:"cpu"`
+			GPU             []string     `json:"gpu"`
+			Memory          string       `json:"memory"`
+			ABImage         core.ABImage `json:"abimage"`
+			Kargs           string       `json:"kargs"`
+			PkgsAdd         []string     `json:"pkgsAdd"`
+			PkgsRm          []string     `json:"pkgsRm"`
+			PkgsUnstg       []string     `json:"pkgsUnstg"`
+			PkgMngStatus    int          `json:"pkgMngStatus"`
+			PkgMngAgreement bool         `json:"pkgMngAg"`
 		}
 
 		s := status{
-			Present:   present.Label,
-			Future:    future.Label,
-			CnfFile:   settings.CnfFileUsed,
-			CPU:       specs.CPU,
-			GPU:       specs.GPU,
-			Memory:    specs.Memory,
-			ABImage:   *abImage,
-			Kargs:     kargs,
-			PkgsAdd:   pkgsAdd,
-			PkgsRm:    pkgsRm,
-			PkgsUnstg: pkgsUnstg,
+			Present:         present.Label,
+			Future:          future.Label,
+			CnfFile:         settings.CnfFileUsed,
+			CPU:             specs.CPU,
+			GPU:             specs.GPU,
+			Memory:          specs.Memory,
+			ABImage:         *abImage,
+			Kargs:           kargs,
+			PkgsAdd:         pkgsAdd,
+			PkgsRm:          pkgsRm,
+			PkgsUnstg:       pkgsUnstg,
+			PkgMngStatus:    settings.Cnf.IPkgMngStatus,
+			PkgMngAgreement: pkgMngAgreementStatus,
 		}
 
 		b, err := json.Marshal(s)
@@ -221,15 +230,22 @@ func status(cmd *cobra.Command, args []string) error {
 		unstagedAlert = fmt.Sprintf(abroot.Trans("status.unstagedFoundMsg"), len(pkgsUnstg))
 	}
 
-	cmdr.Info.Printf(
-		abroot.Trans("status.infoMsg"),
-		present.Label, future.Label,
-		settings.CnfFileUsed,
-		specs.CPU, formattedGPU, specs.Memory,
-		abImage.Digest, abImage.Timestamp.Format("2006-01-02 15:04:05"), abImage.Image,
-		kargs,
-		strings.Join(pkgsAdd, ", "), strings.Join(pkgsRm, ", "), strings.Join(pkgsUnstg, ", "),
-		unstagedAlert,
+	agreementMsg := ""
+	if settings.Cnf.IPkgMngStatus == 2 {
+		agreementMsg = fmt.Sprintf(abroot.Trans("status.infoMsgAgreementStatus"), pkgMngAgreementStatus)
+	}
+	cmdr.Info.Printfln("%s, %s",
+		fmt.Sprintf(
+			abroot.Trans("status.infoMsg"),
+			present.Label, future.Label,
+			settings.CnfFileUsed,
+			specs.CPU, formattedGPU, specs.Memory,
+			abImage.Digest, abImage.Timestamp.Format("2006-01-02 15:04:05"), abImage.Image,
+			kargs,
+			strings.Join(pkgsAdd, ", "), strings.Join(pkgsRm, ", "), strings.Join(pkgsUnstg, ", "),
+			unstagedAlert,
+		),
+		agreementMsg,
 	)
 
 	return nil

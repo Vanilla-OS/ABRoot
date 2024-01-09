@@ -18,6 +18,7 @@ import (
 
 	"github.com/containers/storage/pkg/reexec"
 	"github.com/vanilla-os/abroot/cmd"
+	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
@@ -46,8 +47,12 @@ func main() {
 	kargs := cmd.NewKargsCommand()
 	root.AddCommand(kargs)
 
-	pkg := cmd.NewPkgCommand()
-	root.AddCommand(pkg)
+	// we only add the pkg command if the ABRoot configuration
+	// has the IPkgMng enabled in any way (1 or 2)
+	if settings.Cnf.IPkgMngStatus > 0 {
+		pkg := cmd.NewPkgCommand()
+		root.AddCommand(pkg)
+	}
 
 	rollback := cmd.NewRollbackCommand()
 	root.AddCommand(rollback)

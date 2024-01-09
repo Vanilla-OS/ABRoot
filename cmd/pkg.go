@@ -14,7 +14,9 @@ package cmd
 */
 
 import (
+	"bufio"
 	"errors"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -40,6 +42,13 @@ func NewPkgCommand() *cmdr.Command {
 			abroot.Trans("pkg.dryRunFlag"),
 			false))
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"force-enable-user-agreement",
+			"f",
+			abroot.Trans("pkg.forceEnableUserAgreementFlag"),
+			false))
+
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.ValidArgs = validPkgArgs
 	cmd.Example = "abroot pkg add <pkg>"
@@ -59,7 +68,47 @@ func pkg(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	forceEnableUserAgreement, err := cmd.Flags().GetBool("force-enable-user-agreement")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
 	pkgM := core.NewPackageManager(false)
+
+	// Check for user agreement, here we could simply call the CheckStatus
+	// function which also checks if the package manager is enabled or not
+	// since this pkg command is not even added to the root command if the
+	// package manager is disabled, but we want to be explicit here to avoid
+	// potential hard to debug errors in the future in weird development
+	// scenarios. Yeah, trust me, I've been there.
+	if pkgM.Status == core.PKG_MNG_REQ_AGREEMENT {
+		err = pkgM.CheckStatus()
+		if err != nil {
+			if !forceEnableUserAgreement {
+				cmdr.Info.Println(abroot.Trans("pkg.agreementMsg"))
+				reader := bufio.NewReader(os.Stdin)
+				answer, _ := reader.ReadString('\n')
+				answer = strings.TrimSpace(answer)
+				if answer == "y" || answer == "Y" {
+					err := pkgM.AcceptUserAgreement()
+					if err != nil {
+						cmdr.Error.Println(abroot.Trans("pkg.agreementSignFailed"), err)
+						return err
+					}
+				} else {
+					cmdr.Info.Println(abroot.Trans("pkg.agreementDeclined"))
+					return nil
+				}
+			} else {
+				err := pkgM.AcceptUserAgreement()
+				if err != nil {
+					cmdr.Error.Println(abroot.Trans("pkg.agreementSignFailed"), err)
+					return err
+				}
+			}
+		}
+	}
 
 	switch args[0] {
 	case "add":

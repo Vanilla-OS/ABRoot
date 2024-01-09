@@ -23,6 +23,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/vanilla-os/abroot/settings"
 )
@@ -31,20 +32,35 @@ import (
 type PackageManager struct {
 	dryRun  bool
 	baseDir string
+	Status  ABRootPkgManagerStatus
 }
 
+// Common Package manager paths
 const (
-	PackagesBaseDir       = "/etc/abroot"
-	DryRunPackagesBaseDir = "/tmp/abroot"
-	PackagesAddFile       = "packages.add"
-	PackagesRemoveFile    = "packages.remove"
-	PackagesUnstagedFile  = "packages.unstaged"
+	PackagesBaseDir             = "/etc/abroot"
+	PkgManagerUserAgreementFile = "/etc/abroot/ABPkgManager.userAgreement"
+	DryRunPackagesBaseDir       = "/tmp/abroot"
+	PackagesAddFile             = "packages.add"
+	PackagesRemoveFile          = "packages.remove"
+	PackagesUnstagedFile        = "packages.unstaged"
 )
 
+// Package manager operations
 const (
 	ADD    = "+"
 	REMOVE = "-"
 )
+
+// Package manager statuses
+const (
+	PKG_MNG_DISABLED      = 0
+	PKG_MNG_ENABLED       = 1
+	PKG_MNG_REQ_AGREEMENT = 2
+)
+
+// ABRootPkgManagerStatus represents the status of the package manager
+// in the ABRoot configuration file
+type ABRootPkgManagerStatus int
 
 // An unstaged package is a package that is waiting to be applied
 // to the next root.
@@ -110,12 +126,31 @@ func NewPackageManager(dryRun bool) *PackageManager {
 		}
 	}
 
-	return &PackageManager{dryRun, baseDir}
+	// here we convert settings.Cnf.IPkgMngStatus to an ABRootPkgManagerStatus
+	// for easier understanding in the code
+	var status ABRootPkgManagerStatus
+	switch settings.Cnf.IPkgMngStatus {
+	case PKG_MNG_REQ_AGREEMENT:
+		status = PKG_MNG_REQ_AGREEMENT
+	case PKG_MNG_ENABLED:
+		status = PKG_MNG_ENABLED
+	default:
+		status = PKG_MNG_DISABLED
+	}
+
+	return &PackageManager{dryRun, baseDir, status}
 }
 
 // Add adds a package to the packages.add file
 func (p *PackageManager) Add(pkg string) error {
 	PrintVerboseInfo("PackageManager.Add", "running...")
+
+	// Check for package manager status and user agreement
+	err := p.CheckStatus()
+	if err != nil {
+		PrintVerboseErr("PackageManager.Add", 0, err)
+		return err
+	}
 
 	// Check if package was removed before
 	packageWasRemoved := false
@@ -188,6 +223,13 @@ func (p *PackageManager) Add(pkg string) error {
 // Remove removes a package from the packages.add file
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerboseInfo("PackageManager.Remove", "running...")
+
+	// Check for package manager status and user agreement
+	err := p.CheckStatus()
+	if err != nil {
+		PrintVerboseErr("PackageManager.Add", 0, err)
+		return err
+	}
 
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
@@ -598,4 +640,69 @@ func GetRepoContentsForPkg(pkg string) (map[string]interface{}, error) {
 	}
 
 	return pkgInfo, nil
+}
+
+// AcceptUserAgreement sets the package manager status to enabled
+func (p *PackageManager) AcceptUserAgreement() error {
+	PrintVerboseInfo("PackageManager.AcceptUserAgreement", "running...")
+
+	if p.Status != PKG_MNG_REQ_AGREEMENT {
+		PrintVerboseInfo("PackageManager.AcceptUserAgreement", "package manager is not in agreement mode")
+		return nil
+	}
+
+	err := os.WriteFile(
+		PkgManagerUserAgreementFile,
+		[]byte(time.Now().String()),
+		0644,
+	)
+	if err != nil {
+		PrintVerboseErr("PackageManager.AcceptUserAgreement", 0, err)
+		return err
+	}
+
+	return nil
+}
+
+// GetUserAgreementStatus returns if the user has accepted the package manager
+// agreement or not
+func (p *PackageManager) GetUserAgreementStatus() bool {
+	PrintVerboseInfo("PackageManager.GetUserAgreementStatus", "running...")
+
+	if p.Status != PKG_MNG_REQ_AGREEMENT {
+		PrintVerboseInfo("PackageManager.GetUserAgreementStatus", "package manager is not in agreement mode")
+		return true
+	}
+
+	_, err := os.Stat(PkgManagerUserAgreementFile)
+	if err != nil {
+		PrintVerboseInfo("PackageManager.GetUserAgreementStatus", "user has not accepted the agreement")
+		return false
+	}
+
+	PrintVerboseInfo("PackageManager.GetUserAgreementStatus", "user has accepted the agreement")
+	return true
+}
+
+// CheckStatus checks if the package manager is enabled or not
+func (p *PackageManager) CheckStatus() error {
+	PrintVerboseInfo("PackageManager.CheckStatus", "running...")
+
+	// Check if package manager is enabled
+	if p.Status == PKG_MNG_DISABLED {
+		PrintVerboseInfo("PackageManager.CheckStatus", "package manager is disabled")
+		return nil
+	}
+
+	// Check if user has accepted the package manager agreement
+	if p.Status == PKG_MNG_REQ_AGREEMENT {
+		if !p.GetUserAgreementStatus() {
+			PrintVerboseInfo("PackageManager.CheckStatus", "package manager agreement not accepted")
+			err := errors.New("package manager agreement not accepted")
+			return err
+		}
+	}
+
+	PrintVerboseInfo("PackageManager.CheckStatus", "package manager is enabled")
+	return nil
 }
