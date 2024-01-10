@@ -1041,14 +1041,14 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			if grub.FutureRoot == "a" {
 				replacerPairs = []string{
 					"default=1", "default=0",
-					"A (previous)", "A (current)",
-					"B (current)", "B (previous)",
+					"Previous State (A)", "Current State (A)",
+					"Current State (B)", "Previous State (B)",
 				}
 			} else {
 				replacerPairs = []string{
 					"default=0", "default=1",
-					"A (current)", "A (previous)",
-					"B (previous)", "B (current)",
+					"Current State (A)", "Previous State (A)",
+					"Pervious State (B)", "Current State (B)",
 				}
 			}
 
