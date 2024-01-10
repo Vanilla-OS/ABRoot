@@ -367,7 +367,7 @@ UUID=%s  /  %s  defaults  0  0
 	if s.RootM.VarPartition.IsDevMapper() {
 		varSource = fmt.Sprintf("/dev/mapper/%s", s.RootM.VarPartition.Device)
 	} else {
-		varSource = fmt.Sprintf("-U %s", s.RootM.VarPartition.Uuid)
+		varSource = fmt.Sprintf("UUID=%s", s.RootM.VarPartition.Uuid)
 	}
 
 	fstab := fmt.Sprintf(
