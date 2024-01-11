@@ -47,6 +47,7 @@ type Config struct {
     IPkgMngAdd  string `json:"iPkgMngAdd"`
     IPkgMngRm   string `json:"iPkgMngRm"`
     IPkgMngApi  string `json:"iPkgMngApi"`
+    IPkgMngStatus string `json:"iPkgMngStatus"`
 
     // Package diff API (Differ)
     DifferURL string `json:"differURL"`
