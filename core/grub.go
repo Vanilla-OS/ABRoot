@@ -144,15 +144,15 @@ func NewGrub(bootPart Partition) (*Grub, error) {
 
 	for _, entry := range strings.Split(string(cfg), "\n") {
 		if strings.Contains(entry, "abroot-a") {
-			if strings.Contains(entry, "(current)") {
+			if strings.Contains(entry, "Current State") {
 				presentRoot = "a"
-			} else if strings.Contains(entry, "(previous)") {
+			} else if strings.Contains(entry, "Previous State") {
 				futureRoot = "a"
 			}
 		} else if strings.Contains(entry, "abroot-b") {
-			if strings.Contains(entry, "(current)") {
+			if strings.Contains(entry, "Current State") {
 				presentRoot = "b"
-			} else if strings.Contains(entry, "(previous)") {
+			} else if strings.Contains(entry, "Previous State") {
 				futureRoot = "b"
 			}
 		}
