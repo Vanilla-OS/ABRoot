@@ -1048,7 +1048,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 				replacerPairs = []string{
 					"default=0", "default=1",
 					"Current State (A)", "Previous State (A)",
-					"Pervious State (B)", "Current State (B)",
+					"Previous State (B)", "Current State (B)",
 				}
 			}
 
