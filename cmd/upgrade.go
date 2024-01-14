@@ -184,6 +184,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		operation = core.UPGRADE
 	}
 
+	cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
 	err = aBsys.RunOperation(operation)
 	if err != nil {
 		if err == core.ErrNoUpdate {
