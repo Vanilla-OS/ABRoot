@@ -308,10 +308,14 @@ func (s *ABSystem) RunCleanUpQueue(fnName string) error {
 			}
 		case "clearUnstagedPackages":
 			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing clearUnstagedPackages")
-			pkgM := NewPackageManager(false)
-			err := pkgM.ClearUnstagedPackages()
+			pkgM, err := NewPackageManager(false)
 			if err != nil {
 				PrintVerboseErr("ABSystem.RunCleanUpQueue", 6, err)
+				return err
+			}
+			err = pkgM.ClearUnstagedPackages()
+			if err != nil {
+				PrintVerboseErr("ABSystem.RunCleanUpQueue", 6.1, err)
 				return err
 			}
 		}
@@ -649,7 +653,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		"ABRoot.root": futurePartition.Label,
 	}
 	args := map[string]string{}
-	pkgM := NewPackageManager(false)
+	pkgM, err := NewPackageManager(false)
+	if err != nil {
+		PrintVerboseErr("ABSystemRunOperation", 3.2, err)
+		return err
+	}
+
 	pkgsFinal := pkgM.GetFinalCmd(operation)
 	if pkgsFinal == "" {
 		pkgsFinal = "true"
@@ -661,12 +670,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	case APPLY, DRY_RUN_APPLY, INITRAMFS, DRY_RUN_INITRAMFS:
 		presentPartition, err := s.RootM.GetPresent()
 		if err != nil {
-			PrintVerboseErr("ABSystemRunOperation", 3.2, err)
+			PrintVerboseErr("ABSystemRunOperation", 3.3, err)
 			return err
 		}
 		imageName, err = RetrieveImageForRoot(presentPartition.Label)
 		if err != nil {
-			PrintVerboseErr("ABSystemRunOperation", 3.3, err)
+			PrintVerboseErr("ABSystemRunOperation", 3.4, err)
 			return err
 		}
 		// Handle case where an image for the current root may not exist
@@ -686,7 +695,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	default:
 		err = DeleteImageForRoot(futurePartition.Label)
 		if err != nil {
-			PrintVerboseErr("ABSystemRunOperation", 3.4, err)
+			PrintVerboseErr("ABSystemRunOperation", 3.5, err)
 			return err
 		}
 	}

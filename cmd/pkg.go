@@ -74,7 +74,11 @@ func pkg(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	pkgM := core.NewPackageManager(false)
+	pkgM, err := core.NewPackageManager(false)
+	if err != nil {
+		cmdr.Error.Println(abroot.Trans("pkg.failedGettingPkgManagerInstance", err))
+		return err
+	}
 
 	// Check for user agreement, here we could simply call the CheckStatus
 	// function which also checks if the package manager is enabled or not

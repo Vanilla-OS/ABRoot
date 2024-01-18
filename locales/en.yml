@@ -30,6 +30,7 @@ pkg:
   long: "Install and manage packages."
   short: "Manage packages"
   rootRequired: "You must be root to run this command."
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noPackageNameProvided: "You must provide at least one package name for this operation."
   addedMsg: "Package(s) %s added.\n"
   applyFailed: "Apply command failed: %s\n"

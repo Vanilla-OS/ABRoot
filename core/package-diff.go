@@ -90,7 +90,12 @@ func OverlayPackageDiff() (
 ) {
 	PrintVerboseInfo("OverlayPackageDiff", "running...")
 
-	pkgM := NewPackageManager(false)
+	pkgM, err := NewPackageManager(false)
+	if err != nil {
+		PrintVerboseErr("OverlayPackageDiff", 0, err)
+		return
+	}
+
 	addedPkgs, err := pkgM.GetAddPackages()
 	if err != nil {
 		PrintVerboseErr("PackageDiff.OverlayPackageDiff", 0, err)

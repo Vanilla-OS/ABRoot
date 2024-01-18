@@ -73,7 +73,7 @@ type UnstagedPackage struct {
 }
 
 // NewPackageManager returns a new PackageManager struct
-func NewPackageManager(dryRun bool) *PackageManager {
+func NewPackageManager(dryRun bool) (*PackageManager, error) {
 	PrintVerboseInfo("PackageManager.NewPackageManager", "running...")
 
 	baseDir := PackagesBaseDir
@@ -84,7 +84,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 	err := os.MkdirAll(baseDir, 0755)
 	if err != nil {
 		PrintVerboseErr("PackageManager.NewPackageManager", 0, err)
-		panic(err)
+		return nil, err
 	}
 
 	_, err = os.Stat(filepath.Join(baseDir, PackagesAddFile))
@@ -96,7 +96,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 1, err)
-			panic(err)
+			return nil, err
 		}
 	}
 
@@ -109,7 +109,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 2, err)
-			panic(err)
+			return nil, err
 		}
 	}
 
@@ -122,7 +122,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 3, err)
-			panic(err)
+			return nil, err
 		}
 	}
 
@@ -138,7 +138,7 @@ func NewPackageManager(dryRun bool) *PackageManager {
 		status = PKG_MNG_DISABLED
 	}
 
-	return &PackageManager{dryRun, baseDir, status}
+	return &PackageManager{dryRun, baseDir, status}, nil
 }
 
 // Add adds a package to the packages.add file

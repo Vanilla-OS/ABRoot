@@ -10,11 +10,14 @@ import (
 )
 
 func TestPackageManager(t *testing.T) {
-	pm := core.NewPackageManager(true)
+	pm, err := core.NewPackageManager(true)
+	if err != nil {
+		t.Error(err)
+	}
 
 	// Add a package
 	pkg := "bash htop"
-	err := pm.Add(pkg)
+	err = pm.Add(pkg)
 	if err != nil {
 		t.Error(err)
 	}

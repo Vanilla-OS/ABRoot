@@ -97,7 +97,10 @@ func status(cmd *cobra.Command, args []string) error {
 	}
 
 	pkgMngAgreementStatus := false
-	pkgMng := core.NewPackageManager(false)
+	pkgMng, err := core.NewPackageManager(false)
+	if err != nil {
+		return err
+	}
 	if pkgMng.Status == core.PKG_MNG_REQ_AGREEMENT {
 		err = pkgMng.CheckStatus()
 		pkgMngAgreementStatus = err == nil
