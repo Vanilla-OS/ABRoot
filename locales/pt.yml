@@ -19,8 +19,8 @@ rollback:
     root."
   short: "Retornar o sistema para um estado anterior"
   rootRequired: "Tens que ser root para executar este comando."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
+  rollbackFailed: "Rollback falhou: %s\n"
+  rollbackSuccess: Rollback completo com sucesso
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
   canRollback: It is possible to rollback to the previous root.
