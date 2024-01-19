@@ -22,6 +22,8 @@ rollback:
   rollbackFailed: "Error de reversión: %s\n"
   rollbackSuccess: La reversión se completó con éxito.
   rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   use: pkg
   rootRequired: Debes ser root para ejecutar este comando.

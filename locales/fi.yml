@@ -22,6 +22,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 status:
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:

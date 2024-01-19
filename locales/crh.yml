@@ -22,6 +22,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 upgrade:
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them

@@ -39,6 +39,7 @@ status:
   unstagedFoundMsg: "\n\t\tDet finns %d oscensatta paket. Vänligen kör 'abroot pkg
     apply' för att tillämpa dem."
   dumpMsg: "Dumpade ABRoot-status till %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 pkg:
   use: pkg
   long: Installera och hantera paket.
@@ -50,6 +51,15 @@ pkg:
   removedMsg: "Paket(en) %s har tagits bort.\n"
   listMsg: "Tillagda paket:\n%s\nBorttagna paket:\n%s\n"
   dryRunFlag: genomför en torrkörning av operationen
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 upgrade:
   use: upgrade
   long: Sök efter en ny systemavbildning och använd den.

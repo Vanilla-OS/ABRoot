@@ -22,6 +22,8 @@ rollback:
   rollbackFailed: "O Rollback falhou: %s\n"
   rollbackSuccess: Rollback concluído com sucesso.
   rollbackUnnecessary: O Rollback não é necessário, o root atual já é o utilizado.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -34,6 +36,15 @@ pkg:
   applyFailed: "Falha ao aplicar comando: %s\n"
   removedMsg: "Pacote(s) %s removido(s).\n"
   dryRunFlag: executar um teste da operação
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
@@ -49,6 +60,7 @@ status:
     %s\n\nABImage:\n  - Síntese: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
     do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Removidos: %s\n  - Não preparados:
     %s%s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Verifique se há uma nova imagem do sistema e aplique-a.

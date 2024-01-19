@@ -23,6 +23,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   noPackageNameProvided: Anda harus memberikan setidaknya satu nama paket untuk operasi
     ini.

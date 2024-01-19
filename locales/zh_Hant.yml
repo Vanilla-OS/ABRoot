@@ -20,6 +20,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 個軟體包尚未套用變更。請執行 'abroot pkg apply' 套用變更。"

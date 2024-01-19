@@ -22,6 +22,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"

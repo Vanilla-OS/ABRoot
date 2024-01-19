@@ -20,6 +20,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   applyFailed: "应用命令失败：%s\n"
   removedMsg: "已移除软件包 %s。\n"
