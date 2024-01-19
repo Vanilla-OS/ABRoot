@@ -30,7 +30,7 @@ pkg:
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Falha ao aplicar comando: %s\n"
   removedMsg: "Pacote(s) %s removido(s).\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: executar um teste da operação
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
@@ -53,15 +53,15 @@ upgrade:
   short: Atualizar a partição de inicialização
   forceFlag: forçar a atualização da partição de inicialização sem pedir confirmação
   rootRequired: Você deve ser um administrador (root) para executar este comando.
-  noUpdateAvailable: Nenhuma atualização está disponível para o seu sistema.
+  noUpdateAvailable: Nenhuma atualização disponível.
   checkOnlyFlag: verificar se há atualizações, mas não aplicá-las
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Removido
+  downgraded: Desatualizado
+  packageUpdateAvailable: Há %d atualizações de pacote.
+  systemUpdateAvailable: Há uma atualização para o seu sistema.
+  upgraded: Atualizado
+  added: Adicionado
+  checkingPackageUpdate: Checando por atualizações de pacotes...
+  checkingSystemUpdate: Checando por atualizações do sistema...
+  dryRunFlag: executar um teste da operação
+  dryRunSuccess: Teste concluído com sucesso.
