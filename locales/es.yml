@@ -19,10 +19,9 @@ rollback:
     la raíz actual."
   short: "Devolver el sistema a un estado anterior"
   rootRequired: "Debes ser root para ejecutar este comando."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackFailed: "Error de reversión: %s\n"
+  rollbackSuccess: La reversión se completó con éxito.
+  rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
 pkg:
   use: pkg
   rootRequired: Debes ser root para ejecutar este comando.
@@ -68,7 +67,7 @@ upgrade:
   checkingSystemUpdate: Buscando actualizaciones del sistema...
   dryRunFlag: realizar un simulacro de la operación
   dryRunSuccess: Prueba completada con éxito.
-  success: Upgrade completed successfully.
+  success: Actualización completada con éxito.
 updateInitramfs:
   short: Actualizar el initramfs
   updateFailed: "Error al actualizar el initramfs de la futura raíz.\n"
