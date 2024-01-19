@@ -19,6 +19,10 @@ rollback:
     rooten."
   short: "Återställ systemet till ett tidigare tillstånd"
   rootRequired: "Du måste vara root för att köra detta kommando."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 status:
   long: Visa nuvarande ABRoot-status.
   short: Visa status
@@ -62,3 +66,11 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: genomför en torrkörning av operationen
   dryRunSuccess: Torrkörningen slutfördes framgångsrikt.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

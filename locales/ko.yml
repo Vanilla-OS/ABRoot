@@ -58,3 +58,10 @@ upgrade:
   checkingSystemUpdate: 시스템 업데이트 확인중...
   dryRunFlag: 작업의 시뮬레이션을 실행하세요.
   dryRunSuccess: 시뮬레이션이 성공적으로 완료되었습니다.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

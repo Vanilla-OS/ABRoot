@@ -18,6 +18,10 @@ rollback:
   long: "Выполнить \"system rollback\", отменив все изменения в текущем корневом разделе."
   short: "Вернуть систему в предыдущее состояние"
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
@@ -62,3 +66,11 @@ upgrade:
   checkingSystemUpdate: Проверка обновлений системы…
   dryRunFlag: выполнить пробный запуск операции
   dryRunSuccess: Пробный запуск успешно завершен.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

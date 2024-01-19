@@ -19,6 +19,10 @@ rollback:
     werden."
   short: "Versetzt das System in einen früheren Zustand"
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -50,6 +54,7 @@ upgrade:
   checkingSystemUpdate: Nach Systemaktualisierung suchen...
   dryRunFlag: Führe einen Probedurchlauf aus
   dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
+  success: Upgrade completed successfully.
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
@@ -64,3 +69,10 @@ status:
     %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
     %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

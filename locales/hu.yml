@@ -19,6 +19,10 @@ rollback:
     elvetésével."
   short: "Visszaállítja a rendszert egy korábbi állapotra."
   rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 upgrade:
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
@@ -37,6 +41,7 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
 pkg:
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
@@ -62,3 +67,10 @@ status:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
     %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

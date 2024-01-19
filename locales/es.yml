@@ -66,3 +66,10 @@ upgrade:
   checkingSystemUpdate: Buscando actualizaciones del sistema...
   dryRunFlag: realizar un simulacro de la operación
   dryRunSuccess: Prueba completada con éxito.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

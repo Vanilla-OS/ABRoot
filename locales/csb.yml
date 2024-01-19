@@ -61,3 +61,10 @@ status:
   use: status
   long: Display the current ABRoot status.
   dumpMsg: "Dumped ABRoot status to %s\n"
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs
