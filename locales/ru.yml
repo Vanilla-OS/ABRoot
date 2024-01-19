@@ -34,15 +34,16 @@ pkg:
   removedMsg: "Пакетов удалено: %s.\n"
   listMsg: "Пакетов добавлено:\n%s\nИ удалено:\n%s\n"
   dryRunFlag: выполнить пробный запуск операции
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  agreementDeclined: Вы отказались от соглашения. Функция будет отключена до тех пор,
+    пока вы не согласитесь на неё.
+  agreementMsg: "Для использования команды ABRoot «abroot pkg» требуется явное согласие
+    пользователя. Эта команда облегчает установку пакетов, но вносит недетерминированные
+    элементы, влияющие на надежность системы. Соглашаясь, вы признаете и принимаете
+    эти последствия, подтверждая свою осведомленность о потенциальном влиянии команды
+    на поведение системы. [д/Н]: "
+  agreementSignFailed: "Не удалось подписать соглашение: %s\n"
+  forceEnableUserAgreementFlag: принудительное включение пользовательского соглашения,
+    для встраиваемых систем
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
@@ -58,7 +59,7 @@ status:
     %s%s\n"
   unstagedFoundMsg: "\n\t\tЕсть %d неиндексированных пакетов. Используйте 'abroot
     pkg apply' чтобы применить их."
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\nПакетное соглашение: %t"
 upgrade:
   use: upgrade
   long: Проверить наличие нового образа системы и применить его.
