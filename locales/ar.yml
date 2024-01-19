@@ -4,26 +4,26 @@ abroot:
     between 2 root partitions (A<->B)"
   short: "ABRoot provides full immutability and atomicity by performing transactions
     between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "إظهار إخراج أكثر تفصيلاً"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "إدارة معلمات kernel."
+  short: "إدارة معلمات kernel."
+  rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
+  notChanged: لم يتم التعديل في معلمات النواة
+  applyFailed: "فشل تطبيق الأمر: %s\n"
 rollback:
-  use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
+  use: "تراجع"
+  long: "ينفذ تراجعًا عن النظام ، متجاهلًا التغييرات التي تم إجراؤها على الجذر الحالي."
+  short: "إعادة النظام إلى حالته السابقة."
+  rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
+  rollbackFailed: "فشل التراجع: %s\n"
+  rollbackSuccess: تم التراجع بنجاح.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  canRollback: يمكن التراجع للجذر السابق.
+  cannotRollback: لا يمكن التراجع للجذر السابق.
 status:
   use: status
   dumpMsg: "Dumped ABRoot status to %s\n"
@@ -40,11 +40,11 @@ status:
     apply' to apply them."
 pkg:
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
+  long: تثبيت و أدارة الحزم.
+  short: إدارة الحزم
+  rootRequired: يجب أن تكون مستخدم الجزر لتشغيل هذا الأمر.
   noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
+  addedMsg: "أضيفت حزم(ة) %s.\n"
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
