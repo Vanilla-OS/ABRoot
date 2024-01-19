@@ -19,10 +19,10 @@ rollback:
     rooten."
   short: "Återställ systemet till ett tidigare tillstånd"
   rootRequired: "Du måste vara root för att köra detta kommando."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackFailed: "Tillbaka rullning misslyckades: %s\n"
+  rollbackSuccess: Tillbaka rullning slutförts framgångsrikt.
+  rollbackUnnecessary: Tillbaka rullning är inte nödvändig, nuvarande root är redan
+    den nuvarande.
 status:
   long: Visa nuvarande ABRoot-status.
   short: Visa status
@@ -50,9 +50,9 @@ pkg:
   dryRunFlag: genomför en torrkörning av operationen
 upgrade:
   use: upgrade
-  long: Uppdatera startpartitionen för underhållsändamål (endast för avancerade användare)
-  short: Uppdatera startpartitionen
-  forceFlag: tvinga uppdatering av startpartitionen utan att be om bekräftelse
+  long: Sök efter en ny systemavbildning och använd den.
+  short: Uppgradera systemet
+  forceFlag: framtvinga uppdatering även om systemet är uppdaterat
   rootRequired: Du måste vara root för att köra detta kommando.
   noUpdateAvailable: Ingen uppdatering är tillgänglig för ditt system.
   checkOnlyFlag: leta efter uppdateringar men tillämpa dem inte
@@ -66,11 +66,11 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: genomför en torrkörning av operationen
   dryRunSuccess: Torrkörningen slutfördes framgångsrikt.
-  success: Upgrade completed successfully.
+  success: Uppgradering slutförts framgångsrikt.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Uppdatera initramfs
+  updateFailed: "Misslyckades att uppdatera initramfs för framtida root.\n"
+  rootRequired: Du måste vara root för att köra detta kommando.
+  updateSuccess: Uppdaterade initramfs för framtida root.
+  long: Uppdatera initramfs för framtida root.
   use: update-initramfs
