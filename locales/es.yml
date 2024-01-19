@@ -30,7 +30,7 @@ pkg:
   applyFailed: "Error al aplicar el comando: %s\n"
   removedMsg: "%s Paquete(s) eliminado(s).\n"
   listMsg: "Paquetes añadidos:\n%s\nPaquetes eliminados:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: realizar un simulacro de la operación
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin preparar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."
@@ -54,15 +54,15 @@ upgrade:
   forceFlag: forzar la actualización de la partición de arranque sin pedir ninguna
     autorización
   rootRequired: Debes ser root para ejecutar este comando.
-  noUpdateAvailable: No hay ninguna actualización disponible para tu sistema.
+  noUpdateAvailable: No hay actualizaciones disponibles.
   checkOnlyFlag: buscar las actualizaciones pero no aplicarlas
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Eliminado
+  downgraded: Degradado
+  packageUpdateAvailable: Hay %d actualizaciones de paquetes.
+  systemUpdateAvailable: Hay una actualización para su sistema.
+  upgraded: Actualizado
+  added: Añadido
+  checkingPackageUpdate: Buscando actualizaciones de los paquetes...
+  checkingSystemUpdate: Buscando actualizaciones del sistema...
+  dryRunFlag: realizar un simulacro de la operación
+  dryRunSuccess: Prueba completada con éxito.
