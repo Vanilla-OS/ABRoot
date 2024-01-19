@@ -30,7 +30,7 @@ pkg:
     zur Verfügung stellen.
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: Führe einen Probedurchlauf aus
 upgrade:
   long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
     Benutzer)
@@ -38,18 +38,18 @@ upgrade:
   forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   use: upgrade
-  noUpdateAvailable: Für Ihr System ist kein Update verfügbar.
+  noUpdateAvailable: Kein Aktualisierung verfügbar.
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Entfernt
+  downgraded: Herabgestuft
+  packageUpdateAvailable: Es sind %d Paketaktualisierungen verfügbar
+  systemUpdateAvailable: Eine Systemaktualisierung ist verfügbar
+  upgraded: Aktualisiert
+  added: Hinzugefügt
+  checkingPackageUpdate: Nach Paketaktualisierung suchen...
+  checkingSystemUpdate: Nach Systemaktualisierung suchen...
+  dryRunFlag: Führe einen Probedurchlauf aus
+  dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
