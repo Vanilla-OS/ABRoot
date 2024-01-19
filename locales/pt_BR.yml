@@ -19,10 +19,9 @@ rollback:
     atual."
   short: "Retorna o sistema a um estado anterior"
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackFailed: "O Rollback falhou: %s\n"
+  rollbackSuccess: Rollback concluído com sucesso.
+  rollbackUnnecessary: O Rollback não é necessário, o root atual já é o utilizado.
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -52,8 +51,7 @@ status:
     %s%s\n"
 upgrade:
   use: upgrade
-  long: Atualizar a partição de inicialização para fins de manutenção (somente para
-    usuários avançados)
+  long: Verifique se há uma nova imagem do sistema e aplique-a.
   short: Atualizar a partição de inicialização
   forceFlag: forçar a atualização da partição de inicialização sem pedir confirmação
   rootRequired: Você deve ser um administrador (root) para executar este comando.
@@ -69,11 +67,11 @@ upgrade:
   checkingSystemUpdate: Checando por atualizações do sistema...
   dryRunFlag: executar um teste da operação
   dryRunSuccess: Teste concluído com sucesso.
-  success: Upgrade completed successfully.
+  success: Atualização concluída com sucesso.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Atualize o initramfs
+  updateFailed: "Falha ao atualizar o initramfs do root futuro.\n"
+  rootRequired: Você deve ser root para executar este comando.
+  updateSuccess: Atualizado o Initramfs do root futuro.
+  long: Atualize o initramfs do root futuro.
   use: update-initramfs
