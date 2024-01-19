@@ -61,7 +61,8 @@ pkg:
   agreementSignFailed: "Misslyckades med att signera avtalet: %s\n"
   forceEnableUserAgreementFlag: tvinga aktiverande av användaravtal, för inbyggda
     system
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  failedGettingPkgManagerInstance: "Misslyckades att hämta pakethanterar instans:
+    %s\n"
 upgrade:
   use: upgrade
   long: Sök efter en ny systemavbildning och använd den.
