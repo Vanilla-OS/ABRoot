@@ -19,6 +19,10 @@ rollback:
     verwijderd"
   short: "Systeem terugbrengen naar vorige toestand"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 pkg:
   long: Installeer en beheer pakketten
   addedMsg: "Pakketten %s toegevoegd\n"
@@ -63,6 +67,7 @@ upgrade:
   checkingSystemUpdate: Controleren op systeemupdates…
   dryRunFlag: uitvoering van handeling testen
   dryRunSuccess: Testuitvoering succesvol voltooid
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Initramfs bijwerken
   updateFailed: "Kon initramfs van toekomstige root niet bijwerken.\n"

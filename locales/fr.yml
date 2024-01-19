@@ -19,6 +19,10 @@ rollback:
     à la racine actuelle."
   short: "Retour à un état antérieur du système"
   rootRequired: "Vous devez être root pour exécuter cette commande."
+  rollbackFailed: "Rollback failed : %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 status:
   use: status
   long: Affiche l'état actuel d'ABRoot.
@@ -64,6 +68,7 @@ upgrade:
   checkingSystemUpdate: Vérification des mises à jour du système...
   dryRunFlag: effectuer un lancement à sec de l'opération
   dryRunSuccess: Le lancement à sec s’est terminé avec succès.
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

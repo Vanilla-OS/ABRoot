@@ -16,6 +16,10 @@ rollback:
   long: "執行系統復原，捨棄對目前 Root 分割區的變更。"
   short: "將系統復原到先前的狀態"
   rootRequired: "您必須是 root 使用者才能執行此命令。"
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 個軟體包尚未套用變更。請執行 'abroot pkg apply' 套用變更。"
@@ -57,6 +61,7 @@ upgrade:
   checkingSystemUpdate: 正在檢查系統更新…
   dryRunFlag: 為操作執行事先嘗試（dry run）
   dryRunSuccess: 事先嘗試（dry run）成功完成。
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

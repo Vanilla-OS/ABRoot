@@ -19,6 +19,10 @@ rollback:
     განხორციელებულ ცვლილებებს."
   short: "სისტემის დაბრუნება წინა მდგომარეობაში"
   rootRequired: "ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 status:
   use: status
   rootRequired: You must be root to run this command.
@@ -62,6 +66,7 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

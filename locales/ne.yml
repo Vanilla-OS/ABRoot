@@ -18,6 +18,10 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state."
   rootRequired: "You must be root to run this command."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 pkg:
   short: Manage packages
   use: pkg
@@ -61,6 +65,7 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

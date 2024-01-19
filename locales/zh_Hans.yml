@@ -16,6 +16,10 @@ rollback:
   long: "执行系统回滚，丢弃对当前根分区的修改。"
   short: "将系统恢复到先前的状态"
   rootRequired: "必须是 root 用户才能运行此命令。"
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
 pkg:
   applyFailed: "应用命令失败：%s\n"
   removedMsg: "已移除软件包 %s。\n"
@@ -57,6 +61,7 @@ upgrade:
   checkingSystemUpdate: 正在检查系统更新…
   dryRunFlag: 为操作执行试运行（dry run）
   dryRunSuccess: 试运行成功完成。
+  success: Upgrade completed successfully.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

@@ -22,6 +22,8 @@ rollback:
   rollbackSuccess: Rollback completed successfully.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
+  cannotRollback: It is not possible to rollback to the previous root.
+  canRollback: It is possible to rollback to the previous root.
 status:
   dumpFlag: Dump the ABRoot status to an archive
   use: status
