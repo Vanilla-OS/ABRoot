@@ -19,10 +19,9 @@ rollback:
     werden."
   short: "Versetzt das System in einen früheren Zustand"
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackFailed: ""
+  rollbackSuccess: ''
+  rollbackUnnecessary: ''
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
 pkg:
