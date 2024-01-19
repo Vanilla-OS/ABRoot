@@ -12,7 +12,7 @@ kargs:
   short: "Kernel-parameters beheren"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
   notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  applyFailed: "Toepasopdracht mislukt: %s\n"
 rollback:
   use: "rollback"
   long: "Voert een systeem-rollback uit, waarbij wijzigingen in de huidige root worden
@@ -20,12 +20,12 @@ rollback:
   short: "Systeem terugbrengen naar vorige toestand"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
 pkg:
-  long: Install and manage packages.
-  addedMsg: "Package(s) %s added.\n"
+  long: Installeer en beheer pakketten
+  addedMsg: "Pakketten %s toegevoegd\n"
   short: Pakketten beheren
   rootRequired: You must be root to run this command.
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
+  applyFailed: "Toepasopdracht mislukt: %s\n"
+  removedMsg: "Pakketten %s verwijderd\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
   use: pkg
   noPackageNameProvided: You must provide at least one package name for this operation.
@@ -47,18 +47,18 @@ status:
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
+  short: Opstartpartitie bijwerken
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
-  noUpdateAvailable: No update is available for your system.
+  noUpdateAvailable: Geen updates beschikbaar
   checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
+  removed: Verwijderd
+  downgraded: Teruggezet
   packageUpdateAvailable: There are %d package updates.
   systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
+  upgraded: Bijgewerkt
+  added: Toegevoegd
+  checkingPackageUpdate: Controleren op pakketupdates…
+  checkingSystemUpdate: Controleren op systeemupdates…
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
