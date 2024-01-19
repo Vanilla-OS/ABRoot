@@ -48,11 +48,9 @@ status:
   dumpMsg: "El estado del ABRoot fue volcado a %s\n"
 upgrade:
   use: upgrade
-  long: Actualizar la partición de arranque con fines de mantenimiento (sólo para
-    usuarios avanzados)
-  short: Actualizar la partición de arranque
-  forceFlag: forzar la actualización de la partición de arranque sin pedir ninguna
-    autorización
+  long: Busca una nueva imagen del sistema y aplícala.
+  short: Actualizar el sistema
+  forceFlag: forzar la actualización aunque el sistema esté actualizado
   rootRequired: Debes ser root para ejecutar este comando.
   noUpdateAvailable: No hay actualizaciones disponibles.
   checkOnlyFlag: buscar las actualizaciones pero no aplicarlas
@@ -67,9 +65,9 @@ upgrade:
   dryRunFlag: realizar un simulacro de la operación
   dryRunSuccess: Prueba completada con éxito.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Actualizar el initramfs
+  updateFailed: "Error al actualizar el initramfs de la futura raíz.\n"
+  rootRequired: Debes ser root para ejecutar este comando.
+  updateSuccess: Actualizado el initramfs del futuro root.
+  long: Actualiza el initramfs de la futura raíz.
   use: update-initramfs
