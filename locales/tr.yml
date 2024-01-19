@@ -11,31 +11,31 @@ kargs:
   long: "Çekirdek parametrelerini yönetin."
   short: "Çekirdek parametrelerini yönetin."
   rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  notChanged: Çekirdek parametrelerinde herhangi bir değişiklik yapılmadı.
+  applyFailed: "Komut uygulanamadı: %s\n"
 rollback:
   use: "rollback"
   long: "Mevcut kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
   short: "Sistemi önceki duruma döndür."
   rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
 pkg:
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  listMsg: "Eklenen paketler:\n%s\nKaldırılan paketler:\n%s\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
+  long: Paketleri yükleyin ve yönetin
+  short: Paketleri yönet
+  rootRequired: Bu komutu çalıştırmak için root olmanız gerekir.
+  noPackageNameProvided: Bu işlem için en az bir paket adı sağlamalısınız.
+  addedMsg: "Paket(ler) %s eklendi.\n"
+  applyFailed: "Komut uygulanamadı: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   dryRunFlag: perform a dry run of the operation
 status:
-  use: status
-  long: Display the current ABRoot status.
-  rootRequired: You must be root to run this command.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
+  use: durum
+  long: Mevcut ABRoot durumunu görüntüleyin.
+  rootRequired: Bu komutu çalıştırmak için root olmanız gerekir.
+  short: Durumu görüntüle
+  jsonFlag: Çıktıyı JSON formatında göster
+  dumpFlag: ABRoot durumunu bir arşive aktarın
   infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
     %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
     %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
