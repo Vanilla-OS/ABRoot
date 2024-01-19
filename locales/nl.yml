@@ -8,10 +8,10 @@ abroot:
 
 kargs:
   use: "kargs"
-  long: "Kernel-parameters beheren"
+  long: "Beheer kernel-parameters"
   short: "Kernel-parameters beheren"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
-  notChanged: No changes were made to kernel parameters.
+  notChanged: Er zijn geen veranderingen gemaakt aan kernel-parameters.
   applyFailed: "Toepasopdracht mislukt: %s\n"
 rollback:
   use: "rollback"
@@ -23,49 +23,50 @@ pkg:
   long: Installeer en beheer pakketten
   addedMsg: "Pakketten %s toegevoegd\n"
   short: Pakketten beheren
-  rootRequired: You must be root to run this command.
+  rootRequired: U moet root zijn om deze opdracht uit te voeren.
   applyFailed: "Toepasopdracht mislukt: %s\n"
   removedMsg: "Pakketten %s verwijderd\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  listMsg: "Toegevoegde pakketten:\n%s\nVerwijderde pakketten:\n%s\n"
   use: pkg
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  dryRunFlag: perform a dry run of the operation
+  noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze handeling.
+  dryRunFlag: uitvoering van handeling testen
 status:
   use: status
-  long: Display the current ABRoot status.
-  dumpFlag: Dump the ABRoot status to an archive
-  jsonFlag: Show output in JSON format
+  long: Toont de huidige status van ABRoot
+  dumpFlag: Status van ABRoot naar een archief dumpen
+  jsonFlag: Uitvoer in JSON-formaat tonen
   short: Weergave­status
-  rootRequired: You must be root to run this command.
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  rootRequired: U moet root zijn om deze opdracht uit te voeren.
+  infoMsg: "ABRoot-partities:\n  - Huidig: %s ◄\n  - Toekomstig: %s\n\nGelade configuratie:
+    %s\n\nApparaatspecificaties:\n  - CPU: %s\n  - GPU:%s\n  - Geheugen: %s\n\nABImage:\n\
+    \  - Samenvatting: %s\n  - Tijdstempel: %s\n  - Schijfkopiebestand: %s\n\nKernel-argumenten:
+    %s\n\nPakketten:\n  - Toegevoegd: %s\n  - Verwijderd: %s\n  - Niet toegepast:
+    %s%s\n"
+  unstagedFoundMsg: "\n\t\tEr zijn %d niet-toegepaste pakketten. Voer ‘abroot pkg
+    apply’ uit om deze toe te passen."
+  dumpMsg: "Status van ABRoot gedumpt naar %s\n"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Opstartpartitie bijwerken
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
+  long: Controleert op een nieuw systeemkopiebestand en past deze toe.
+  short: Systeem upgraden
+  forceFlag: update forceren, zelfs als het systeem al is bijgewerkt
+  rootRequired: U moet root zijn om deze opdracht uit te voeren.
   noUpdateAvailable: Geen updates beschikbaar
-  checkOnlyFlag: check for updates but do not apply them
+  checkOnlyFlag: op systeem-updates controleren maar deze niet toepassen
   removed: Verwijderd
   downgraded: Teruggezet
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
+  packageUpdateAvailable: Er zijn %d pakket-updates.
+  systemUpdateAvailable: Er is een update voor uw systeem.
   upgraded: Bijgewerkt
   added: Toegevoegd
   checkingPackageUpdate: Controleren op pakketupdates…
   checkingSystemUpdate: Controleren op systeemupdates…
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  dryRunFlag: uitvoering van handeling testen
+  dryRunSuccess: Testuitvoering succesvol voltooid
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Initramfs bijwerken
+  updateFailed: "Kon initramfs van toekomstige root niet bijwerken.\n"
+  rootRequired: U moet root zijn om deze opdracht uit te voeren.
+  updateSuccess: Initramfs van toekomstige root bijgewerkt
+  long: Werkt de initramfs van de toekomstige root bij
   use: update-initramfs
