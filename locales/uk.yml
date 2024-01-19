@@ -37,6 +37,15 @@ pkg:
   listMsg: "Додано пакунків:\n%s\nВидалено пакунків:\n%s\n"
   addedMsg: "Додано пакунків: %s.\n"
   dryRunFlag: perform a dry run of the operation
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   use: status
   long: Показати поточний стан ABRoot.
@@ -52,6 +61,7 @@ status:
   jsonFlag: Показати результат у форматі JSON
   rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   dumpMsg: "Стан ABRoot збережено у %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   short: Оновити завантажувальний розділ

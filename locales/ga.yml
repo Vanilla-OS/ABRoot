@@ -78,6 +78,7 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

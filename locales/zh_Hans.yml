@@ -33,6 +33,15 @@ pkg:
   rootRequired: 必须是 root 用户才能运行此命令。
   addedMsg: "已添加软件包 %s。\n"
   dryRunFlag: 为操作执行试运行（dry run）
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"
@@ -45,6 +54,7 @@ status:
   infoMsg: "ABRoot 分区：\n  - 当前分区：%s ◄\n  - 将来分区：%s\n\n已加载的配置：%s\n\n设备规格：\n  - CPU：%s\n\
     \  - GPU：%s\n  - 内存：%s\n\nABImage：\n  - 散列值：%s\n  - 时间戳：%s\n  - 映像：%s\n\n内核参数：%s\n\
     \n软件包：\n  - 已添加：%s\n  - 已移除：%s\n  - 尚未应用更改：%s%s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: 出于维护目的更新引导分区（仅限高级用户使用）

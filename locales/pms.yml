@@ -35,6 +35,16 @@ pkg:
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
   dryRunFlag: perform a dry run of the operation
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   jsonFlag: Show output in JSON format
   dumpFlag: Dump the ABRoot status to an archive
@@ -49,6 +59,7 @@ status:
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
   dumpMsg: "Dumped ABRoot status to %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)

@@ -33,6 +33,15 @@ pkg:
   removedMsg: "패키지(들) %s가 제거되었습니다.\n"
   listMsg: "추가된 패키지:\n%s\n제거된 패키지:\n%s\n"
   dryRunFlag: 작업의 시뮬레이션을 실행하세요.
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   use: status
   long: 현재 ABRoot 상태를 표시합니다.
@@ -46,6 +55,7 @@ status:
     \  - 이미지: %s\n\n커널 매개변수: %s\n\n패키지:\n  - 추가된 항목: %s\n  - 제거된 항목: %s\n  - 미적용된
     항목: %s%s\n"
   dumpMsg: "ABRoot 상태를 %s에 덤프했습니다.\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다.
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.

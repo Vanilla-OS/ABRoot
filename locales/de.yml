@@ -19,9 +19,10 @@ rollback:
     werden."
   short: "Versetzt das System in einen früheren Zustand"
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
-  rollbackFailed: ""
-  rollbackSuccess: ''
-  rollbackUnnecessary: ''
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: 'Rollback completed successfully.'
+  rollbackUnnecessary: 'Rollback is not necessary, current root is already the present
+    one.'
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
 pkg:
@@ -36,6 +37,16 @@ pkg:
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
   dryRunFlag: Führe einen Probedurchlauf aus
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
     Benutzer)
@@ -70,6 +81,7 @@ status:
     %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
     %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"

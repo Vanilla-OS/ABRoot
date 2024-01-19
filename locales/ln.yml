@@ -44,6 +44,7 @@ pkg:
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation

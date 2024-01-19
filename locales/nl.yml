@@ -36,6 +36,15 @@ pkg:
   use: pkg
   noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze handeling.
   dryRunFlag: uitvoering van handeling testen
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   use: status
   long: Toont de huidige status van ABRoot
@@ -51,6 +60,7 @@ status:
   unstagedFoundMsg: "\n\t\tEr zijn %d niet-toegepaste pakketten. Voer ‘abroot pkg
     apply’ uit om deze toe te passen."
   dumpMsg: "Status van ABRoot gedumpt naar %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Controleert op een nieuw systeemkopiebestand en past deze toe.

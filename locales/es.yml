@@ -36,6 +36,15 @@ pkg:
   removedMsg: "%s Paquete(s) eliminado(s).\n"
   listMsg: "Paquetes añadidos:\n%s\nPaquetes eliminados:\n%s\n"
   dryRunFlag: realizar un simulacro de la operación
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin preparar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."
@@ -51,6 +60,7 @@ status:
     %s\n\nArgumentos del núcleo: %s\n\nPaquetes:\n  - Añadido: %s\n  - Eliminados:
     %s\n  - Desactivado: %s%s\n"
   dumpMsg: "El estado del ABRoot fue volcado a %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Busca una nueva imagen del sistema y aplícala.

@@ -57,6 +57,15 @@ pkg:
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Comando de aplicar falhou: %s\n"
   dryRunFlag: perform a dry run of the operation
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
@@ -72,6 +81,7 @@ status:
   unstagedFoundMsg: "\n\t\tExistem %d pacotes unstaged. Por favor execute 'abroot
     pkg apply' para os aplicar."
   dumpMsg: "Despejar o status do ABRoot para %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"
