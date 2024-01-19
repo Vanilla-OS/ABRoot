@@ -47,6 +47,7 @@ pkg:
     Al dar su consentimiento, reconoce y acepta estas implicaciones, confirmando que
     es consciente del impacto potencial del comando en el comportamiento del sistema.
     [sí/no]: "
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin preparar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."

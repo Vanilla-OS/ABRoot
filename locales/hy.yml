@@ -59,6 +59,7 @@ pkg:
     elements, impacting system trustworthiness. By consenting, you acknowledge and
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.

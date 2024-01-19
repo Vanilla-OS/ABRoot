@@ -44,6 +44,7 @@ pkg:
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   dumpFlag: Dump the ABRoot status to an archive
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg

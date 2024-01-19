@@ -42,6 +42,7 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
   long: 현재 ABRoot 상태를 표시합니다.

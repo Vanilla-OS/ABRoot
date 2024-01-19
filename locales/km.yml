@@ -44,6 +44,7 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)

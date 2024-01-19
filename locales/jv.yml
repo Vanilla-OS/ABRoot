@@ -44,6 +44,7 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   dumpMsg: "Dumped ABRoot status to %s\n"
   use: status

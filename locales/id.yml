@@ -47,6 +47,7 @@ pkg:
   agreementSignFailed: "Gagal menandatangani perjanjian: %s\n"
   forceEnableUserAgreementFlag: Paksa aktifkan persetujuan pengguna, untuk sistem
     tertanam
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
   infoMsg: "ABRoot Partitions:\n  - Saat ini: %s ◄\n  - Bakal: %s\n\nLoaded configuration:

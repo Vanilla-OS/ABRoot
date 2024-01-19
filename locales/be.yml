@@ -44,6 +44,7 @@ pkg:
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   agreementDeclined: You declined the agreement. The feature will stay disabled until
     you agree to it.
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: Статус
   long: Адлюстраванне бягучага стану ABRoot.

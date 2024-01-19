@@ -49,6 +49,7 @@ pkg:
   agreementDeclined: 您已拒絕此合約。在您同意之前，該功能將保持停用狀態。
   agreementMsg: "要使用 ABRoot 的 abroot pkg 命令，您需要明確同意使用者合約。此命令協助使用者安裝軟體包，但會為系統引入不確定因素，從而影響系統可靠性。同意合約即表明您知曉且接受這些潛在影響，並且您確認您瞭解此命令對系統行為的潛在影響。[y/N]： "
   agreementSignFailed: "無法簽署合約：%s\n"
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   use: upgrade
   long: 檢查是否有新的系統映像並套用。
