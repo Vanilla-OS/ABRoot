@@ -16,12 +16,11 @@ rollback:
   long: "執行系統復原，捨棄對目前 Root 分割區的變更。"
   short: "將系統復原到先前的狀態"
   rootRequired: "您必須是 root 使用者才能執行此命令。"
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackFailed: "復原失敗：%s\n"
+  rollbackSuccess: 復原成功完成。
+  rollbackUnnecessary: 無需復原，已經是目前 Root 分割區。
+  canRollback: 可以復原到上一個 Root 分割區。
+  cannotRollback: 無法復原到上一個 Root 分割區。
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 個軟體包尚未套用變更。請執行 'abroot pkg apply' 套用變更。"
@@ -34,7 +33,7 @@ status:
   infoMsg: "ABRoot 分割區：\n  - 目前分割區：%s ◄\n  - 將來分割區：%s\n\n已載入的組態：%s\n\n裝置規格：\n  - CPU：%s\n\
     \  - GPU：%s\n  - 記憶體：%s\n\nABImage：\n  - 雜湊碼：%s\n  - 時戳：%s\n  - 映像：%s\n\n作業系統核心參數：%s\n\
     \n軟體包：\n  - 已新增：%s\n  - 已移除：%s\n  - 未套用變更：%s%s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\n軟體包合約狀態：%t"
 pkg:
   use: pkg
   listMsg: "新增的軟體包：\n%s\n移除的軟體包：\n%s\n"
@@ -46,21 +45,16 @@ pkg:
   applyFailed: "套用命令失敗：%s\n"
   removedMsg: "已移除軟體包 %s。\n"
   dryRunFlag: 為操作執行事先嘗試（dry run）
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: 強制啟用使用者合約，用於嵌入式系統
+  agreementDeclined: 您已拒絕此合約。在您同意之前，該功能將保持停用狀態。
+  agreementMsg: "要使用 ABRoot 的 abroot pkg 命令，您需要明確同意使用者合約。此命令協助使用者安裝軟體包，但會為系統引入不確定因素，從而影響系統可靠性。同意合約即表明您知曉且接受這些潛在影響，並且您確認您瞭解此命令對系統行為的潛在影響。[y/N]： "
+  agreementSignFailed: "無法簽署合約：%s\n"
 upgrade:
   use: upgrade
-  long: 出於維護目的更新開機磁碟分割（僅限進階使用者）
-  short: 更新開機磁碟分割
+  long: 檢查是否有新的系統映像並套用。
+  short: 升級系統
   checkOnlyFlag: 檢查更新但不立即套用
-  forceFlag: 強制更新開機磁碟分割而不要求確認
+  forceFlag: 強制更新，即便系統已經是最新的
   rootRequired: 必須是 root 使用者才能執行此命令。
   noUpdateAvailable: 您的系統暫時沒有可用更新。
   removed: 已移除
@@ -73,11 +67,11 @@ upgrade:
   checkingSystemUpdate: 正在檢查系統更新…
   dryRunFlag: 為操作執行事先嘗試（dry run）
   dryRunSuccess: 事先嘗試（dry run）成功完成。
-  success: Upgrade completed successfully.
+  success: 升級成功完成。
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: 更新 initramfs
+  updateFailed: "無法更新將來 Root 分割區的 initramfs。\n"
+  rootRequired: 必須是 root 使用者才能執行此命令。
+  updateSuccess: 已更新將來 Root 分割區的 initramfs。
+  long: 更新將來 Root 分割區的 initramfs。
   use: update-initramfs

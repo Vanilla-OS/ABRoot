@@ -16,12 +16,11 @@ rollback:
   long: "执行系统回滚，丢弃对当前根分区的修改。"
   short: "将系统恢复到先前的状态"
   rootRequired: "必须是 root 用户才能运行此命令。"
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackFailed: "回滚失败：%s\n"
+  rollbackSuccess: 回滚成功完成。
+  rollbackUnnecessary: 无需回滚，根分区已经是当前根分区。
+  canRollback: 可以回滚到上一个根分区。
+  cannotRollback: 无法回滚到上一个根分区。
 pkg:
   applyFailed: "应用命令失败：%s\n"
   removedMsg: "已移除软件包 %s。\n"
@@ -33,15 +32,10 @@ pkg:
   rootRequired: 必须是 root 用户才能运行此命令。
   addedMsg: "已添加软件包 %s。\n"
   dryRunFlag: 为操作执行试运行（dry run）
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  agreementDeclined: 您已拒绝该协议。在您同意之前，该功能将保持禁用状态。
+  agreementMsg: "要使用 ABRoot 的 abroot pkg 命令，您需要明确同意用户协议。此命令协助用户安装软件包，但会为系统引入不确定因素，从而影响系统可靠性。同意协议即表明您知晓且接受这些潜在影响，且您确认您了解该命令对系统行为的潜在影响。[y/N]： "
+  agreementSignFailed: "无法签署协议：%s\n"
+  forceEnableUserAgreementFlag: 强制启用用户协议，用于嵌入式系统
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"
@@ -54,12 +48,12 @@ status:
   infoMsg: "ABRoot 分区：\n  - 当前分区：%s ◄\n  - 将来分区：%s\n\n已加载的配置：%s\n\n设备规格：\n  - CPU：%s\n\
     \  - GPU：%s\n  - 内存：%s\n\nABImage：\n  - 散列值：%s\n  - 时间戳：%s\n  - 映像：%s\n\n内核参数：%s\n\
     \n软件包：\n  - 已添加：%s\n  - 已移除：%s\n  - 尚未应用更改：%s%s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\n软件包协议状态：%t"
 upgrade:
   use: upgrade
-  long: 出于维护目的更新引导分区（仅限高级用户使用）
-  short: 更新引导分区
-  forceFlag: 强制更新引导分区而不要求确认
+  long: 检查是否有新的系统映像并应用。
+  short: 升级系统
+  forceFlag: 强制更新，即便系统已经是最新的
   rootRequired: 必须是 root 用户才能运行此命令。
   noUpdateAvailable: 您的系统暂时没有可用的更新。
   checkOnlyFlag: 检查更新但不立即应用
@@ -73,11 +67,11 @@ upgrade:
   checkingSystemUpdate: 正在检查系统更新…
   dryRunFlag: 为操作执行试运行（dry run）
   dryRunSuccess: 试运行成功完成。
-  success: Upgrade completed successfully.
+  success: 升级成功完成。
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: 更新 initramfs
+  updateFailed: "无法更新将来根分区的 initramfs。\n"
+  rootRequired: 必须是 root 用户才能运行此命令。
+  updateSuccess: 已更新将来根分区的 initramfs。
+  long: 更新将来根分区的初始化内存盘（initramfs）。
   use: update-initramfs
