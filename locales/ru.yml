@@ -21,8 +21,8 @@ rollback:
   rollbackFailed: "Не удалось выполнить откат: %s\n"
   rollbackSuccess: Откат успешно выполнен.
   rollbackUnnecessary: Откат не требуется, текущий корень уже является настоящим.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  canRollback: Откат к предыдущему корню возможен.
+  cannotRollback: Откат к предыдущему корню невозможен.
 pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
