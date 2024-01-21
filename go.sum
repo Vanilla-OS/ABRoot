@@ -79,8 +79,8 @@ github.com/containers/buildah v1.33.2 h1:8xdFFP2txJ5lQP91MqYrs/cGhF4o8f46wzFgnrT
 github.com/containers/buildah v1.33.2/go.mod h1:P1fI6kIw3d3ENk5eUJjkXeT9YFoG3uAAWglCk5BeuWc=
 github.com/containers/common v0.57.1 h1:KWAs4PMPgBFmBV4QNbXhUB8TqvlgR95BJN2sbbXkWHY=
 github.com/containers/common v0.57.1/go.mod h1:t/Z+/sFrapvFMEJe3YnecN49/Tae2wYEQShbEN6SRaU=
-github.com/containers/image/v5 v5.29.0 h1:9+nhS/ZM7c4Kuzu5tJ0NMpxrgoryOJ2HAYTgG8Ny7j4=
-github.com/containers/image/v5 v5.29.0/go.mod h1:kQ7qcDsps424ZAz24thD+x7+dJw1vgur3A9tTDsj97E=
+github.com/containers/image/v5 v5.29.1 h1:9COTXQpl3FgrW/jw/roLAWlW4TN9ly7/bCAKY76wYl8=
+github.com/containers/image/v5 v5.29.1/go.mod h1:kQ7qcDsps424ZAz24thD+x7+dJw1vgur3A9tTDsj97E=
 github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 h1:Qzk5C6cYglewc+UyGf6lc8Mj2UaPTHy/iF2De0/77CA=
 github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01/go.mod h1:9rfv8iPl1ZP7aqh9YA68wnZv2NUDbXdcdPHVz0pFbPY=
 github.com/containers/luksy v0.0.0-20231127213545-c2b9b9dbf004 h1:FsoozXJsdo9dinHt+ojlCE9ohn3Zll5Y7C4OUpqEBBY=
