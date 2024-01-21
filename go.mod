@@ -5,7 +5,7 @@ go 1.21.4
 require (
 	github.com/containers/buildah v1.33.2
 	github.com/containers/image/v5 v5.29.0
-	github.com/containers/storage v1.51.0
+	github.com/containers/storage v1.52.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.8.0
