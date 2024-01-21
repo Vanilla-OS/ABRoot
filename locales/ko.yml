@@ -1,63 +1,85 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot은 두 개의 루트 파티션 간의 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다 (A<->B)."
+  short: "ABRoot은 두 개의 루트 파티션 간의 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다 (A<->B)."
+  verboseFlag: "더 자세한 출력 표시"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters."
-  rootRequired: "You must be root to run this command."
-  notChanged: No changes were made to kernel parameters.
-  applyFailed: "Apply command failed: %s\n"
+  long: "커널 매개변수를 관리합니다."
+  short: "커널 매개변수를 관리합니다"
+  rootRequired: "이 명령을 실행하려면 루트여야 합니다."
+  notChanged: 커널 매개변수에 변경 사항이 없습니다.
+  applyFailed: "명령 적용이 실패했습니다: %s\n"
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
+  long: "현재 루트에 대한 변경 사항을 버림으로써 시스템 rollback을 실행합니다."
+  short: "시스템을 이전 상태로 복원합니다."
+  rootRequired: "이 명령을 실행하려면 루트여야 합니다."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
-  addedMsg: "Package(s) %s added.\n"
+  addedMsg: "패키지(들) %s가 추가되었습니다.\n"
   use: pkg
-  long: Install and manage packages.
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  long: 패키지를 설치하고 관리합니다.
+  short: 패키지를 관리합니다.
+  rootRequired: 이 명령을 실행하려면 루트여야 합니다.
+  noPackageNameProvided: 이 작업에는 적어도 하나의 패키지 이름을 제공해야 합니다.
+  applyFailed: "명령 적용이 실패했습니다: %s\n"
+  removedMsg: "패키지(들) %s가 제거되었습니다.\n"
+  listMsg: "추가된 패키지:\n%s\n제거된 패키지:\n%s\n"
+  dryRunFlag: 작업의 시뮬레이션을 실행하세요.
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  jsonFlag: Show output in JSON format
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  long: 현재 ABRoot 상태를 표시합니다.
+  short: 상태를 표시합니다.
+  dumpFlag: ABRoot 상태를 아카이브에 덤프합니다.
+  rootRequired: 이 명령을 실행하려면 루트여야 합니다.
+  jsonFlag: JSON 형식으로 출력을 표시합니다.
+  unstagedFoundMsg: "\n\t\t미적용된 패키지가 %d개 있습니다. 'abroot pkg apply'를 실행하여 적용하십시오."
+  infoMsg: "ABRoot 파티션:\n  - 과거: %s ◄\n  - 미래: %s\n\n로드된 구성: %s\n\nPC 사양:\n  - CPU:
+    %s\n  - GPU:%s\n  - Memory: %s\n\nAB이미지:\n  - Digest: %s\n  - Timestamp: %s\n\
+    \  - 이미지: %s\n\n커널 매개변수: %s\n\n패키지:\n  - 추가된 항목: %s\n  - 제거된 항목: %s\n  - 미적용된
+    항목: %s%s\n"
+  dumpMsg: "ABRoot 상태를 %s에 덤프했습니다.\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
+  forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다.
+  rootRequired: 이 명령을 실행하려면 루트여야 합니다.
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  long: 유지 보수 목적으로 부트 파티션을 업데이트합니다 (고급 사용자 전용)
+  short: 부트 파티션을 업데이트합니다
+  noUpdateAvailable: 시스템에 대한 업데이트가 없습니다.
+  checkOnlyFlag: 업데이트를 적용하지 않고 오직 확인합니다.
+  removed: 제거된 항목
+  downgraded: 다운그레이드 된 항목
+  packageUpdateAvailable: '%d개의 패키지 업데이트가 있습니다'
+  systemUpdateAvailable: 시스템에 대한 업데이트가 있습니다.
+  upgraded: 업그레이드 된 항목
+  added: 추가된 항목
+  checkingPackageUpdate: 패키지 업데이트 확인중...
+  checkingSystemUpdate: 시스템 업데이트 확인중...
+  dryRunFlag: 작업의 시뮬레이션을 실행하세요.
+  dryRunSuccess: 시뮬레이션이 성공적으로 완료되었습니다.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

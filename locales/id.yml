@@ -4,7 +4,7 @@ abroot:
     antara 2 partisi root (A<->B)"
   short: "ABRoot menyediakan keabadian dan atomisitas penuh dengan melakukan transaksi
     antara 2 partisi root (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "menampilkan output yang lebih rinci"
 
 kargs:
   use: "kargs"
@@ -14,52 +14,78 @@ kargs:
   notChanged: Tidak ada perubahan yang dilakukan pada parameter kernel.
   applyFailed: "Gagal menerapkan perintah: %s\n"
 rollback:
-  use: "rollback"
+  use: "mundur"
   long: "Menjalankan rollback sistem, membuang perubahan yang dibuat pada root saat
     ini."
   short: "Mengembalikan sistem ke kondisi sebelumnya"
   rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  rollbackFailed: "Rollback gagal: %s\n"
+  rollbackSuccess: Rollback berhasil diselesaikan.
+  rollbackUnnecessary: Rollback tidak diperlukan, root saat ini sudah merupakan yang
+    sekarang.
+  canRollback: Memungkinkan untuk rollback ke root sebelumnya.
+  cannotRollback: tidak dapat kembali ke root sebelumnya.
 pkg:
   noPackageNameProvided: Anda harus memberikan setidaknya satu nama paket untuk operasi
     ini.
-  addedMsg: "Package(s) %s added.\n"
+  addedMsg: "Paket %s ditambahkan.\n"
   use: pkg
   long: Menginstal dan mengelola paket.
   short: Mengelola paket
   rootRequired: Anda harus menjadi root untuk menjalankan perintah ini.
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  applyFailed: "Penerapan perintah gagal: %s\n"
+  removedMsg: "Paket %s dihapus.\n"
+  listMsg: "Paket ditambahkan:\n%s\nPaket dihapus:\n%s\n"
+  dryRunFlag: Lakukan operasi dry run
+  agreementDeclined: Anda menolak perjanjian. Fitur akan tetap dinonaktifkan sampai
+    anda menyetujui perjanjian tersebut.
+  agreementMsg: "Untuk menggunakan perintah abroot pkg dari ABRoot, persetujuan pengguna
+    yang tegas diperlukan. Perintah ini memudahkan instalasi paket tetapi memperkenalkan
+    elemen non-deterministik, memengaruhi keandalan sistem. Dengan menyetujui, Anda
+    menyatakan dan menerima konsekuensi ini, mengkonfirmasi kesadaran Anda terhadap
+    potensi dampak perintah ini pada perilaku sistem. [y/N]: "
+  agreementSignFailed: "Gagal menandatangani perjanjian: %s\n"
+  forceEnableUserAgreementFlag: Paksa aktifkan persetujuan pengguna, untuk sistem
+    tertanam
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  infoMsg: "ABRoot Partitions:\n  - Saat ini: %s ◄\n  - Bakal: %s\n\nLoaded configuration:
+    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memori: %s\n\nABImage:\n  - Intisari:
+    %s\n  - Stempel Waktu: %s\n  - Gambar: %s\n\nArgument Kernel: %s\n\nPaket:\n \
+    \ - Ditambahkan: %s\n  - Dibuang: %s\n  - Belum diterapkan: %s%s\n"
+  unstagedFoundMsg: "\n\t\tAda %d paket belum diterapkan. Lakukan perintah 'abroot
+    pkg apply' untuk menerapkan paket."
+  long: Tampilkan status ABRoot saat ini.
+  short: Tampilkan status
+  jsonFlag: Tampilkan keluaran dalam format JSON
+  dumpFlag: Buang status ABRoot kedalam arsip
+  rootRequired: Anda harus berada didalam root untuk menjalankan perintah ini.
+  dumpMsg: "Menyimpan status ABRoot ke dalam %s\n"
+  infoMsgAgreementStatus: "\nPersetujuan Paket: %t"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  long: Periksa gambar sistem baru dan terapkan.
+  short: Tingkatkan sistem
+  forceFlag: Paksa pembaruan walaupun system sudah mutakhir
+  rootRequired: Anda harus berada didalam root untuk menjalankan perintah ini.
+  noUpdateAvailable: Tidak ada pembaruan tersedia.
+  checkOnlyFlag: periksa pembaruan tetapi jangan diterapkan langsung
+  removed: Dihapus
+  downgraded: Diturunkan
+  packageUpdateAvailable: Ada %d pembaruan paket.
+  systemUpdateAvailable: Ada pembaruan tersedia untuk sistem anda.
+  upgraded: Ditingkatkan
+  added: Ditambahkan
+  checkingPackageUpdate: Memeriksa pembaruan paket...
+  checkingSystemUpdate: Memeriksa pembaruan sistem...
+  dryRunFlag: lakukan operasi dry run
+  dryRunSuccess: Dry run berhasil diselesaikan.
+  success: Pembaruan berhasil diselesaikan.
+updateInitramfs:
+  short: Perbarui initramfs
+  updateFailed: "Gagal mempebarui initramfs dari root masa depan.\n"
+  rootRequired: Anda harus berada di root untuk menjalankan perintah ini.
+  updateSuccess: initramfs dari root masa depan diperbarui.
+  long: Perbarui initramfs dari root masa depan.
+  use: perbarui-initramfs

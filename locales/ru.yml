@@ -15,9 +15,14 @@ kargs:
   notChanged: Никаких изменений в параметры ядра не вносилось.
 rollback:
   use: "rollback"
-  long: "Выполнить \"system rollback\", отменив все изменения в текущем корневом разделе."
+  long: "Выполнить откат, отменив все изменения в текущем корневом разделе."
   short: "Вернуть систему в предыдущее состояние"
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
+  rollbackFailed: "Не удалось выполнить откат: %s\n"
+  rollbackSuccess: Откат успешно выполнен.
+  rollbackUnnecessary: Откат не требуется, текущий корень уже является настоящим.
+  canRollback: Откат к предыдущему корню возможен.
+  cannotRollback: Откат к предыдущему корню невозможен.
 pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
@@ -28,7 +33,18 @@ pkg:
   applyFailed: "Не удалось применить команду: %s\n"
   removedMsg: "Пакетов удалено: %s.\n"
   listMsg: "Пакетов добавлено:\n%s\nИ удалено:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: выполнить пробный запуск операции
+  agreementDeclined: Вы отказались от соглашения. Функция будет отключена до тех пор,
+    пока вы не согласитесь на неё.
+  agreementMsg: "Для использования команды ABRoot «abroot pkg» требуется явное согласие
+    пользователя. Эта команда облегчает установку пакетов, но вносит недетерминированные
+    элементы, влияющие на надежность системы. Соглашаясь, вы признаете и принимаете
+    эти последствия, подтверждая свою осведомленность о потенциальном влиянии команды
+    на поведение системы. [д/Н]: "
+  agreementSignFailed: "Не удалось подписать соглашение: %s\n"
+  forceEnableUserAgreementFlag: принудительное включение пользовательского соглашения,
+    для встраиваемых систем
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
@@ -44,21 +60,30 @@ status:
     %s%s\n"
   unstagedFoundMsg: "\n\t\tЕсть %d неиндексированных пакетов. Используйте 'abroot
     pkg apply' чтобы применить их."
+  infoMsgAgreementStatus: "\nПакетное соглашение: %t"
 upgrade:
   use: upgrade
-  long: Обновить загрузочный раздел в целях обслуживания (только для опытных пользователей)
+  long: Проверить наличие нового образа системы и применить его.
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
-  short: Обновить загрузочный раздел
-  forceFlag: Обновление загрузочного раздела без запроса подтверждения
-  noUpdateAvailable: Для вашей системы нет доступных обновлений.
+  short: Выполнить обновление системы
+  forceFlag: принудительное обновление, даже если система уже обновлена
+  noUpdateAvailable: Для Вашей системы нет доступных обновлений.
   checkOnlyFlag: проверить наличие обновлений, но не применять их
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Удалено
+  downgraded: Произведён откат
+  packageUpdateAvailable: Обновлений пакетов доступно %d.
+  systemUpdateAvailable: Для Вашей системы доступно обновление.
+  upgraded: Обновлено
+  added: Добавлено
+  checkingPackageUpdate: Проверка обновлений пакетов...
+  checkingSystemUpdate: Проверка обновлений системы…
+  dryRunFlag: выполнить пробный запуск операции
+  dryRunSuccess: Пробный запуск успешно завершен.
+  success: Обновление успешно завершено.
+updateInitramfs:
+  short: Обновить initramfs
+  updateFailed: "Не удалось обновить initramfs будущего корня.\n"
+  rootRequired: Для выполнения этой команды вы должны быть пользователем root.
+  updateSuccess: Обновлён initramfs будущего корня.
+  long: Обновить initramfs будущего корня.
+  use: update-initramfs

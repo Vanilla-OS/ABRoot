@@ -19,6 +19,11 @@ rollback:
     la raíz actual."
   short: "Devolver el sistema a un estado anterior"
   rootRequired: "Debes ser root para ejecutar este comando."
+  rollbackFailed: "Error de reversión: %s\n"
+  rollbackSuccess: La reversión se completó con éxito.
+  rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
+  canRollback: Es posible volver a la raíz anterior.
+  cannotRollback: No es posible volver a la raíz anterior.
 pkg:
   use: pkg
   rootRequired: Debes ser root para ejecutar este comando.
@@ -30,7 +35,20 @@ pkg:
   applyFailed: "Error al aplicar el comando: %s\n"
   removedMsg: "%s Paquete(s) eliminado(s).\n"
   listMsg: "Paquetes añadidos:\n%s\nPaquetes eliminados:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: realizar un simulacro de la operación
+  forceEnableUserAgreementFlag: forzar habilitar acuerdo de usuario, para sistemas
+    integrados
+  agreementDeclined: Has rechazado el acuerdo. La función permanecerá desactivada
+    hasta que la aceptes.
+  agreementSignFailed: "No se ha podido firmar el acuerdo: %s\n"
+  agreementMsg: "Para utilizar el comando abroot pkg de ABRoot, se requiere el consentimiento
+    explícito del usuario. Este comando facilita la instalación de paquetes, pero
+    introduce elementos no deterministas que afectan a la fiabilidad del sistema.
+    Al dar su consentimiento, reconoce y acepta estas implicaciones, confirmando que
+    es consciente del impacto potencial del comando en el comportamiento del sistema.
+    [sí/no]: "
+  failedGettingPkgManagerInstance: "Error al obtener la instancia del gestor de paquetes:
+    %s\n"
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin preparar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."
@@ -46,23 +64,30 @@ status:
     %s\n\nArgumentos del núcleo: %s\n\nPaquetes:\n  - Añadido: %s\n  - Eliminados:
     %s\n  - Desactivado: %s%s\n"
   dumpMsg: "El estado del ABRoot fue volcado a %s\n"
+  infoMsgAgreementStatus: "\nAcuerdo del paquete: %t"
 upgrade:
   use: upgrade
-  long: Actualizar la partición de arranque con fines de mantenimiento (sólo para
-    usuarios avanzados)
-  short: Actualizar la partición de arranque
-  forceFlag: forzar la actualización de la partición de arranque sin pedir ninguna
-    autorización
+  long: Busca una nueva imagen del sistema y aplícala.
+  short: Actualizar el sistema
+  forceFlag: forzar la actualización aunque el sistema esté actualizado
   rootRequired: Debes ser root para ejecutar este comando.
-  noUpdateAvailable: No hay ninguna actualización disponible para tu sistema.
+  noUpdateAvailable: No hay actualizaciones disponibles.
   checkOnlyFlag: buscar las actualizaciones pero no aplicarlas
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Eliminado
+  downgraded: Degradado
+  packageUpdateAvailable: Hay %d actualizaciones de paquetes.
+  systemUpdateAvailable: Hay una actualización para su sistema.
+  upgraded: Actualizado
+  added: Añadido
+  checkingPackageUpdate: Buscando actualizaciones de los paquetes...
+  checkingSystemUpdate: Buscando actualizaciones del sistema...
+  dryRunFlag: realizar un simulacro de la operación
+  dryRunSuccess: Prueba completada con éxito.
+  success: Actualización completada con éxito.
+updateInitramfs:
+  short: Actualizar el initramfs
+  updateFailed: "Error al actualizar el initramfs de la futura raíz.\n"
+  rootRequired: Debes ser root para ejecutar este comando.
+  updateSuccess: Actualizado el initramfs del futuro root.
+  long: Actualiza el initramfs de la futura raíz.
+  use: update-initramfs

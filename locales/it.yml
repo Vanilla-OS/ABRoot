@@ -19,6 +19,12 @@ rollback:
     attuale."
   short: "Riporta il sistema a uno stato precedente"
   rootRequired: "Per eseguire questo comando è necessario essere root."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completato con successo.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   short: Gestisci pacchetti
   rootRequired: Per eseguire questo comando è necessario essere root.
@@ -31,6 +37,16 @@ pkg:
   removedMsg: "Rimosso(i) %s pacchetto(i)\n"
   listMsg: "Pacchetti aggiunti:\n%s\nPacchetti rimossi:\n%s\n"
   dryRunFlag: perform a dry run of the operation
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
   long: Mostra lo stato attuale di ABRoot.
@@ -46,6 +62,7 @@ status:
   unstagedFoundMsg: "\n\t\tCi sono %d pacchetti impreparati. Esegui 'abroot pkg apply'
     per applicarli."
   dumpMsg: "Scaricato lo stato di ABRoot in %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Aggiorna la partizione di boot per scopi di manutenzione (solo per utenti
@@ -66,3 +83,11 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

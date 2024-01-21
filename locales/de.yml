@@ -19,6 +19,12 @@ rollback:
     werden."
   short: "Versetzt das System in einen früheren Zustand"
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: 'Rollback completed successfully.'
+  rollbackUnnecessary: 'Rollback is not necessary, current root is already the present
+    one.'
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -30,7 +36,17 @@ pkg:
     zur Verfügung stellen.
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: Führe einen Probedurchlauf aus
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
     Benutzer)
@@ -38,18 +54,19 @@ upgrade:
   forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   use: upgrade
-  noUpdateAvailable: Für Ihr System ist kein Update verfügbar.
+  noUpdateAvailable: Kein Aktualisierung verfügbar.
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Entfernt
+  downgraded: Herabgestuft
+  packageUpdateAvailable: Es sind %d Paketaktualisierungen verfügbar
+  systemUpdateAvailable: Eine Systemaktualisierung ist verfügbar
+  upgraded: Aktualisiert
+  added: Hinzugefügt
+  checkingPackageUpdate: Nach Paketaktualisierung suchen...
+  checkingSystemUpdate: Nach Systemaktualisierung suchen...
+  dryRunFlag: Führe einen Probedurchlauf aus
+  dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
+  success: Upgrade completed successfully.
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
@@ -64,3 +81,11 @@ status:
     %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
     %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

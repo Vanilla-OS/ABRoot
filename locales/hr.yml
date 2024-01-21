@@ -18,6 +18,12 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state."
   rootRequired: "You must be root to run this command."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 status:
   dumpMsg: "Dumped ABRoot status to %s\n"
   use: status
@@ -32,6 +38,7 @@ status:
     Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   rootRequired: You must be root to run this command.
   noUpdateAvailable: No update is available for your system.
@@ -50,6 +57,7 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
 pkg:
   rootRequired: You must be root to run this command.
   addedMsg: "Package(s) %s added.\n"
@@ -61,3 +69,20 @@ pkg:
   short: Manage packages
   noPackageNameProvided: You must provide at least one package name for this operation.
   dryRunFlag: perform a dry run of the operation
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

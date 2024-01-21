@@ -19,6 +19,11 @@ rollback:
     atual."
   short: "Retorna o sistema a um estado anterior"
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
+  rollbackFailed: "O Rollback falhou: %s\n"
+  rollbackSuccess: Rollback concluído com sucesso.
+  rollbackUnnecessary: O Rollback não é necessário, o root atual já é o utilizado.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -30,7 +35,17 @@ pkg:
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Falha ao aplicar comando: %s\n"
   removedMsg: "Pacote(s) %s removido(s).\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: executar um teste da operação
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
@@ -46,22 +61,30 @@ status:
     %s\n\nABImage:\n  - Síntese: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
     do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Removidos: %s\n  - Não preparados:
     %s%s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
-  long: Atualizar a partição de inicialização para fins de manutenção (somente para
-    usuários avançados)
+  long: Verifique se há uma nova imagem do sistema e aplique-a.
   short: Atualizar a partição de inicialização
   forceFlag: forçar a atualização da partição de inicialização sem pedir confirmação
   rootRequired: Você deve ser um administrador (root) para executar este comando.
-  noUpdateAvailable: Nenhuma atualização está disponível para o seu sistema.
+  noUpdateAvailable: Nenhuma atualização disponível.
   checkOnlyFlag: verificar se há atualizações, mas não aplicá-las
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Removido
+  downgraded: Desatualizado
+  packageUpdateAvailable: Há %d atualizações de pacote.
+  systemUpdateAvailable: Há uma atualização para o seu sistema.
+  upgraded: Atualizado
+  added: Adicionado
+  checkingPackageUpdate: Checando por atualizações de pacotes...
+  checkingSystemUpdate: Checando por atualizações do sistema...
+  dryRunFlag: executar um teste da operação
+  dryRunSuccess: Teste concluído com sucesso.
+  success: Atualização concluída com sucesso.
+updateInitramfs:
+  short: Atualize o initramfs
+  updateFailed: "Falha ao atualizar o initramfs do root futuro.\n"
+  rootRequired: Você deve ser root para executar este comando.
+  updateSuccess: Atualizado o Initramfs do root futuro.
+  long: Atualize o initramfs do root futuro.
+  use: update-initramfs

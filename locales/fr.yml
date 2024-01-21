@@ -4,7 +4,7 @@ abroot:
     transactions entre 2 partitions racine (A<->B)"
   short: "ABRoot fournit une immutabilité et une atomicité totales en effectuant des
     transactions entre 2 partitions racine (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "afficher une sortie plus détaillée"
 
 kargs:
   use: "kargs"
@@ -12,13 +12,19 @@ kargs:
   short: "Gestion des paramètres du noyau"
   rootRequired: "Vous devez être root pour exécuter cette commande."
   applyFailed: "Échec de la commande appliquer : %s\n"
-  notChanged: Aucune modification n'a été apportée aux paramètres du noyau.
+  notChanged: Aucun changement n'a été apporté aux paramètres du noyau.
 rollback:
   use: "rollback"
   long: "Exécute un rollback du système, en supprimant les modifications apportées
     à la racine actuelle."
   short: "Retour à un état antérieur du système"
   rootRequired: "Vous devez être root pour exécuter cette commande."
+  rollbackFailed: "Rollback failed : %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 status:
   use: status
   long: Affiche l'état actuel d'ABRoot.
@@ -34,6 +40,7 @@ status:
   unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
     pkg apply' pour les appliquer."
   dumpMsg: "L'état de l'ABRoot a été récupéré dans %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 pkg:
   use: pkg
   long: Installer et gérer les paquets.
@@ -44,7 +51,17 @@ pkg:
   applyFailed: "Échec de la commande appliquée : %s\n"
   removedMsg: "Paquet(s) %s supprimé(s).\n"
   listMsg: "Ajout de paquets :\n%s\nPaquets supprimés :\n%s\n"
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: effectuer un lancement à sec de l'opération
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 upgrade:
   use: upgrade
   long: Mettre à jour la partition de démarrage à des fins de maintenance (pour les
@@ -52,15 +69,23 @@ upgrade:
   short: Mise à jour de la partition de démarrage
   forceFlag: forcer la mise à jour de la partition de démarrage sans demander de confirmation
   rootRequired: Vous devez être root pour exécuter cette commande.
-  noUpdateAvailable: Aucune mise à jour n'est disponible pour votre système.
+  noUpdateAvailable: Aucune mise à jour disponible.
   checkOnlyFlag: vérifie les mises à jour mais ne les applique pas
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  removed: Supprimé
+  downgraded: Rétrogradé
+  packageUpdateAvailable: Il y a %s mises à jour de paquets.
+  systemUpdateAvailable: Il y a mise à jour pour votre système.
+  upgraded: Mise à niveau
+  added: Ajouté
+  checkingPackageUpdate: Vérification des mises à jour des packages...
+  checkingSystemUpdate: Vérification des mises à jour du système...
+  dryRunFlag: effectuer un lancement à sec de l'opération
+  dryRunSuccess: Le lancement à sec s’est terminé avec succès.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs

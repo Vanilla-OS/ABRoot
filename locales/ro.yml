@@ -20,6 +20,12 @@ rollback:
   short: "Readuceți sistemul la o stare anterioară"
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
 
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: Rollback completed successfully.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the present
+    one.
+  canRollback: It is possible to rollback to the previous root.
+  cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   noPackageNameProvided: "Trebuie să specificați cel puțin un nume de pachet pentru
@@ -32,6 +38,16 @@ pkg:
   long: Instalați și gestionați pachete.
   short: Gestionați pachete
   dryRunFlag: perform a dry run of the operation
+  agreementDeclined: You declined the agreement. The feature will stay disabled until
+    you agree to it.
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
   use: status
   long: Afișați starea ABRoot curentă.
@@ -46,6 +62,7 @@ status:
     \  - Digest: %s\n  - Timestamp: %s\n  - Image: %s\n\nArgumente kernel: %s\n\n\
     Pachete:\n  - Adăugate: %s\n  - Îndepărtate: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "Starea ABRoot descărcată în %s\n"
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Actualizați partiția de boot în scopuri de întreținere (doar pentru utilizatorii
@@ -65,3 +82,11 @@ upgrade:
   checkingSystemUpdate: Checking for system updates...
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
+  success: Upgrade completed successfully.
+updateInitramfs:
+  short: Update the initramfs
+  updateFailed: "Failed to update initramfs of future root.\n"
+  rootRequired: You must be root to run this command.
+  updateSuccess: Updated initramfs of future root.
+  long: Update the initramfs of the future root.
+  use: update-initramfs
