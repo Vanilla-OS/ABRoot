@@ -6,7 +6,7 @@ package core
 		Vanilla OS Contributors <https://github.com/vanilla-os/>
 		Luca di Maio <https://github.com/89luca89>
 		Mateus B. Melchiades <https://github.com/matbme>
-	Copyright: 2023
+	Copyright: 2024
 	Description:
 		ABRoot is utility which provides full immutability and
 		atomicity to a Linux system, by transacting between

@@ -2,8 +2,8 @@
   <img src="abroot-logo.svg" height="120">
   <h1 align="center">ABRoot v2</h1>
   <p align="center">ABRoot is utility which provides full immutability and
-		atomicity to a Linux system, by transacting between two root filesystems. 
-    Updates are performed using OCI images, to ensure that the system is always 
+    atomicity to a Linux system, by transacting between two root filesystems.
+    Updates are performed using OCI images, to ensure that the system is always
     in a consistent state. It also allows for local atomic changes thanks to
     the integrated ABRoot package manager, which generates local OCI images
     with the user's changes, and then applies them on top of the system's
@@ -145,7 +145,7 @@ The boot process is composed of 2 entities:
 
 The following schema shows how the boot process works:
 
-```
+```txt
 +--------------------+    +--------------------+
 |                    |    |                    |
 |    Master Boot     | -> | Root-specific Boot |
@@ -170,19 +170,18 @@ development, the transaction process could still change, so if you're
 interested in the details, please check the source code for `ABSystem`, in the
 `core` package.
 
-
 ## Thin provisioning
 
 ABRoot supports (and suggests) thin provisioning, which allows for a more
 efficient use of disk space.
 
-LVM thin provisioning allows users to create virtual filesystems larger than 
-the available physical storage. This is possible due to LVM thin pools 
-allocating blocks when they are written, rather than when a volume gets created. 
-Thin provisioning is commonly found in places like VPS clusters, where a 
-provider can allocate a very large storage pool (e.g. 500TB) without needing 
-to have that amount of physical storage. This way, they can provide customers 
-with adequate storage limits and only buy more storage when it's actually 
+LVM thin provisioning allows users to create virtual filesystems larger than
+the available physical storage. This is possible due to LVM thin pools
+allocating blocks when they are written, rather than when a volume gets created.
+Thin provisioning is commonly found in places like VPS clusters, where a
+provider can allocate a very large storage pool (e.g. 500TB) without needing
+to have that amount of physical storage. This way, they can provide customers
+with adequate storage limits and only buy more storage when it's actually
 needed.
 
 The following schema shows how an ABRoot compatible disk layout would look like
