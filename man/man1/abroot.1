@@ -1,4 +1,4 @@
-.TH ABROOT 1 "2023-08-24" "abroot" "User Manual"
+.TH ABROOT 1 "2024-01-21" "abroot" "User Manual"
 .SH NAME
 .RS 4
 abroot - ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
@@ -12,13 +12,13 @@ abroot [command] [flags] [arguments]
 ABRoot provides full immutability and atomicity by performing transactions between 2 root partitions (A<->B)
 .RE
 .SH OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SH ABROOT COMMANDS
 .RS 4
 \fBupgrade\fP
 .RS 4
-Update the boot partition
+Upgrade the system
 .PP
 .RE
 \fBkargs\fP
@@ -41,6 +41,11 @@ Return the system to a previous state
 Display status
 .PP
 .RE
+\fBupdate-initramfs\fP
+.RS 4
+Update the initramfs
+.PP
+.RE
 .RE
 .SH AUTHORS
 .PP
@@ -54,7 +59,7 @@ GPLv3+: GNU GPL version 3 or later <http://gnu\&.org/licenses/gpl\&.html>\&.
 .SH ABROOT SUBCOMMANDS
 .SH SUBCOMMAND UPGRADE
 .RS 4
-Update the boot partition
+Upgrade the system
 .RE
 .SS SYNOPSIS
 .RS 4
@@ -63,15 +68,17 @@ Update the boot partition
 .SS DESCRIPTION
 .RS 4
 .TP 4
-Update the boot partition for maintenance purposes (for advanced users only)
+Check for a new system image and apply it\&.
 .RE
 .SS OPTIONS
   -c, --check-only   check for updates but do not apply them
 .PP
-  -f, --force        force update the boot partition without asking for confirmation
+  -d, --dry-run      perform a dry run of the operation
+.PP
+  -f, --force        force update even if the system is up to date
 .PP
 .SS GLOBAL OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
@@ -92,7 +99,7 @@ Manage kernel parameters\&.
 .RE
 .SS OPTIONS
 .SS GLOBAL OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
@@ -112,8 +119,12 @@ Manage packages
 Install and manage packages\&.
 .RE
 .SS OPTIONS
+  -d, --dry-run                       perform a dry run of the operation
+.PP
+  -f, --force-enable-user-agreement   force enable user agreement, for embedded systems
+.PP
 .SS GLOBAL OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
@@ -133,8 +144,10 @@ Return the system to a previous state
 Executes a system rollback, discarding changes made to the present root\&.
 .RE
 .SS OPTIONS
+  -c, --check-only   rollback\&.checkOnlyFlag
+.PP
 .SS GLOBAL OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
@@ -159,10 +172,33 @@ Display the current ABRoot status\&.
   -j, --json   Show output in JSON format
 .PP
 .SS GLOBAL OPTIONS
-  -v, --verbose   Show more detailed output
+  -v, --verbose   show more detailed output
 .PP
 .SS EXAMPLES
 .RS 4
 abroot status
+.RE
+.SH SUBCOMMAND UPDATE-INITRAMFS
+.RS 4
+Update the initramfs
+.RE
+.SS SYNOPSIS
+.RS 4
+\fBupdate-initramfs\fP [command] [flags] [arguments]
+.RE
+.SS DESCRIPTION
+.RS 4
+.TP 4
+Update the initramfs of the future root\&.
+.RE
+.SS OPTIONS
+  -d, --dry-run   updateInitramfs\&.dryRunFlag
+.PP
+.SS GLOBAL OPTIONS
+  -v, --verbose   show more detailed output
+.PP
+.SS EXAMPLES
+.RS 4
+abroot update-initramfs
 .RE
 
