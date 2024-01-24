@@ -102,7 +102,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// copy mount dir contents to dest
-	err = rsyncCmd(mountDir+"/", dest, []string{"--delete"}, false)
+	err = rsyncCmd(mountDir+"/", dest, []string{"--delete", "--checksum"}, false)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 9, err)
 		return err
