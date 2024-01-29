@@ -44,7 +44,8 @@ pkg:
   agreementSignFailed: "Не удалось подписать соглашение: %s\n"
   forceEnableUserAgreementFlag: принудительное включение пользовательского соглашения,
     для встраиваемых систем
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  failedGettingPkgManagerInstance: "Не удалось получить экземпляр менеджера пакетов:
+    %s\n"
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
