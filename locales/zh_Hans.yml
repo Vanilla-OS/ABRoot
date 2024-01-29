@@ -36,7 +36,7 @@ pkg:
   agreementMsg: "要使用 ABRoot 的 abroot pkg 命令，您需要明确同意用户协议。此命令协助用户安装软件包，但会为系统引入不确定因素，从而影响系统可靠性。同意协议即表明您知晓且接受这些潜在影响，且您确认您了解该命令对系统行为的潜在影响。[y/N]： "
   agreementSignFailed: "无法签署协议：%s\n"
   forceEnableUserAgreementFlag: 强制启用用户协议，用于嵌入式系统
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  failedGettingPkgManagerInstance: "无法获取软件包管理器实例：%s\n"
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"
