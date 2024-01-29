@@ -42,7 +42,7 @@ pkg:
     required. This command facilitates package installations but introduces non-deterministic
     elements, impacting system trustworthiness. By consenting, you acknowledge and
     accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
+    impact on system behaviour. [y/N]: "
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
 status:
@@ -63,10 +63,10 @@ status:
 upgrade:
   rootRequired: You must be root to run this command.
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  noUpdateAvailable: No update is available for your system.
+  long: Check for a new system image and apply it.
+  short: Upgrade the system
+  forceFlag: force update even if the system is up to date
+  noUpdateAvailable: No update available.
   checkOnlyFlag: check for updates but do not apply them
   removed: Removed
   downgraded: Downgraded
