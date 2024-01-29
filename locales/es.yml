@@ -46,7 +46,7 @@ pkg:
     pero introduce elementos no deterministas que afectan la fiabilidad del sistema.
     Al dar su consentimiento, reconoce y acepta estas implicaciones, confirmando que
     es consciente del impacto potencial del comando en el comportamiento del sistema.
-    [s/N]: "
+    [y/N]: "
   failedGettingPkgManagerInstance: "Error al obtener la instancia del gestor de paquetes:
     %s\n"
 status:

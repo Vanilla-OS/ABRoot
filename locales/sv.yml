@@ -57,7 +57,7 @@ pkg:
     användaravtal. Detta kommando underlättar paketinstallationer men introducerar
     icke-deterministiska element, vilket påverkar systemets tillförlitlighet. Genom
     att samtycka erkänner och accepterar du dessa implikationer, vilket bekräftar
-    din medvetenhet om kommandots potentiella inverkan på systemets beteende. [j/N]: "
+    din medvetenhet om kommandots potentiella inverkan på systemets beteende. [y/N]: "
   agreementSignFailed: "Misslyckades med att signera avtalet: %s\n"
   forceEnableUserAgreementFlag: tvinga aktiverande av användaravtal, för inbyggda
     system
