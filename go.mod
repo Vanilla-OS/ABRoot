@@ -10,7 +10,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.8.0
 	github.com/vanilla-os/differ/diff v0.0.0-20231226220222-4f9298cef551
-	github.com/vanilla-os/orchid v0.4.0
+	github.com/vanilla-os/orchid v0.5.0
 	github.com/vanilla-os/prometheus v0.2.0
 	golang.org/x/sys v0.16.0
 )

@@ -23,7 +23,7 @@ import (
 )
 
 var (
-	Version = "2.0.0-alpha.1"
+	Version = "2.0.1"
 )
 
 //go:embed locales/*.yml

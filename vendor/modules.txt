@@ -759,7 +759,7 @@ github.com/ulikunitz/xz/lzma
 # github.com/vanilla-os/differ/diff v0.0.0-20231226220222-4f9298cef551
 ## explicit; go 1.21.4
 github.com/vanilla-os/differ/diff
-# github.com/vanilla-os/orchid v0.4.0
+# github.com/vanilla-os/orchid v0.5.0
 ## explicit; go 1.19
 github.com/vanilla-os/orchid
 github.com/vanilla-os/orchid/cmdr
