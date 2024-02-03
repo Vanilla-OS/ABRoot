@@ -19,12 +19,12 @@ rollback:
     à la racine actuelle."
   short: "Retour à un état antérieur du système"
   rootRequired: "Vous devez être root pour exécuter cette commande."
-  rollbackFailed: "Rollback failed : %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackFailed: "Échec du rollback: %s\n"
+  rollbackSuccess: Le rollback a été effectué avec succès.
+  rollbackUnnecessary: Le rollback n'est pas nécessaire, la racine actuelle est déjà
+    celle présente.
+  canRollback: Il est possible de revenir à la racine précédente.
+  cannotRollback: Il n'est pas possible de revenir à la racine précédente.
 status:
   use: status
   long: Affiche l'état actuel d'ABRoot.
@@ -40,7 +40,7 @@ status:
   unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
     pkg apply' pour les appliquer."
   dumpMsg: "L'état de l'ABRoot a été récupéré dans %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\nAccord du packet: %t"
 pkg:
   use: pkg
   long: Installer et gérer les paquets.
@@ -52,22 +52,24 @@ pkg:
   removedMsg: "Paquet(s) %s supprimé(s).\n"
   listMsg: "Ajout de paquets :\n%s\nPaquets supprimés :\n%s\n"
   dryRunFlag: effectuer un lancement à sec de l'opération
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  agreementDeclined: Vous avez refusé l'accord. La fonction restera désactivée jusqu'à
+    ce que vous l'acceptiez.
+  agreementMsg: "Pour utiliser la commande abroot pkg d'ABRoot, un accord explicite
+    de l'utilisateur est nécessaire. Cette commande facilite l'installation des paquets
+    mais introduit des éléments non déterministes, ce qui a un impact sur la fiabilité
+    du système. En donnant votre accord, vous reconnaissez et acceptez ces implications,
+    confirmant que vous êtes conscient de l'impact potentiel de la commande sur le
+    comportement du système. [y/N] : "
+  agreementSignFailed: "Échec de signature de l'accord: %s\n"
+  forceEnableUserAgreementFlag: forcer l'activation de l'accord de l'utilisateur,
+    pour les systèmes embarqués
+  failedGettingPkgManagerInstance: "Échec de l'obtention de l'instance du gestionnaire
+    de paquets: %s\n"
 upgrade:
   use: upgrade
-  long: Mettre à jour la partition de démarrage à des fins de maintenance (pour les
-    utilisateurs avancés uniquement)
-  short: Mise à jour de la partition de démarrage
-  forceFlag: forcer la mise à jour de la partition de démarrage sans demander de confirmation
+  long: Vérifier la présence d'une nouvelle image système et l'appliquer.
+  short: Mise à jour du système
+  forceFlag: forcer la mise à jour même si le système est à jour
   rootRequired: Vous devez être root pour exécuter cette commande.
   noUpdateAvailable: Aucune mise à jour disponible.
   checkOnlyFlag: vérifie les mises à jour mais ne les applique pas
@@ -81,11 +83,11 @@ upgrade:
   checkingSystemUpdate: Vérification des mises à jour du système...
   dryRunFlag: effectuer un lancement à sec de l'opération
   dryRunSuccess: Le lancement à sec s’est terminé avec succès.
-  success: Upgrade completed successfully.
+  success: La mise à jour a été effectuée avec succès.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Mise à jour de l'initramfs
+  updateFailed: "Échec de la mise à jour de l'initramfs de la future racine.\n"
+  rootRequired: Vous devez être root pour exécuter cette commande.
+  updateSuccess: Mise à jour de l'initramfs de la future racine terminée.
+  long: Mettre à jour l'initramfs de la future racine.
   use: update-initramfs
