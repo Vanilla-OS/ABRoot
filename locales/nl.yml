@@ -19,12 +19,11 @@ rollback:
     verwijderd"
   short: "Systeem terugbrengen naar vorige toestand"
   rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackFailed: "Terugrollen mislukt: %s\n"
+  rollbackSuccess: Terugrol succesvol afgerond.
+  rollbackUnnecessary: Terugrol is niet nodig, huidige root is al de actuele.
+  canRollback: Het is mogelijk om naar de vorige root terug te rollen.
+  cannotRollback: Het is niet mogelijk om naar de vorige root terug te rollen.
 pkg:
   long: Installeer en beheer pakketten
   addedMsg: "Pakketten %s toegevoegd\n"
@@ -36,16 +35,18 @@ pkg:
   use: pkg
   noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze handeling.
   dryRunFlag: uitvoering van handeling testen
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  agreementDeclined: U heeft de overeenkomst geweigerd. De functie blijft uitgeschakeld
+    totdat u ermee akkoord gaat.
+  agreementMsg: "Om de pkg-opdracht van ABRoot te gebruiken is expliciete toestemming
+    van de gebruiker vereist. Deze opdracht vergemakkelijkt het installeren van pakketten,
+    maar introduceert niet-deterministische elementen, die de betrouwbaarheid van
+    het systeem beïnvloeden. Door toestemming te geven, erkent en accepteert u deze
+    implicaties en bevestigt u dat u zich bewust bent van de mogelijke impact van
+    de opdracht op het systeemgedrag. [y/N]: "
+  agreementSignFailed: "Overeenkomst tekenen mislukt: %s\n"
+  forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten systemen
+  failedGettingPkgManagerInstance: "Instantie van pakketbeheerder krijgen mislukt:
+    %s\n"
 status:
   use: status
   long: Toont de huidige status van ABRoot
@@ -61,7 +62,7 @@ status:
   unstagedFoundMsg: "\n\t\tEr zijn %d niet-toegepaste pakketten. Voer ‘abroot pkg
     apply’ uit om deze toe te passen."
   dumpMsg: "Status van ABRoot gedumpt naar %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\nPakketovereenkomst: %t"
 upgrade:
   use: upgrade
   long: Controleert op een nieuw systeemkopiebestand en past deze toe.
@@ -80,7 +81,7 @@ upgrade:
   checkingSystemUpdate: Controleren op systeemupdates…
   dryRunFlag: uitvoering van handeling testen
   dryRunSuccess: Testuitvoering succesvol voltooid
-  success: Upgrade completed successfully.
+  success: Upgrade succesvol afgerond.
 updateInitramfs:
   short: Initramfs bijwerken
   updateFailed: "Kon initramfs van toekomstige root niet bijwerken.\n"
