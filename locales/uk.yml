@@ -90,3 +90,12 @@ updateInitramfs:
   updateSuccess: Оновлено initramfs майбутнього кореня.
   long: Оновити initramfs майбутнього кореня.
   use: update-initramfs
+cnf:
+  unchanged: No changes were made to the configuration.
+  editorFailed: "Failed to open the editor: %s\n"
+  long: Open an editor to edit the ABRoot configuration.
+  short: Edit ABRoot configuration
+  use: cnf
+  changed: Configuration changed.
+  failed: "An error occurred while interacting with the configuration: %s\n"
+  rootRequired: You must be root to run this command.
