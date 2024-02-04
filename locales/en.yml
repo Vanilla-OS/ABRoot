@@ -14,6 +14,16 @@ kargs:
   notChanged: "No changes were made to kernel parameters."
   applyFailed: "Apply command failed: %s\n"
 
+cnf:
+  use: "cnf"
+  long: "Open an editor to edit the ABRoot configuration."
+  short: "Edit ABRoot configuration"
+  rootRequired: "You must be root to run this command."
+  editorFailed: "Failed to open the editor: %s\n"
+  changed: "Configuration changed."
+  unchanged: "No changes were made to the configuration."
+  failed: "An error occurred while interacting with the configuration: %s\n"
+
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
