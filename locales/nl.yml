@@ -89,3 +89,12 @@ updateInitramfs:
   updateSuccess: Initramfs van toekomstige root bijgewerkt
   long: Werkt de initramfs van de toekomstige root bij
   use: update-initramfs
+cnf:
+  unchanged: No changes were made to the configuration.
+  editorFailed: "Failed to open the editor: %s\n"
+  long: Open an editor to edit the ABRoot configuration.
+  short: Edit ABRoot configuration
+  use: cnf
+  changed: Configuration changed.
+  failed: "An error occurred while interacting with the configuration: %s\n"
+  rootRequired: You must be root to run this command.
