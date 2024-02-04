@@ -65,7 +65,7 @@ func kargs(cmd *cobra.Command, args []string) error {
 		}
 		err = aBsys.RunOperation(core.APPLY)
 		if err != nil {
-			cmdr.Info.Println(abroot.Trans("pkg.applyFailed"))
+			cmdr.Error.Println(abroot.Trans("pkg.applyFailed"))
 			return err
 		}
 	case "show":
