@@ -9,7 +9,7 @@ abroot:
 kargs:
   use: "kargs"
   long: "Gérer les paramètres du noyau."
-  short: "Gestion des paramètres du noyau"
+  short: "Gérer les paramètres du noyau."
   rootRequired: "Vous devez être root pour exécuter cette commande."
   applyFailed: "Échec de la commande appliquer : %s\n"
   notChanged: Aucun changement n'a été apporté aux paramètres du noyau.
@@ -92,11 +92,11 @@ updateInitramfs:
   long: Mettre à jour l'initramfs de la future racine.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Aucune modification n'a été faite à la configuration.
+  editorFailed: "Impossible d’ouvrir l’éditeur: %s\n"
+  long: Ouvrez un éditeur pour éditer la configuration d'ABRoot.
+  short: Éditer la configuration d'ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Configuration modifiée.
+  failed: "Une erreur s’est produite en interagissant avec la configuration : %s\n"
+  rootRequired: Vois devez être root pour pour exécuter cette commande.
