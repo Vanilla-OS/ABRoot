@@ -26,7 +26,8 @@ cnf:
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
+  long: "Udfører en system tilbagerulning, kasserer ændringer lavet til den nuværende
+    root."
   short: "Return the system to a previous state"
   rootRequired: "You must be root to run this command."
   rollbackUnnecessary: "Rollback is not necessary, current root is already the present
@@ -43,7 +44,7 @@ pkg:
   rootRequired: "You must be root to run this command."
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noPackageNameProvided: "You must provide at least one package name for this operation."
-  addedMsg: "Package(s) %s added.\n"
+  addedMsg: "Pakker(er) %s tilføjet.\n"
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
@@ -115,7 +116,7 @@ upgrade:
 
 updateInitramfs:
   use: "update-initramfs"
-  long: "Update the initramfs of the future root."
+  long: "Opdater initramfs'et af den fremtidige oot."
   short: "Update the initramfs"
   rootRequired: "You must be root to run this command."
   updateSuccess: "Updated initramfs of future root."
