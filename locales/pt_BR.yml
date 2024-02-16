@@ -21,8 +21,8 @@ rollback:
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
   rollbackFailed: "O Rollback falhou: %s\n"
   rollbackSuccess: Rollback concluído com sucesso.
-  rollbackUnnecessary: O Rollback não é necessário, o root atual já é o utilizado.
-  canRollback: It is possible to rollback to the previous root.
+  rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
+  canRollback: É possível voltar à raiz anterior.
   cannotRollback: It is not possible to rollback to the previous root.
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
@@ -89,11 +89,11 @@ updateInitramfs:
   long: Atualize o initramfs do root futuro.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Nenhuma alteração foi feita na configuração.
+  editorFailed: "Falha ao abrir o editor: %s\n"
+  long: Abrir um editor para editar a configuração do ABRoot.
+  short: Editar configuração do ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Configuração alterada.
+  failed: "Ocorreu um erro ao interagir com a configuração: %s\n"
+  rootRequired: Você deve ser root para executar este comando.
