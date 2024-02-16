@@ -90,11 +90,11 @@ updateInitramfs:
   long: Uppdatera initramfs för framtida root.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Inga ändringar har gjorts i konfigurationen.
+  editorFailed: "Misslyckades med att öppna editor: %s\n"
+  long: Öppna en editor för att redigera ABRoot-konfigurationen.
+  short: Redigera ABRoot konfiguration
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Konfiguration ändrad.
+  failed: "Ett fel uppstod under interaktion med konfigurationen: %s\n"
+  rootRequired: Du måste vara root för att köra detta kommando.
