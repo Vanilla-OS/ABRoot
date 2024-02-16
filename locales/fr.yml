@@ -99,4 +99,4 @@ cnf:
   use: cnf
   changed: Configuration modifiée.
   failed: "Une erreur s’est produite en interagissant avec la configuration : %s\n"
-  rootRequired: Vois devez être root pour pour exécuter cette commande.
+  rootRequired: Vous devez être root pour exécuter cette commande.
