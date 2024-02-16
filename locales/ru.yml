@@ -89,11 +89,11 @@ updateInitramfs:
   long: Обновить initramfs будущего корня.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Никаких изменений в конфигурацию внесено не было.
+  editorFailed: "Не удалось открыть редактор: %s\n"
+  long: Открыть редактор для редактирования конфигурации ABRoot.
+  short: Редактировать конфигурацию ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Конфигурация изменена.
+  failed: "При взаимодействии с конфигурацией произошла ошибка: %s\n"
+  rootRequired: Вы должны быть пользователем root для выполнения этой команды.
