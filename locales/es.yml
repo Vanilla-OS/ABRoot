@@ -92,11 +92,11 @@ updateInitramfs:
   long: Actualiza el initramfs de la futura raíz.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: No se ha modificado la configuración.
+  editorFailed: "Error al abrir el editor: %s\n"
+  long: Abra un editor para editar la configuración de ABRoot.
+  short: Editar la configuración de ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Configuración modificada.
+  failed: "Se ha producido un error al interactuar con la configuración: %s\n"
+  rootRequired: Debes ser root para ejecutar este comando.

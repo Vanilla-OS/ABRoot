@@ -14,8 +14,8 @@ kargs:
   applyFailed: "A eșuat comanda de aplicare: %s\n"
   notChanged: Nu au fost făcute schimbări la parametrii kernel-ului.
 rollback:
-  use: "rollback"
-  long: "Execută un rollback al sistemului, eliminând modificările făcute la rădăcina
+  use: "revenire"
+  long: "Execută o revenire a sistemului, eliminând modificările făcute la rădăcina
     actuală."
   short: "Readuceți sistemul la o stare anterioară"
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
@@ -92,11 +92,11 @@ updateInitramfs:
   long: Actualizează initramfs pentru viitoarea rădăcină.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Nu au fost efectuate modificări ale configurației.
+  editorFailed: "Deschiderea editorului eșuată: %s\n"
+  long: Deschide un editor pentru a edita configurația ABRoot.
+  short: Editează configurația ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Configurație schimbată.
+  failed: "A apărut o eroare în timpul interacțiunii cu configurația: %s\n"
+  rootRequired: Trebuie să fii root pentru a rula această comandă.

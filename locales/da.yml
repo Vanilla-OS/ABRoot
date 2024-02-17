@@ -1,0 +1,123 @@
+abroot:
+  use: "abroot"
+  long: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  verboseFlag: "show more detailed output"
+
+kargs:
+  use: "kargs"
+  long: "Manage kernel parameters."
+  short: "Manage kernel parameters"
+  rootRequired: "You must be root to run this command."
+  notChanged: "No changes were made to kernel parameters."
+  applyFailed: "Apply command failed: %s\n"
+
+cnf:
+  use: "cnf"
+  long: "Open an editor to edit the ABRoot configuration."
+  short: "Edit ABRoot configuration"
+  rootRequired: "You must be root to run this command."
+  editorFailed: "Failed to open the editor: %s\n"
+  changed: "Configuration changed."
+  unchanged: "No changes were made to the configuration."
+  failed: "An error occurred while interacting with the configuration: %s\n"
+
+rollback:
+  use: "rollback"
+  long: "Udfører en system tilbagerulning, kasserer ændringer lavet til den nuværende
+    root."
+  short: "Return the system to a previous state"
+  rootRequired: "You must be root to run this command."
+  rollbackUnnecessary: "Rollback is not necessary, current root is already the present
+    one."
+  rollbackFailed: "Rollback failed: %s\n"
+  rollbackSuccess: "Rollback completed successfully."
+  canRollback: "It is possible to rollback to the previous root."
+  cannotRollback: "It is not possible to rollback to the previous root."
+
+pkg:
+  use: "pkg"
+  long: "Install and manage packages."
+  short: "Manage packages"
+  rootRequired: "You must be root to run this command."
+  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  noPackageNameProvided: "You must provide at least one package name for this operation."
+  addedMsg: "Pakker(er) %s tilføjet.\n"
+  applyFailed: "Apply command failed: %s\n"
+  removedMsg: "Package(s) %s removed.\n"
+  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  dryRunFlag: "perform a dry run of the operation"
+  forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementDeclined: "You declined the agreement. The feature will stay disabled until
+    you agree to it."
+
+status:
+  use: "status"
+  long: "Display the current ABRoot status."
+  short: "Display status"
+  jsonFlag: "Show output in JSON format"
+  dumpFlag: "Dump the ABRoot status to an archive"
+  rootRequired: "You must be root to run this command."
+  infoMsg: |
+    ABRoot Partitions:
+      - Present: %s ◄
+      - Future: %s
+
+    Loaded Configuration: %s
+
+    Device Specifications:
+      - CPU: %s
+      - GPU:%s
+      - Memory: %s
+
+    ABImage:
+      - Digest: %s
+      - Timestamp: %s
+      - Image: %s
+
+    Kernel Arguments: %s
+
+    Packages:
+      - Added: %s
+      - Removed: %s
+      - Unstaged: %s%s
+  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Dumped ABRoot status to %s\n"
+
+upgrade:
+  use: "upgrade"
+  long: "Check for a new system image and apply it."
+  short: "Upgrade the system"
+  forceFlag: "force update even if the system is up to date"
+  rootRequired: "You must be root to run this command."
+  checkingSystemUpdate: "Checking for system updates..."
+  checkingPackageUpdate: "Checking for package updates..."
+  systemUpdateAvailable: "There is an update for your system."
+  packageUpdateAvailable: "There are %d package updates."
+  noUpdateAvailable: "No update available."
+  checkOnlyFlag: "check for updates but do not apply them"
+  dryRunFlag: "perform a dry run of the operation"
+  dryRunSuccess: "Dry run completed successfully."
+  success: "Upgrade completed successfully."
+  added: "Added"
+  upgraded: "Upgraded"
+  downgraded: "Downgraded"
+  removed: "Removed"
+
+updateInitramfs:
+  use: "update-initramfs"
+  long: "Opdater initramfs'et af den fremtidige oot."
+  short: "Update the initramfs"
+  rootRequired: "You must be root to run this command."
+  updateSuccess: "Updated initramfs of future root."
+  updateFailed: "Failed to update initramfs of future root.\n"

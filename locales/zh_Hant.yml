@@ -77,11 +77,11 @@ updateInitramfs:
   long: 更新將來 Root 分割區的 initramfs。
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: 沒有對組態作出任何變更。
+  editorFailed: "無法開啟編輯器：%s\n"
+  long: 開啟編輯器以編輯ABRoot 的組態。
+  short: 編輯 ABRoot 組態
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: 已變更組態。
+  failed: "操作組態時發生錯誤：%s\n"
+  rootRequired: 必須是 root 使用者才能執行此命令。
