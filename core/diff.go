@@ -90,7 +90,7 @@ func WriteDiff(destFile string, diffLines []byte) error {
 		return nil // no changes to apply
 	}
 
-	cmd := exec.Command("patch", "-R", destFile)
+	cmd := exec.Command("patch", "--verbose", destFile)
 	cmd.Stdin = bytes.NewReader(diffLines)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
