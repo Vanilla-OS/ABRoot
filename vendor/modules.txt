@@ -528,6 +528,11 @@ github.com/letsencrypt/boulder/identifier
 github.com/letsencrypt/boulder/probs
 github.com/letsencrypt/boulder/revocation
 github.com/letsencrypt/boulder/strictyaml
+# github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d
+## explicit; go 1.20
+github.com/linux-immutability-tools/EtcBuilder/cmd
+github.com/linux-immutability-tools/EtcBuilder/core
+github.com/linux-immutability-tools/EtcBuilder/settings
 # github.com/lithammer/fuzzysearch v1.1.8
 ## explicit; go 1.15
 github.com/lithammer/fuzzysearch/fuzzy
@@ -673,6 +678,7 @@ github.com/seccomp/libseccomp-golang
 github.com/secure-systems-lab/go-securesystemslib/encrypted
 # github.com/sergi/go-diff v1.3.1
 ## explicit; go 1.12
+github.com/sergi/go-diff/diffmatchpatch
 # github.com/shirou/gopsutil v3.21.11+incompatible
 ## explicit
 github.com/shirou/gopsutil/cpu
