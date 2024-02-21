@@ -73,14 +73,12 @@
   * [func (s *ABSystem) GenerateFstab(rootPath string, root ABRootPartition) error](#ABSystem.GenerateFstab)
   * [func (s *ABSystem) GenerateSystemdUnits(rootPath string, root ABRootPartition) error](#ABSystem.GenerateSystemdUnits)
   * [func (s *ABSystem) LockUpgrade() error](#ABSystem.LockUpgrade)
-  * [func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error](#ABSystem.MergeUserEtcFiles)
   * [func (s *ABSystem) RemoveFromCleanUpQueue(name string)](#ABSystem.RemoveFromCleanUpQueue)
   * [func (s *ABSystem) RemoveStageFile() error](#ABSystem.RemoveStageFile)
   * [func (s *ABSystem) ResetQueue()](#ABSystem.ResetQueue)
   * [func (s *ABSystem) Rollback() (response ABRollbackResponse, err error)](#ABSystem.Rollback)
   * [func (s *ABSystem) RunCleanUpQueue(fnName string) error](#ABSystem.RunCleanUpQueue)
   * [func (s *ABSystem) RunOperation(operation ABSystemOperation) error](#ABSystem.RunOperation)
-  * [func (s *ABSystem) SyncUpperEtc(newEtc string) error](#ABSystem.SyncUpperEtc)
   * [func (s *ABSystem) UnlockUpgrade() error](#ABSystem.UnlockUpgrade)
   * [func (s *ABSystem) UpgradeLockExists() bool](#ABSystem.UpgradeLockExists)
   * [func (s *ABSystem) UserLockRequested() bool](#ABSystem.UserLockRequested)
@@ -837,16 +835,6 @@ LockUpgrade creates a lock file, preventing upgrades from proceeding
 
 
 
-### <a name="ABSystem.MergeUserEtcFiles">func</a> (\*ABSystem) [MergeUserEtcFiles](/src/target/system.go?s=4344:4432#L149)
-``` go
-func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error
-```
-MergeUserEtcFiles merges user-related files from the new lower etc (/.system/etc)
-with the old upper etc, if present, saving the result in the new upper etc.
-
-
-
-
 ### <a name="ABSystem.RemoveFromCleanUpQueue">func</a> (\*ABSystem) [RemoveFromCleanUpQueue](/src/target/system.go?s=9681:9735#L332)
 ``` go
 func (s *ABSystem) RemoveFromCleanUpQueue(name string)
@@ -908,16 +896,6 @@ RunOperation executes a root-switching operation from the options below:
 		Applies package changes, but doesn't update the system.
 	INITRAMFS:
 		Updates the initramfs for the future root, but doesn't update the system.
-
-
-
-
-### <a name="ABSystem.SyncUpperEtc">func</a> (\*ABSystem) [SyncUpperEtc](/src/target/system.go?s=5629:5681#L196)
-``` go
-func (s *ABSystem) SyncUpperEtc(newEtc string) error
-```
-SyncUpperEtc syncs the mutable etc directories from /var/lib/abroot/etc
-
 
 
 

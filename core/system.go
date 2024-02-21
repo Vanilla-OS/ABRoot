@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	EtcBuilder "github.com/linux-immutability-tools/EtcBuilder/cmd"
 	"github.com/vanilla-os/abroot/settings"
 )
 
@@ -150,92 +151,6 @@ func (s *ABSystem) CheckAll() error {
 func (s *ABSystem) CheckUpdate() (string, bool) {
 	PrintVerboseInfo("ABSystem.CheckUpdate", "running...")
 	return s.Registry.HasUpdate(s.CurImage.Digest)
-}
-
-// MergeUserEtcFiles merges user-related files from the new lower etc (/.system/etc)
-// with the old upper etc, if present, saving the result in the new upper etc.
-func (s *ABSystem) MergeUserEtcFiles(oldUpperEtc, newLowerEtc, newUpperEtc string) error {
-	PrintVerboseInfo("ABSystem.SyncLowerEtc", "syncing /.system/etc ->", newLowerEtc)
-
-	etcFiles := []string{
-		"passwd",
-		"group",
-		"shells",
-		"shadow",
-		"subuid",
-		"subgid",
-	}
-
-	etcDir := "/.system/etc"
-	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerboseErr("ABSystem.SyncLowerEtc", 0, err)
-		return err
-	}
-
-	for _, file := range etcFiles {
-		// Use file present in the immutable /etc if it exists. Otherwise, use the immutable one.
-		_, err := os.Stat(oldUpperEtc + "/" + file)
-		if err != nil {
-			if os.IsNotExist(err) { // No changes were made to the file from its image base, skip merge
-				continue
-			} else {
-				PrintVerboseErr("ABSystem.SyncLowerEtc", 1, err)
-				return err
-			}
-		} else {
-			firstFile := oldUpperEtc + "/" + file
-			secondFile := newLowerEtc + "/" + file
-			destination := newUpperEtc + "/" + file
-
-			// write the diff to the destination
-			err = MergeDiff(firstFile, secondFile, destination)
-			if err != nil {
-				PrintVerboseErr("ABSystem.SyncLowerEtc", 2, err)
-				return err
-			}
-		}
-	}
-
-	PrintVerboseInfo("ABSystem.SyncLowerEtc", "sync completed")
-	return nil
-}
-
-// SyncUpperEtc syncs the mutable etc directories from /var/lib/abroot/etc
-func (s *ABSystem) SyncUpperEtc(newEtc string) error {
-	PrintVerboseInfo("ABSystem.SyncUpperEtc", "Starting")
-
-	current_part, err := s.RootM.GetPresent()
-	if err != nil {
-		PrintVerboseErr("ABSystem.SyncUpperEtc", 0, err)
-		return err
-	}
-
-	etcDir := fmt.Sprintf("/var/lib/abroot/etc/%s", current_part.Label)
-	if _, err := os.Stat(etcDir); os.IsNotExist(err) {
-		PrintVerboseErr("ABSystem.SyncEtc", 1, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.SyncUpperEtc: syncing /var/lib/abroot/etc/%s -> %s", current_part.Label, newEtc)
-
-	opts := []string{
-		"--exclude=passwd",
-		"--exclude=group",
-		"--exclude=shells",
-		"--exclude=shadow",
-		"--exclude=subuid",
-		"--exclude=subgid",
-		"--exclude=fstab",
-		"--exclude=crypttab",
-	}
-	err = rsyncCmd(etcDir+"/", newEtc, opts, false)
-	if err != nil {
-		PrintVerboseErr("ABSystem.SyncUpperEtc", 2, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.SyncUpperEtc", "sync completed")
-	return nil
 }
 
 // RunCleanUpQueue runs the functions in the queue or only the specified one
@@ -937,6 +852,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 8] -------- ABSystemRunOperation")
 
+	oldEtc := "/.system/sysconf" // The current etc WITHOUT anything overlayed
 	presentEtc, err := s.RootM.GetPresent()
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 8, err)
@@ -950,29 +866,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
 	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
 
-	// Clean new upper etc to prevent deleted files from persisting
-	err = os.RemoveAll(newUpperEtc)
+	err = EtcBuilder.ExtBuildCommand(oldEtc, systemNew+"/sysconf", oldUpperEtc, newUpperEtc)
 	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 8.2, err)
-		return err
-	}
-	err = os.Mkdir(newUpperEtc, 0755)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 8.3, err)
-		return err
-	}
-
-	err = s.MergeUserEtcFiles(oldUpperEtc, filepath.Join(systemNew, "/etc"), newUpperEtc)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 8.4, err)
-		return err
-	}
-
-	s.RunCleanUpQueue("clearUnstagedPackages")
-
-	err = s.SyncUpperEtc(newUpperEtc)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 8.6, err)
+		PrintVerboseErr("AbSystem.RunOperation", 8.2, err)
 		return err
 	}
 

@@ -74,6 +74,7 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20240104140712-c1f7de06e9f8 // indirect
+	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
