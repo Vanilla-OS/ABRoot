@@ -39,7 +39,7 @@ pkg:
     anlaşması gereklidir. Bu komut, paket kurulumlarını kolaylaştırır ancak sistem
     güvenirliğini etkileyen gerekirci olmayan ögeler açığa çıkarır. Uygun bularak,
     komutun sistem davranışında olası etkilerini bildiğinizi onaylayarak bu etkileri
-    kabul edersiniz. [e/H]: "
+    kabul edersiniz. [y/N]: "
   agreementSignFailed: "Anlaşma imzalanamadı: %s\n"
   forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, gömülü
     sistemler için
