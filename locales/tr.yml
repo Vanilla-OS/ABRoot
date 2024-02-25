@@ -8,90 +8,89 @@ abroot:
 
 kargs:
   use: "kargs"
-  long: "Çekirdek parametrelerini yönetin."
-  short: "Çekirdek parametrelerini yönetin."
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
+  long: "Çekirdek parametrelerini yönet."
+  short: "Çekirdek parametrelerini yönet"
+  rootRequired: "Bu komutu çalıştırmak için kök olmanız gerekir."
   notChanged: Çekirdek parametrelerinde herhangi bir değişiklik yapılmadı.
   applyFailed: "Komut uygulanamadı: %s\n"
 rollback:
   use: "rollback"
-  long: "Mevcut kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
-  short: "Sistemi önceki duruma döndür."
-  rootRequired: "Bu komutu çalıştırmak için root olmanız gerekir."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  long: "Şu anki kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
+  short: "Sistemi önceki duruma döndür"
+  rootRequired: "Bu komutu çalıştırmak için kök olmanız gerekir."
+  rollbackFailed: "Geri döndürme başarısız: %s\n"
+  rollbackSuccess: Geri döndürme başarıyla tamamlandı.
+  rollbackUnnecessary: Geri döndürme gerekmiyor, geçerli kök şu anki olan.
+  canRollback: Önceki köke geri döndürmek olasıdır.
+  cannotRollback: Önceki köke geri döndürmek olanaksızdır.
 pkg:
   listMsg: "Eklenen paketler:\n%s\nKaldırılan paketler:\n%s\n"
   use: pkg
-  long: Paketleri yükleyin ve yönetin
+  long: Paket kur ve yönet.
   short: Paketleri yönet
-  rootRequired: Bu komutu çalıştırmak için root olmanız gerekir.
+  rootRequired: Bu komutu çalıştırmak için kök olmanız gerekir.
   noPackageNameProvided: Bu işlem için en az bir paket adı sağlamalısınız.
   addedMsg: "Paket(ler) %s eklendi.\n"
   applyFailed: "Komut uygulanamadı: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  dryRunFlag: perform a dry run of the operation
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  removedMsg: "Paketler %s kaldırıldı.\n"
+  dryRunFlag: işlemin provasını gerçekleştir
+  agreementDeclined: Anlaşmayı reddettiniz. Kabul edene dek özellik devre dışı kalacak.
+  agreementMsg: "ABRoot'un abroot pkg komutundan yararlanmak için kullanıcının açık
+    anlaşması gereklidir. Bu komut, paket kurulumlarını kolaylaştırır ancak sistem
+    güvenirliğini etkileyen gerekirci olmayan ögeler açığa çıkarır. Uygun bularak,
+    komutun sistem davranışında olası etkilerini bildiğinizi onaylayarak bu etkileri
+    kabul edersiniz. [y/N]: "
+  agreementSignFailed: "Anlaşma imzalanamadı: %s\n"
+  forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, gömülü
+    sistemler için
+  failedGettingPkgManagerInstance: "Paket yönetici örneği alınamadı: %s\n"
 status:
-  use: durum
-  long: Mevcut ABRoot durumunu görüntüleyin.
-  rootRequired: Bu komutu çalıştırmak için root olmanız gerekir.
+  use: status
+  long: Şu anki ABRoot durumunu görüntüle.
+  rootRequired: Bu komutu çalıştırmak için kök olmanız gerekir.
   short: Durumu görüntüle
   jsonFlag: Çıktıyı JSON formatında göster
   dumpFlag: ABRoot durumunu bir arşive aktarın
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsg: "ABRoot Bölümleri:\n  - Şu An: %s ◄\n  - Gelecek: %s\n\nYüklü Yapılandırma:
+    %s\n\nAygıt Özellikleri:\n  - MİB: %s\n  - GİB:%s\n  - Bellek: %s\n\nABImage:\n\
+    \  - Özet: %s\n  - Zaman Damgası: %s\n  - Kalıp: %s\n\nÇekirdek Argümanları: %s\n\
+    \nPaketler:\n  - Eklendi: %s\n  - Kaldırıldı: %s\n  - Provasız: %s%s\n"
+  unstagedFoundMsg: "\n\t\tProvasız %d paket var. Uygulamak için lütfen 'abroot pkg
+    apply' çalıştırın."
+  dumpMsg: "ABRoot durumu şuna döküldü: %s\n"
+  infoMsgAgreementStatus: "\nPaket anlaşması: %t"
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
-  success: Upgrade completed successfully.
+  long: Yeni sistem kalıbını denetle ve uygula.
+  short: Sistemi yükselt
+  forceFlag: sistem güncel olsa da güncellemeye zorla
+  rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
+  noUpdateAvailable: Sisteminiz için güncelleme yok.
+  checkOnlyFlag: güncellemeleri denetle ancak uygulama
+  removed: Kaldırıldı
+  downgraded: Düşürüldü
+  packageUpdateAvailable: '%d paket güncellemesi var.'
+  systemUpdateAvailable: Sisteminiz için güncelleme var.
+  upgraded: Yükseltildi
+  added: Eklendi
+  checkingPackageUpdate: Paket güncellemeleri denetleniyor...
+  checkingSystemUpdate: Sistem güncellemeleri denetleniyor...
+  dryRunFlag: işlemin provasını gerçekleştir
+  dryRunSuccess: Prova başarıyla tamamlandı.
+  success: Yükseltme başarıyla tamamlandı.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: initramfs'i güncelle
+  updateFailed: "Gelecek kökün initramfs'i güncellenemedi.\n"
+  rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
+  updateSuccess: Gelecek kökün initramfs'i güncellendi.
+  long: Gelecek kökün initramfs'ini güncelle.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Yapılandırmaya değişiklik yapılmadı.
+  editorFailed: "Düzenleyici açılamadı: %s\n"
+  long: ABRoot yapılandırmasını düzenlemek için düzenleyici aç.
+  short: ABRoot yapılandırmasını düzenle
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Yapılandırma değiştirildi.
+  failed: "Yapılandırmayla etkileşime geçilirken hata oluştu: %s\n"
+  rootRequired: Bu komutu çalıştırmak için kök olmalısınız.

@@ -42,7 +42,7 @@ pkg:
     explícito do usuário. Esse comando facilita as instalações do pacote, mas introduz
     elementos não determinísticos, afetando a confiabilidade do sistema. Ao consentir,
     você reconhece e aceita essas implicações, confirmando sua consciência do impacto
-    potencial do comando no comportamento do sistema. [s/N]: "
+    potencial do comando no comportamento do sistema. [y/N]: "
   agreementSignFailed: "Falha ao assinar o acordo: %s\n"
   forceEnableUserAgreementFlag: forçar habilitação de contrato de usuário, para sistemas
     embarcados
