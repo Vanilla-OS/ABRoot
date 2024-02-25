@@ -11,87 +11,88 @@ kargs:
   long: "Zarządzaj parametrami jądra."
   short: "Zarządzaj parametrami jądra"
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  notChanged: Nie dokonano żadnych zmian w parametrach jądra
-  applyFailed: "Apply command failed: %s\n"
+  notChanged: Nie wprowadzono żadnych zmian w parametrach jądra.
+  applyFailed: "Polecenie apply nie powiodło się: %s\n"
 rollback:
   use: "rollback"
   long: "Wykonuje rollback systemu, odrzucając zmiany wprowadzone do obecnego roota."
-  short: "Przywrócenie systemu do poprzedniego stanu."
+  short: "Przywróć system do poprzedniego stanu"
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackFailed: "Rollback nie udał się: %s\n"
+  rollbackSuccess: Rollback zakończył się pomyślnie.
+  rollbackUnnecessary: Rollback nie jest wymagany, bieżący root jest już tym obecnym.
+  canRollback: Jest możliwe przywrócenie poprzedniego roota.
+  cannotRollback: Nie jest możliwe przywrócenie poprzedniego roota.
 pkg:
   use: pkg
-  long: Instaluj i zarządzaj pakietami
-  short: Manage packages
-  rootRequired: You must be root to run this command.
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  long: Instaluj i zarządzaj pakietami.
+  short: Zarządzaj pakietami
+  rootRequired: Musisz być rootem, aby uruchomić to polecenie.
+  addedMsg: "Pakiet(y) %s dodano.\n"
+  applyFailed: "Polecenie apply nie powiodło się: %s\n"
+  removedMsg: "Pakiet(y) %s usunięto.\n"
+  noPackageNameProvided: Dla tej operacji należy podać co najmniej jedną nazwę pakietu.
+  listMsg: "Dodano paczki:\n%s\nUsunięto paczki:\n%s\n"
+  dryRunFlag: przeprowadź operację na próbę
+  agreementDeclined: Nie zgodziłeś się. Funkcja pozostanie wyłączona do momentu wyrażenia
+    zgody.
+  agreementMsg: "Aby użyć polecenia ABRoota abroot pkg, wymagana jest wyraźna zgoda
+    użytkownika. Polecenie to ułatwia instalację pakietów, ale wprowadza elementy
+    niedeterministyczne, wpływając na wiarygodność systemu. Wyrażając zgodę, użytkownik
+    przyjmuje do wiadomości i akceptuje te następstwa, potwierdzając swoją świadomość
+    potencjalnego wpływu polecenia na zachowanie systemu. [y/N]: "
+  agreementSignFailed: "Nie udało się zapisać zgody: %s\n"
+  forceEnableUserAgreementFlag: wymuś domyślne zgadzanie się użytkownika, dla wbudowanych
+    systemów
+  failedGettingPkgManagerInstance: "Nie udało się pobrać instancji menedżera pakietów:
+    %s\n"
 upgrade:
   use: upgrade
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
-  success: Upgrade completed successfully.
+  noUpdateAvailable: Brak dostępnych aktualizacji.
+  checkOnlyFlag: Sprawdź dostępność aktualizacji bez aplikowania ich
+  long: Sprawdź dostępność nowych obrazów systemu i zaktualizuj je.
+  short: Zaktualizuj system
+  forceFlag: wymuś sprawdzanie aktualizacji nawet jeśli system jest aktualny
+  rootRequired: Musisz być rootem, aby uruchomić to polecenie.
+  removed: Usunięto
+  downgraded: Obniżono wersję
+  packageUpdateAvailable: Znaleziono %d pakietów do aktualizacji.
+  systemUpdateAvailable: Znaleziono aktualizacje dla Twojego systemu.
+  upgraded: Zaktualizowano
+  added: Dodano
+  checkingPackageUpdate: Sprawdzanie aktualizacji dla pakietów...
+  checkingSystemUpdate: Sprawdzanie dostępnych aktualizacji dla systemu...
+  dryRunFlag: przeprowadź operację na próbę
+  dryRunSuccess: Próba zakończyła się powodzeniem.
+  success: Zaktualizowano pomyślnie.
 status:
   use: status
-  long: Display the current ABRoot status.
-  short: Display status
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  dumpMsg: "Dumped ABRoot status to %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  long: Wyświetl aktualny status ABRoota.
+  short: Wyświetl status
+  jsonFlag: Pokaż wyjście w formacie JSON
+  dumpFlag: Zrzuć status ABRoota do archiwum
+  rootRequired: Musisz być rootem, aby uruchomić to polecenie.
+  unstagedFoundMsg: "\n\t\tZnaleziono %d nie dodanych pakietów. Proszę użyj 'abroot
+    pkg apply' aby je dodać."
+  infoMsg: "Partycje ABRoota:\n  - Aktualne: %s ◄\n  - Przyszłe: %s\n\nZaładowana
+    Konfiguracja: %s\n\nSpecyfikacja Urządzenia:\n  - CPU: %s\n  - GPU:%s\n  - Pamięć:
+    %s\n\nABImage:\n  - Skrót: %s\n  - Sygnatura czasowa: %s\n  - Obraz: %s\n\nArgumenty
+    Jądra: %s\n\nPakiety:\n  - Dodane: %s\n  - Usunięte: %s\n  - Nie oznaczone: %s%s\n"
+  dumpMsg: "Zrzucono status ABRoota do %s\n"
+  infoMsgAgreementStatus: "\nUmowa pakietowa: %t"
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Zaktualizuj initramfs
+  updateFailed: "Nie udało się zaktualizować initramfs przyszłego roota.\n"
+  rootRequired: Musisz być rootem, aby uruchomić to polecenie.
+  updateSuccess: Zaktualizowano initramfs przyszłego roota.
+  long: Zaktualizuj initramfs przyszłego roota.
   use: update-initramfs
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Nie wprowadzono żadnych zmian w konfiguracji.
+  editorFailed: "Nie udało się uruchomić edytora: %s\n"
+  long: Uruchom edytor, aby edytować konfiguracje ABRoota.
+  short: Edytuj konfiguracje ABRoota
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Zmieniono konfiguracje.
+  failed: "Wystąpił błąd podczas interakcji z konfiguracją: %s\n"
+  rootRequired: Musisz być rootem aby uruchomić to polecenie.
