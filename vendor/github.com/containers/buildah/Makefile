@@ -4,6 +4,10 @@ APPARMORTAG := $(shell hack/apparmor_tag.sh)
 STORAGETAGS := exclude_graphdriver_devicemapper $(shell ./btrfs_tag.sh) $(shell ./btrfs_installed_tag.sh) $(shell ./hack/libsubid_tag.sh)
 SECURITYTAGS ?= seccomp $(APPARMORTAG)
 TAGS ?= $(SECURITYTAGS) $(STORAGETAGS) $(shell ./hack/systemd_tag.sh)
+ifeq ($(shell uname -s),FreeBSD)
+# FreeBSD needs CNI until netavark is supported
+TAGS += cni
+endif
 BUILDTAGS += $(TAGS)
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
@@ -69,21 +73,19 @@ static:
 	mkdir -p ./bin
 	cp -rfp ./result/bin/* ./bin/
 
-bin/buildah: $(SOURCES) cmd/buildah/*.go internal/mkcw/embed/entrypoint.gz
+bin/buildah: $(SOURCES) cmd/buildah/*.go internal/mkcw/embed/entrypoint_amd64.gz
 	$(GO_BUILD) $(BUILDAH_LDFLAGS) $(GO_GCFLAGS) "$(GOGCFLAGS)" -o $@ $(BUILDFLAGS) ./cmd/buildah
 
 ifneq ($(shell as --version | grep x86_64),)
-internal/mkcw/embed/entrypoint: internal/mkcw/embed/entrypoint.s
+internal/mkcw/embed/entrypoint_amd64.gz: internal/mkcw/embed/entrypoint_amd64
+	gzip -k9nf $^
+
+internal/mkcw/embed/entrypoint_amd64: internal/mkcw/embed/entrypoint_amd64.s
 	$(AS) -o $(patsubst %.s,%.o,$^) $^
 	$(LD) -o $@ $(patsubst %.s,%.o,$^)
 	strip $@
-else
-.PHONY: internal/mkcw/embed/entrypoint
 endif
 
-internal/mkcw/embed/entrypoint.gz: internal/mkcw/embed/entrypoint
-	$(RM) $@
-	gzip -k $^
 
 .PHONY: buildah
 buildah: bin/buildah
@@ -125,7 +127,7 @@ gopath:
 	test $(shell pwd) = $(shell cd ../../../../src/github.com/containers/buildah ; pwd)
 
 codespell:
-	codespell -S Makefile,buildah.spec.rpkg,AUTHORS,bin,vendor,.git,go.mod,go.sum,CHANGELOG.md,changelog.txt,seccomp.json,.cirrus.yml,"*.xz,*.gz,*.tar,*.tgz,*ico,*.png,*.1,*.5,*.orig,*.rej" -L passt,bu,uint,iff,od,erro -w
+	codespell -S Makefile,buildah.spec.rpkg,AUTHORS,bin,vendor,.git,go.mod,go.sum,CHANGELOG.md,changelog.txt,seccomp.json,.cirrus.yml,"*.xz,*.gz,*.tar,*.tgz,*ico,*.png,*.1,*.5,*.orig,*.rej" -L secon,passt,bu,uint,iff,od,erro -w
 
 .PHONY: validate
 validate: install.tools
