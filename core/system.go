@@ -828,6 +828,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 7] -------- ABSystemRunOperation")
 
+	partPresent, err := s.RootM.GetPresent()
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 7.01, "failed to get present partition:", err)
+	}
+
 	chroot, err := NewChroot(
 		systemNew,
 		partFuture.Partition.Uuid,
@@ -836,16 +841,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		filepath.Join("/var/lib/abroot/etc", partPresent.Label),
 	)
 	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 7, err)
+		PrintVerboseErr("ABSystem.RunOperation", 7.02, err)
 		return err
 	}
 
 	s.AddToCleanUpQueue("closeChroot", 10, chroot)
 
-	err = chroot.ExecuteCmds( // *1 let grub-mkconfig do its job
+	generatedGrubConfigPath := "/boot/grub/grub.cfg"
+
+	err = chroot.ExecuteCmds(
 		[]string{
-			"grub-mkconfig -o /boot/grub/grub.cfg",
-			"exit",
+			"grub-mkconfig -o " + generatedGrubConfigPath,
 		},
 	)
 	if err != nil {
@@ -916,10 +922,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		rootUuid = partFuture.Partition.Uuid
 	}
 
-	err = generateABGrubConf( // *2 but we don't care about grub.cfg
+	err = generateABGrubConf(
 		systemNew,
 		rootUuid,
 		partFuture.Label,
+		generatedGrubConfigPath,
 	)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 7.7, err)
