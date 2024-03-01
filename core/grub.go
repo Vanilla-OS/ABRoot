@@ -33,7 +33,7 @@ type Grub struct {
 
 // generateABGrubConf generates a new grub config with the given details
 // kernel version is automatically detected
-func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) error {
+func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
 	PrintVerboseInfo("generateABGrubConf", "generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
@@ -63,12 +63,10 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string) erro
 	}
 
 	confPath := filepath.Join(grubPath, "abroot.cfg")
-	template := `insmod gzio
-insmod part_gpt
-insmod ext2
-search --no-floppy --fs-uuid --set=root %s
-linux   %s/vmlinuz-%s root=%s %s
-initrd  %s/initrd.img-%s`
+	template := `  search --no-floppy --fs-uuid --set=root %s
+  linux   %s/vmlinuz-%s root=%s %s
+  initrd  %s/initrd.img-%s
+`
 
 	kernelVersion := getKernelVersion(bootPath)
 	if kernelVersion == "" {
@@ -83,13 +81,27 @@ initrd  %s/initrd.img-%s`
 		return err
 	}
 
-	err = os.WriteFile(
-		confPath,
-		[]byte(fmt.Sprintf(template, rootUuid, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)),
-		0644,
-	)
+	abrootBootConfig := fmt.Sprintf(template, rootUuid, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)
+
+	generatedGrubConfigContents, err := os.ReadFile(filepath.Join(rootPath, generatedGrubConfigPath))
 	if err != nil {
-		PrintVerboseErr("generateABGrubConf", 3, err)
+		PrintVerboseErr("generateABGrubConf", 3, "could not read grub config", err)
+		return err
+	}
+
+	generatedGrubConfig := string(generatedGrubConfigContents)
+
+	replacementString := "REPLACED_BY_ABROOT"
+	if !strings.Contains(generatedGrubConfig, replacementString) {
+		err := errors.New("could not find replacement string \"" + replacementString + "\", check /etc/grub.d configuration")
+		PrintVerboseErr("generateABGrubConf", 3.1, err)
+		return err
+	}
+	grubConfigWithBootEntry := strings.Replace(generatedGrubConfig, "REPLACED_BY_ABROOT", abrootBootConfig, 1)
+
+	err = os.WriteFile(confPath, []byte(grubConfigWithBootEntry), 0644)
+	if err != nil {
+		PrintVerboseErr("generateABGrubConf", 4, "could not read grub config", err)
 		return err
 	}
 
