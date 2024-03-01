@@ -56,7 +56,7 @@ func TestChroot(t *testing.T) {
 	}
 
 	// chroot setup
-	chroot, err := core.NewChroot(chrootPath, chrootUuid, chrootDevice)
+	chroot, err := core.NewChroot(chrootPath, chrootUuid, chrootDevice, false, "")
 	if err != nil {
 		t.Fatal(err)
 	}
