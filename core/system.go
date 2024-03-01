@@ -832,6 +832,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		systemNew,
 		partFuture.Partition.Uuid,
 		partFuture.Partition.Device,
+		true,
+		filepath.Join("/var/lib/abroot/etc", partPresent.Label),
 	)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 7, err)

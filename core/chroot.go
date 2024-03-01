@@ -27,6 +27,7 @@ type Chroot struct {
 	root       string
 	rootUuid   string
 	rootDevice string
+	etcMounted bool
 }
 
 // ReservedMounts is a list of mount points from host which should be
@@ -42,7 +43,7 @@ var ReservedMounts = []string{
 
 // NewChroot creates a new chroot environment from the given root path and
 // returns its Chroot instance or an error if something went wrong
-func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error) {
+func NewChroot(root string, rootUuid string, rootDevice string, mountUserEtc bool, userEtcPath string) (*Chroot, error) {
 	PrintVerboseInfo("NewChroot", "running...")
 
 	root = strings.ReplaceAll(root, "//", "/")
@@ -56,6 +57,7 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 		root:       root,
 		rootUuid:   rootUuid,
 		rootDevice: rootDevice,
+		etcMounted: mountUserEtc,
 	}
 
 	// workaround for grub-mkconfig, not able to find the device
@@ -75,6 +77,14 @@ func NewChroot(root string, rootUuid string, rootDevice string) (*Chroot, error)
 		}
 	}
 
+	if mountUserEtc {
+		err = syscall.Mount("overlay", filepath.Join(root, "etc"), "overlay", syscall.MS_RDONLY, "lowerdir="+userEtcPath+":"+filepath.Join(root, "/etc"))
+		if err != nil {
+			PrintVerboseErr("NewChroot", 3, "failed to mount user etc:", err)
+			return nil, err
+		}
+	}
+
 	PrintVerboseInfo("NewChroot", "successfully created.")
 	return chroot, nil
 }
@@ -90,6 +100,9 @@ func (c *Chroot) Close() error {
 	}
 
 	mountList := ReservedMounts
+	if c.etcMounted {
+		mountList = append(mountList, "/etc")
+	}
 	mountList = append(mountList, "")
 
 	for _, mount := range mountList {
