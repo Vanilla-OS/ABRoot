@@ -1,52 +1,53 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot menyediakan pemalaran penuh dan penyalinan sempurna melalui transaksi
+    antara 2 bahagian akar (A<->B)"
+  short: "ABRoot menyediakan pemalaran penuh dan penyalinan sempurna melalui transaksi
+    antara 2 bahagian akar (A<->B)"
+  verboseFlag: "tunjukkan cetakan lebih lanjut"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters"
-  rootRequired: "You must be root to run this command."
-  notChanged: "No changes were made to kernel parameters."
-  applyFailed: "Apply command failed: %s\n"
+  long: "Urus parameter-parameter kernel."
+  short: "Urus parameter-parameter kernel"
+  rootRequired: "Anda mesti dalam akar untuk melaksanakan arahan ini."
+  notChanged: "Tiada perubahan dilakukan kepada parameter-parameter kernel."
+  applyFailed: "Pelaksanaan arahan gagal: %s\n"
 
 cnf:
   use: "cnf"
-  long: "Open an editor to edit the ABRoot configuration."
-  short: "Edit ABRoot configuration"
-  rootRequired: "You must be root to run this command."
-  editorFailed: "Failed to open the editor: %s\n"
-  changed: "Configuration changed."
-  unchanged: "No changes were made to the configuration."
-  failed: "An error occurred while interacting with the configuration: %s\n"
+  long: "Buka penyunting untuk menyunting tetapan ABRoot."
+  short: "Sunting tetapan ABRoot"
+  rootRequired: "Anda mesti dalam akar untuk melaksanakan arahan ini."
+  editorFailed: "Gagal untuk membuka penyunting: %s\n"
+  changed: "Tetapan diubah."
+  unchanged: "Tiada perubahan dilakukan kepada tetapan."
+  failed: "Ralat berlaku semasa berinteraksi dengan tetapan: %s\n"
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state"
-  rootRequired: "You must be root to run this command."
-  rollbackUnnecessary: "Rollback is not necessary, current root is already the present
-    one."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: "Rollback completed successfully."
-  canRollback: "It is possible to rollback to the previous root."
-  cannotRollback: "It is not possible to rollback to the previous root."
+  long: "Laksanakan pengembalian sistem, membuang segala perubahan kepada akar kini."
+  short: "Kembalikan sistem kepada keadaan lalu."
+  rootRequired: "Anda mesti dalam akar untuk melaksanakan arahan ini."
+  rollbackUnnecessary: "Pengembalian tidak diperlukan, akar kini ialah akar yang sama."
+  rollbackFailed: "Pengembalian gagal: %s\n"
+  rollbackSuccess: "Pengembalian sempurna."
+  canRollback: "Pengembalian kepada akar lalu adalah mustahil."
+  cannotRollback: "Pengembalian kepada akar lalu adalah mustahil."
 
 pkg:
   use: "pkg"
-  long: "Install and manage packages."
-  short: "Manage packages"
-  rootRequired: "You must be root to run this command."
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noPackageNameProvided: "You must provide at least one package name for this operation."
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  long: "Pasang dan urus pakej-pakej."
+  short: "Urus pakej-pakej"
+  rootRequired: "Anda mesti dalam akar untuk melaksanakan arahan ini."
+  failedGettingPkgManagerInstance: "Gagal untuk mendapatkan contoh pengurus pakej:
+    %s\n"
+  noPackageNameProvided: "Anda mesti memberikan sekurang-kurangnya satu nama pakej
+    untuk operasi ini."
+  addedMsg: "Pakej %s ditambah.\n"
+  applyFailed: "Pelaksanaan arahan gagal: %s\n"
+  removedMsg: "Pakej %s dibuang.\n"
+  listMsg: "Pakej-pakej yang ditambah:\n%s\nPakej-pakej yang dibuang:\n%s\n"
   dryRunFlag: "perform a dry run of the operation"
   forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
   agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
