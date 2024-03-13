@@ -34,6 +34,7 @@ rollback:
   rollbackSuccess: "Rollback completed successfully."
   canRollback: "It is possible to rollback to the previous root."
   cannotRollback: "It is not possible to rollback to the previous root."
+  checkOnlyFlag: "check if rollback to previous root is possible"
 
 pkg:
   use: "pkg"
@@ -56,8 +57,8 @@ status:
   use: "status"
   long: "Display the current ABRoot status."
   short: "Display status"
-  jsonFlag: "Show output in JSON format"
-  dumpFlag: "Dump the ABRoot status to an archive"
+  jsonFlag: "show output in JSON format"
+  dumpFlag: "dump the ABRoot status to an archive"
   rootRequired: "You must be root to run this command."
   infoMsg: |
     ABRoot Partitions:
@@ -114,3 +115,4 @@ updateInitramfs:
   rootRequired: "You must be root to run this command."
   updateSuccess: "Updated initramfs of future root."
   updateFailed: "Failed to update initramfs of future root.\n"
+  dryRunFlag: "perform a dry run of the operation"
