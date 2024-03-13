@@ -1,8 +1,8 @@
 abroot:
   use: "abroot"
   long: "يوفر ABRoot الثبات الكامل والذرية عن طريق إجراء المعاملات بين قسمين جذر (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
+  short: "يوفر ABRoot الثبات الكامل والذرية عن طريق إجراء المعاملات بين قسمين جذر
+    (A<->B)"
   verboseFlag: "إظهار إخراج أكثر تفصيلاً"
 
 kargs:
@@ -89,7 +89,7 @@ cnf:
   use: cnf
   unchanged: No changes were made to the configuration.
   editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
+  long: افتح محررًا لتحرير تكوين ABRoot.
   short: Edit ABRoot configuration
   changed: Configuration changed.
   failed: "An error occurred while interacting with the configuration: %s\n"
