@@ -25,7 +25,6 @@ import (
 	"github.com/containers/common/libnetwork/resolvconf"
 	nettypes "github.com/containers/common/libnetwork/types"
 	"github.com/containers/common/pkg/config"
-	cutil "github.com/containers/common/pkg/util"
 	"github.com/containers/storage/pkg/idtools"
 	"github.com/containers/storage/pkg/lockfile"
 	"github.com/containers/storage/pkg/stringid"
@@ -34,6 +33,7 @@ import (
 	spec "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/opencontainers/runtime-tools/generate"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/exp/slices"
 	"golang.org/x/sys/unix"
 )
 
@@ -156,7 +156,11 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 
 	containerName := Package + "-" + filepath.Base(path)
 	if configureNetwork {
-		g.AddAnnotation("org.freebsd.parentJail", containerName+"-vnet")
+		if jail.NeedVnetJail() {
+			g.AddAnnotation("org.freebsd.parentJail", containerName+"-vnet")
+		} else {
+			g.AddAnnotation("org.freebsd.jail.vnet", "new")
+		}
 	}
 
 	homeDir, err := b.configureUIDGID(g, mountPoint, options)
@@ -199,7 +203,7 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 	rootIDPair := &idtools.IDPair{UID: int(rootUID), GID: int(rootGID)}
 
 	hostFile := ""
-	if !options.NoHosts && !cutil.StringInSlice(config.DefaultHostsFile, volumes) && options.ConfigureNetwork != define.NetworkDisabled {
+	if !options.NoHosts && !slices.Contains(volumes, config.DefaultHostsFile) && options.ConfigureNetwork != define.NetworkDisabled {
 		hostFile, err = b.generateHosts(path, rootIDPair, mountPoint, spec)
 		if err != nil {
 			return err
@@ -207,7 +211,7 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 		bindFiles[config.DefaultHostsFile] = hostFile
 	}
 
-	if !cutil.StringInSlice(resolvconf.DefaultResolvConf, volumes) && options.ConfigureNetwork != define.NetworkDisabled && !(len(b.CommonBuildOpts.DNSServers) == 1 && strings.ToLower(b.CommonBuildOpts.DNSServers[0]) == "none") {
+	if !slices.Contains(volumes, resolvconf.DefaultResolvConf) && options.ConfigureNetwork != define.NetworkDisabled && !(len(b.CommonBuildOpts.DNSServers) == 1 && strings.ToLower(b.CommonBuildOpts.DNSServers[0]) == "none") {
 		resolvFile, err := b.addResolvConf(path, rootIDPair, b.CommonBuildOpts.DNSServers, b.CommonBuildOpts.DNSSearch, b.CommonBuildOpts.DNSOptions, nil)
 		if err != nil {
 			return err
@@ -247,9 +251,11 @@ func (b *Builder) Run(command []string, options RunOptions) error {
 
 	defer b.cleanupTempVolumes()
 
-	// If we are creating a network, make the vnet here so that we
-	// can execute the OCI runtime inside it.
-	if configureNetwork {
+	// If we are creating a network, make the vnet here so that we can
+	// execute the OCI runtime inside it. For FreeBSD-13.3 and later, we can
+	// configure the container network settings from outside the jail, which
+	// removes the need for a separate jail to manage the vnet.
+	if configureNetwork && jail.NeedVnetJail() {
 		mynetns := containerName + "-vnet"
 
 		jconf := jail.NewConfig()
@@ -426,7 +432,12 @@ func (b *Builder) runConfigureNetwork(pid int, isolation define.Isolation, optio
 	}
 	logrus.Debugf("configureNetworks: %v", configureNetworks)
 
-	mynetns := containerName + "-vnet"
+	var mynetns string
+	if jail.NeedVnetJail() {
+		mynetns = containerName + "-vnet"
+	} else {
+		mynetns = containerName
+	}
 
 	networks := make(map[string]nettypes.PerNetworkOptions, len(configureNetworks))
 	for i, network := range configureNetworks {
