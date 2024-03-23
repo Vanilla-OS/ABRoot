@@ -21,9 +21,9 @@ rollback:
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
   rollbackFailed: "Rollback fehlgeschlagen: %s\n"
   rollbackSuccess: 'Rollback erfolgreich abgeschlossen.'
-  rollbackUnnecessary: 'Rollback is not necessary, current root is already the present
-    one.'
-  canRollback: It is possible to rollback to the previous root.
+  rollbackUnnecessary: 'Das Zurückrollen des Systems ist nicht notwendig, da die aktuelle
+    Root bereits die jetzige ist.'
+  canRollback: Es ist möglich, zur vorherigen Root zurückzurollen.
   cannotRollback: It is not possible to rollback to the previous root.
   checkOnlyFlag: check if rollback to previous root is possible
 pkg:
