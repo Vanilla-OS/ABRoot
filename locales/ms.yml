@@ -35,6 +35,7 @@ rollback:
   canRollback: "Pengembalian kepada akar lalu adalah mustahil."
   cannotRollback: "Pengembalian kepada akar lalu adalah mustahil."
 
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: "pkg"
   long: "Pasang dan urus pakej-pakej."
@@ -121,3 +122,4 @@ updateInitramfs:
   rootRequired: "You must be root to run this command."
   updateSuccess: "Updated initramfs of future root."
   updateFailed: "Failed to update initramfs of future root.\n"
+  dryRunFlag: perform a dry run of the operation

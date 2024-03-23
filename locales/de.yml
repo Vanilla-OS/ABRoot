@@ -25,6 +25,7 @@ rollback:
     one.'
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -90,6 +91,7 @@ updateInitramfs:
   updateSuccess: Updated initramfs of future root.
   long: Update the initramfs of the future root.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Es wurden keine Änderungen an der Konfiguration vorgenommen.
   editorFailed: "Fehler beim Öffnen des Editors: %s\n"

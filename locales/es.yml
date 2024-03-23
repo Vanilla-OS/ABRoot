@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
   canRollback: Es posible volver a la raíz anterior.
   cannotRollback: No es posible volver a la raíz anterior.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: pkg
   rootRequired: Debes tener acceso como superusuario para ejecutar este comando.
@@ -91,6 +92,7 @@ updateInitramfs:
   updateSuccess: Se ha actualizado el initramfs de la futura raíz.
   long: Actualiza el initramfs de la futura raíz.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: No se ha modificado la configuración.
   editorFailed: "Error al abrir el editor: %s\n"

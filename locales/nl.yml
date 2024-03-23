@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: Terugrol is niet nodig, huidige root is al de actuele.
   canRollback: Het is mogelijk om naar de vorige root terug te rollen.
   cannotRollback: Het is niet mogelijk om naar de vorige root terug te rollen.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   long: Installeer en beheer pakketten
   addedMsg: "Pakketten %s toegevoegd\n"
@@ -89,6 +90,7 @@ updateInitramfs:
   updateSuccess: Initramfs van toekomstige root bijgewerkt
   long: Werkt de initramfs van de toekomstige root bij
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Er zijn geen wijzigingen aangebracht aan de configuratie.
   editorFailed: "Kon bewerker niet openen: %s\n"

@@ -23,6 +23,7 @@ rollback:
   rollbackUnnecessary: Откат не требуется, текущий корень уже является настоящим.
   canRollback: Откат к предыдущему корню возможен.
   cannotRollback: Откат к предыдущему корню невозможен.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
@@ -88,6 +89,7 @@ updateInitramfs:
   updateSuccess: Обновлён initramfs будущего корня.
   long: Обновить initramfs будущего корня.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Никаких изменений в конфигурацию внесено не было.
   editorFailed: "Не удалось открыть редактор: %s\n"

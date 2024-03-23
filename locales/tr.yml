@@ -23,6 +23,7 @@ rollback:
   rollbackUnnecessary: Geri döndürme gerekmiyor, geçerli kök şu anki olan.
   canRollback: Önceki köke geri döndürmek olasıdır.
   cannotRollback: Önceki köke geri döndürmek olanaksızdır.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   listMsg: "Eklenen paketler:\n%s\nKaldırılan paketler:\n%s\n"
   use: pkg
@@ -85,6 +86,7 @@ updateInitramfs:
   updateSuccess: Gelecek kökün initramfs'i güncellendi.
   long: Gelecek kökün initramfs'ini güncelle.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Yapılandırmaya değişiklik yapılmadı.
   editorFailed: "Düzenleyici açılamadı: %s\n"

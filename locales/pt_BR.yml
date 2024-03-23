@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
   canRollback: É possível voltar à raiz anterior.
   cannotRollback: Não é possível reverter para a raiz anterior.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -90,6 +91,7 @@ updateInitramfs:
   updateSuccess: Initramfs da raiz futura atualizado.
   long: Atualize o initramfs da raiz futura.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Nenhuma alteração foi feita na configuração.
   editorFailed: "Falha ao abrir o editor: %s\n"

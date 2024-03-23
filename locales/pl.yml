@@ -23,6 +23,7 @@ rollback:
   rollbackUnnecessary: Rollback nie jest wymagany, bieżący root jest już tym obecnym.
   canRollback: Jest możliwe przywrócenie poprzedniego roota.
   cannotRollback: Nie jest możliwe przywrócenie poprzedniego roota.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: pkg
   long: Instaluj i zarządzaj pakietami.
@@ -87,6 +88,7 @@ updateInitramfs:
   updateSuccess: Zaktualizowano initramfs przyszłego roota.
   long: Zaktualizuj initramfs przyszłego roota.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Nie wprowadzono żadnych zmian w konfiguracji.
   editorFailed: "Nie udało się uruchomić edytora: %s\n"

@@ -25,6 +25,7 @@ rollback:
     den nuvarande.
   canRollback: Det är möjligt att rulla tillbaka till föregående root.
   cannotRollback: Det är inte möjligt att rulla tillbaka till föregående root.
+  checkOnlyFlag: check if rollback to previous root is possible
 status:
   long: Visa nuvarande ABRoot-status.
   short: Visa status
@@ -89,6 +90,7 @@ updateInitramfs:
   updateSuccess: Uppdaterade initramfs för framtida root.
   long: Uppdatera initramfs för framtida root.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Inga ändringar har gjorts i konfigurationen.
   editorFailed: "Misslyckades med att öppna editor: %s\n"

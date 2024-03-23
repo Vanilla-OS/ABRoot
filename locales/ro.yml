@@ -25,6 +25,7 @@ rollback:
   rollbackUnnecessary: Revenirea nu este necesară, rădăcina curentă este cea prezentă.
   canRollback: Revenirea la rădăcina anterioară este posibilă.
   cannotRollback: Revenirea la rădăcina anterioară nu este posibilă.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   noPackageNameProvided: "Trebuie să specificați cel puțin un nume de pachet pentru
@@ -91,6 +92,7 @@ updateInitramfs:
   updateSuccess: Actualizare initramfs pentru viitorul root.
   long: Actualizează initramfs pentru viitoarea rădăcină.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Nu au fost efectuate modificări ale configurației.
   editorFailed: "Deschiderea editorului eșuată: %s\n"

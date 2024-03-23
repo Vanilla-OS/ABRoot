@@ -25,6 +25,7 @@ rollback:
     celle présente.
   canRollback: Il est possible de revenir à la racine précédente.
   cannotRollback: Il n'est pas possible de revenir à la racine précédente.
+  checkOnlyFlag: check if rollback to previous root is possible
 status:
   use: status
   long: Affiche l'état actuel d'ABRoot.
@@ -91,6 +92,7 @@ updateInitramfs:
   updateSuccess: Mise à jour de l'initramfs de la future racine terminée.
   long: Mettre à jour l'initramfs de la future racine.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Aucune modification n'a été faite à la configuration.
   editorFailed: "Impossible d’ouvrir l’éditeur: %s\n"
