@@ -24,7 +24,7 @@ rollback:
   rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
   canRollback: Es posible volver a la raíz anterior.
   cannotRollback: No es posible volver a la raíz anterior.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: comprobar si es posible volver al root anterior
 pkg:
   use: pkg
   rootRequired: Debes tener acceso como superusuario para ejecutar este comando.
@@ -56,8 +56,8 @@ status:
   use: status
   long: Muestra el estado actual de ABRoot.
   short: Estado de la pantalla
-  jsonFlag: Mostrar la salida en formato JSON
-  dumpFlag: Volcar el estado del ABRoot a un archivo
+  jsonFlag: mostrar la salida en formato JSON
+  dumpFlag: volcar el estado de ABRoot a un archivo
   rootRequired: Debes tener acceso como superusuario para ejecutar este comando.
   infoMsg: "Particiones ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguración
     Cargada: %s\n\nEspecificaciones del Sistema:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
@@ -92,7 +92,7 @@ updateInitramfs:
   updateSuccess: Se ha actualizado el initramfs de la futura raíz.
   long: Actualiza el initramfs de la futura raíz.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: realizar una simulación de la operación
 cnf:
   unchanged: No se ha modificado la configuración.
   editorFailed: "Error al abrir el editor: %s\n"
