@@ -51,7 +51,7 @@ pkg:
     %s\n"
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
-  short: ''
+  short: 'Upgrade the system'
   forceFlag: Aktualisierung erzwingen, auch wenn das System auf dem neuesten Stand
     ist
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
@@ -68,7 +68,7 @@ upgrade:
   checkingSystemUpdate: Nach Systemaktualisierung suchen...
   dryRunFlag: Führe einen Probedurchlauf aus
   dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
-  success: ''
+  success: 'Upgrade completed successfully.'
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
@@ -86,10 +86,10 @@ status:
   infoMsgAgreementStatus: "\nPaketvereinbarung: %t"
 updateInitramfs:
   short: initramfs aktualisieren
-  updateFailed: ""
+  updateFailed: "Failed to update initramfs of future root.\n"
   rootRequired: Sie müssen root sein, um diesen Befehl ausführen zu können.
-  updateSuccess: ''
-  long: ''
+  updateSuccess: 'Updated initramfs of future root.'
+  long: 'Update the initramfs of the future root.'
   use: update-initramfs
   dryRunFlag: einen Trockenlauf des Vorgangs durchführen
 cnf:
