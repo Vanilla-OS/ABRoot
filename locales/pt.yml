@@ -21,31 +21,29 @@ rollback:
   rootRequired: "Tens que ser root para executar este comando."
   rollbackFailed: "Rollback falhou: %s\n"
   rollbackSuccess: Rollback completo com sucesso
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
-  checkOnlyFlag: check if rollback to previous root is possible
+  rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
+  canRollback: É possível voltar à raiz anterior.
+  cannotRollback: Não é possível reverter para a raiz anterior.
+  checkOnlyFlag: verificar se um rollback para a raiz anterior é possível
 upgrade:
-  short: Atualizar a partição de boot
-  forceFlag: forçar atualização da partição de boot sem pedir confirmação
+  short: Atualizar o sistema
+  forceFlag: forçar a atualização mesmo que o sistema esteja atualizado
   rootRequired: Tens que ser root para executar este comando.
   use: upgrade
-  long: Atualizar a partição de boot para fins de manutenção (apenas para usuários
-    avançados)
-  noUpdateAvailable: Nenhuma atualização está disponível para o teu sistema.
+  long: Verifique se há uma nova imagem do sistema e aplique-a.
+  noUpdateAvailable: Nenhuma atualização disponível.
   checkOnlyFlag: verificar para atualizações, mas não aplicá-las
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
-  success: Upgrade completed successfully.
+  removed: Removido
+  downgraded: Desatualizado
+  packageUpdateAvailable: Há %d atualizações de pacote.
+  systemUpdateAvailable: Há uma atualização para o seu sistema.
+  upgraded: Atualizado
+  added: Adicionado
+  checkingPackageUpdate: A procurar atualizações de pacotes...
+  checkingSystemUpdate: A procurar atualizações do sistema...
+  dryRunFlag: executar um teste da operação
+  dryRunSuccess: Teste concluído com sucesso.
+  success: Atualização concluída com sucesso.
 pkg:
   removedMsg: "Pacote(s) %s removido(s).\n"
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -57,23 +55,25 @@ pkg:
     operação.
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Comando de aplicar falhou: %s\n"
-  dryRunFlag: perform a dry run of the operation
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  dryRunFlag: executar um teste da operação
+  agreementSignFailed: "Falha ao assinar o acordo: %s\n"
+  agreementDeclined: Recusou o acordo. O recurso permanecerá desativado até que concorde
+    com ele.
+  agreementMsg: "Para utilizar o comando abroot pkg do ABRoot, é necessário um acordo
+    explícito do utilizador. Esse comando facilita as instalações do pacote, mas introduz
+    elementos não determinísticos, afetando a confiabilidade do sistema. Ao consentir,
+    reconhece e aceita essas implicações e confirma a sua consciência do impacto potencial
+    do comando no comportamento do sistema. [y/N]: "
+  forceEnableUserAgreementFlag: forçar habilitação de contrato de utilizador, para
+    sistemas embarcados
+  failedGettingPkgManagerInstance: "Falha ao obter a instância do gestor de pacotes:
+    %s\n"
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
   short: Mostrar status
-  jsonFlag: Mostrar o output em formato JSON
-  dumpFlag: Despejar o status do ABRoot para um arquivo
+  jsonFlag: mostrar saída no formato JSON
+  dumpFlag: despejar o estado ABRoot num arquivo
   rootRequired: Tens que ser root para executar este comando.
   infoMsg: "Partições ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguração
     carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
@@ -83,21 +83,21 @@ status:
   unstagedFoundMsg: "\n\t\tExistem %d pacotes unstaged. Por favor execute 'abroot
     pkg apply' para os aplicar."
   dumpMsg: "Despejar o status do ABRoot para %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\nAcordo de pacote: %t"
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: Atualize o initramfs
+  updateFailed: "Falha ao atualizar o initramfs da raiz futura.\n"
+  rootRequired: Deve ser um administrador para executar este comando.
+  updateSuccess: Initramfs da raiz futura atualizado.
+  long: Atualize o initramfs da raiz futura.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: executar um teste da operação
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Nenhuma alteração foi feita na configuração.
+  editorFailed: "Falha ao abrir o editor: %s\n"
+  long: Abrir um editor para editar a configuração do ABRoot.
+  short: Editar configuração do ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Configuração alterada.
+  failed: "Ocorreu um erro ao interagir com a configuração: %s\n"
+  rootRequired: Deve ser root para executar este comando.
