@@ -23,7 +23,7 @@ rollback:
   rollbackUnnecessary: Откат не требуется, текущий корень уже является настоящим.
   canRollback: Откат к предыдущему корню возможен.
   cannotRollback: Откат к предыдущему корню невозможен.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: проверять, возможен ли откат к предыдущему корню
 pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
@@ -52,8 +52,8 @@ status:
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
   use: status
   long: Показать текущее состояние ABRoot.
-  jsonFlag: Показать вывод в формате JSON
-  dumpFlag: Сохранить состояние ABRoot в архив
+  jsonFlag: показать вывод в формате JSON
+  dumpFlag: сохранить состояние ABRoot в архив
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
   infoMsg: "Разделы ABRoot:\n  - Текущий: %s ◄\n  - Будущий: %s\n\nЗагруженная конфигурация:
     %s\n\nСпецификации ПК:\n  - Процессор: %s\n  - Графический процессор:%s\n  - Память:
@@ -89,7 +89,7 @@ updateInitramfs:
   updateSuccess: Обновлён initramfs будущего корня.
   long: Обновить initramfs будущего корня.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: выполнить пробный запуск операции
 cnf:
   unchanged: Никаких изменений в конфигурацию внесено не было.
   editorFailed: "Не удалось открыть редактор: %s\n"
