@@ -50,7 +50,7 @@ status:
   long: Şu anki ABRoot durumunu görüntüle.
   rootRequired: Bu komutu çalıştırmak için kök olmanız gerekir.
   short: Durumu görüntüle
-  jsonFlag: Çıktıyı JSON formatında göster
+  jsonFlag: çıktıyı JSON formatında göster
   dumpFlag: ABRoot durumunu bir arşive aktarın
   infoMsg: "ABRoot Bölümleri:\n  - Şu An: %s ◄\n  - Gelecek: %s\n\nYüklü Yapılandırma:
     %s\n\nAygıt Özellikleri:\n  - MİB: %s\n  - GİB:%s\n  - Bellek: %s\n\nABImage:\n\
