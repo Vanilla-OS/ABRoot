@@ -21,7 +21,7 @@ rollback:
   rollbackUnnecessary: 无需回滚，根分区已经是当前根分区。
   canRollback: 可以回滚到上一个根分区。
   cannotRollback: 无法回滚到上一个根分区。
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: 检查是否可回滚到上一个根分区
 pkg:
   applyFailed: "应用命令失败：%s\n"
   removedMsg: "已移除软件包 %s。\n"
@@ -77,7 +77,7 @@ updateInitramfs:
   updateSuccess: 已更新将来根分区的 initramfs。
   long: 更新将来根分区的初始化内存盘（initramfs）。
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: 为操作执行试运行（dry run）
 cnf:
   unchanged: 未对配置做出任何更改。
   editorFailed: "无法打开编辑器：%s\n"
