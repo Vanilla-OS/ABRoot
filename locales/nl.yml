@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: Terugrol is niet nodig, huidige root is al de actuele.
   canRollback: Het is mogelijk om naar de vorige root terug te rollen.
   cannotRollback: Het is niet mogelijk om naar de vorige root terug te rollen.
+  checkOnlyFlag: controleren of terugrol naar vorige root mogelijk is
 pkg:
   long: Installeer en beheer pakketten
   addedMsg: "Pakketten %s toegevoegd\n"
@@ -50,9 +51,9 @@ pkg:
 status:
   use: status
   long: Toont de huidige status van ABRoot
-  dumpFlag: Status van ABRoot naar een archief dumpen
-  jsonFlag: Uitvoer in JSON-formaat tonen
-  short: Weergave­status
+  dumpFlag: status van ABRoot naar een archief dumpen
+  jsonFlag: uitvoer in JSON-formaat tonen
+  short: Status tonen
   rootRequired: U moet root zijn om deze opdracht uit te voeren.
   infoMsg: "ABRoot-partities:\n  - Huidig: %s ◄\n  - Toekomstig: %s\n\nGelade configuratie:
     %s\n\nApparaatspecificaties:\n  - CPU: %s\n  - GPU:%s\n  - Geheugen: %s\n\nABImage:\n\
@@ -89,6 +90,7 @@ updateInitramfs:
   updateSuccess: Initramfs van toekomstige root bijgewerkt
   long: Werkt de initramfs van de toekomstige root bij
   use: update-initramfs
+  dryRunFlag: test uitvoeren van de handeling
 cnf:
   unchanged: Er zijn geen wijzigingen aangebracht aan de configuratie.
   editorFailed: "Kon bewerker niet openen: %s\n"

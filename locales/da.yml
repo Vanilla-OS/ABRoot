@@ -37,6 +37,7 @@ rollback:
   canRollback: "It is possible to rollback to the previous root."
   cannotRollback: "It is not possible to rollback to the previous root."
 
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: "pkg"
   long: "Install and manage packages."
@@ -121,3 +122,4 @@ updateInitramfs:
   rootRequired: "You must be root to run this command."
   updateSuccess: "Updated initramfs of future root."
   updateFailed: "Failed to update initramfs of future root.\n"
+  dryRunFlag: perform a dry run of the operation

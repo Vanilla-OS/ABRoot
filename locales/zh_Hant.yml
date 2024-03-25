@@ -21,6 +21,7 @@ rollback:
   rollbackUnnecessary: 無需復原，已經是目前 Root 分割區。
   canRollback: 可以復原到上一個 Root 分割區。
   cannotRollback: 無法復原到上一個 Root 分割區。
+  checkOnlyFlag: 檢查是否可以復原到上一個 Root 分割區
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 個軟體包尚未套用變更。請執行 'abroot pkg apply' 套用變更。"
@@ -76,6 +77,7 @@ updateInitramfs:
   updateSuccess: 已更新將來 Root 分割區的 initramfs。
   long: 更新將來 Root 分割區的 initramfs。
   use: update-initramfs
+  dryRunFlag: 為操作執行事先嘗試（dry run）
 cnf:
   unchanged: 沒有對組態作出任何變更。
   editorFailed: "無法開啟編輯器：%s\n"

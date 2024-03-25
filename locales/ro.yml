@@ -25,6 +25,7 @@ rollback:
   rollbackUnnecessary: Revenirea nu este necesară, rădăcina curentă este cea prezentă.
   canRollback: Revenirea la rădăcina anterioară este posibilă.
   cannotRollback: Revenirea la rădăcina anterioară nu este posibilă.
+  checkOnlyFlag: verifică dacă este posibilă revenirea la rădăcina anterioară
 pkg:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   noPackageNameProvided: "Trebuie să specificați cel puțin un nume de pachet pentru
@@ -54,8 +55,8 @@ status:
   use: status
   long: Afișați starea ABRoot curentă.
   short: Afișați starea
-  jsonFlag: Afișați ieșirea in format JSON
-  dumpFlag: Transferați starea ABRoot într-o arhivă
+  jsonFlag: afișați ieșirea in format JSON
+  dumpFlag: transferați starea ABRoot într-o arhivă
   unstagedFoundMsg: "\n\t\tSunt %d pachete nestagiate. Rulați \"abroot pkg apply\"\
     \ pentru a le aplica."
   rootRequired: Trebuie să fiți root pentru a executa această comandă.
@@ -91,6 +92,7 @@ updateInitramfs:
   updateSuccess: Actualizare initramfs pentru viitorul root.
   long: Actualizează initramfs pentru viitoarea rădăcină.
   use: update-initramfs
+  dryRunFlag: efectuați o repetiție a operațiunii
 cnf:
   unchanged: Nu au fost efectuate modificări ale configurației.
   editorFailed: "Deschiderea editorului eșuată: %s\n"

@@ -21,10 +21,11 @@ rollback:
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
   rollbackFailed: "Rollback fehlgeschlagen: %s\n"
   rollbackSuccess: 'Rollback erfolgreich abgeschlossen.'
-  rollbackUnnecessary: 'Rollback is not necessary, current root is already the present
-    one.'
-  canRollback: It is possible to rollback to the previous root.
+  rollbackUnnecessary: 'Das Zurückrollen des Systems ist nicht notwendig, da die aktuelle
+    Root bereits die jetzige ist.'
+  canRollback: Es ist möglich, zur vorherigen Root zurückzurollen.
   cannotRollback: It is not possible to rollback to the previous root.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -37,22 +38,22 @@ pkg:
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
   dryRunFlag: Führe einen Probedurchlauf aus
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
+  agreementDeclined: Sie haben die Vereinbarung abgelehnt. Die Funktion bleibt deaktiviert,
+    bis Sie ihr zustimmen.
   agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
     required. This command facilitates package installations but introduces non-deterministic
     elements, impacting system trustworthiness. By consenting, you acknowledge and
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  forceEnableUserAgreementFlag: Benutzervereinbarung erzwingen, für eingebettete Systeme
   failedGettingPkgManagerInstance: "Fehler beim Abrufen der Paketmanager-Instanz:
     %s\n"
 upgrade:
-  long: Aktualisieren Sie die Boot-Partition aus Wartungsgründen (nur für fortgeschrittene
-    Benutzer)
-  short: Boot-Partition aktualisieren
-  forceFlag: Aktualisierung der Boot-Partition erzwingen ohne eine Bestätigung abzufragen
+  long: Auf ein neues Systemabbild prüfen und es anwenden.
+  short: 'Upgrade the system'
+  forceFlag: Aktualisierung erzwingen, auch wenn das System auf dem neuesten Stand
+    ist
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   use: upgrade
   noUpdateAvailable: Kein Aktualisierung verfügbar.
@@ -67,14 +68,14 @@ upgrade:
   checkingSystemUpdate: Nach Systemaktualisierung suchen...
   dryRunFlag: Führe einen Probedurchlauf aus
   dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
-  success: Upgrade completed successfully.
+  success: 'Upgrade completed successfully.'
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
     pkg apply' aus, um sie anzuwenden."
   long: Aktuellen ABRoot-Status anzeigen.
   short: Anzeigestatus
-  jsonFlag: Ausgabe in JSON-Format anzeigen
+  jsonFlag: Ausgabe im JSON-Format anzeigen
   dumpFlag: ABRoot-Status in einem Archiv ablegen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   infoMsg: "ABRoot Partitionen:\n  - Gegenwärtig: %s ◄\n  - Zukünftige: %s\n\nGeladene
@@ -82,14 +83,15 @@ status:
     %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
     %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
+  infoMsgAgreementStatus: "\nPaketvereinbarung: %t"
 updateInitramfs:
-  short: Update the initramfs
+  short: initramfs aktualisieren
   updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  rootRequired: Sie müssen root sein, um diesen Befehl ausführen zu können.
+  updateSuccess: 'Updated initramfs of future root.'
+  long: 'Update the initramfs of the future root.'
   use: update-initramfs
+  dryRunFlag: einen Trockenlauf des Vorgangs durchführen
 cnf:
   unchanged: Es wurden keine Änderungen an der Konfiguration vorgenommen.
   editorFailed: "Fehler beim Öffnen des Editors: %s\n"

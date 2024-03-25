@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
   canRollback: É possível voltar à raiz anterior.
   cannotRollback: Não é possível reverter para a raiz anterior.
+  checkOnlyFlag: verificar se um rollback para a raiz anterior é possível
 pkg:
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -51,13 +52,13 @@ pkg:
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
-  dumpFlag: Despejar o status ABRoot em um arquivo morto
+  dumpFlag: despejar o status ABRoot em um arquivo morto
   rootRequired: Você deve ser um administrador (root) para executar este comando.
   unstagedFoundMsg: "\n\t\tHá %d pacotes não preparados. Por favor, execute 'abroot
     pkg apply' para aplicá-los."
   dumpMsg: "Status ABRoot despejado para %s\n"
   use: status
-  jsonFlag: Mostrar saída no formato JSON
+  jsonFlag: mostrar saída no formato JSON
   infoMsg: "Partições do ABRoot:\n  - Atuais: %s ◄\n  - Futuras: %s\n\nConfiguração
     carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memória:
     %s\n\nABImage:\n  - Síntese: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
@@ -90,6 +91,7 @@ updateInitramfs:
   updateSuccess: Initramfs da raiz futura atualizado.
   long: Atualize o initramfs da raiz futura.
   use: update-initramfs
+  dryRunFlag: executar um teste da operação
 cnf:
   unchanged: Nenhuma alteração foi feita na configuração.
   editorFailed: "Falha ao abrir o editor: %s\n"

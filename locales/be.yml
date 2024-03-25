@@ -24,6 +24,7 @@ rollback:
     one.
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: pkg
   long: Устаноўка пакетаў і кіраванне імі.
@@ -87,6 +88,7 @@ updateInitramfs:
   updateSuccess: Updated initramfs of future root.
   long: Update the initramfs of the future root.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: No changes were made to the configuration.
   editorFailed: "Failed to open the editor: %s\n"

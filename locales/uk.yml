@@ -24,6 +24,7 @@ rollback:
   rollbackUnnecessary: Відкат не обов'язковий, теперішній корінь вже є поточним.
   canRollback: Відкат до попереднього кореня є можливим.
   cannotRollback: Відкат до попереднього кореня не є можливим.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   applyFailed: "Не вдалося застосувати команду: %s\n"
   removedMsg: "Видалено пакунків: %s.\n"
@@ -90,6 +91,7 @@ updateInitramfs:
   updateSuccess: Оновлено initramfs майбутнього кореня.
   long: Оновити initramfs майбутнього кореня.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: No changes were made to the configuration.
   editorFailed: "Failed to open the editor: %s\n"

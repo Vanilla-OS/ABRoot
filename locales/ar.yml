@@ -23,6 +23,7 @@ rollback:
     one.
   canRollback: يمكن التراجع للجذر السابق.
   cannotRollback: لا يمكن التراجع للجذر السابق.
+  checkOnlyFlag: check if rollback to previous root is possible
 status:
   use: status
   dumpMsg: "Dumped ABRoot status to %s\n"
@@ -85,6 +86,7 @@ updateInitramfs:
   updateSuccess: Updated initramfs of future root.
   long: Update the initramfs of the future root.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   use: cnf
   unchanged: No changes were made to the configuration.

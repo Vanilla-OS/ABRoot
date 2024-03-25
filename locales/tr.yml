@@ -23,6 +23,7 @@ rollback:
   rollbackUnnecessary: Geri döndürme gerekmiyor, geçerli kök şu anki olan.
   canRollback: Önceki köke geri döndürmek olasıdır.
   cannotRollback: Önceki köke geri döndürmek olanaksızdır.
+  checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   listMsg: "Eklenen paketler:\n%s\nKaldırılan paketler:\n%s\n"
   use: pkg
@@ -49,7 +50,7 @@ status:
   long: Şu anki ABRoot durumunu görüntüle.
   rootRequired: Bu komutu çalıştırmak için kök olmanız gerekir.
   short: Durumu görüntüle
-  jsonFlag: Çıktıyı JSON formatında göster
+  jsonFlag: çıktıyı JSON formatında göster
   dumpFlag: ABRoot durumunu bir arşive aktarın
   infoMsg: "ABRoot Bölümleri:\n  - Şu An: %s ◄\n  - Gelecek: %s\n\nYüklü Yapılandırma:
     %s\n\nAygıt Özellikleri:\n  - MİB: %s\n  - GİB:%s\n  - Bellek: %s\n\nABImage:\n\
@@ -85,6 +86,7 @@ updateInitramfs:
   updateSuccess: Gelecek kökün initramfs'i güncellendi.
   long: Gelecek kökün initramfs'ini güncelle.
   use: update-initramfs
+  dryRunFlag: perform a dry run of the operation
 cnf:
   unchanged: Yapılandırmaya değişiklik yapılmadı.
   editorFailed: "Düzenleyici açılamadı: %s\n"
