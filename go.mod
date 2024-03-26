@@ -7,12 +7,13 @@ require (
 	github.com/containers/image/v5 v5.29.0
 	github.com/containers/storage v1.51.0
 	github.com/dustin/go-humanize v1.0.1
+	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.8.0
 	github.com/vanilla-os/differ/diff v0.0.0-20231226220222-4f9298cef551
 	github.com/vanilla-os/orchid v0.5.0
 	github.com/vanilla-os/prometheus v0.2.0
-	golang.org/x/sys v0.16.0
+	golang.org/x/sys v0.17.0
 )
 
 require (
@@ -49,7 +50,7 @@ require (
 	github.com/docker/go-connections v0.4.1-0.20231110212414-fa09c952e3ea // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fsouza/go-dockerclient v1.10.1 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.1 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-openapi/analysis v0.22.1 // indirect
 	github.com/go-openapi/errors v0.21.0 // indirect
@@ -74,7 +75,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20240104140712-c1f7de06e9f8 // indirect
-	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
@@ -129,7 +129,7 @@ require (
 	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
@@ -168,7 +168,7 @@ require (
 	github.com/spf13/viper v1.18.2
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	golang.org/x/term v0.16.0 // indirect
+	golang.org/x/term v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
