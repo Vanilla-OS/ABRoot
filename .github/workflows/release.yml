@@ -32,7 +32,7 @@ jobs:
       - name: Compress-manpage
         run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
           files: |

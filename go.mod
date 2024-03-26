@@ -7,6 +7,7 @@ require (
 	github.com/containers/image/v5 v5.29.0
 	github.com/containers/storage v1.51.0
 	github.com/dustin/go-humanize v1.0.1
+	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.8.0
 	github.com/vanilla-os/differ/diff v0.0.0-20231226220222-4f9298cef551
@@ -74,7 +75,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20240104140712-c1f7de06e9f8 // indirect
-	github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
