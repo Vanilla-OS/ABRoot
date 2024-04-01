@@ -3,7 +3,7 @@ module github.com/vanilla-os/abroot
 go 1.21.4
 
 require (
-	github.com/containers/buildah v1.35.1
+	github.com/containers/buildah v1.35.3
 	github.com/containers/image/v5 v5.30.0
 	github.com/containers/storage v1.53.0
 	github.com/dustin/go-humanize v1.0.1
@@ -43,7 +43,7 @@ require (
 	github.com/containerd/typeurl/v2 v2.1.1 // indirect
 	github.com/containernetworking/cni v1.1.2 // indirect
 	github.com/containernetworking/plugins v1.4.0 // indirect
-	github.com/containers/common v0.58.0 // indirect
+	github.com/containers/common v0.58.1 // indirect
 	github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 // indirect
 	github.com/containers/luksy v0.0.0-20240212203526-ceb12d4fd50c // indirect
 	github.com/containers/ocicrypt v1.1.9 // indirect
@@ -176,7 +176,7 @@ require (
 	golang.org/x/tools v0.18.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231120223509-83a465c0220f // indirect
 	google.golang.org/grpc v1.61.0 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/go-jose/go-jose.v2 v2.6.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
