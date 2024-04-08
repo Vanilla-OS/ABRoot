@@ -16,7 +16,7 @@ require (
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
 	github.com/vanilla-os/orchid v0.5.0
 	github.com/vanilla-os/prometheus v0.2.0
-	golang.org/x/sys v0.18.0
+	golang.org/x/sys v0.19.0
 )
 
 require (
