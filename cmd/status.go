@@ -176,7 +176,7 @@ func status(cmd *cobra.Command, args []string) error {
 
 		tarHeader := &tar.Header{
 			Name: "status.json",
-			Mode: 0644,
+			Mode: 0o644,
 			Size: int64(len(b)),
 		}
 		err = tarWriter.WriteHeader(tarHeader)
@@ -196,7 +196,7 @@ func status(cmd *cobra.Command, args []string) error {
 				}
 				tarHeader := &tar.Header{
 					Name: filepath.Join("logs", relPath),
-					Mode: 0644,
+					Mode: 0o644,
 					Size: info.Size(),
 				}
 				err = tarWriter.WriteHeader(tarHeader)
@@ -233,23 +233,92 @@ func status(cmd *cobra.Command, args []string) error {
 		unstagedAlert = fmt.Sprintf(abroot.Trans("status.unstagedFoundMsg"), len(pkgsUnstg))
 	}
 
-	agreementMsg := ""
-	if settings.Cnf.IPkgMngStatus == 2 {
-		agreementMsg = fmt.Sprintf(abroot.Trans("status.infoMsgAgreementStatus"), pkgMngAgreementStatus)
+	presentMark, futureMark, err := getCurrentlyBootedPartition(a)
+	if err != nil {
+		return err
 	}
-	cmdr.Info.Printfln("%s, %s",
-		fmt.Sprintf(
-			abroot.Trans("status.infoMsg"),
-			present.Label, future.Label,
-			settings.CnfFileUsed,
-			specs.CPU, formattedGPU, specs.Memory,
-			abImage.Digest, abImage.Timestamp.Format("2006-01-02 15:04:05"), abImage.Image,
-			kargs,
-			strings.Join(pkgsAdd, ", "), strings.Join(pkgsRm, ", "), strings.Join(pkgsUnstg, ", "),
-			unstagedAlert,
-		),
-		agreementMsg,
-	)
+
+	// ABRoot partitions:
+	cmdr.Bold.Println(abroot.Trans("status.partitions.title"))
+	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.partitions.present"), present.Label, presentMark)},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.partitions.future"), future.Label, futureMark)},
+	}).Render()
+
+	// Loaded Configuration: ...
+	cmdr.Bold.Print(abroot.Trans("status.loadedConfig") + " ")
+	cmdr.FgDefault.Println(settings.CnfFileUsed)
+	fmt.Println()
+
+	// Device Specification:
+	cmdr.Bold.Println(abroot.Trans("status.specs.title"))
+	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.cpu"), specs.CPU)},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.gpu"), specs.GPU)},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.memory"), specs.Memory)},
+	}).Render()
+
+	// ABImage:
+	cmdr.Bold.Println(abroot.Trans("status.abimage.title"))
+	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.digest"), abImage.Digest)},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.timestamp"), abImage.Timestamp.Format("2006-01-02 15:04:05"))},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.image"), abImage.Image)},
+	}).Render()
+
+	// Kernel Arguments: ...
+	cmdr.Bold.Print(abroot.Trans("status.kargs") + " ")
+	cmdr.FgDefault.Println(kargs)
+	fmt.Println()
+
+	// Packages:
+	cmdr.Bold.Println(abroot.Trans("status.packages.title"))
+	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.added"), strings.Join(pkgsAdd, ", "))},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.removed"), strings.Join(pkgsRm, ", "))},
+		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.unstaged"), strings.Join(pkgsUnstg, ", "), unstagedAlert)},
+	}).Render()
+
+	// Package Agreement: ...
+	cmdr.Bold.Print(abroot.Trans("status.agreementStatus") + " ")
+	cmdr.FgDefault.Println(pkgMngAgreementStatus)
 
 	return nil
+}
+
+func getCurrentlyBootedPartition(a *core.ABRootManager) (string, string, error) {
+	bootPart, err := a.GetBoot()
+	if err != nil {
+		return "", "", err
+	}
+	uuid := uuid.New().String()
+	tmpBootMount := filepath.Join("/tmp", uuid)
+	err = os.Mkdir(tmpBootMount, 0o755)
+	if err != nil {
+		return "", "", err
+	}
+	err = bootPart.Mount(tmpBootMount)
+	if err != nil {
+		return "", "", err
+	}
+	defer bootPart.Unmount()
+
+	g, err := core.NewGrub(bootPart)
+	if err != nil {
+		return "", "", err
+	}
+	isPresent, err := g.IsBootedIntoPresentRoot()
+	if err != nil {
+		return "", "", err
+	}
+
+	presentMark := ""
+	futureMark := ""
+	if isPresent {
+		presentMark = " ✓"
+	} else {
+		futureMark = " ✓"
+	}
+
+	return presentMark, futureMark, nil
 }
