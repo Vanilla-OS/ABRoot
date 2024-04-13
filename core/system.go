@@ -296,7 +296,7 @@ UUID=%s  /  %s  defaults  0  0
 		varSource,
 	)
 
-	err := os.WriteFile(filepath.Join(rootPath, "/etc/fstab"), []byte(fstab), 0644)
+	err := os.WriteFile(filepath.Join(rootPath, "/etc/fstab"), []byte(fstab), 0o644)
 	if err != nil {
 		PrintVerboseErr("ABSystem.GenerateFstab", 0, err)
 		return err
@@ -347,7 +347,7 @@ func (s *ABSystem) GenerateCrypttab(rootPath string) error {
 		crypttabContent += fmtEntry + "\n"
 	}
 
-	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0644)
+	err := os.WriteFile(rootPath+"/etc/crypttab", []byte(crypttabContent), 0o644)
 	if err != nil {
 		PrintVerboseErr("ABSystem.GenerateCrypttab", 3, err)
 		return err
@@ -404,9 +404,9 @@ Options=%s
 			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 0, "failed to determine escaped path", err)
 			return err
 		}
-		mountUnitFile := "/" + strings.Replace(string(out), "\n", "", -1) + ".mount"
+		mountUnitFile := "/" + strings.ReplaceAll(string(out), "\n", "") + ".mount"
 
-		err = os.WriteFile(filepath.Join(rootPath, mountUnitDir, mountUnitFile), []byte(unit), 0644)
+		err = os.WriteFile(filepath.Join(rootPath, mountUnitDir, mountUnitFile), []byte(unit), 0o644)
 		if err != nil {
 			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 1, err)
 			return err
@@ -414,7 +414,7 @@ Options=%s
 
 		const targetWants string = "/local-fs.target.wants"
 
-		err = os.MkdirAll(filepath.Join(rootPath, mountUnitDir, targetWants), 0755)
+		err = os.MkdirAll(filepath.Join(rootPath, mountUnitDir, targetWants), 0o755)
 		if err != nil {
 			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 2, err)
 			return err
@@ -642,7 +642,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerboseErr("ABSystemRunOperation", 4, err)
 			return err
 		}
-		err = os.MkdirAll(systemOld, 0755)
+		err = os.MkdirAll(systemOld, 0o755)
 		if err != nil {
 			PrintVerboseErr("ABSystemRunOperation", 4.1, err)
 			return err
@@ -878,7 +878,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	uuid := uuid.New().String()
 	tmpBootMount := filepath.Join("/tmp", uuid)
-	err = os.Mkdir(tmpBootMount, 0755)
+	err = os.Mkdir(tmpBootMount, 0o755)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 9, err)
 		return err
@@ -967,7 +967,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			}
 
 			replacer := strings.NewReplacer(replacerPairs...)
-			os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0644)
+			os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0o644)
 		}
 
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
@@ -1004,7 +1004,7 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 
 	uuid := uuid.New().String()
 	tmpBootMount := filepath.Join("/tmp", uuid)
-	err = os.Mkdir(tmpBootMount, 0755)
+	err = os.Mkdir(tmpBootMount, 0o755)
 	if err != nil {
 		PrintVerboseErr("ABSystem.Rollback", 2, err)
 		return ROLLBACK_FAILED, err
@@ -1073,7 +1073,7 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 		}
 
 		replacer := strings.NewReplacer(replacerPairs...)
-		os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0644)
+		os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0o644)
 	}
 
 	err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
