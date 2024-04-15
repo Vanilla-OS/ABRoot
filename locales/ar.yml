@@ -32,13 +32,8 @@ status:
   dumpFlag: Dump the ABRoot status to an archive
   rootRequired: You must be root to run this command.
   short: Display status
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
 pkg:
   use: pkg
   long: تثبيت و أدارة الحزم.

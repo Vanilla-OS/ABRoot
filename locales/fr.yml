@@ -33,15 +33,9 @@ status:
   jsonFlag: Afficher la sortie au format JSON
   dumpFlag: Décharger l'état d'ABRoot dans une archive
   rootRequired: Vous devez être root pour exécuter cette commande.
-  infoMsg: "ABRoot Partitions :\n  - Présente : %s ◄\n  - Futures : %s\n\nConfiguration
-    chargée : %s\n\nSpécifications de l'appareil :\n  - CPU : %s\n  - GPU:%s\n  -
-    Mémoire : %s\n\nABImage :\n  - Digest : %s\n  - Horodatage : %s\n  - Image : %s\n
-    \nArguments du noyau : %s\n\nPaquets :\n  - Ajoutés : %s\n  - Supprimés : %s\n\
-    \  - Non stabilisé : %s%s\n"
   unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
     pkg apply' pour les appliquer."
   dumpMsg: "L'état de l'ABRoot a été récupéré dans %s\n"
-  infoMsgAgreementStatus: "\nAccord du packet: %t"
 pkg:
   use: pkg
   long: Installer et gérer les paquets.

@@ -55,15 +55,9 @@ status:
   jsonFlag: Mostra l'output in formato JSON
   dumpFlag: Scarica lo stato ABRoot in un archivio
   rootRequired: Per eseguire questo comando è necessario essere root.
-  infoMsg: "Partizioni ABRoot:\n  - Presente: %s ◄\n  - Futura: %s\n\nConfigurazioni
-    caricate: %s\n\nSpecifiche del dispositivo:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
-    %s\n\nABImage:\n  - Valore Digest: %s\n  - Data di creazione: %s\n  - Immagine:
-    %s\n\nArgomenti del Kernel: %s\n\nPacchetti:\n  - Aggiunti: %s\n  - Rimossi: %s\n\
-    \  - Inapplicati: %s%s\n"
   unstagedFoundMsg: "\n\t\tCi sono %d pacchetti impreparati. Esegui 'abroot pkg apply'
     per applicarli."
   dumpMsg: "Scaricato lo stato di ABRoot in %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Aggiorna la partizione di boot per scopi di manutenzione (solo per utenti

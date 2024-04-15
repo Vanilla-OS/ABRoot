@@ -75,12 +75,7 @@ status:
   rootRequired: Musisz być rootem, aby uruchomić to polecenie.
   unstagedFoundMsg: "\n\t\tZnaleziono %d nie dodanych pakietów. Proszę użyj 'abroot
     pkg apply' aby je dodać."
-  infoMsg: "Partycje ABRoota:\n  - Aktualne: %s ◄\n  - Przyszłe: %s\n\nZaładowana
-    Konfiguracja: %s\n\nSpecyfikacja Urządzenia:\n  - CPU: %s\n  - GPU:%s\n  - Pamięć:
-    %s\n\nABImage:\n  - Skrót: %s\n  - Sygnatura czasowa: %s\n  - Obraz: %s\n\nArgumenty
-    Jądra: %s\n\nPakiety:\n  - Dodane: %s\n  - Usunięte: %s\n  - Nie oznaczone: %s%s\n"
   dumpMsg: "Zrzucono status ABRoota do %s\n"
-  infoMsgAgreementStatus: "\nUmowa pakietowa: %t"
 updateInitramfs:
   short: Zaktualizuj initramfs
   updateFailed: "Nie udało się zaktualizować initramfs przyszłego roota.\n"

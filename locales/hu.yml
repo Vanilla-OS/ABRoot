@@ -77,11 +77,6 @@ status:
   unstagedFoundMsg: "\n\t\t%d rendezetlen csomag van. Az alkalmazáshoz futtassa az
     „abroot pkg apply” parancsot."
   dumpMsg: "Az ABRoot állapot kiírva ide: %s\n"
-  infoMsg: "ABRoot partíciók:\n\t- Aktuális: %s ◄\n\t- Jövőbeli: %s\n\nBetöltött konfiguráció:
-    %s\n\nPC specifikációk:\n\t- CPU: %s\n\t- GPU:%s\n\t- Memória: %s\n\nABIkép:\n
-    \t- Kivonat: %s\n\t- Időbélyege: %s\n\t- Kép: %s\n\nKernel argumentumok: %s\n\n
-    Csomagok:\n\t- Hozzáadva: %s\n\t- Eltávolítva: %s\n\t- Nem rendezett: %s%s\n"
-  infoMsgAgreementStatus: "\nCsomagengedélyek: %t"
 updateInitramfs:
   short: Frissítse az initramfs-t
   updateFailed: "Nem sikerült frissíteni a jövőbeli root initramfs-ét.\n"

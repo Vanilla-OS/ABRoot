@@ -53,15 +53,9 @@ status:
   jsonFlag: Паказаць вывад у фармаце JSON
   dumpFlag: Выгрузка стану ABRoot у архіў
   rootRequired: Для выканання гэтай каманды неабходна быць карыстачом root.
-  infoMsg: "ABRoot Partitions:\n   - Сапраўднае: %s ◄\n   - Будучыня: %s\n\nЗагружаная
-    канфігурацыя: %s\n\nХарактарыстыкі ПК:\n   - CPU: %s\n   - GPU:%s\n   - Памяць:
-    %s\n\nABImage:\n   - Дайджэст: %s\n   - Часавая пазнака: %s\n   - Выява: %s\n\n
-    Аргументы ядра: %s\n\nПакеты:\n   - Паведамленні: %s\n   - Выдалена: %s\n   -
-    Неўстаноўленыя: %s%s\n"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
   dumpMsg: "Dumped ABRoot status to %s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
