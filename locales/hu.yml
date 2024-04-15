@@ -10,7 +10,7 @@ kargs:
   use: "kargs"
   long: "A rendszermag paramétereinek kezelése."
   short: "A rendszermag paramétereinek kezelése"
-  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  rootRequired: "A parancs futtatásához root felhasználónak kell lennie."
   notChanged: A kernel paramétereiben nem történt módosítás.
   applyFailed: "Az alkalmazási parancs sikertelen: %s\n"
 rollback:
@@ -18,7 +18,7 @@ rollback:
   long: "Rendszer-visszaállítás végrehajtása, a jelenlegi gyökérben végrehajtott változtatások
     elvetésével."
   short: "Visszaállítja a rendszert egy korábbi állapotra"
-  rootRequired: "A parancs futtatásához root rendszergazdának kell lennie."
+  rootRequired: "A parancs futtatásához root felhasználónak kell lennie."
   rollbackFailed: "Visszaállítás sikertelen: %s\n"
   rollbackSuccess: A visszaállítás sikeresen befejeződött.
   rollbackUnnecessary: A visszaállítás nem szükséges, a jelenlegi root már a jelenlegi.
@@ -50,11 +50,11 @@ pkg:
   use: 'pkg'
   long: Csomagok telepítése és kezelése.
   short: Csomagok kezelése
-  rootRequired: A parancs futtatásához root rendszergazdának kell lennie.
+  rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   noPackageNameProvided: Ehhez a művelethez legalább egy csomagnevet meg kell adni.
   addedMsg: "%s csomag(ok) hozzáadva.\n"
   applyFailed: "Az alkalmazási parancs sikertelen: %s\n"
-  dryRunFlag: végezze el a műveletet szárazon
+  dryRunFlag: a műveletet próbafuttatása
   agreementDeclined: Ön elutasította az engedélyt. A funkció mindaddig letiltva marad,
     amíg el nem fogadja.
   agreementMsg: "Az ABRoot, abroot pkg parancsának használatához kifejezett felhasználói
@@ -73,7 +73,7 @@ status:
   short: Állapot megjelenítése
   jsonFlag: A kimenet megjelenítése JSON formátumban
   dumpFlag: Az ABRoot állapot kiíratása egy archívumba
-  rootRequired: A parancs futtatásához root rendszergazdának kell lennie.
+  rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   unstagedFoundMsg: "\n\t\t%d rendezetlen csomag van. Az alkalmazáshoz futtassa az
     „abroot pkg apply” parancsot."
   dumpMsg: "Az ABRoot állapot kiírva ide: %s\n"
@@ -97,5 +97,5 @@ cnf:
   use: 'cnf'
   changed: A konfiguráció megváltozott.
   failed: "Hiba történt a következő konfigurációval való interakció közben: %s\n"
-  rootRequired: A parancs futtatása csak root-nak engedélyezett.
+  rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   unchanged: Nem történt módosítás a konfigurációban.
