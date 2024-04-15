@@ -53,6 +53,28 @@ status:
   jsonFlag: JSON 형식으로 출력을 표시합니다.
   unstagedFoundMsg: "\n\t\t미적용된 패키지가 %d개 있습니다. 'abroot pkg apply'를 실행하여 적용하십시오."
   dumpMsg: "ABRoot 상태를 %s에 덤프했습니다.\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 upgrade:
   forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다.
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.

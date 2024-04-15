@@ -78,6 +78,28 @@ status:
   unstagedFoundMsg: "\n\t\tExistem %d pacotes unstaged. Por favor execute 'abroot
     pkg apply' para os aplicar."
   dumpMsg: "Despejar o status do ABRoot para %s\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 updateInitramfs:
   short: Atualize o initramfs
   updateFailed: "Falha ao atualizar o initramfs da raiz futura.\n"

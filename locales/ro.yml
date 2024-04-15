@@ -61,6 +61,28 @@ status:
     \ pentru a le aplica."
   rootRequired: Trebuie să fiți root pentru a executa această comandă.
   dumpMsg: "Starea ABRoot descărcată în %s\n"
+  abimage:
+    image: 'Image: %s'
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+  specs:
+    memory: 'Memory: %s'
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+  partitions:
+    title: 'ABRoot Partitions:'
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  kargs: 'Kernel Arguments: %s'
+  agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
   long: Verifică dacă există o nouă imagine de sistem și aplic-o.

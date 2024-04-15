@@ -36,6 +36,28 @@ status:
   unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
     pkg apply' pour les appliquer."
   dumpMsg: "L'état de l'ABRoot a été récupéré dans %s\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 pkg:
   use: pkg
   long: Installer et gérer les paquets.

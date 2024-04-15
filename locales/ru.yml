@@ -57,6 +57,28 @@ status:
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
   unstagedFoundMsg: "\n\t\tЕсть %d неиндексированных пакетов. Используйте 'abroot
     pkg apply' чтобы применить их."
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  kargs: 'Kernel Arguments: %s'
+  agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
   long: Проверить наличие нового образа системы и применить его.

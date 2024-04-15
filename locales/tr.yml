@@ -55,6 +55,28 @@ status:
   unstagedFoundMsg: "\n\t\tProvasız %d paket var. Uygulamak için lütfen 'abroot pkg
     apply' çalıştırın."
   dumpMsg: "ABRoot durumu şuna döküldü: %s\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    memory: 'Memory: %s'
+    title: 'Device Specifications:'
+  abimage:
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+    timestamp: 'Timestamp: %s'
+  partitions:
+    present: 'Present: %s%s'
+    future: 'Future: %s%s'
+    title: 'ABRoot Partitions:'
+  agreementStatus: 'Package agreement:'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  kargs: 'Kernel Arguments: %s'
 upgrade:
   use: upgrade
   long: Yeni sistem kalıbını denetle ve uygula.

@@ -76,6 +76,28 @@ status:
   unstagedFoundMsg: "\n\t\tZnaleziono %d nie dodanych pakietów. Proszę użyj 'abroot
     pkg apply' aby je dodać."
   dumpMsg: "Zrzucono status ABRoota do %s\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 updateInitramfs:
   short: Zaktualizuj initramfs
   updateFailed: "Nie udało się zaktualizować initramfs przyszłego roota.\n"

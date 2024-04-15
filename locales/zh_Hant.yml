@@ -31,6 +31,28 @@ status:
   jsonFlag: 以 JSON 格式顯示輸出
   dumpFlag: 將 ABRoot 狀態傾印至歸檔
   rootRequired: 必須是 root 使用者才能執行此命令。
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  agreementStatus: 'Package agreement:'
 pkg:
   use: pkg
   listMsg: "新增的軟體包：\n%s\n移除的軟體包：\n%s\n"
