@@ -31,10 +31,6 @@ status:
   jsonFlag: 以 JSON 格式顯示輸出
   dumpFlag: 將 ABRoot 狀態傾印至歸檔
   rootRequired: 必須是 root 使用者才能執行此命令。
-  infoMsg: "ABRoot 分割區：\n  - 目前分割區：%s ◄\n  - 將來分割區：%s\n\n已載入的組態：%s\n\n裝置規格：\n  - CPU：%s\n\
-    \  - GPU：%s\n  - 記憶體：%s\n\nABImage：\n  - 雜湊碼：%s\n  - 時戳：%s\n  - 映像：%s\n\n作業系統核心參數：%s\n\
-    \n軟體包：\n  - 已新增：%s\n  - 已移除：%s\n  - 未套用變更：%s%s\n"
-  infoMsgAgreementStatus: "\n軟體包合約狀態：%t"
 pkg:
   use: pkg
   listMsg: "新增的軟體包：\n%s\n移除的軟體包：\n%s\n"

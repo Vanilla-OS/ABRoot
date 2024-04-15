@@ -59,12 +59,6 @@ status:
   dumpMsg: "Status ABRoot despejado para %s\n"
   use: status
   jsonFlag: mostrar saída no formato JSON
-  infoMsg: "Partições do ABRoot:\n  - Atuais: %s ◄\n  - Futuras: %s\n\nConfiguração
-    carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memória:
-    %s\n\nABImage:\n  - Síntese: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
-    do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Removidos: %s\n  - Não preparados:
-    %s%s\n"
-  infoMsgAgreementStatus: "\nAcordo de pacote: %t"
 upgrade:
   use: upgrade
   long: Verifique se há uma nova imagem do sistema e aplique-a.

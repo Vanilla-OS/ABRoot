@@ -36,11 +36,6 @@ status:
   jsonFlag: Show output in JSON format
   dumpFlag: Dump the ABRoot status to an archive
   dumpMsg: "Dumped ABRoot status to %s\n"
-  infoMsg: "ABRoot Partitions:\n  - Present: %s ◄\n  - Future: %s\n\nLoaded configuration:
-    %s\n\nPC Specs:\n  - CPU: %s\n  - GPU:%s\n  - Memory: %s\n\nABImage:\n  - Digest:
-    %s\n  - Timestamp: %s\n  - Image: %s\n\nKernel Arguments: %s\n\nPackages:\n  -
-    Added: %s\n  - Removed: %s\n  - Unstaged: %s%s\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
 pkg:
   use: pkg
   rootRequired: ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ.

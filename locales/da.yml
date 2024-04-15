@@ -67,30 +67,6 @@ status:
   jsonFlag: "Show output in JSON format"
   dumpFlag: "Dump the ABRoot status to an archive"
   rootRequired: "You must be root to run this command."
-  infoMsg: |
-    ABRoot Partitions:
-      - Present: %s ◄
-      - Future: %s
-
-    Loaded Configuration: %s
-
-    Device Specifications:
-      - CPU: %s
-      - GPU:%s
-      - Memory: %s
-
-    ABImage:
-      - Digest: %s
-      - Timestamp: %s
-      - Image: %s
-
-    Kernel Arguments: %s
-
-    Packages:
-      - Added: %s
-      - Removed: %s
-      - Unstaged: %s%s
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
   dumpMsg: "Dumped ABRoot status to %s\n"

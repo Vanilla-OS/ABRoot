@@ -47,10 +47,6 @@ status:
   jsonFlag: 以 JSON 格式显示输出
   dumpFlag: 将 ABRoot 状态转储至归档文件
   rootRequired: 必须是 root 用户才能运行此命令。
-  infoMsg: "ABRoot 分区：\n  - 当前分区：%s ◄\n  - 将来分区：%s\n\n已加载的配置：%s\n\n设备规格：\n  - CPU：%s\n\
-    \  - GPU：%s\n  - 内存：%s\n\nABImage：\n  - 散列值：%s\n  - 时间戳：%s\n  - 映像：%s\n\n内核参数：%s\n\
-    \n软件包：\n  - 已添加：%s\n  - 已移除：%s\n  - 尚未应用更改：%s%s\n"
-  infoMsgAgreementStatus: "\n软件包协议状态：%t"
 upgrade:
   use: upgrade
   long: 检查是否有新的系统映像并应用。

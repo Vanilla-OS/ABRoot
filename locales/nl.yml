@@ -55,15 +55,9 @@ status:
   jsonFlag: uitvoer in JSON-formaat tonen
   short: Status tonen
   rootRequired: U moet root zijn om deze opdracht uit te voeren.
-  infoMsg: "ABRoot-partities:\n  - Huidig: %s ◄\n  - Toekomstig: %s\n\nGelade configuratie:
-    %s\n\nApparaatspecificaties:\n  - CPU: %s\n  - GPU:%s\n  - Geheugen: %s\n\nABImage:\n\
-    \  - Samenvatting: %s\n  - Tijdstempel: %s\n  - Schijfkopiebestand: %s\n\nKernel-argumenten:
-    %s\n\nPakketten:\n  - Toegevoegd: %s\n  - Verwijderd: %s\n  - Niet toegepast:
-    %s%s\n"
   unstagedFoundMsg: "\n\t\tEr zijn %d niet-toegepaste pakketten. Voer ‘abroot pkg
     apply’ uit om deze toe te passen."
   dumpMsg: "Status van ABRoot gedumpt naar %s\n"
-  infoMsgAgreementStatus: "\nPakketovereenkomst: %t"
 upgrade:
   use: upgrade
   long: Controleert op een nieuw systeemkopiebestand en past deze toe.

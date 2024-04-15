@@ -60,12 +60,7 @@ status:
   unstagedFoundMsg: "\n\t\tSunt %d pachete nestagiate. Rulați \"abroot pkg apply\"\
     \ pentru a le aplica."
   rootRequired: Trebuie să fiți root pentru a executa această comandă.
-  infoMsg: "Partiții ABRoot:\n  - Prezent: %s ◄\n  - Viitor: %s\n\nConfigurații incărcate:
-    %s\n\nSpecificații PC:\n  - CPU: %s\n  - GPU:%s\n  - Memorie: %s\n\nABImage:\n\
-    \  - Digest: %s\n  - Timestamp: %s\n  - Image: %s\n\nArgumente kernel: %s\n\n\
-    Pachete:\n  - Adăugate: %s\n  - Îndepărtate: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "Starea ABRoot descărcată în %s\n"
-  infoMsgAgreementStatus: "\nAcordul pachetului: %t"
 upgrade:
   use: upgrade
   long: Verifică dacă există o nouă imagine de sistem și aplic-o.

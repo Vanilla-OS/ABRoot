@@ -59,13 +59,7 @@ status:
   jsonFlag: mostrar la salida en formato JSON
   dumpFlag: volcar el estado del ABRoot a un archivo
   rootRequired: Debes ser root para ejecutar este comando.
-  infoMsg: "Particiones ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguración
-    Cargada: %s\n\nEspecificaciones del Sistema:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
-    %s\n\nImagen AB:\n  - Digest: %s\n  - Marca de Tiempo: %s\n  - Imagen: %s\n\n
-    Argumentos del Kernel: %s\n\nPaquetes:\n  - Añadidos: %s\n  - Eliminados: %s\n\
-    \  - Desactivados: %s%s\n"
   dumpMsg: "El estado de ABRoot fue volcado a %s\n"
-  infoMsgAgreementStatus: "\nAcuerdo del paquete: %t"
 upgrade:
   use: upgrade
   long: Busca una nueva imagen del sistema y aplícala.

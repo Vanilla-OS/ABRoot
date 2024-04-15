@@ -52,12 +52,7 @@ status:
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.
   jsonFlag: JSON 형식으로 출력을 표시합니다.
   unstagedFoundMsg: "\n\t\t미적용된 패키지가 %d개 있습니다. 'abroot pkg apply'를 실행하여 적용하십시오."
-  infoMsg: "ABRoot 파티션:\n  - 과거: %s ◄\n  - 미래: %s\n\n로드된 구성: %s\n\nPC 사양:\n  - CPU:
-    %s\n  - GPU:%s\n  - Memory: %s\n\nAB이미지:\n  - Digest: %s\n  - Timestamp: %s\n\
-    \  - 이미지: %s\n\n커널 매개변수: %s\n\n패키지:\n  - 추가된 항목: %s\n  - 제거된 항목: %s\n  - 미적용된
-    항목: %s%s\n"
   dumpMsg: "ABRoot 상태를 %s에 덤프했습니다.\n"
-  infoMsgAgreementStatus: "\nPackage agreement: %t"
 upgrade:
   forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다.
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.

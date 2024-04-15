@@ -78,12 +78,7 @@ status:
   jsonFlag: Ausgabe im JSON-Format anzeigen
   dumpFlag: ABRoot-Status in einem Archiv ablegen
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
-  infoMsg: "ABRoot Partitionen:\n  - Gegenwärtig: %s ◄\n  - Zukünftige: %s\n\nGeladene
-    Konfiguration: %s\n\nComputer-Spezifikationen:\n  - CPU: %s\n  - GPU:%s\n  - Arbeitsspeicher:
-    %s\n\nABImage:\n  - Digest: %s\n  - Zeitstempel: %s\n  - Image: %s\n\nKernel-Parameter:
-    %s\n\nPakete:\n  - Hinzugefügt: %s\n  - Entfernt: %s\n  - Unstaged: %s%s\n"
   dumpMsg: "ABRoot-Status abgelegt in %s\n"
-  infoMsgAgreementStatus: "\nPaketvereinbarung: %t"
 updateInitramfs:
   short: initramfs aktualisieren
   updateFailed: "Failed to update initramfs of future root.\n"

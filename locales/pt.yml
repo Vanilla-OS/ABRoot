@@ -75,15 +75,9 @@ status:
   jsonFlag: mostrar saída no formato JSON
   dumpFlag: despejar o estado ABRoot num arquivo
   rootRequired: Tens que ser root para executar este comando.
-  infoMsg: "Partições ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguração
-    carregada: %s\n\nEspecificações do Computador:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
-    %s\n\nABImage:\n  - Digest: %s\n  - Timestamp: %s\n  - Imagem: %s\n\nArgumentos
-    do Kernel: %s\n\nPacotes:\n  - Adicionados: %s\n  - Remoidos: %s\n  - Unstaged:
-    %s%s\n"
   unstagedFoundMsg: "\n\t\tExistem %d pacotes unstaged. Por favor execute 'abroot
     pkg apply' para os aplicar."
   dumpMsg: "Despejar o status do ABRoot para %s\n"
-  infoMsgAgreementStatus: "\nAcordo de pacote: %t"
 updateInitramfs:
   short: Atualize o initramfs
   updateFailed: "Falha ao atualizar o initramfs da raiz futura.\n"

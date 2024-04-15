@@ -33,14 +33,9 @@ status:
   jsonFlag: visa utdata i JSON format
   dumpFlag: dumpa ABRoot-status till ett arkiv
   rootRequired: Du måste vara root för att köra detta kommando.
-  infoMsg: "ABRoot Partitioner:\n  - Nuvarande: %s ◄\n  - Framtid: %s\n\nLaddad konfiguration:
-    %s\n\nEnhetsspecifikationer:\n  - CPU: %s\n  - GPU:%s\n  - Minne: %s\n\nABImage:\n\
-    \  - Sammanfattning: %s\n  - Tidsstämpel: %s\n  - Avbild: %s\n\nKärnargument:
-    %s\n\nPaket:\n  - Tillagda: %s\n  - Borttagna: %s\n  - Oscensatta: %s%s\n"
   unstagedFoundMsg: "\n\t\tDet finns %d oscensatta paket. Vänligen kör 'abroot pkg
     apply' för att tillämpa dem."
   dumpMsg: "Dumpade ABRoot-status till %s\n"
-  infoMsgAgreementStatus: "\nPaket avtal: %t"
 pkg:
   use: pkg
   long: Installera och hantera paket.
