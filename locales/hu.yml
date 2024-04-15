@@ -30,7 +30,7 @@ upgrade:
   forceFlag: kényszeríti a frissítést még akkor is, ha a rendszer naprakész
   rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   noUpdateAvailable: Nem érhető el frissítés.
-  use: ''
+  use: 'upgrade'
   long: Keressen új rendszerképet, és alkalmazza azt.
   checkOnlyFlag: keressen frissítéseket, de ne alkalmazza azokat
   removed: Eltávolítva
@@ -47,7 +47,7 @@ upgrade:
 pkg:
   removedMsg: "%s csomag(ok) eltávolítva.\n"
   listMsg: "Hozzáadott csomagok:\n %s\n Eltávolított csomagok:\n %s\n"
-  use: ''
+  use: 'pkg'
   long: Csomagok telepítése és kezelése.
   short: Csomagok kezelése
   rootRequired: A parancs futtatásához root rendszergazdának kell lennie.
@@ -68,7 +68,7 @@ pkg:
   failedGettingPkgManagerInstance: "Nem sikerült letölteni a csomagkezelő példányt:
     %s\n"
 status:
-  use: ''
+  use: 'status'
   long: Az aktuális ABRoot állapot megjelenítése.
   short: Állapot megjelenítése
   jsonFlag: A kimenet megjelenítése JSON formátumban
@@ -88,13 +88,13 @@ updateInitramfs:
   rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   updateSuccess: A jövőbeli root initramfs-je frissítve.
   long: Frissítse a jövőbeli root initramfs-ét.
-  use: ''
+  use: 'update-initramfs'
   dryRunFlag: végezze el a műveletet szárazon
 cnf:
   editorFailed: "Nem sikerült megnyitni a szerkesztőt: %s\n"
   long: Nyisson meg egy szerkesztőt az ABRoot konfiguráció szerkesztéséhez.
   short: Az ARoot konfiguráció szerkesztése
-  use: ''
+  use: 'cnf'
   changed: A konfiguráció megváltozott.
   failed: "Hiba történt a következő konfigurációval való interakció közben: %s\n"
   rootRequired: A parancs futtatása csak root-nak engedélyezett.
