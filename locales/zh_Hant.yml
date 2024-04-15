@@ -32,27 +32,27 @@ status:
   dumpFlag: 將 ABRoot 狀態傾印至歸檔
   rootRequired: 必須是 root 使用者才能執行此命令。
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
-  kargs: 'Kernel Arguments: %s'
+    removed: '已移除：%s'
+    unstaged: '未套用變更：%s%s'
+    title: '軟體包：'
+    added: '已新增：%s'
+  kargs: '作業系統核心參數：%s'
   abimage:
-    timestamp: 'Timestamp: %s'
-    title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
+    timestamp: '時戳：%s'
+    title: 'ABImage：'
+    digest: '雜湊碼：%s'
+    image: '映像：%s'
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    cpu: 'CPU：%s'
+    gpu: 'GPU：%s'
+    title: '裝置規格：'
+    memory: '記憶體：%s'
+  loadedConfig: '已載入的組態：'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  agreementStatus: 'Package agreement:'
+    future: '將來分割區：%s%s'
+    present: '目前分割區：%s%s'
+    title: 'ABRoot 分割區：'
+  agreementStatus: '軟體包合約狀態：'
 pkg:
   use: pkg
   listMsg: "新增的軟體包：\n%s\n移除的軟體包：\n%s\n"

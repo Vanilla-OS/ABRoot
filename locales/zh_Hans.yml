@@ -48,27 +48,27 @@ status:
   dumpFlag: 将 ABRoot 状态转储至归档文件
   rootRequired: 必须是 root 用户才能运行此命令。
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    cpu: 'CPU：%s'
+    gpu: 'GPU：%s'
+    title: '设备规格：'
+    memory: '内存：%s'
+  loadedConfig: '已加载的配置：'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: '已移除：%s'
+    unstaged: '尚未应用更改：%s%s'
+    title: '软件包：'
+    added: '已添加：%s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: '将来分区：%s%s'
+    present: '当前分区：%s%s'
+    title: 'ABRoot 分区：'
+  kargs: '内核参数：%s'
   abimage:
-    timestamp: 'Timestamp: %s'
-    title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    timestamp: '时间戳：%s'
+    title: 'ABImage：'
+    digest: '散列值：%s'
+    image: '映像：%s'
+  agreementStatus: '软件包协议状态：'
 upgrade:
   use: upgrade
   long: 检查是否有新的系统映像并应用。
