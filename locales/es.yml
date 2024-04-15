@@ -57,8 +57,8 @@ status:
   long: Muestra el estado actual de ABRoot.
   short: Estado de la pantalla
   jsonFlag: mostrar la salida en formato JSON
-  dumpFlag: volcar el estado de ABRoot a un archivo
-  rootRequired: Debes tener acceso como superusuario para ejecutar este comando.
+  dumpFlag: volcar el estado del ABRoot a un archivo
+  rootRequired: Debes ser root para ejecutar este comando.
   infoMsg: "Particiones ABRoot:\n  - Presente: %s ◄\n  - Futuro: %s\n\nConfiguración
     Cargada: %s\n\nEspecificaciones del Sistema:\n  - CPU: %s\n  - GPU:%s\n  - Memoria:
     %s\n\nImagen AB:\n  - Digest: %s\n  - Marca de Tiempo: %s\n  - Imagen: %s\n\n
