@@ -59,6 +59,28 @@ status:
   jsonFlag: Показати результат у форматі JSON
   rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   dumpMsg: "Стан ABRoot збережено у %s\n"
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
   short: Оновити систему

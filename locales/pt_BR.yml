@@ -59,6 +59,28 @@ status:
   dumpMsg: "Status ABRoot despejado para %s\n"
   use: status
   jsonFlag: mostrar saída no formato JSON
+  specs:
+    cpu: 'CPU: %s'
+    gpu: 'GPU: %s'
+    title: 'Device Specifications:'
+    memory: 'Memory: %s'
+  loadedConfig: 'Loaded Configuration:'
+  packages:
+    removed: 'Removed: %s'
+    unstaged: 'Unstaged: %s%s'
+    title: 'Packages:'
+    added: 'Added: %s'
+  partitions:
+    future: 'Future: %s%s'
+    present: 'Present: %s%s'
+    title: 'ABRoot Partitions:'
+  kargs: 'Kernel Arguments: %s'
+  abimage:
+    timestamp: 'Timestamp: %s'
+    title: 'ABImage:'
+    digest: 'Digest: %s'
+    image: 'Image: %s'
+  agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
   long: Verifique se há uma nova imagem do sistema e aplique-a.
