@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/go-version"
 	"github.com/vanilla-os/abroot/settings"
 )
 
@@ -125,18 +126,23 @@ func getKernelVersion(bootPath string) string {
 		return ""
 	}
 
-	var maxVersion string
+	var maxVer *version.Version
 	for _, file := range files {
-		version := filepath.Base(file)
-		if version > maxVersion {
-			maxVersion = version
+		verStr := filepath.Base(file)[8:]
+		ver, err := version.NewVersion(verStr)
+		if err != nil {
+			continue
+		}
+		if maxVer == nil || ver.GreaterThan(maxVer) {
+			maxVer = ver
 		}
 	}
 
-	maxVersion = maxVersion[8:]
+	if maxVer != nil {
+		return maxVer.String()
+	}
 
-	PrintVerboseInfo("getKernelVersion", "done")
-	return maxVersion
+	return ""
 }
 
 // NewGrub creates a new Grub instance
