@@ -8,6 +8,7 @@ require (
 	github.com/containers/storage v1.53.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/uuid v1.6.0
+	github.com/hashicorp/go-version v1.6.0
 	github.com/linux-immutability-tools/EtcBuilder v1.1.1
 	github.com/pterm/pterm v0.12.79
 	github.com/shirou/gopsutil v3.21.11+incompatible

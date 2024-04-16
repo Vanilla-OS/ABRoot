@@ -288,6 +288,8 @@ github.com/hashicorp/errwrap v1.1.0 h1:OxrOeh75EUXMY8TBjag2fzXGZ40LB6IKw45YeGUDY
 github.com/hashicorp/errwrap v1.1.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
+github.com/hashicorp/go-version v1.6.0 h1:feTTfFNnjP967rlCxM/I9g701jU+RN74YKx2mOkIeek=
+github.com/hashicorp/go-version v1.6.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
@@ -330,8 +332,6 @@ github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/letsencrypt/boulder v0.0.0-20230907030200-6d76a0f91e1e h1:RLTpX495BXToqxpM90Ws4hXEo4Wfh81jr9DX1n/4WOo=
 github.com/letsencrypt/boulder v0.0.0-20230907030200-6d76a0f91e1e/go.mod h1:EAuqr9VFWxBi9nD5jc/EA2MT1RFty9288TF6zdtYoCU=
-github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d h1:i0z+Mrudwrnup7/0tBrJhYE2eKIfcjfVPmmMoUfUrkg=
-github.com/linux-immutability-tools/EtcBuilder v0.0.0-20240221201646-c038f3d3418d/go.mod h1:zOvDqvS9ojo8mr6dMYsk8L8c6aY9S785WgVIzgGwm8c=
 github.com/linux-immutability-tools/EtcBuilder v1.1.1 h1:Bs3cVvHuGNuOBBIkWvn06F8PCB7adjghcsBDknEaPpc=
 github.com/linux-immutability-tools/EtcBuilder v1.1.1/go.mod h1:zOvDqvS9ojo8mr6dMYsk8L8c6aY9S785WgVIzgGwm8c=
 github.com/lithammer/fuzzysearch v1.1.8 h1:/HIuJnjHuXS8bKaiTMeeDlW2/AyIWk2brx1V8LFgLN4=
