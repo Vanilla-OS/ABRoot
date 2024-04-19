@@ -9,6 +9,8 @@ import (
 	"github.com/vanilla-os/abroot/core"
 )
 
+// TestAtomicSwap tests the AtomicSwap function by creating 2 files and swapping
+// them. As a result, the 2 files should change their locations.
 func TestAtomicSwap(t *testing.T) {
 	tmpfile, err := ioutil.TempFile("", uuid.New().String())
 	if err != nil {
@@ -55,4 +57,6 @@ func TestAtomicSwap(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	t.Log("TestAtomicSwap: done")
 }

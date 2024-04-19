@@ -6,6 +6,8 @@ import (
 	"github.com/vanilla-os/abroot/core"
 )
 
+// TestGetLogFile tests the GetLogFile function by getting the log file and
+// checking if it is not nil.
 func TestGetLogFile(t *testing.T) {
 	t.Log("TestGetLogFile: running...")
 
@@ -17,6 +19,8 @@ func TestGetLogFile(t *testing.T) {
 	t.Log("TestGetLogFile: done")
 }
 
+// TestWriteToLog tests the LogToFile function by writing a bunch of messages
+// to the log file.
 func TestWriteToLog(t *testing.T) {
 	t.Log("TestWriteToLog: running...")
 	err := core.LogToFile("TestWriteToLog: running...")

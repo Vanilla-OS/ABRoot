@@ -10,6 +10,9 @@ import (
 	"github.com/vanilla-os/abroot/core"
 )
 
+// TestKargsWrite tests the KargsWrite function by writing a string to a file,
+// mimicking the kernel command line arguments.
+
 func TestKargsWrite(t *testing.T) {
 	core.KargsPath = fmt.Sprintf("%s/kargs-%s", os.TempDir(), uuid.New().String())
 
@@ -24,8 +27,11 @@ func TestKargsWrite(t *testing.T) {
 	}
 
 	t.Log(string(content))
+	t.Log("TestKargsWrite: done")
 }
 
+// TestKargsRead tests the KargsRead function by reading the content of the file
+// that was written by the TestKargsWrite function.
 func TestKargsRead(t *testing.T) {
 	core.KargsPath = fmt.Sprintf("%s/kargs-%s", os.TempDir(), uuid.New().String())
 
@@ -40,4 +46,5 @@ func TestKargsRead(t *testing.T) {
 	}
 
 	t.Log(content)
+	t.Log("TestKargsRead: done")
 }

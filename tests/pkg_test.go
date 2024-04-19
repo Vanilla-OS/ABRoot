@@ -9,6 +9,9 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 )
 
+// TestPackageManager tests the PackageManager functions by adding a package
+// and ensuring it gets added to the proper file. As a result, the final command
+// should not be empty.
 func TestPackageManager(t *testing.T) {
 	pm, err := core.NewPackageManager(true)
 	if err != nil {
@@ -69,8 +72,12 @@ func TestPackageManager(t *testing.T) {
 			t.Error(err)
 		}
 	}
+
+	t.Log("TestPackageManager: done")
 }
 
+// TestBaseImagePackageDiff tests the BaseImagePackageDiff function by comparing
+// the packages of two different base images.
 func TestBaseImagePackageDiff(t *testing.T) {
 	settings.Cnf.Name = "vanilla-os/core"
 
@@ -86,8 +93,12 @@ func TestBaseImagePackageDiff(t *testing.T) {
 	fmt.Printf("Upgraded: %v\n", upgraded)
 	fmt.Printf("Downgraded: %v\n", downgraded)
 	fmt.Printf("Removed: %v\n", removed)
+
+	t.Log("TestBaseImagePackageDiff: done")
 }
 
+// TestOverlayPackageDiff tests the OverlayPackageDiff function by obtaining the
+// added, removed, upgraded, and downgraded overlay packages.
 func TestOverlayPackageDiff(t *testing.T) {
 	added, upgraded, downgraded, removed, err := core.OverlayPackageDiff()
 	if err != nil {
@@ -98,4 +109,6 @@ func TestOverlayPackageDiff(t *testing.T) {
 	fmt.Printf("Upgraded: %v\n", upgraded)
 	fmt.Printf("Downgraded: %v\n", downgraded)
 	fmt.Printf("Removed: %v\n", removed)
+
+	t.Log("TestOverlayPackageDiff: done")
 }
