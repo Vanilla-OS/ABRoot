@@ -23,7 +23,7 @@ rollback:
   rollbackUnnecessary: Rollback nie jest wymagany, bieżący root jest już tym obecnym.
   canRollback: Jest możliwe przywrócenie poprzedniego roota.
   cannotRollback: Nie jest możliwe przywrócenie poprzedniego roota.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: Sprawdź, czy można wrócić do poprzedniego źródła.
 pkg:
   use: pkg
   long: Instaluj i zarządzaj pakietami.
