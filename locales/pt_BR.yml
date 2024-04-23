@@ -62,25 +62,25 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Especificações do Dispositivo:'
+    memory: 'Memória: %s'
+  loadedConfig: 'Configuração Carregada:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'Removido(s): %s'
+    unstaged: 'Não Preparado(s): %s%s'
+    title: 'Pacotes:'
+    added: 'Adicionado(s): %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: 'Futura(s): %s%s'
+    present: 'Presente(s): %s%s'
+    title: 'Partições ABRoot:'
+  kargs: 'Argumentos do Kernel: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Carimbo de Data/Hora: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    image: 'Imagem: %s'
+  agreementStatus: 'Acordo(s) de pacote:'
 upgrade:
   use: upgrade
   long: Verifique se há uma nova imagem do sistema e aplique-a.
