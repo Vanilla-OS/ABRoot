@@ -412,15 +412,15 @@ Options=%s
 			return err
 		}
 
-		const targetWants string = "/local-fs.target.wants"
+		const targetRequires string = "/local-fs-pre.target.requires"
 
-		err = os.MkdirAll(filepath.Join(rootPath, mountUnitDir, targetWants), 0o755)
+		err = os.MkdirAll(filepath.Join(rootPath, mountUnitDir, targetRequires), 0o755)
 		if err != nil {
 			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 2, err)
 			return err
 		}
 
-		err = os.Symlink(filepath.Join("../", mountUnitFile), filepath.Join(rootPath, mountUnitDir, targetWants, mountUnitFile))
+		err = os.Symlink(filepath.Join("../", mountUnitFile), filepath.Join(rootPath, mountUnitDir, targetRequires, mountUnitFile))
 		if err != nil {
 			PrintVerboseErr("ABSystem.GenerateSystemdUnits", 3, "failed to create symlink", err)
 			return err
