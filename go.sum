@@ -334,6 +334,8 @@ github.com/letsencrypt/boulder v0.0.0-20230907030200-6d76a0f91e1e h1:RLTpX495BXT
 github.com/letsencrypt/boulder v0.0.0-20230907030200-6d76a0f91e1e/go.mod h1:EAuqr9VFWxBi9nD5jc/EA2MT1RFty9288TF6zdtYoCU=
 github.com/linux-immutability-tools/EtcBuilder v1.2.0 h1:XV8CKf5kD7cjs/A7G6O8nrLEQzA30thnfm2IMt8LQPs=
 github.com/linux-immutability-tools/EtcBuilder v1.2.0/go.mod h1:8w35gZFffSCYGd17EcIQtaGcovwxgM5KsFqT04fhVac=
+github.com/linux-immutability-tools/EtcBuilder v1.2.1 h1:QMdfJlY6tSbXJB15J0RW2LP9/SpLRxlrHV2OXyCtl4Y=
+github.com/linux-immutability-tools/EtcBuilder v1.2.1/go.mod h1:8w35gZFffSCYGd17EcIQtaGcovwxgM5KsFqT04fhVac=
 github.com/lithammer/fuzzysearch v1.1.8 h1:/HIuJnjHuXS8bKaiTMeeDlW2/AyIWk2brx1V8LFgLN4=
 github.com/lithammer/fuzzysearch v1.1.8/go.mod h1:IdqeyBClc3FFqSzYq/MXESsS4S0FsZ5ajtkr5xPLts4=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
