@@ -19,12 +19,12 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/google/uuid"
 	EtcBuilder "github.com/linux-immutability-tools/EtcBuilder/cmd"
 	"github.com/vanilla-os/abroot/settings"
+	"github.com/vanilla-os/sdk/pkg/v1/goodies"
 )
 
 // An ABSystem allows to perform system operations such as upgrades,
@@ -46,20 +46,6 @@ type ABSystem struct {
 	// CurImage contains an instance of ABImage which represents the current
 	// image used by the system (abimage.abr).
 	CurImage *ABImage
-}
-
-// QueuedFunction represents a function to be executed in the clean up queue
-type QueuedFunction struct {
-	// The name of the function to be executed, which must match one of the
-	// supported functions in the RunCleanUpQueue function.
-	Name string
-
-	// The values to be passed to the function.
-	Values []interface{}
-
-	// The priority of the function. Functions with lower numbers will be
-	// executed first.
-	Priority int
 }
 
 // Supported ABSystemOperation types
@@ -100,10 +86,6 @@ var (
 	stageFile    string = filepath.Join("/tmp", "ABSystem.Upgrade.stage")
 	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
 	mountUnitDir        = "/etc/systemd/system"
-
-	// queue is a slice of QueuedFunction which contains the functions to be
-	// executed in the clean up queue.
-	queue []QueuedFunction
 
 	// Errors
 	ErrNoUpdate error = errors.New("no update available")
@@ -151,123 +133,6 @@ func (s *ABSystem) CheckAll() error {
 func (s *ABSystem) CheckUpdate() (string, bool) {
 	PrintVerboseInfo("ABSystem.CheckUpdate", "running...")
 	return s.Registry.HasUpdate(s.CurImage.Digest)
-}
-
-// RunCleanUpQueue runs the functions in the queue or only the specified one
-func (s *ABSystem) RunCleanUpQueue(fnName string) error {
-	PrintVerboseInfo("ABSystem.RunCleanUpQueue", "running...")
-
-	sort.Slice(queue, func(i, j int) bool {
-		return queue[i].Priority < queue[j].Priority
-	})
-
-	itemsToRemove := []int{}
-	for i, f := range queue {
-		if fnName != "" && f.Name != fnName {
-			continue
-		}
-
-		itemsToRemove = append(itemsToRemove, i)
-
-		switch f.Name {
-		case "umountFuture":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountFuture")
-			futurePart := f.Values[0].(ABRootPartition)
-			err := futurePart.Partition.Unmount()
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 0, err)
-				return err
-			}
-		case "closeChroot":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing closeChroot")
-			chroot := f.Values[0].(*Chroot)
-			chroot.Close() // safe to ignore, already closed
-		case "removeNewSystem":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing removeNewSystem")
-			newSystem := f.Values[0].(string)
-			err := os.RemoveAll(newSystem)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 1, err)
-				return err
-			}
-		case "removeNewABImage":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing removeNewABImage")
-			newImage := f.Values[0].(string)
-			err := os.RemoveAll(newImage)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 2, err)
-				return err
-			}
-		case "umountBoot":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountBoot")
-			bootPart := f.Values[0].(Partition)
-			err := bootPart.Unmount()
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 3, err)
-				return err
-			}
-		case "umountInit":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing umountInit")
-			initPart := Partition{MountPoint: "/part-future/.system/boot/init"}
-			err := initPart.Unmount()
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 4, err)
-				return err
-			}
-		case "unlockUpgrade":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing unlockUpgrade")
-			err := s.UnlockUpgrade()
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 5, err)
-				return err
-			}
-		case "clearUnstagedPackages":
-			PrintVerboseInfo("ABSystem.RunCleanUpQueue", "Executing clearUnstagedPackages")
-			pkgM, err := NewPackageManager(false)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 6, err)
-				return err
-			}
-			err = pkgM.ClearUnstagedPackages()
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunCleanUpQueue", 6.1, err)
-				return err
-			}
-		}
-	}
-
-	// Remove matched items in reverse order to avoid changing indices
-	for i := len(itemsToRemove) - 1; i >= 0; i-- {
-		removeIdx := itemsToRemove[i]
-		queue = append(queue[:removeIdx], queue[removeIdx+1:]...)
-	}
-
-	PrintVerboseInfo("ABSystem.RunCleanUpQueue", "completed")
-	return nil
-}
-
-// AddToCleanUpQueue adds a function to the queue
-func (s *ABSystem) AddToCleanUpQueue(name string, priority int, values ...interface{}) {
-	queue = append(queue, QueuedFunction{
-		Name:     name,
-		Values:   values,
-		Priority: priority,
-	})
-}
-
-// RemoveFromCleanUpQueue removes a function from the queue
-func (s *ABSystem) RemoveFromCleanUpQueue(name string) {
-	for i := 0; i < len(queue); i++ {
-		if queue[i].Name == name {
-			queue = append(queue[:i], queue[i+1:]...)
-			i--
-		}
-	}
-}
-
-// ResetQueue resets the queue
-func (s *ABSystem) ResetQueue() {
-	queue = []QueuedFunction{}
 }
 
 // GenerateFstab generates a fstab file for the future root
@@ -444,9 +309,8 @@ Options=%s
 func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	PrintVerboseInfo("ABSystem.RunOperation", "starting", operation)
 
-	s.ResetQueue()
-
-	defer s.RunCleanUpQueue("")
+	cq := goodies.NewCleanupQueue()
+	defer cq.Run()
 
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
@@ -472,7 +336,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("unlockUpgrade", 200)
+	cq.Add(func(args ...interface{}) error {
+		return s.UnlockUpgrade()
+	}, nil, 100, &goodies.NoErrorHandler{}, false)
 
 	// Stage 1: Check if there is an update available
 	// ------------------------------------------------
@@ -539,7 +405,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	os.RemoveAll("/part-future/.system_new")
 	os.RemoveAll("/part-future/abimage-new.abr") // errors are safe to ignore
 
-	s.AddToCleanUpQueue("umountFuture", 90, partFuture)
+	cq.Add(func(args ...interface{}) error {
+		return partFuture.Partition.Unmount()
+	}, nil, 90, &goodies.NoErrorHandler{}, false)
 
 	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
 	if err != nil {
@@ -673,7 +541,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("clearUnstagedPackages", 10)
+	cq.Add(func(args ...interface{}) error {
+		return pkgM.ClearUnstagedPackages()
+	}, nil, 10, &goodies.NoErrorHandler{}, false)
 
 	// Stage 5: Write abimage.abr.new to future/
 	// ------------------------------------------------
@@ -760,7 +630,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("closeChroot", 10, chroot)
+	cq.Add(func(args ...interface{}) error {
+		return chroot.Close()
+	}, nil, 10, &goodies.NoErrorHandler{}, false)
 
 	generatedGrubConfigPath := "/boot/grub/grub.cfg"
 
@@ -791,7 +663,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.RunCleanUpQueue("closeChroot")
+	cq.Add(func(args ...interface{}) error {
+		return chroot.Close()
+	}, nil, 10, &goodies.NoErrorHandler{}, false)
 
 	var rootUuid string
 	// If Thin-Provisioning set, mount init partition and move linux and initrd
@@ -809,7 +683,10 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			PrintVerboseErr("ABSystem.RunOperation", 7.4, err)
 			return err
 		}
-		s.AddToCleanUpQueue("umountInit", 80)
+
+		cq.Add(func(args ...interface{}) error {
+			return initPartition.Unmount()
+		}, nil, 80, &goodies.NoErrorHandler{}, false)
 
 		kernelVersion := getKernelVersion(filepath.Join(systemNew, "boot"))
 		err = CopyFile(
@@ -890,7 +767,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("umountBoot", 100, partBoot)
+	cq.Add(func(args ...interface{}) error {
+		return partBoot.Unmount()
+	}, nil, 100, &goodies.NoErrorHandler{}, false)
 
 	// Stage 10: Atomic swap the rootfs and abimage.abr
 	// ------------------------------------------------
@@ -902,7 +781,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("removeNewSystem", 20, systemNew)
+	cq.Add(func(args ...interface{}) error {
+		return os.RemoveAll(systemNew)
+	}, nil, 20, &goodies.NoErrorHandler{}, false)
 
 	oldABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage.abr")
 	newABImage := filepath.Join(partFuture.Partition.MountPoint, "abimage-new.abr")
@@ -920,7 +801,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	s.AddToCleanUpQueue("removeNewABImage", 30, newABImage)
+	cq.Add(func(args ...interface{}) error {
+		return os.RemoveAll(newABImage)
+	}, nil, 30, &goodies.NoErrorHandler{}, false)
 
 	// Stage 11: Atomic swap the bootloader
 	// ------------------------------------------------
@@ -985,9 +868,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err error) {
 	PrintVerboseInfo("ABSystem.Rollback", "starting")
 
-	s.ResetQueue()
-
-	defer s.RunCleanUpQueue("")
+	cq := goodies.NewCleanupQueue()
+	defer cq.Run()
 
 	// we won't allow upgrades while rolling back
 	err = s.LockUpgrade()
@@ -1016,7 +898,9 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 		return ROLLBACK_FAILED, err
 	}
 
-	s.AddToCleanUpQueue("umountBoot", 100, partBoot)
+	cq.Add(func(args ...interface{}) error {
+		return partBoot.Unmount()
+	}, nil, 100, &goodies.NoErrorHandler{}, false)
 
 	grub, err := NewGrub(partBoot)
 	if err != nil {
