@@ -227,7 +227,17 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Check for package manager status and user agreement
 	err := p.CheckStatus()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Add", 0, err)
+		PrintVerboseErr("PackageManager.Remove", 0, err)
+		return err
+	}
+
+	// Check if package exists in repo
+	// FIXME: this should also check if the package is actually installed
+	// in the system, not just if it exists in the repo. Since this is a distro
+	// specific feature, I'm leaving it as is for now.
+	err = p.ExistsInRepo(pkg)
+	if err != nil {
+		PrintVerboseErr("PackageManager.Remove", 2, err)
 		return err
 	}
 
@@ -248,7 +258,7 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Unstaged will take care of the rest
 	pkgsAdd, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 2, err)
+		PrintVerboseErr("PackageManager.Remove", 3, err)
 		return err
 	}
 	for i, ap := range pkgsAdd {
@@ -262,7 +272,7 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Abort if package is already removed
 	pkgsRemove, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 2.1, err)
+		PrintVerboseErr("PackageManager.Remove", 4, err)
 		return err
 	}
 	for _, p := range pkgsRemove {
