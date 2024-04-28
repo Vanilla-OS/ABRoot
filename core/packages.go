@@ -237,20 +237,20 @@ func (p *PackageManager) Remove(pkg string) error {
 	// specific feature, I'm leaving it as is for now.
 	err = p.ExistsInRepo(pkg)
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 2, err)
+		PrintVerboseErr("PackageManager.Remove", 1, err)
 		return err
 	}
 
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 0, err)
+		PrintVerboseErr("PackageManager.Remove", 2, err)
 		return err
 	}
 	upkgs = append(upkgs, UnstagedPackage{pkg, REMOVE})
 	err = p.writeUnstagedPackages(upkgs)
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 1, err)
+		PrintVerboseErr("PackageManager.Remove", 3, err)
 		return err
 	}
 
@@ -258,7 +258,7 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Unstaged will take care of the rest
 	pkgsAdd, err := p.GetAddPackages()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 3, err)
+		PrintVerboseErr("PackageManager.Remove", 4, err)
 		return err
 	}
 	for i, ap := range pkgsAdd {
@@ -272,7 +272,7 @@ func (p *PackageManager) Remove(pkg string) error {
 	// Abort if package is already removed
 	pkgsRemove, err := p.GetRemovePackages()
 	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 4, err)
+		PrintVerboseErr("PackageManager.Remove", 5, err)
 		return err
 	}
 	for _, p := range pkgsRemove {
