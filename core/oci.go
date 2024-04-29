@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/containers/buildah"
 	"github.com/containers/image/v5/types"
@@ -29,6 +30,30 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
+
+var Progressbar = pterm.ProgressbarPrinter{
+	Total:                     100,
+	BarCharacter:              "■",
+	LastCharacter:             "■",
+	ElapsedTimeRoundingFactor: time.Second,
+	BarStyle:                  &pterm.Style{pterm.Bold, pterm.FgDefault},
+	TitleStyle:                &pterm.Style{pterm.FgDefault},
+	ShowTitle:                 true,
+	ShowCount:                 false,
+	ShowPercentage:            true,
+	ShowElapsedTime:           false,
+	BarFiller:                 " ",
+	MaxWidth:                  60,
+	Writer:                    os.Stdout,
+}
+
+func padString(str string, size int) string {
+	if len(str) < size {
+		return str + strings.Repeat(" ", size-len(str))
+	} else {
+		return str
+	}
+}
 
 // OciExportRootFs generates a rootfs from an image recipe file
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
@@ -53,7 +78,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// create dest if it doesn't exist
-	err = os.MkdirAll(dest, 0755)
+	err = os.MkdirAll(dest, 0o755)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 3, err)
 		return err
@@ -65,7 +90,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		PrintVerboseErr("OciExportRootFs", 4, err)
 		return err
 	}
-	err = os.MkdirAll(transDir, 0755)
+	err = os.MkdirAll(transDir, 0o755)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 5, err)
 		return err
@@ -165,12 +190,12 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *Ima
 				pb.Add(int(report.Offset) - pb.Current)
 
 				title := fmt.Sprintf(barFmt, digest[:12], progressBytes, totalBytes)
-				pb.UpdateTitle(title + strings.Repeat(" ", 28-len(title)))
+				pb.UpdateTitle(padString(title, 28))
 			} else {
 				totalBytes := humanize.Bytes(uint64(report.Artifact.Size))
 
 				title := fmt.Sprintf(barFmt, digest[:12], "0", totalBytes)
-				newPb, err := pterm.DefaultProgressbar.WithTotal(int(report.Artifact.Size)).WithWriter(multi.NewWriter()).WithMaxWidth(120).WithShowCount(false).Start(title + strings.Repeat(" ", 28-len(title)))
+				newPb, err := Progressbar.WithTotal(int(report.Artifact.Size)).WithWriter(multi.NewWriter()).Start(padString(title, 28))
 				if err != nil {
 					PrintVerboseErr("pullImageWithProgressbar", 1, err)
 					return err
