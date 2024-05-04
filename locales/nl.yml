@@ -61,25 +61,25 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Apparaat­specificaties:'
+    memory: 'Geheugen: %s'
+  loadedConfig: 'Geladen configuratie:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'Verwĳderd: %s'
+    unstaged: 'Niet-geënsceneerd: %s%s'
+    title: 'Pakketten:'
+    added: 'Toegevoegd: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: 'Toekomstig: %s%s'
+    present: 'Huidig: %s%s'
+    title: 'ABRoot-partities:'
+  kargs: 'Kernel­argumenten: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Tĳdstempel: %s'
     title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    digest: 'Samenvatting: %s'
+    image: 'Schĳfkopie: %s'
+  agreementStatus: 'Pakket­overeenkomst:'
 upgrade:
   use: upgrade
   long: Controleert op een nieuw systeemkopiebestand en past deze toe.
