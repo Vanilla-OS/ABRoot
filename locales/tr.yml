@@ -56,27 +56,27 @@ status:
     apply' çalıştırın."
   dumpMsg: "ABRoot durumu şuna döküldü: %s\n"
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
-    memory: 'Memory: %s'
-    title: 'Device Specifications:'
+    cpu: 'MİB: %s'
+    gpu: 'GİB: %s'
+    memory: 'Bellek: %s'
+    title: 'Aygıt Özellikleri:'
   abimage:
     title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
-    timestamp: 'Timestamp: %s'
+    digest: 'Özet: %s'
+    image: 'Görüntü: %s'
+    timestamp: 'Zaman Damgası: %s'
   partitions:
-    present: 'Present: %s%s'
-    future: 'Future: %s%s'
-    title: 'ABRoot Partitions:'
-  agreementStatus: 'Package agreement:'
-  loadedConfig: 'Loaded Configuration:'
+    present: 'Şu Anki: %s%s'
+    future: 'Gelecek: %s%s'
+    title: 'ABRoot Bölümleri:'
+  agreementStatus: 'Paket anlaşması:'
+  loadedConfig: 'Yüklü Yapılandırma:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
-  kargs: 'Kernel Arguments: %s'
+    removed: 'Kaldırıldı: %s'
+    unstaged: 'Provasız: %s%s'
+    title: 'Paketler:'
+    added: 'Eklendi: %s'
+  kargs: 'Çekirdek Argümanları: %s'
 upgrade:
   use: upgrade
   long: Yeni sistem kalıbını denetle ve uygula.
