@@ -47,6 +47,7 @@ pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  noChanges: "No changes to apply."
   dryRunFlag: "perform a dry run of the operation"
   forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
   agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is required. This command facilitates package installations but introduces non-deterministic elements, impacting system trustworthiness. By consenting, you acknowledge and accept these implications, confirming your awareness of the command's potential impact on system behavior. [y/N]: "

@@ -155,6 +155,17 @@ func pkg(cmd *cobra.Command, args []string) error {
 		cmdr.Info.Printf(abroot.Trans("pkg.listMsg"), added, removed)
 		return nil
 	case "apply":
+		unstaged, err := pkgM.GetUnstagedPackages()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
+
+		if len(unstaged) == 0 {
+			cmdr.Info.Println(abroot.Trans("pkg.noChanges"))
+			return nil
+		}
+
 		aBsys, err := core.NewABSystem()
 		if err != nil {
 			cmdr.Error.Println(err)
