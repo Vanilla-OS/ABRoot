@@ -665,9 +665,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	newKernelVer := getKernelVersion(filepath.Join(systemNew, "boot"))
+	if newKernelVer == "" {
+		err := errors.New("could not get kernel version")
+		PrintVerboseErr("ABSystem.RunOperation", 7.26, err)
+		return err
+	}
+
 	var rootUuid string
 	// If Thin-Provisioning set, mount init partition and move linux and initrd
-	// images to it
+	// images to it.
+	var initMountpoint string
 	if settings.Cnf.ThinProvisioning {
 		initPartition, err := s.RootM.GetInit()
 		if err != nil {
@@ -675,7 +683,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			return err
 		}
 
-		initMountpoint := filepath.Join(systemNew, "boot", "init")
+		initMountpoint = filepath.Join(systemNew, "boot", "init")
 		err = initPartition.Mount(initMountpoint)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.4, err)
@@ -686,26 +694,25 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			return initPartition.Unmount()
 		}, nil, 80, &goodies.NoErrorHandler{}, false)
 
-		kernelVersion := getKernelVersion(filepath.Join(systemNew, "boot"))
 		err = CopyFile(
-			filepath.Join(systemNew, "boot", "vmlinuz-"+kernelVersion),
-			filepath.Join(initMountpoint, partFuture.Label, "vmlinuz-"+kernelVersion),
+			filepath.Join(systemNew, "boot", "vmlinuz-"+newKernelVer),
+			filepath.Join(initMountpoint, partFuture.Label, "vmlinuz-"+newKernelVer),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.5, err)
 			return err
 		}
 		err = CopyFile(
-			filepath.Join(systemNew, "boot", "initrd.img-"+kernelVersion),
-			filepath.Join(initMountpoint, partFuture.Label, "initrd.img-"+kernelVersion),
+			filepath.Join(systemNew, "boot", "initrd.img-"+newKernelVer),
+			filepath.Join(initMountpoint, partFuture.Label, "initrd.img-"+newKernelVer),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.6, err)
 			return err
 		}
 
-		os.Remove(filepath.Join(systemNew, "boot", "vmlinuz-"+kernelVersion))
-		os.Remove(filepath.Join(systemNew, "boot", "initrd.img-"+kernelVersion))
+		os.Remove(filepath.Join(systemNew, "boot", "vmlinuz-"+newKernelVer))
+		os.Remove(filepath.Join(systemNew, "boot", "initrd.img-"+newKernelVer))
 
 		rootUuid = initPartition.Uuid
 	} else {
@@ -713,6 +720,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	err = generateABGrubConf(
+		newKernelVer,
 		systemNew,
 		rootUuid,
 		partFuture.Label,
@@ -855,6 +863,32 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 11.3, err)
 			return err
+		}
+	}
+
+	// Stage 12: Cleanup old kernel images
+	// ------------------------------------------------
+	// If Thin-Provisioning set, we have to remove the old kernel images
+	// from the init partition since it is too small to hold multiple kernels.
+	// This step runs as the last one to ensure the whole transaction is
+	// successful before removing the old kernels.
+	if settings.Cnf.ThinProvisioning {
+		switch operation {
+		case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
+		default:
+			PrintVerboseSimple("[Stage 12] -------- ABSystemRunOperation")
+
+			// since we did the swap, the init partition is now mounted in
+			// .system instead of .system.new, so we need to update the path
+			// before proceeding
+			systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system")
+			initMountpoint = filepath.Join(systemNew, "boot", "init")
+
+			err = cleanupOldKernels(newKernelVer, initMountpoint, partFuture.Label)
+			if err != nil {
+				PrintVerboseErr("ABSystem.RunOperation", 12, err)
+				return err
+			}
 		}
 	}
 
