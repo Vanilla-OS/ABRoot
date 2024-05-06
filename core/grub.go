@@ -20,7 +20,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/go-version"
 	"github.com/vanilla-os/abroot/settings"
 )
 
@@ -33,8 +32,7 @@ type Grub struct {
 }
 
 // generateABGrubConf generates a new grub config with the given details
-// kernel version is automatically detected
-func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
+func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
 	PrintVerboseInfo("generateABGrubConf", "generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
@@ -43,11 +41,10 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, gene
 		return err
 	}
 
-	var grubPath, bootPrefix, bootPath, systemRoot string
+	var grubPath, bootPrefix, systemRoot string
 	if settings.Cnf.ThinProvisioning {
 		grubPath = filepath.Join(rootPath, "boot", "init", rootLabel)
 		bootPrefix = "/" + rootLabel
-		bootPath = grubPath
 
 		diskM := NewDiskManager()
 		sysRootPart, err := diskM.GetPartitionByLabel(rootLabel)
@@ -59,7 +56,6 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, gene
 	} else {
 		grubPath = filepath.Join(rootPath, "boot", "grub")
 		bootPrefix = "/.system/boot"
-		bootPath = filepath.Join(rootPath, "boot")
 		systemRoot = "UUID=" + rootUuid
 	}
 
@@ -68,13 +64,6 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, gene
   linux   %s/vmlinuz-%s root=%s %s
   initrd  %s/initrd.img-%s
 `
-
-	kernelVersion := getKernelVersion(bootPath)
-	if kernelVersion == "" {
-		err := errors.New("could not get kernel version")
-		PrintVerboseErr("generateABGrubConf", 1, err)
-		return err
-	}
 
 	err = os.MkdirAll(grubPath, 0755)
 	if err != nil {
@@ -108,41 +97,6 @@ func generateABGrubConf(rootPath string, rootUuid string, rootLabel string, gene
 
 	PrintVerboseInfo("generateABGrubConf", "done")
 	return nil
-}
-
-// getKernelVersion returns the latest kernel version available in the root
-func getKernelVersion(bootPath string) string {
-	PrintVerboseInfo("getKernelVersion", "running...")
-
-	kernelDir := filepath.Join(bootPath, "vmlinuz-*")
-	files, err := filepath.Glob(kernelDir)
-	if err != nil {
-		PrintVerboseErr("getKernelVersion", 0, err)
-		return ""
-	}
-
-	if len(files) == 0 {
-		PrintVerboseErr("getKernelVersion", 1, errors.New("no kernel found"))
-		return ""
-	}
-
-	var maxVer *version.Version
-	for _, file := range files {
-		verStr := filepath.Base(file)[8:]
-		ver, err := version.NewVersion(verStr)
-		if err != nil {
-			continue
-		}
-		if maxVer == nil || ver.GreaterThan(maxVer) {
-			maxVer = ver
-		}
-	}
-
-	if maxVer != nil {
-		return maxVer.String()
-	}
-
-	return ""
 }
 
 // NewGrub creates a new Grub instance
