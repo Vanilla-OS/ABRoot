@@ -38,7 +38,7 @@ pkg:
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
   dryRunFlag: Führe einen Probedurchlauf aus
-  agreementDeclined: Sie haben die Vereinbarung abgelehnt. Die Funktion bleibt deaktiviert,
+  agreementDeclined: Sie haben die Zustimmung abgelehnt. Die Funktion bleibt deaktiviert,
     bis Sie ihr zustimmen.
   agreementMsg: "Um ABRoots abroot pkg Befehl zu nutzen, ist eine ausdrückliche Benutzervereinbarung
     erforderlich. Dieser Befehl erleichtert Paketinstallationen, führt aber nicht-deterministische
