@@ -81,7 +81,7 @@ pkg:
     system
   failedGettingPkgManagerInstance: "Misslyckades att hämta pakethanterar instans:
     %s\n"
-  noChanges: No changes to apply.
+  noChanges: Inga ändringar att applicera.
 upgrade:
   use: upgrade
   long: Sök efter en ny systemavbildning och använd den.
