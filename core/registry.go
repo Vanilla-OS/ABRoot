@@ -147,6 +147,17 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 		return nil, err
 	}
 
+	// If the manifest contains an errors property, it means that the
+	// request failed. Ref: https://github.com/Vanilla-OS/ABRoot/issues/285
+	if m["errors"] != nil {
+		errors := m["errors"].([]interface{})
+		for _, e := range errors {
+			err := e.(map[string]interface{})
+			PrintVerboseErr("Registry.GetManifest", 3.5, err)
+			return nil, fmt.Errorf("Registry error: %s", err["code"])
+		}
+	}
+
 	// digest is stored in the header
 	digest := resp.Header.Get("Docker-Content-Digest")
 
