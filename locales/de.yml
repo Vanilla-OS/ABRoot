@@ -24,8 +24,8 @@ rollback:
   rollbackUnnecessary: 'Das Zurückrollen des Systems ist nicht notwendig, da die aktuelle
     Root bereits die jetzige ist.'
   canRollback: Es ist möglich, zur vorherigen Root zurückzurollen.
-  cannotRollback: It is not possible to rollback to the previous root.
-  checkOnlyFlag: check if rollback to previous root is possible
+  cannotRollback: Es ist nicht möglich, auf die vorherige Wurzel zurückzukehren.
+  checkOnlyFlag: überprüfen, ob rollback zu vorheriger wurzel möglich ist
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -40,18 +40,18 @@ pkg:
   dryRunFlag: Führe einen Probedurchlauf aus
   agreementDeclined: Sie haben die Vereinbarung abgelehnt. Die Funktion bleibt deaktiviert,
     bis Sie ihr zustimmen.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  agreementMsg: "Um ABRoots abroot pkg Befehl zu nutzen, ist eine ausdrückliche Benutzervereinbarung
+    erforderlich. Dieser Befehl erleichtert Paketinstallationen, führt aber nicht-deterministische
+    Elemente ein, was die Systemtreue beeinträchtigt. Durch die Zustimmung erkennen
+    und akzeptieren Sie diese Implikationen und bestätigen Ihr Bewusstsein für die
+    potenziellen Auswirkungen des Befehls auf das Systemverhalten. [y/N]: "
+  agreementSignFailed: "Nicht unterzeichnen der Vereinbarung: %s\n"
   forceEnableUserAgreementFlag: Benutzervereinbarung erzwingen, für eingebettete Systeme
   failedGettingPkgManagerInstance: "Fehler beim Abrufen der Paketmanager-Instanz:
     %s\n"
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
-  short: 'Upgrade the system'
+  short: 'Das System aktualisieren'
   forceFlag: Aktualisierung erzwingen, auch wenn das System auf dem neuesten Stand
     ist
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
@@ -60,19 +60,19 @@ upgrade:
   checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
   removed: Entfernt
   downgraded: Herabgestuft
-  packageUpdateAvailable: Es sind %d Paketaktualisierungen verfügbar
-  systemUpdateAvailable: Eine Systemaktualisierung ist verfügbar
+  packageUpdateAvailable: Es gibt %d Paket-Updates.
+  systemUpdateAvailable: Es gibt ein Update für Ihr System.
   upgraded: Aktualisiert
   added: Hinzugefügt
   checkingPackageUpdate: Nach Paketaktualisierung suchen...
   checkingSystemUpdate: Nach Systemaktualisierung suchen...
   dryRunFlag: Führe einen Probedurchlauf aus
-  dryRunSuccess: Probedurchlauf fehlerfrei fertiggestellt
-  success: 'Upgrade completed successfully.'
+  dryRunSuccess: Trockenlauf erfolgreich abgeschlossen.
+  success: 'Upgrade erfolgreich abgeschlossen.'
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
-    pkg apply' aus, um sie anzuwenden."
+    pkg apply' aus um sie anzuwenden."
   long: Aktuellen ABRoot-Status anzeigen.
   short: Anzeigestatus
   jsonFlag: Ausgabe im JSON-Format anzeigen
@@ -82,31 +82,31 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Technische Daten:'
+    memory: 'Speicher: %s'
+  loadedConfig: 'Geladene Konfiguration:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'Entfernt: %s'
+    unstaged: 'Nicht bereitgestellt: %s%s'
+    title: 'Pakete:'
+    added: 'Hinzugefügt: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
+    future: 'Zukunft: %s%s'
+    present: 'Gegenwart: %s%s'
     title: 'ABRoot Partitions:'
   kargs: 'Kernel Arguments: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Zeitstempel: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
     image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+  agreementStatus: 'Paketvereinbarung:'
 updateInitramfs:
   short: initramfs aktualisieren
-  updateFailed: "Failed to update initramfs of future root.\n"
+  updateFailed: "Nicht zu aktualisieren Initramfs der zukünftigen Wurzel.\n.\n"
   rootRequired: Sie müssen root sein, um diesen Befehl ausführen zu können.
-  updateSuccess: 'Updated initramfs of future root.'
-  long: 'Update the initramfs of the future root.'
+  updateSuccess: 'Aktualisierte Initramfs der zukünftigen Wurzel.'
+  long: 'Aktualisieren Sie die Initramfs der zukünftigen Wurzel.'
   use: update-initramfs
   dryRunFlag: einen Trockenlauf des Vorgangs durchführen
 cnf:
