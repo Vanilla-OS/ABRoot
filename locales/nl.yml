@@ -1,63 +1,63 @@
 abroot:
   use: "abroot"
-  long: "ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties
+  long: "ABRoot biedt volledige onveranderlĳkheid en atomiciteit door transacties
     uit te voeren tussen 2 root-partities (A<->B)"
-  short: "ABRoot biedt volledige onveranderlijkheid en atomiciteit door transacties
+  short: "ABRoot biedt volledige onveranderlĳkheid en atomiciteit door transacties
     uit te voeren tussen 2 root-partities (A<->B)"
   verboseFlag: "Gedetailleerdere uitvoer tonen"
 
 kargs:
   use: "kargs"
-  long: "Beheer kernel-parameters"
+  long: "Beheer kernel-parameters."
   short: "Kernel-parameters beheren"
-  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
-  notChanged: Er zijn geen veranderingen gemaakt aan kernel-parameters.
+  rootRequired: "Deze opdracht moet als root worden uitgevoerd."
+  notChanged: Er zĳn geen veranderingen gemaakt aan kernel-parameters.
   applyFailed: "Toepasopdracht mislukt: %s\n"
 rollback:
   use: "rollback"
-  long: "Voert een systeem-rollback uit, waarbij wijzigingen in de huidige root worden
-    verwijderd"
+  long: "Voert een systeem-rollback uit, waarbĳ wĳzigingen in de huidige root worden
+    verwĳderd."
   short: "Systeem terugbrengen naar vorige toestand"
-  rootRequired: "U dient root te zijn om deze opdracht uit te voeren"
+  rootRequired: "Deze opdracht moet als root worden uitgevoerd."
   rollbackFailed: "Terugrollen mislukt: %s\n"
   rollbackSuccess: Terugrol succesvol afgerond.
   rollbackUnnecessary: Terugrol is niet nodig, huidige root is al de actuele.
-  canRollback: Het is mogelijk om naar de vorige root terug te rollen.
-  cannotRollback: Het is niet mogelijk om naar de vorige root terug te rollen.
-  checkOnlyFlag: controleren of terugrol naar vorige root mogelijk is
+  canRollback: Het is mogelĳk om naar de vorige root terug te rollen.
+  cannotRollback: Het is niet mogelĳk om naar de vorige root terug te rollen.
+  checkOnlyFlag: controleren of terugrol naar vorige root mogelĳk is
 pkg:
-  long: Installeer en beheer pakketten
+  long: Installeer en beheer pakketten.
   addedMsg: "Pakketten %s toegevoegd\n"
   short: Pakketten beheren
-  rootRequired: U moet root zijn om deze opdracht uit te voeren.
+  rootRequired: Deze opdracht moet als root worden uitgevoerd.
   applyFailed: "Toepasopdracht mislukt: %s\n"
-  removedMsg: "Pakketten %s verwijderd\n"
-  listMsg: "Toegevoegde pakketten:\n%s\nVerwijderde pakketten:\n%s\n"
+  removedMsg: "Pakket(ten) %s verwĳderd.\n"
+  listMsg: "Toegevoegde pakketten:\n%s\nVerwĳderde pakketten:\n%s\n"
   use: pkg
   noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze handeling.
   dryRunFlag: uitvoering van handeling testen
-  agreementDeclined: U heeft de overeenkomst geweigerd. De functie blijft uitgeschakeld
+  agreementDeclined: U heeft de overeenkomst geweigerd. De functie blĳft uitgeschakeld
     totdat u ermee akkoord gaat.
   agreementMsg: "Om de pkg-opdracht van ABRoot te gebruiken is expliciete toestemming
-    van de gebruiker vereist. Deze opdracht vergemakkelijkt het installeren van pakketten,
+    van de gebruiker vereist. Deze opdracht vergemakkelĳkt het installeren van pakketten,
     maar introduceert niet-deterministische elementen, die de betrouwbaarheid van
     het systeem beïnvloeden. Door toestemming te geven, erkent en accepteert u deze
     implicaties en bevestigt u dat u zich bewust bent van de mogelijke impact van
     de opdracht op het systeemgedrag. [y/N]: "
   agreementSignFailed: "Overeenkomst tekenen mislukt: %s\n"
   forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten systemen
-  failedGettingPkgManagerInstance: "Instantie van pakketbeheerder krijgen mislukt:
+  failedGettingPkgManagerInstance: "Instantie van pakketbeheerder ophalen mislukt:
     %s\n"
-  noChanges: No changes to apply.
+  noChanges: Geen wĳzigingen om toe te passen.
 status:
   use: status
-  long: Toont de huidige status van ABRoot
+  long: Toont de huidige status van ABRoot.
   dumpFlag: status van ABRoot naar een archief dumpen
   jsonFlag: uitvoer in JSON-formaat tonen
   short: Status tonen
-  rootRequired: U moet root zijn om deze opdracht uit te voeren.
-  unstagedFoundMsg: "\n\t\tEr zijn %d niet-toegepaste pakketten. Voer ‘abroot pkg
-    apply’ uit om deze toe te passen."
+  rootRequired: Deze opdracht moet als root worden uitgevoerd.
+  unstagedFoundMsg: "\n\t\tEr zĳn %d niet-toegepaste pakketten. Voer ‘abroot pkg apply’
+    uit om deze toe te passen."
   dumpMsg: "Status van ABRoot gedumpt naar %s\n"
   specs:
     cpu: 'CPU: %s'
@@ -85,35 +85,35 @@ upgrade:
   use: upgrade
   long: Controleert op een nieuw systeemkopiebestand en past deze toe.
   short: Systeem upgraden
-  forceFlag: update forceren, zelfs als het systeem al is bijgewerkt
-  rootRequired: U moet root zijn om deze opdracht uit te voeren.
-  noUpdateAvailable: Geen updates beschikbaar
+  forceFlag: update forceren, zelfs als het systeem al is bĳgewerkt
+  rootRequired: Deze opdracht moet als root worden uitgevoerd.
+  noUpdateAvailable: Geen updates beschikbaar.
   checkOnlyFlag: op systeem-updates controleren maar deze niet toepassen
-  removed: Verwijderd
+  removed: Verwĳderd
   downgraded: Teruggezet
-  packageUpdateAvailable: Er zijn %d pakket-updates.
+  packageUpdateAvailable: Er zĳn %d pakket-updates.
   systemUpdateAvailable: Er is een update voor uw systeem.
-  upgraded: Bijgewerkt
+  upgraded: Bĳgewerkt
   added: Toegevoegd
   checkingPackageUpdate: Controleren op pakketupdates…
   checkingSystemUpdate: Controleren op systeemupdates…
   dryRunFlag: uitvoering van handeling testen
-  dryRunSuccess: Testuitvoering succesvol voltooid
+  dryRunSuccess: Testuitvoering succesvol voltooid.
   success: Upgrade succesvol afgerond.
 updateInitramfs:
-  short: Initramfs bijwerken
-  updateFailed: "Kon initramfs van toekomstige root niet bijwerken.\n"
-  rootRequired: U moet root zijn om deze opdracht uit te voeren.
-  updateSuccess: Initramfs van toekomstige root bijgewerkt
-  long: Werkt de initramfs van de toekomstige root bij
+  short: Initramfs bĳwerken
+  updateFailed: "Kon initramfs van toekomstige root niet bĳwerken.\n"
+  rootRequired: Deze opdracht moet als root worden uitgevoerd.
+  updateSuccess: Initramfs van toekomstige root bĳgewerkt.
+  long: Werkt de initramfs van de toekomstige root bĳ.
   use: update-initramfs
   dryRunFlag: test uitvoeren van de handeling
 cnf:
-  unchanged: Er zijn geen wijzigingen aangebracht aan de configuratie.
+  unchanged: Er zĳn geen wĳzigingen aangebracht aan de configuratie.
   editorFailed: "Kon bewerker niet openen: %s\n"
   long: Opent een bewerker om de ABRoot-configuratie te bewerken.
   short: ABRoot-configuratie bewerken
   use: cnf
-  changed: Configuratie gewijzigd.
-  failed: "Er is een fout opgetreden tijdens de interactie met de configuratie: %s\n"
-  rootRequired: U moet root zijn om deze opdracht uit te voeren.
+  changed: Configuratie gewĳzigd.
+  failed: "Er is een fout opgetreden tĳdens de interactie met de configuratie: %s\n"
+  rootRequired: Deze opdracht moet als root worden uitgevoerd.
