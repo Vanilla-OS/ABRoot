@@ -60,6 +60,7 @@ pkg:
   agreementDeclined: "You declined the agreement. The feature will stay disabled until
     you agree to it."
 
+  noChanges: No changes to apply.
 status:
   use: "status"
   long: "Display the current ABRoot status."

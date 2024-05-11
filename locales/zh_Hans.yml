@@ -38,6 +38,7 @@ pkg:
   agreementSignFailed: "无法签署协议：%s\n"
   forceEnableUserAgreementFlag: 强制启用用户协议，用于嵌入式系统
   failedGettingPkgManagerInstance: "无法获取软件包管理器实例：%s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"

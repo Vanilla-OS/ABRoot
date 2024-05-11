@@ -67,6 +67,7 @@ pkg:
     a beágyazott rendszerek számára
   failedGettingPkgManagerInstance: "Nem sikerült letölteni a csomagkezelő példányt:
     %s\n"
+  noChanges: No changes to apply.
 status:
   use: 'status'
   long: Az aktuális ABRoot állapot megjelenítése.

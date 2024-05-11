@@ -49,6 +49,7 @@ pkg:
     систем
   failedGettingPkgManagerInstance: "Не вдалося отримати екземпляр менеджера пакунків:
     %s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   long: Показати поточний стан ABRoot.

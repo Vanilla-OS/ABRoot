@@ -47,6 +47,7 @@ pkg:
     systemów
   failedGettingPkgManagerInstance: "Nie udało się pobrać instancji menedżera pakietów:
     %s\n"
+  noChanges: No changes to apply.
 upgrade:
   use: upgrade
   noUpdateAvailable: Brak dostępnych aktualizacji.

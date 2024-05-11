@@ -51,6 +51,7 @@ pkg:
     sisteme încorporate
   failedGettingPkgManagerInstance: "Preluarea instanței managerului de pachete eșuată:
     %s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   long: Afișați starea ABRoot curentă.

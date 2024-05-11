@@ -46,6 +46,7 @@ pkg:
     impact on system behaviour. [y/N]: "
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  noChanges: No changes to apply.
 status:
   rootRequired: You must be root to run this command.
   use: status

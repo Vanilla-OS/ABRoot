@@ -77,6 +77,7 @@ pkg:
   agreementSignFailed: "Failed to sign the agreement: %s\n"
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  noChanges: No changes to apply.
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)

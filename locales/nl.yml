@@ -48,6 +48,7 @@ pkg:
   forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten systemen
   failedGettingPkgManagerInstance: "Instantie van pakketbeheerder krijgen mislukt:
     %s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   long: Toont de huidige status van ABRoot

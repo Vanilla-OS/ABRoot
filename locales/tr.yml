@@ -45,6 +45,7 @@ pkg:
   forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, gömülü
     sistemler için
   failedGettingPkgManagerInstance: "Paket yönetici örneği alınamadı: %s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   long: Şu anki ABRoot durumunu görüntüle.
