@@ -82,6 +82,7 @@ pkg:
     pour les systèmes embarqués
   failedGettingPkgManagerInstance: "Échec de l'obtention de l'instance du gestionnaire
     de paquets: %s\n"
+  noChanges: No changes to apply.
 upgrade:
   use: upgrade
   long: Vérifier la présence d'une nouvelle image système et l'appliquer.

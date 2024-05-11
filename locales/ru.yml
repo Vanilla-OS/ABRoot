@@ -47,6 +47,7 @@ pkg:
     для встраиваемых систем
   failedGettingPkgManagerInstance: "Не удалось получить экземпляр менеджера пакетов:
     %s\n"
+  noChanges: No changes to apply.
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"

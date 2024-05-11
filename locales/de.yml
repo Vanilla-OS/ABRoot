@@ -49,6 +49,7 @@ pkg:
   forceEnableUserAgreementFlag: Benutzervereinbarung erzwingen, für eingebettete Systeme
   failedGettingPkgManagerInstance: "Fehler beim Abrufen der Paketmanager-Instanz:
     %s\n"
+  noChanges: No changes to apply.
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
   short: 'Das System aktualisieren'

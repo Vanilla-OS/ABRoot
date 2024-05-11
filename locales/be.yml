@@ -46,6 +46,7 @@ pkg:
   agreementDeclined: You declined the agreement. The feature will stay disabled until
     you agree to it.
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
+  noChanges: No changes to apply.
 status:
   use: Статус
   long: Адлюстраванне бягучага стану ABRoot.

@@ -50,6 +50,7 @@ pkg:
     [y/N]: "
   failedGettingPkgManagerInstance: "Error al obtener la instancia del gestor de paquetes:
     %s\n"
+  noChanges: No changes to apply.
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin aplicar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."

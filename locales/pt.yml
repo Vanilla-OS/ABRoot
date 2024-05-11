@@ -68,6 +68,7 @@ pkg:
     sistemas embarcados
   failedGettingPkgManagerInstance: "Falha ao obter a instância do gestor de pacotes:
     %s\n"
+  noChanges: No changes to apply.
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
