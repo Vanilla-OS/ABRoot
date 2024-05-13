@@ -38,7 +38,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 		"/var/lib/abroot/etc",
 		fmt.Sprintf("%s-work", root.Label),
 	)
-	etcLocalePath := filepath.Join("/var/lib/abroot/etc", root.Label, "locales")
 	ic := &IntegrityCheck{
 		rootPath:   root.Partition.MountPoint,
 		systemPath: systemPath,
@@ -72,7 +71,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 		etcPaths: []string{
 			etcPath,
 			etcWorkPath,
-			etcLocalePath,
 		},
 	}
 

@@ -241,7 +241,6 @@ func (s *ABSystem) GenerateSystemdUnits(rootPath string, root ABRootPartition) e
 	mounts := []varmount{
 		{"/var/home", "/home", "none", "bind"},
 		{"/var/opt", "/opt", "none", "bind"},
-		{"/var/lib/abroot/etc/" + root.Label + "/locales", "/.system/usr/lib/locale", "none", "bind"},
 		{"overlay", "/.system/etc", "overlay", "lowerdir=/.system/etc,upperdir=/var/lib/abroot/etc/" + root.Label + ",workdir=/var/lib/abroot/etc/" + root.Label + "-work"},
 	}
 
