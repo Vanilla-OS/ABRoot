@@ -4,7 +4,7 @@ go 1.21.4
 
 require (
 	github.com/containers/buildah v1.35.1
-	github.com/containers/image/v5 v5.30.0
+	github.com/containers/image/v5 v5.30.1
 	github.com/containers/storage v1.53.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/uuid v1.6.0
