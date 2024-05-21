@@ -3,7 +3,7 @@ abroot:
   long: "ABRoot забезпечує повну незмінність та атомарність, виконуючи транзакції
     між двома кореневими розділами (A<->B)"
   short: "ABRoot забезпечує повну незмінність та атомарність, виконуючи транзакції
-    між двома кореневими розділами (A<->B)"
+    між 2 кореневими розділами (A<->B)"
   verboseFlag: "показати більш детальний висновок"
 
 kargs:
@@ -24,7 +24,7 @@ rollback:
   rollbackUnnecessary: Відкат не обов'язковий, теперішній корінь вже є поточним.
   canRollback: Відкат до попереднього кореня є можливим.
   cannotRollback: Відкат до попереднього кореня не є можливим.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: перевірити, чи можливий відкат до попереднього root
 pkg:
   applyFailed: "Не вдалося застосувати команду: %s\n"
   removedMsg: "Видалено пакунків: %s.\n"
@@ -49,39 +49,39 @@ pkg:
     систем
   failedGettingPkgManagerInstance: "Не вдалося отримати екземпляр менеджера пакунків:
     %s\n"
-  noChanges: No changes to apply.
+  noChanges: Немає змін для застосування.
 status:
   use: status
   long: Показати поточний стан ABRoot.
   short: Показати стан
-  dumpFlag: Зберегти стан ABRoot у архів
+  dumpFlag: зберегти стан ABRoot у архів
   unstagedFoundMsg: "\n\t\tЄ %d пакунків, які ще не застосовані. Щоб застосувати їх,
     будь ласка, виконайте 'abroot pkg apply'."
-  jsonFlag: Показати результат у форматі JSON
+  jsonFlag: показати результат у форматі JSON
   rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
   dumpMsg: "Стан ABRoot збережено у %s\n"
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    cpu: 'Процесор: %s'
+    gpu: 'Графічний процесор: %s'
+    title: 'Характеристики пристрою:'
+    memory: 'Пам''ять: %s'
+  loadedConfig: 'Завантажена конфігурація:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'Видалено: %s'
+    unstaged: 'Не застосовано: %s%s'
+    title: 'Пакети:'
+    added: 'Додано: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: 'Майбутній: %s%s'
+    present: 'Поточний: %s%s'
+    title: 'Розділи ABRoot:'
+  kargs: 'Аргументи ядра: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
-    title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    timestamp: 'Часова мітка: %s'
+    title: 'ABОбраз:'
+    digest: 'Дайджест: %s'
+    image: 'Образ: %s'
+  agreementStatus: 'Пакетний договір:'
 upgrade:
   use: upgrade
   short: Оновити систему
@@ -108,13 +108,13 @@ updateInitramfs:
   updateSuccess: Оновлено initramfs майбутнього кореня.
   long: Оновити initramfs майбутнього кореня.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: виконати пробний запуск операції
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: Жодних змін у конфігурацію не було внесено.
+  editorFailed: "Не вдалося відкрити редактор: %s\n"
+  long: Відкрийте редактор для редагування конфігурації ABRoot.
+  short: Редагувати конфігурацію ABRoot
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Конфігурацію змінено.
+  failed: "Під час взаємодії з конфігурацією виникла помилка: %s\n"
+  rootRequired: Щоб запустити цю команду, ви повинні мати root права.
