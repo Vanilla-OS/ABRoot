@@ -903,10 +903,12 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 	defer cq.Run()
 
 	// we won't allow upgrades while rolling back
-	err = s.LockUpgrade()
-	if err != nil {
-		PrintVerboseErr("ABSystem.Rollback", 0, err)
-		return ROLLBACK_FAILED, err
+	if !checkOnly {
+		err = s.LockUpgrade()
+		if err != nil {
+			PrintVerboseErr("ABSystem.Rollback", 0, err)
+			return ROLLBACK_FAILED, err
+		}
 	}
 
 	partBoot, err := s.RootM.GetBoot()
