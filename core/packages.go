@@ -81,7 +81,7 @@ func NewPackageManager(dryRun bool) (*PackageManager, error) {
 		baseDir = DryRunPackagesBaseDir
 	}
 
-	err := os.MkdirAll(baseDir, 0755)
+	err := os.MkdirAll(baseDir, 0o755)
 	if err != nil {
 		PrintVerboseErr("PackageManager.NewPackageManager", 0, err)
 		return nil, err
@@ -92,7 +92,7 @@ func NewPackageManager(dryRun bool) (*PackageManager, error) {
 		err = os.WriteFile(
 			filepath.Join(baseDir, PackagesAddFile),
 			[]byte(""),
-			0644,
+			0o644,
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 1, err)
@@ -105,7 +105,7 @@ func NewPackageManager(dryRun bool) (*PackageManager, error) {
 		err = os.WriteFile(
 			filepath.Join(baseDir, PackagesRemoveFile),
 			[]byte(""),
-			0644,
+			0o644,
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 2, err)
@@ -118,7 +118,7 @@ func NewPackageManager(dryRun bool) (*PackageManager, error) {
 		err = os.WriteFile(
 			filepath.Join(baseDir, PackagesUnstagedFile),
 			[]byte(""),
-			0644,
+			0o644,
 		)
 		if err != nil {
 			PrintVerboseErr("PackageManager.NewPackageManager", 3, err)
@@ -220,7 +220,8 @@ func (p *PackageManager) Add(pkg string) error {
 	return p.writeAddPackages(pkgsAdd)
 }
 
-// Remove removes a package from the packages.add file
+// Remove either removes a manually added package from packages.add or adds
+// a package to be deleted into packages.remove
 func (p *PackageManager) Remove(pkg string) error {
 	PrintVerboseInfo("PackageManager.Remove", "running...")
 
@@ -455,7 +456,7 @@ func (p *PackageManager) writePackages(file string, pkgs []string) error {
 			continue
 		}
 
-		_, err = f.WriteString(fmt.Sprintf("%s\n", pkg))
+		_, err = fmt.Fprintf(f, "%s\n", pkg)
 		if err != nil {
 			PrintVerboseErr("PackageManager.writePackages", 1, err)
 			return err
@@ -664,7 +665,7 @@ func (p *PackageManager) AcceptUserAgreement() error {
 	err := os.WriteFile(
 		PkgManagerUserAgreementFile,
 		[]byte(time.Now().String()),
-		0644,
+		0o644,
 	)
 	if err != nil {
 		PrintVerboseErr("PackageManager.AcceptUserAgreement", 0, err)
