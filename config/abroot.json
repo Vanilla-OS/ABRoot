@@ -13,6 +13,7 @@
     "iPkgMngAdd": "apt-get install -y",
     "iPkgMngRm": "apt-get remove -y --autoremove",
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
+    "iPkgMngStatus": 1,
 
     "differURL": "https://differ.vanillaos.org",
 

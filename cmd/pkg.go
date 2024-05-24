@@ -181,6 +181,9 @@ func pkg(cmd *cobra.Command, args []string) error {
 			cmdr.Error.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err
 		}
+	default:
+		cmdr.Error.Println(abroot.Trans("pkg.unknownCommand", args[0]))
+		return nil
 	}
 
 	return nil
