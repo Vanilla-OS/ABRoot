@@ -28,16 +28,19 @@ jobs:
 
     - name: Build
       run: go build -o abrootv2
-    
+
     - name: Test
       run: go test -v ./tests/...
-    
+
+    - name: Check for missing strings
+      uses: vanilla-os/missing-strings-golang-action@v0.1.0
+
     - name: Compress
       run: tar -czvf abrootv2.tar.gz abrootv2
 
     - name: Compress-manpage
       run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
-    
+
     - uses: actions/upload-artifact@v4
       with:
         name: abrootv2
