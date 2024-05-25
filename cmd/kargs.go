@@ -76,7 +76,7 @@ func kargs(cmd *cobra.Command, args []string) error {
 		}
 		cmdr.Info.Println(kargsStr)
 	default:
-		return errors.New(abroot.Trans("kargs.unknownParam", args[0]))
+		return errors.New(abroot.Trans("kargs.unknownCommand", args[0]))
 	}
 
 	return nil

@@ -10,6 +10,7 @@ kargs:
   use: "kargs"
   long: "Manage kernel parameters."
   short: "Manage kernel parameters"
+  unknownCommand: "Unknown command '%s'. Run 'abroot kargs --help' for usage examples."
   rootRequired: "You must be root to run this command."
   notChanged: "No changes were made to kernel parameters."
   applyFailed: "Apply command failed: %s\n"
