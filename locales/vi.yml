@@ -1,51 +1,52 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot cung cấp tính ổn định và nhất quán tối đa bằng cách thực hiện việc
+    chuyển giao giữa 2 phân vùng root (A<->B)"
+  short: "ABRoot cung cấp tính ổn định và nhất quán tối đa bằng cách thực hiện việc
+    chuyển giao giữa 2 phân vùng root (A<->B)"
+  verboseFlag: "hiển thị kết quả chi tiết hơn"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters"
-  rootRequired: "You must be root to run this command."
-  notChanged: "No changes were made to kernel parameters."
-  applyFailed: "Apply command failed: %s\n"
+  long: "Quản lí các thông số của kernel."
+  short: "Quản lí các thông số của kernel"
+  rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
+  notChanged: "Chưa có thay đổi nào được thực hiện trên các thông số của kernel."
+  applyFailed: "Áp dụng câu lệnh không thành công: %s\n"
 
 cnf:
   use: "cnf"
-  long: "Open an editor to edit the ABRoot configuration."
-  short: "Edit ABRoot configuration"
-  rootRequired: "You must be root to run this command."
-  editorFailed: "Failed to open the editor: %s\n"
-  changed: "Configuration changed."
-  unchanged: "No changes were made to the configuration."
-  failed: "An error occurred while interacting with the configuration: %s\n"
+  long: "Mở một trình chỉnh sửa để điều chỉnh cấu hình ABRoot."
+  short: "Điều chỉnh cấu hình ABRoot"
+  rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
+  editorFailed: "Mở trình chỉnh sửa thất bại: %s\n"
+  changed: "Cấu hình đã được thay đổi."
+  unchanged: "Chưa có thay đổi nào được thực hiện trên cấu hình."
+  failed: "Có một lỗi đã xảy ra khi thao tác với cấu hình: %s\n"
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state"
-  rootRequired: "You must be root to run this command."
-  rollbackUnnecessary: "Rollback is not necessary, current root is already the present
-    one."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: "Rollback completed successfully."
-  canRollback: "It is possible to rollback to the previous root."
-  cannotRollback: "It is not possible to rollback to the previous root."
-  checkOnlyFlag: "check if rollback to previous root is possible"
+  long: "Thực hiện rollback hệ thống, huỷ bỏ những thay đổi đã thực hiện
+    trên phân vùng root hiện tại."
+  short: "Đưa hệ thống quay về trạng tháng trước đây"
+  rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
+  rollbackUnnecessary: "Rollback là không cần thiết, phân vùng root này cũng
+    đang được sử dụng."
+  rollbackFailed: "Rollback thất bại: %s\n"
+  rollbackSuccess: "Rollback thành công."
+  canRollback: "Có thể rollback về phân vùng root trước đó."
+  cannotRollback: "Không thể rollback về phân vùng root trước đó."
+  checkOnlyFlag: "kiểm tra xem có thể rollback về phân vùng root trước đó không"
 
 pkg:
   use: "pkg"
-  long: "Install and manage packages."
-  short: "Manage packages"
-  rootRequired: "You must be root to run this command."
+  long: "Cài đặt và quản lí gói."
+  short: "Quản lí gói"
+  rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noPackageNameProvided: "You must provide at least one package name for this operation."
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
+  addedMsg: "Gói %s đã được thêm vào.\n"
+  applyFailed: "Áp dụng câu lệnh thất bại: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
   noChanges: "No changes to apply."
