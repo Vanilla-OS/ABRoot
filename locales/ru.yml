@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
   applyFailed: "Не удалось применить команду: %s\n"
   notChanged: Никаких изменений в параметры ядра не вносилось.
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Выполнить откат, отменив все изменения в текущем корневом разделе."
@@ -48,6 +49,7 @@ pkg:
   failedGettingPkgManagerInstance: "Не удалось получить экземпляр менеджера пакетов:
     %s\n"
   noChanges: Нет изменений для применения.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"

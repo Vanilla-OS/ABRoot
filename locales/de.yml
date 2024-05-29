@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
   notChanged: Es wurden keine Änderungen an Kernel-Parametern vorgenommen.
   applyFailed: "Befehl anwenden fehlgeschlagen: %\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Führt ein System-Rollback aus, wobei Änderungen an der aktuellen Root verworfen
@@ -50,6 +51,7 @@ pkg:
   failedGettingPkgManagerInstance: "Fehler beim Abrufen der Paketmanager-Instanz:
     %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
   short: 'Das System aktualisieren'

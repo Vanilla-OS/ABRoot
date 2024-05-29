@@ -11,6 +11,7 @@ kargs:
   rootRequired: "이 명령을 실행하려면 루트여야 합니다."
   notChanged: 커널 매개변수에 변경 사항이 없습니다.
   applyFailed: "명령 적용이 실패했습니다: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "현재 루트에 대한 변경 사항을 버림으로써 시스템 rollback을 실행합니다."
@@ -45,6 +46,7 @@ pkg:
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: status
   long: 현재 ABRoot 상태를 표시합니다.

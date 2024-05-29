@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   applyFailed: "A eșuat comanda de aplicare: %s\n"
   notChanged: Nu au fost făcute schimbări la parametrii kernel-ului.
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "revenire"
   long: "Execută o revenire a sistemului, eliminând modificările făcute la rădăcina
@@ -52,6 +53,7 @@ pkg:
   failedGettingPkgManagerInstance: "Preluarea instanței managerului de pachete eșuată:
     %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: status
   long: Afișați starea ABRoot curentă.

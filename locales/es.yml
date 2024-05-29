@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Debes tener acceso como superusuario para ejecutar este comando."
   notChanged: No se han realizado cambios en los parámetros del kernel.
   applyFailed: "Error al aplicar el comando: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Ejecuta una reversión del sistema, descartando los cambios realizados en
@@ -51,6 +52,7 @@ pkg:
   failedGettingPkgManagerInstance: "Error al obtener la instancia del gestor de paquetes:
     %s\n"
   noChanges: No se aplican cambios.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin aplicar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."

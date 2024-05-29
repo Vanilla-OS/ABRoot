@@ -13,6 +13,7 @@ kargs:
   rootRequired: "ამ ბრძანების გასაშვებად root უნდა ბრძანდებოდეთ."
   notChanged: ბირთვის პარამეტრები არ შეცვლილა.
   applyFailed: "გადატარების ბრძანება ჩავარდა: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "ახორციელებს სისტემის დაბრუნებას, უგულებელყოფს მიმდინარე ძირითად საქაღალდეში
@@ -80,6 +81,7 @@ pkg:
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)

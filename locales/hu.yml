@@ -13,6 +13,7 @@ kargs:
   rootRequired: "A parancs futtatásához root felhasználónak kell lennie."
   notChanged: A kernel paramétereiben nem történt módosítás.
   applyFailed: "Az alkalmazási parancs sikertelen: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Rendszer-visszaállítás végrehajtása, a jelenlegi gyökérben végrehajtott változtatások
@@ -68,6 +69,7 @@ pkg:
   failedGettingPkgManagerInstance: "Nem sikerült letölteni a csomagkezelő példányt:
     %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: 'status'
   long: Az aktuális ABRoot állapot megjelenítése.
