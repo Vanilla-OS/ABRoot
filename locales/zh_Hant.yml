@@ -11,6 +11,7 @@ kargs:
   rootRequired: "必須是 root 使用者才能執行此命令。"
   notChanged: 沒有對作業系統核心參數作出任何變更。
   applyFailed: "套用命令失敗：%s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "執行系統復原，捨棄對目前 Root 分割區的變更。"
@@ -70,6 +71,7 @@ pkg:
   agreementSignFailed: "無法簽署合約：%s\n"
   failedGettingPkgManagerInstance: "無法取得軟體包管理器實例：%s\n"
   noChanges: 沒有變更需要套用。
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 upgrade:
   use: upgrade
   long: 檢查是否有新的系統映像並套用。
