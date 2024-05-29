@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Tens que ser root para executar este comando."
   notChanged: Não foram feitas alterações nos parâmetros do kernel.
   applyFailed: "Comando de aplicar falhou: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Executa um rollback do sistema, descartando as alterações feitas no atual
@@ -69,6 +70,7 @@ pkg:
   failedGettingPkgManagerInstance: "Falha ao obter a instância do gestor de pacotes:
     %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: status
   long: Mostrar o status atual do ABRoot.

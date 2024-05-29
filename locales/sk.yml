@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Na spustenie tohoto prīkazu musíte byť root."
   notChanged: Parametre kernelu neboli zmenené.
   applyFailed: "Spustenie príkazu zlyhalo: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Executes a system rollback, discarding changes made to the present root."
@@ -47,6 +48,7 @@ pkg:
   forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 upgrade:
   use: upgrade
   forceFlag: force update the boot partition without asking for confirmation

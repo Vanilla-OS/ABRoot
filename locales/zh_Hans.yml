@@ -11,6 +11,7 @@ kargs:
   rootRequired: "必须是 root 用户才能运行此命令。"
   applyFailed: "应用命令失败：%s\n"
   notChanged: 未对内核参数做出任何更改。
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "执行系统回滚，丢弃对当前根分区的修改。"
@@ -39,6 +40,7 @@ pkg:
   forceEnableUserAgreementFlag: 强制启用用户协议，用于嵌入式系统
   failedGettingPkgManagerInstance: "无法获取软件包管理器实例：%s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: status
   unstagedFoundMsg: "\n\t\t有 %d 个软件包尚未应用更改。请运行 'abroot pkg apply' 应用更改。"

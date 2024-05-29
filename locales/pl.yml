@@ -13,6 +13,7 @@ kargs:
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
   notChanged: Nie wprowadzono żadnych zmian w parametrach jądra.
   applyFailed: "Polecenie apply nie powiodło się: %s\n"
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
   long: "Wykonuje rollback systemu, odrzucając zmiany wprowadzone do obecnego roota."
@@ -48,6 +49,7 @@ pkg:
   failedGettingPkgManagerInstance: "Nie udało się pobrać instancji menedżera pakietów:
     %s\n"
   noChanges: No changes to apply.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 upgrade:
   use: upgrade
   noUpdateAvailable: Brak dostępnych aktualizacji.
