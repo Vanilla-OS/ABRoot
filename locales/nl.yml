@@ -13,7 +13,7 @@ kargs:
   rootRequired: "Deze opdracht moet als root worden uitgevoerd."
   notChanged: Er zĳn geen veranderingen gemaakt aan kernel-parameters.
   applyFailed: "Toepasopdracht mislukt: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot kargs --help’ uit voor gebruiks­voorbeelden.
 rollback:
   use: "rollback"
   long: "Voert een systeem-rollback uit, waarbĳ wĳzigingen in de huidige root worden
@@ -43,14 +43,14 @@ pkg:
     van de gebruiker vereist. Deze opdracht vergemakkelĳkt het installeren van pakketten,
     maar introduceert niet-deterministische elementen, die de betrouwbaarheid van
     het systeem beïnvloeden. Door toestemming te geven, erkent en accepteert u deze
-    implicaties en bevestigt u dat u zich bewust bent van de mogelijke impact van
-    de opdracht op het systeemgedrag. [y/N]: "
+    implicaties en bevestigt u dat u zich bewust bent van de mogelĳke impact van de
+    opdracht op het systeem­gedrag. [y/N]: "
   agreementSignFailed: "Overeenkomst tekenen mislukt: %s\n"
   forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten systemen
   failedGettingPkgManagerInstance: "Instantie van pakketbeheerder ophalen mislukt:
     %s\n"
   noChanges: Geen wĳzigingen om toe te passen.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot pkg --help’ uit voor gebruiks­voorbeelden.
 status:
   use: status
   long: Toont de huidige status van ABRoot.
