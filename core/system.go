@@ -295,6 +295,31 @@ Options=%s
 	return nil
 }
 
+func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
+	PrintVerboseInfo("ABSystem.CreateRootSymlinks", "creating symlinks")
+	links := []string{"mnt", "proc", "run", "dev", "media", "root", "sys", "tmp", "var"}
+
+	for _, link := range links {
+		linkName := filepath.Join(systemNewPath, link)
+
+		err := os.RemoveAll(linkName)
+		if err != nil {
+			PrintVerboseErr("ABSystem.CreateRootSymlinks", 1, err)
+			return err
+		}
+
+		targetName := filepath.Join("/", link)
+
+		err = os.Symlink(targetName, linkName)
+		if err != nil {
+			PrintVerboseErr("ABSystem.CreateRootSymlinks", 2, err)
+			return err
+		}
+	}
+
+	return nil
+}
+
 // RunOperation executes a root-switching operation from the options below:
 //
 //	UPGRADE:
@@ -727,6 +752,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 7.7, err)
+		return err
+	}
+
+	// Create links back to the root system
+	err = s.CreateRootSymlinks(systemNew)
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 7.8, err)
 		return err
 	}
 
