@@ -14,7 +14,8 @@ kargs:
   notChanged: "Chưa có thay đổi nào được thực hiện trên các thông số của kernel."
   applyFailed: "Áp dụng câu lệnh không thành công: %s\n"
 
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Câu lệnh không xác định '%s'. Chạy 'abroot kargs --help' để xem
+    ví dụ về cách sử dụng.
 cnf:
   use: "cnf"
   long: "Mở một trình chỉnh sửa để điều chỉnh cấu hình ABRoot."
@@ -59,19 +60,19 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
-  agreementDeclined: "You declined the agreement. The feature will stay disabled until
-    you agree to it."
+  agreementDeclined: "Bạn đã từ chối bản hợp đồng. Tính năng này sẽ được vô hiệu hoá
+    cho đến khi bạn đồng ý với nó."
 
   unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
 status:
   use: "status"
-  long: "Display the current ABRoot status."
-  short: "Display status"
-  jsonFlag: "show output in JSON format"
+  long: "Hiển thị trạng thái ABRoot hiện tại."
+  short: "Hiển thị trạng thái"
+  jsonFlag: "hiển thị kết quả ở dạng JSON"
   dumpFlag: "dump the ABRoot status to an archive"
-  rootRequired: "You must be root to run this command."
+  rootRequired: "Bạn phải có quyền quản trị để thực hiện câu lệnh này."
   partitions:
-    title: "ABRoot Partitions:"
+    title: "Phân vùng ABRoot:"
     present: "Present: %s%s"
     future: "Future: %s%s"
   loadedConfig: "Loaded Configuration:"
