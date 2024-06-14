@@ -4,7 +4,7 @@ abroot:
     2 partições raiz (A<->B)"
   short: "ABRoot fornece total imutabilidade e atomicidade realizando transações entre
     2 partições raiz (A<->B)"
-  verboseFlag: "mostrar um output mais detalhado"
+  verboseFlag: "mostrar uma saída mais detalhada"
 
 kargs:
   use: "kargs"
@@ -13,7 +13,8 @@ kargs:
   rootRequired: "Tens que ser root para executar este comando."
   notChanged: Não foram feitas alterações nos parâmetros do kernel.
   applyFailed: "Comando de aplicar falhou: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Comando desconhecido '%s'. Execute 'abroot kargs --help' para ver
+    exemplos de uso.
 rollback:
   use: "rollback"
   long: "Executa um rollback do sistema, descartando as alterações feitas no atual
@@ -21,7 +22,7 @@ rollback:
   short: "Retornar o sistema para um estado anterior"
   rootRequired: "Tens que ser root para executar este comando."
   rollbackFailed: "Rollback falhou: %s\n"
-  rollbackSuccess: Rollback completo com sucesso
+  rollbackSuccess: Rollback concluído com sucesso.
   rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
   canRollback: É possível voltar à raiz anterior.
   cannotRollback: Não é possível reverter para a raiz anterior.
@@ -69,8 +70,9 @@ pkg:
     sistemas embarcados
   failedGettingPkgManagerInstance: "Falha ao obter a instância do gestor de pacotes:
     %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Sem mudanças para aplicar.
+  unknownCommand: Comando desconhecido '%s'. Execute 'abroot pkg --help' para ver
+    exemplos de uso.
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
@@ -84,25 +86,25 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Especificação do Dispositivo:'
+    memory: 'Memória: %s'
+  loadedConfig: 'Configuração Carregada:'
   packages:
-    removed: 'Removed: %s'
+    removed: 'Removido: %s'
     unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    title: 'Pacotes:'
+    added: 'Adicionado: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
+    future: 'Futuro: %s%s'
+    present: 'Presente: %s%s'
+    title: 'Partições ABRoot:'
   kargs: 'Kernel Arguments: %s'
   abimage:
     timestamp: 'Timestamp: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
     image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+  agreementStatus: 'Acordo de pacote:'
 updateInitramfs:
   short: Atualize o initramfs
   updateFailed: "Falha ao atualizar o initramfs da raiz futura.\n"
