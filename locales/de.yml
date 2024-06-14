@@ -13,7 +13,8 @@ kargs:
   rootRequired: "Sie müssen Root sein, um diesen Befehl auszuführen."
   notChanged: Es wurden keine Änderungen an Kernel-Parametern vorgenommen.
   applyFailed: "Befehl anwenden fehlgeschlagen: %\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Unbekannter Befehl '%s'. Führe 'abroot kargs --help' aus, um Anwendungsbeispiele
+    zu sehen.
 rollback:
   use: "rollback"
   long: "Führt ein System-Rollback aus, wobei Änderungen an der aktuellen Root verworfen
@@ -25,8 +26,8 @@ rollback:
   rollbackUnnecessary: 'Das Zurückrollen des Systems ist nicht notwendig, da die aktuelle
     Root bereits die jetzige ist.'
   canRollback: Es ist möglich, zur vorherigen Root zurückzurollen.
-  cannotRollback: Es ist nicht möglich, auf die vorherige Wurzel zurückzukehren.
-  checkOnlyFlag: überprüfen, ob rollback zu vorheriger wurzel möglich ist
+  cannotRollback: Es ist nicht möglich, zur vorherigen Wurzel zurückzukehren.
+  checkOnlyFlag: Überprüfe, ob eine Rückkehr zur vorherigen Wurzel möglich ist
 pkg:
   short: Pakete verwalten
   addedMsg: "Paket(e) % hinzugefügt.\n"
@@ -50,8 +51,9 @@ pkg:
   forceEnableUserAgreementFlag: Benutzervereinbarung erzwingen, für eingebettete Systeme
   failedGettingPkgManagerInstance: "Fehler beim Abrufen der Paketmanager-Instanz:
     %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Keine Änderungen anzuwenden.
+  unknownCommand: Unbekannter Befehl '%s'. Führe 'abroot pkg --help' aus, um Anwendungsbeispiele
+    zu sehen.
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
   short: 'Das System aktualisieren'
@@ -96,8 +98,8 @@ status:
   partitions:
     future: 'Zukunft: %s%s'
     present: 'Gegenwart: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    title: 'ABRoot Partitionen:'
+  kargs: 'Kernel Argumente: %s'
   abimage:
     timestamp: 'Zeitstempel: %s'
     title: 'ABImage:'
@@ -106,7 +108,7 @@ status:
   agreementStatus: 'Paketvereinbarung:'
 updateInitramfs:
   short: initramfs aktualisieren
-  updateFailed: "Nicht zu aktualisieren Initramfs der zukünftigen Wurzel.\n.\n"
+  updateFailed: "Versuch, die initframs der zukünftigen Wurzel zu aktualisieren scheiterte.\n"
   rootRequired: Sie müssen root sein, um diesen Befehl ausführen zu können.
   updateSuccess: 'Aktualisierte Initramfs der zukünftigen Wurzel.'
   long: 'Aktualisieren Sie die Initramfs der zukünftigen Wurzel.'
