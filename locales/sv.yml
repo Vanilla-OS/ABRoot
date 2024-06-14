@@ -13,7 +13,7 @@ kargs:
   rootRequired: "Du måste vara root för att köra detta kommando."
   notChanged: Inga ändringar har gjorts till kärnparametrarna.
   applyFailed: "Verkställ kommando misslyckades: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Okänt kommando '%s'. Kör 'abroot kargs --help' för användningsexempel.
 rollback:
   use: "rollback"
   long: "Utför en systemåterställning och kasserar ändringar som gjorts i den nuvarande
@@ -83,7 +83,7 @@ pkg:
   failedGettingPkgManagerInstance: "Misslyckades att hämta pakethanterar instans:
     %s\n"
   noChanges: Inga ändringar att applicera.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Okänt kommando '%s'. Kör 'abroot pkg --help' för användningsexempel.
 upgrade:
   use: upgrade
   long: Sök efter en ny systemavbildning och använd den.
