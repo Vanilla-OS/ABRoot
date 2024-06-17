@@ -22,9 +22,7 @@ import (
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
-var (
-	Version = "2.0.1"
-)
+var Version = "2.0.1"
 
 //go:embed locales/*.yml
 var fs embed.FS
@@ -39,7 +37,20 @@ func main() {
 
 	// root command
 	root := cmd.NewRootCommand(Version)
-	abroot.CreateRootCommand(root)
+	abroot.CreateRootCommand(root, abroot.Trans("abroot.msg.help"), abroot.Trans("abroot.msg.version"))
+
+	msgs := cmdr.UsageStrings{
+		Usage:                abroot.Trans("abroot.msg.usage"),
+		Aliases:              abroot.Trans("abroot.msg.aliases"),
+		Examples:             abroot.Trans("abroot.msg.examples"),
+		AvailableCommands:    abroot.Trans("abroot.msg.availableCommands"),
+		AdditionalCommands:   abroot.Trans("abroot.msg.additionalCommands"),
+		Flags:                abroot.Trans("abroot.msg.flags"),
+		GlobalFlags:          abroot.Trans("abroot.msg.globalFlags"),
+		AdditionalHelpTopics: abroot.Trans("abroot.msg.additionalHelpTopics"),
+		MoreInfo:             abroot.Trans("abroot.msg.moreInfo"),
+	}
+	abroot.SetUsageStrings(msgs)
 
 	upgrade := cmd.NewUpgradeCommand()
 	root.AddCommand(upgrade)
