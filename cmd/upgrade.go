@@ -233,7 +233,7 @@ func renderPackageDiff(added, upgraded, downgraded, removed []diff.PackageDiff) 
 		for _, pkg := range pkgSet.Set {
 			bulletItems = append(bulletItems, cmdr.BulletListItem{
 				Level: 1,
-				Text:  fmt.Sprintf(pkgFmt, pkg.Name+strings.Repeat(" ", largestPkgName-len(pkg.Name)), pkg.PreviousVersion, pkg.NewVersion),
+				Text:  fmt.Sprintf(pkgFmt, pkg.Name+strings.Repeat(" ", largestPkgName-len(pkg.Name)), pkg.NewVersion, pkg.PreviousVersion),
 			})
 		}
 		err := cmdr.BulletList.WithItems(bulletItems).Render()
