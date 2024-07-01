@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "Gedetailleerdere uitvoer tonen"
 
   msg:
-    examples: Examples
-    version: Show version for abroot.
-    aliases: Aliases
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
-    flags: Flags
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    moreInfo: Use %s for more information about a command
-    additionalHelpTopics: Additional help topics
+    examples: Voorbeelden
+    version: Toon versie voor abroot.
+    aliases: Aliassen
+    help: Toon hulp voor abroot.
+    usage: Gebruik
+    additionalCommands: Aanvullende opdrachten
+    flags: Vlaggen
+    availableCommands: Beschikbare opdrachten
+    globalFlags: Globale vlaggen
+    moreInfo: Gebruik %s voor meer informatie over een opdracht
+    additionalHelpTopics: Aanvullende hulponderwerpen
 kargs:
   use: "kargs"
   long: "Beheer kernel-parameters."
