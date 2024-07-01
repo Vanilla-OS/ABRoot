@@ -5,17 +5,17 @@ abroot:
   verboseFlag: "显示更详细的输出"
 
   msg:
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    examples: Examples
-    globalFlags: Global Flags
-    help: Show help for abroot.
-    usage: Usage
+    additionalCommands: 附加命令
+    version: 显示 abroot 的版本。
+    moreInfo: 使用 %s 获取有关命令的更多信息
+    aliases: 别名
+    flags: 参数
+    additionalHelpTopics: 附加帮助主题
+    availableCommands: 可用命令
+    examples: 示例
+    globalFlags: 全局参数
+    help: 显示 abroot 的帮助。
+    usage: 用法
 kargs:
   use: "kargs"
   long: "管理内核参数。"

@@ -5,17 +5,17 @@ abroot:
   verboseFlag: "顯示更詳細的輸出"
 
   msg:
-    version: Show version for abroot.
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
+    version: 顯示 abroot 的版本。
+    help: 顯示 abroot 的說明。
+    usage: 用法
+    additionalCommands: 附加命令
+    moreInfo: 使用 %s 取得關於命令的詳細資訊
+    aliases: 別名
+    flags: 參數
+    additionalHelpTopics: 附加說明主題
+    availableCommands: 可使用命令
+    globalFlags: 全域參數
+    examples: 範例
 kargs:
   use: "kargs"
   long: "管理作業系統核心參數。"
