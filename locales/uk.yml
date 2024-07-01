@@ -13,7 +13,8 @@ kargs:
   rootRequired: "Щоб запустити цю команду, ви повинні мати права користувача root."
   notChanged: До параметрів ядра не було внесено жодних змін.
   applyFailed: "Не вдалося застосувати команду: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Невідома команда «%s». Запустіть команду «abroot kargs --help» для
+    прикладів використання.
 rollback:
   use: "rollback"
   long: "Виконує відкат системи, відкидаючи зміни, внесені до поточного кореневого
@@ -51,7 +52,8 @@ pkg:
   failedGettingPkgManagerInstance: "Не вдалося отримати екземпляр менеджера пакунків:
     %s\n"
   noChanges: Немає змін для застосування.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Невідома команда «%s». Запустіть команду «abroot pkg --help» для
+    прикладів використання.
 status:
   use: status
   long: Показати поточний стан ABRoot.
