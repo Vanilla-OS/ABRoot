@@ -6,6 +6,18 @@ abroot:
     mellan 2 rotpartitioner (A<->B)"
   verboseFlag: "visa mer detaljerad utdata"
 
+  msg:
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    aliases: Aliases
+    moreInfo: Use %s for more information about a command
+    flags: Flags
+    usage: Usage
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
 kargs:
   use: "kargs"
   long: "Hantera kärnparametrar."

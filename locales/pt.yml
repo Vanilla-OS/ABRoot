@@ -6,6 +6,18 @@ abroot:
     2 partições raiz (A<->B)"
   verboseFlag: "mostrar uma saída mais detalhada"
 
+  msg:
+    moreInfo: Use %s for more information about a command
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    help: Show help for abroot.
+    usage: Usage
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    aliases: Aliases
+    flags: Flags
+    examples: Examples
 kargs:
   use: "kargs"
   long: "Gerir parâmetros do kernel."

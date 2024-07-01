@@ -5,6 +5,18 @@ abroot:
     (A<->B)"
   verboseFlag: "إظهار إخراج أكثر تفصيلاً"
 
+  msg:
+    examples: Examples
+    version: Show version for abroot.
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    help: Show help for abroot.
+    usage: Usage
+    additionalCommands: Additional Commands
+    aliases: Aliases
+    flags: Flags
+    moreInfo: Use %s for more information about a command
 kargs:
   use: "kargs"
   long: "إدارة معلمات kernel."

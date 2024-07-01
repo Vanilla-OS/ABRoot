@@ -6,6 +6,18 @@ abroot:
     між 2 кореневими розділами (A<->B)"
   verboseFlag: "показати більш детальний висновок"
 
+  msg:
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    aliases: Aliases
+    flags: Flags
+    moreInfo: Use %s for more information about a command
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
 kargs:
   use: "kargs"
   long: "Керування параметрами ядра."

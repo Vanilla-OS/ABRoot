@@ -6,6 +6,18 @@ abroot:
     hogy tranzakciókat hajt végre 2 gyökérpartíció között (A<->B)"
   verboseFlag: "részletesebb kimenet megjelenítése"
 
+  msg:
+    moreInfo: Use %s for more information about a command
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
+    version: Show version for abroot.
+    aliases: Aliases
+    additionalCommands: Additional Commands
+    flags: Flags
 kargs:
   use: "kargs"
   long: "A rendszermag paramétereinek kezelése."

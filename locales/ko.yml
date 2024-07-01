@@ -4,6 +4,18 @@ abroot:
   short: "ABRoot은 두 개의 루트 파티션 간의 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다 (A<->B)."
   verboseFlag: "더 자세한 출력 표시"
 
+  msg:
+    additionalCommands: Additional Commands
+    moreInfo: Use %s for more information about a command
+    aliases: Aliases
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    usage: Usage
+    version: Show version for abroot.
+    help: Show help for abroot.
+    flags: Flags
 kargs:
   use: "kargs"
   long: "커널 매개변수를 관리합니다."

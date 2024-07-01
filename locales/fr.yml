@@ -6,6 +6,18 @@ abroot:
     transactions entre 2 partitions racine (A<->B)"
   verboseFlag: "afficher une sortie plus détaillée"
 
+  msg:
+    version: Show version for abroot.
+    aliases: Aliases
+    availableCommands: Available Commands
+    additionalCommands: Additional Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
+    moreInfo: Use %s for more information about a command
+    flags: Flags
+    additionalHelpTopics: Additional help topics
 kargs:
   use: "kargs"
   long: "Gérer les paramètres du noyau."
