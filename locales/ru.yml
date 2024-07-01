@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "показать более подробный вывод"
 
   msg:
-    version: Show version for abroot.
-    help: Show help for abroot.
-    moreInfo: Use %s for more information about a command
-    additionalHelpTopics: Additional help topics
-    additionalCommands: Additional Commands
-    aliases: Aliases
-    flags: Flags
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    usage: Usage
+    version: Показать версию abroot.
+    help: Показать справку для abroot.
+    moreInfo: Используйте %s для получения дополнительной информации о команде
+    additionalHelpTopics: Дополнительные темы справки
+    additionalCommands: Дополнительные команды
+    aliases: Псевдонимы
+    flags: Флаги
+    availableCommands: Доступные команды
+    globalFlags: Глобальные флаги
+    examples: Примеры
+    usage: Использование
 kargs:
   use: "kargs"
   long: "Управление параметрами ядра."
