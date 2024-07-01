@@ -6,6 +6,18 @@ abroot:
     partíciami (A<->B)"
   verboseFlag: "ukáž viac detailný výstup"
 
+  msg:
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    moreInfo: Use %s for more information about a command
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    aliases: Aliases
+    flags: Flags
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
 kargs:
   use: "kargs"
   long: "Správa parametrov kernelu."

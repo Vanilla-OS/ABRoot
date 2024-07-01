@@ -6,6 +6,18 @@ abroot:
     antara 2 bahagian akar (A<->B)"
   verboseFlag: "tunjukkan cetakan lebih lanjut"
 
+  msg:
+    additionalCommands: Additional Commands
+    moreInfo: Use %s for more information about a command
+    flags: Flags
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    version: Show version for abroot.
+    aliases: Aliases
+    help: Show help for abroot.
+    usage: Usage
 kargs:
   use: "kargs"
   long: "Urus parameter-parameter kernel."

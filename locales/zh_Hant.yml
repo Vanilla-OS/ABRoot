@@ -4,6 +4,18 @@ abroot:
   short: "ABRoot 透過在兩個 Root 分割區（A<->B）之間執行系統變更以提供完全的不可變性及原子性"
   verboseFlag: "顯示更詳細的輸出"
 
+  msg:
+    version: Show version for abroot.
+    help: Show help for abroot.
+    usage: Usage
+    additionalCommands: Additional Commands
+    moreInfo: Use %s for more information about a command
+    aliases: Aliases
+    flags: Flags
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
 kargs:
   use: "kargs"
   long: "管理作業系統核心參數。"

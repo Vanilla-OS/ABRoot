@@ -6,6 +6,18 @@ abroot:
     паміж 2 каранёвымі раздзеламі (A<->B)"
   verboseFlag: "паказаць больш падрабязны вынік"
 
+  msg:
+    aliases: Aliases
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    moreInfo: Use %s for more information about a command
+    flags: Flags
 kargs:
   use: "kargs"
   long: "Кіраванне параметрамі ядра."

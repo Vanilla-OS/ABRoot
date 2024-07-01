@@ -6,6 +6,18 @@ abroot:
     ve atomiklik sağlar"
   verboseFlag: "daha ayrıntılı çıktı göster"
 
+  msg:
+    version: Show version for abroot.
+    moreInfo: Use %s for more information about a command
+    aliases: Aliases
+    additionalCommands: Additional Commands
+    flags: Flags
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
 kargs:
   use: "kargs"
   long: "Çekirdek parametrelerini yönet."

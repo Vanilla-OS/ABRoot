@@ -6,6 +6,18 @@ abroot:
     tranzacții între 2 partiții rădăcină (A<->B)"
   verboseFlag: "afișează o ieșire mai detaliată"
 
+  msg:
+    additionalCommands: Additional Commands
+    version: Show version for abroot.
+    moreInfo: Use %s for more information about a command
+    aliases: Aliases
+    flags: Flags
+    additionalHelpTopics: Additional help topics
+    availableCommands: Available Commands
+    globalFlags: Global Flags
+    examples: Examples
+    help: Show help for abroot.
+    usage: Usage
 kargs:
   use: "kargs"
   long: "Gestionați parametrii nucleului."
