@@ -1,128 +1,124 @@
 abroot:
   use: "abroot"
-  long: "ABRoot은 두 개의 루트 파티션 간의 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다 (A<->B)."
-  short: "ABRoot은 두 개의 루트 파티션 간의 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다 (A<->B)."
+  long: "ABRoot는 2개의 루트 파티션(A<->B) 간에 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다"
+  short: "ABRoot는 2개의 루트 파티션(A<->B) 간에 트랜잭션을 수행하여 완전한 불변성과 원자성을 제공합니다"
   verboseFlag: "더 자세한 출력 표시"
 
   msg:
-    additionalCommands: Additional Commands
-    moreInfo: Use %s for more information about a command
+    additionalCommands: 추가 명령
+    moreInfo: 명령에 대한 자세한 정보를 보려면 %s를 사용합니다
     aliases: Aliases
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
+    additionalHelpTopics: 추가 도움말 항목
+    availableCommands: 사용 가능한 명령
     globalFlags: Global Flags
-    examples: Examples
-    usage: Usage
-    version: Show version for abroot.
-    help: Show help for abroot.
+    examples: 예시
+    usage: 사용법
+    version: abroot 버전 표시.
+    help: abroot에 대한 도움말을 표시합니다.
     flags: Flags
 kargs:
   use: "kargs"
   long: "커널 매개변수를 관리합니다."
   short: "커널 매개변수를 관리합니다"
-  rootRequired: "이 명령을 실행하려면 루트여야 합니다."
+  rootRequired: "이 명령을 실행하려면 루트 권한이 있어야 합니다."
   notChanged: 커널 매개변수에 변경 사항이 없습니다.
   applyFailed: "명령 적용이 실패했습니다: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: 알 수 없는 명령 '%s'. 사용 예제를 보려면 'abroot kargs --help'를 실행하세요.
 rollback:
   use: "rollback"
   long: "현재 루트에 대한 변경 사항을 버림으로써 시스템 rollback을 실행합니다."
-  short: "시스템을 이전 상태로 복원합니다."
-  rootRequired: "이 명령을 실행하려면 루트여야 합니다."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
-  checkOnlyFlag: check if rollback to previous root is possible
+  short: "시스템을 이전 상태로 복원합니다"
+  rootRequired: "이 명령을 실행하려면 루트 권한이 있어야 합니다."
+  rollbackFailed: "Rollback 실패: %s\n"
+  rollbackSuccess: Rollback이 성공적으로 완료되었습니다.
+  rollbackUnnecessary: Rollback은 필요하지 않으며 현재 루트가 이미 현재 루트입니다.
+  canRollback: 이전 루트로 rollback할 수 있습니다.
+  cannotRollback: 이전 루트로 rollback 할 수 없습니다.
+  checkOnlyFlag: 이전 루트로의 rollback 이 가능한지 확인
 pkg:
   addedMsg: "패키지(들) %s가 추가되었습니다.\n"
   use: pkg
   long: 패키지를 설치하고 관리합니다.
-  short: 패키지를 관리합니다.
-  rootRequired: 이 명령을 실행하려면 루트여야 합니다.
+  short: 패키지 관리
+  rootRequired: 이 명령을 실행하려면 루트 권한이 있어야 합니다.
   noPackageNameProvided: 이 작업에는 적어도 하나의 패키지 이름을 제공해야 합니다.
   applyFailed: "명령 적용이 실패했습니다: %s\n"
   removedMsg: "패키지(들) %s가 제거되었습니다.\n"
   listMsg: "추가된 패키지:\n%s\n제거된 패키지:\n%s\n"
-  dryRunFlag: 작업의 시뮬레이션을 실행하세요.
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  dryRunFlag: 작업의 시뮬레이션을 실행하세요
+  agreementSignFailed: "계약에 서명하지 못했습니다: %s\n"
+  agreementDeclined: 동의를 거부했습니다. 이 기능은 동의할 때까지 비활성화된 상태로 유지됩니다.
+  agreementMsg: "ABRoot의 abroot pkg 명령을 사용하려면 명시적인 사용자 동의가 필요합니다. 이 명령은 패키지 설치를 용이하게
+    하지만 비결정적 요소를 도입하여 시스템 신뢰성에 영향을 줍니다. 동의함으로써 귀하는 이러한 영향을 인정하고 수락하여 이 명령이 시스템 동작에
+    미칠 수 있는 잠재적 영향을 인지하고 있음을 확인합니다. [y/N]: "
+  forceEnableUserAgreementFlag: 임베디드 시스템의 경우, 사용자 동의 강제 활성화
+  failedGettingPkgManagerInstance: "패키지 관리자 인스턴스를 가져오지 못했습니다: %s\n"
+  noChanges: 적용할 변경 사항이 없습니다.
+  unknownCommand: 알 수 없는 명령 '%s'. 사용 예제를 보려면 'abroot pkg --help'를 실행하세요.
 status:
   use: status
   long: 현재 ABRoot 상태를 표시합니다.
-  short: 상태를 표시합니다.
-  dumpFlag: ABRoot 상태를 아카이브에 덤프합니다.
-  rootRequired: 이 명령을 실행하려면 루트여야 합니다.
-  jsonFlag: JSON 형식으로 출력을 표시합니다.
+  short: 상태 표시
+  dumpFlag: ABRoot 상태를 아카이브에 덤프합니다
+  rootRequired: 이 명령을 실행하려면 루트 권한이 있어야 합니다.
+  jsonFlag: JSON 형식으로 출력을 표시합니다
   unstagedFoundMsg: "\n\t\t미적용된 패키지가 %d개 있습니다. 'abroot pkg apply'를 실행하여 적용하십시오."
   dumpMsg: "ABRoot 상태를 %s에 덤프했습니다.\n"
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: '기기 사양:'
+    memory: '메모리: %s'
+  loadedConfig: '로드된 구성:'
   packages:
-    removed: 'Removed: %s'
+    removed: '제거됨: %s'
     unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    title: '패키지:'
+    added: '추가됨: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: '미래: %s%s'
+    present: '현재: %s%s'
+    title: 'ABRoot 파티션:'
+  kargs: '커널 인자: %s'
   abimage:
     timestamp: 'Timestamp: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    image: '이미지: %s'
+  agreementStatus: '패키지 계약:'
 upgrade:
-  forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다.
+  forceFlag: 확인 없이 부트 파티션을 강제로 업데이트합니다
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.
   use: upgrade
-  long: 유지 보수 목적으로 부트 파티션을 업데이트합니다 (고급 사용자 전용)
+  long: 유지 보수 목적으로 부트 파티션을 업데이트합니다 (고급 사용자 전용).
   short: 부트 파티션을 업데이트합니다
   noUpdateAvailable: 시스템에 대한 업데이트가 없습니다.
-  checkOnlyFlag: 업데이트를 적용하지 않고 오직 확인합니다.
+  checkOnlyFlag: 업데이트를 적용하지 않고 오직 확인합니다
   removed: 제거된 항목
   downgraded: 다운그레이드 된 항목
-  packageUpdateAvailable: '%d개의 패키지 업데이트가 있습니다'
+  packageUpdateAvailable: '%d개의 패키지 업데이트가 있습니다.'
   systemUpdateAvailable: 시스템에 대한 업데이트가 있습니다.
   upgraded: 업그레이드 된 항목
   added: 추가된 항목
   checkingPackageUpdate: 패키지 업데이트 확인중...
   checkingSystemUpdate: 시스템 업데이트 확인중...
-  dryRunFlag: 작업의 시뮬레이션을 실행하세요.
+  dryRunFlag: 작업의 시뮬레이션을 실행하세요
   dryRunSuccess: 시뮬레이션이 성공적으로 완료되었습니다.
-  success: Upgrade completed successfully.
+  success: 업그레이드가 성공적으로 완료되었습니다.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  short: initramfs를 업데이트 합니다
+  updateFailed: "미래 루트의 initramf를 업데이트하지 못했습니다.\n"
+  rootRequired: 이 명령을 실행하려면 루트 권한이 있어야 합니다.
+  updateSuccess: 미래 루트의 initramf 업데이트.
+  long: 미래 루트의 initramf를 업데이트합니다.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: 작업의 예비 실행을 수행합니다
 cnf:
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  editorFailed: "편집기를 열지 못했습니다: %s\n"
+  long: 편집기를 열어 ABRoot 구성을 편집합니다.
+  short: ABRoot 구성 편집
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
-  unchanged: No changes were made to the configuration.
+  changed: 구성이 변경되었습니다.
+  failed: "구성과 상호 작용하는 동안 오류가 발생했습니다: %s\n"
+  rootRequired: 이 명령을 실행하려면 루트 권한이 있어야 합니다.
+  unchanged: 구성은 변경되지 않았습니다.
