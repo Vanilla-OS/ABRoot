@@ -90,7 +90,7 @@ status:
     digest: "Digest: %s"
     timestamp: "Timestamp: %s"
     image: "Image: %s"
-  kargs: "Kernel Arguments: %s"
+  kargs: "Kernel Arguments:"
   packages:
     title: "Packages:"
     added: "Added: %s"
