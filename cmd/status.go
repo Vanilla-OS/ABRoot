@@ -230,7 +230,7 @@ func status(cmd *cobra.Command, args []string) error {
 
 	unstagedAlert := ""
 	if len(pkgsUnstg) > 0 {
-		unstagedAlert = fmt.Sprintf(abroot.Trans("status.unstagedFoundMsg"), len(pkgsUnstg))
+		unstagedAlert = abroot.Trans("status.unstagedFoundMsg", len(pkgsUnstg))
 	}
 
 	presentMark, futureMark, err := getCurrentlyBootedPartition(a)
@@ -241,8 +241,8 @@ func status(cmd *cobra.Command, args []string) error {
 	// ABRoot partitions:
 	cmdr.Bold.Println(abroot.Trans("status.partitions.title"))
 	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.partitions.present"), present.Label, presentMark)},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.partitions.future"), future.Label, futureMark)},
+		{Level: 1, Text: abroot.Trans("status.partitions.present", present.Label, presentMark)},
+		{Level: 1, Text: abroot.Trans("status.partitions.future", future.Label, futureMark)},
 	}).Render()
 
 	// Loaded Configuration: ...
@@ -253,30 +253,30 @@ func status(cmd *cobra.Command, args []string) error {
 	// Device Specification:
 	cmdr.Bold.Println(abroot.Trans("status.specs.title"))
 	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.cpu"), specs.CPU)},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.gpu"), specs.GPU)},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.specs.memory"), specs.Memory)},
+		{Level: 1, Text: abroot.Trans("status.specs.cpu", specs.CPU)},
+		{Level: 1, Text: abroot.Trans("status.specs.gpu", specs.GPU)},
+		{Level: 1, Text: abroot.Trans("status.specs.memory", specs.Memory)},
 	}).Render()
 
 	// ABImage:
 	cmdr.Bold.Println(abroot.Trans("status.abimage.title"))
 	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.digest"), abImage.Digest)},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.timestamp"), abImage.Timestamp.Format("2006-01-02 15:04:05"))},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.abimage.image"), abImage.Image)},
+		{Level: 1, Text: abroot.Trans("status.abimage.digest", abImage.Digest)},
+		{Level: 1, Text: abroot.Trans("status.abimage.timestamp", abImage.Timestamp.Format("2006-01-02 15:04:05"))},
+		{Level: 1, Text: abroot.Trans("status.abimage.image", abImage.Image)},
 	}).Render()
 
 	// Kernel Arguments: ...
-	cmdr.Bold.Print(abroot.Trans("status.kargs") + " ")
+	cmdr.Bold.Printf(abroot.Trans("status.kargs") + " ")
 	cmdr.FgDefault.Println(kargs)
-	fmt.Println()
+	cmdr.FgDefault.Println()
 
 	// Packages:
 	cmdr.Bold.Println(abroot.Trans("status.packages.title"))
 	cmdr.BulletList.WithItems([]cmdr.BulletListItem{
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.added"), strings.Join(pkgsAdd, ", "))},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.removed"), strings.Join(pkgsRm, ", "))},
-		{Level: 1, Text: fmt.Sprintf(abroot.Trans("status.packages.unstaged"), strings.Join(pkgsUnstg, ", "), unstagedAlert)},
+		{Level: 1, Text: abroot.Trans("status.packages.added", strings.Join(pkgsAdd, ", "))},
+		{Level: 1, Text: abroot.Trans("status.packages.removed", strings.Join(pkgsRm, ", "))},
+		{Level: 1, Text: abroot.Trans("status.packages.unstaged", strings.Join(pkgsUnstg, ", "), unstagedAlert)},
 	}).Render()
 
 	// Package Agreement: ...
