@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "pokaż bardziej szczegółowe dane wyjściowe"
 
   msg:
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    version: Show version for abroot.
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
+    moreInfo: Użyj %s, by wyświetlić więcej informacji na temat komendy
+    aliases: Aliasy
+    flags: Flagi
+    additionalHelpTopics: Dodatkowe tematy pomocy
+    availableCommands: Dostępne komendy
+    globalFlags: Globalne flagi
+    examples: Przykłady
+    version: Wyświel wersję abroot.
+    help: Wyświetl pomoc dla abroot.
+    usage: Użycie
+    additionalCommands: Dodatkowe komendy
 kargs:
   use: "kargs"
   long: "Zarządzaj parametrami jądra."
@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Musisz być rootem, aby uruchomić to polecenie."
   notChanged: Nie wprowadzono żadnych zmian w parametrach jądra.
   applyFailed: "Polecenie apply nie powiodło się: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Komenda '%s' jest nieznana. Wpisz 'abroot kargs --help', by uzyskać
+    przykłady użycia komendy.
 rollback:
   use: "rollback"
   long: "Wykonuje rollback systemu, odrzucając zmiany wprowadzone do obecnego roota."
@@ -60,8 +61,9 @@ pkg:
     systemów
   failedGettingPkgManagerInstance: "Nie udało się pobrać instancji menedżera pakietów:
     %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Nie ma żadnych nowych zmian.
+  unknownCommand: Komenda '%s' jest nieznana. Wpisz 'abroot pkg --help', by uzyskać
+    przykłady użycia komendy.
 upgrade:
   use: upgrade
   noUpdateAvailable: Brak dostępnych aktualizacji.
@@ -86,7 +88,7 @@ status:
   long: Wyświetl aktualny status ABRoota.
   short: Wyświetl status
   jsonFlag: Pokaż wyjście w formacie JSON
-  dumpFlag: Zrzuć status ABRoota do archiwum
+  dumpFlag: Przerzuć status ABRoota do archiwum
   rootRequired: Musisz być rootem, aby uruchomić to polecenie.
   unstagedFoundMsg: "\n\t\tZnaleziono %d nie dodanych pakietów. Proszę użyj 'abroot
     pkg apply' aby je dodać."
@@ -94,24 +96,24 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Specyfikacja urządzenia:'
+    memory: 'Pamięć: %s'
+  loadedConfig: 'Załadowana konfiguracja:'
   packages:
-    removed: 'Removed: %s'
+    removed: 'Usunięto: %s'
     unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    title: 'Pakiety:'
+    added: 'Dodano: %s'
   partitions:
     future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    present: 'Aktualnie: %s%s'
+    title: 'Partycje ABRoota'
+  kargs: 'Argumenty jądra: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Czas: %s'
     title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
+    digest: 'Wykonano: %s'
+    image: 'Obraz: %s'
   agreementStatus: 'Package agreement:'
 updateInitramfs:
   short: Zaktualizuj initramfs
@@ -120,7 +122,7 @@ updateInitramfs:
   updateSuccess: Zaktualizowano initramfs przyszłego roota.
   long: Zaktualizuj initramfs przyszłego roota.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: Przeprowadź operację bez wprowadzania zmian
 cnf:
   unchanged: Nie wprowadzono żadnych zmian w konfiguracji.
   editorFailed: "Nie udało się uruchomić edytora: %s\n"
