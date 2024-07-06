@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "mostrar saída mais detalhada"
 
   msg:
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
+    version: Mostrar versão do abroot.
+    moreInfo: Usar %s para obter mais informações sobre um comando
+    aliases: Funções sinônimas
+    flags: Sinalizadores
+    additionalHelpTopics: Tópicos adicionais de ajuda
+    availableCommands: Comandos disponíveis
+    globalFlags: Sinalizadores globais
+    examples: Exemplos
+    help: Mostrar ajuda do abroot.
+    usage: Uso
+    additionalCommands: Comandos adicionais
 kargs:
   use: "kargs"
   long: "Gerenciar os parâmetros do kernel."
@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Você deve ser um administrador (root) para executar este comando."
   applyFailed: "Falha ao aplicar comando: %s\n"
   notChanged: Nenhuma alteração foi feita nos parâmetros do kernel.
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Comando desconhecido '%s'. Execute 'abroot kargs --help' para obter
+    exemplos de uso.
 rollback:
   use: "rollback"
   long: "Executa um rollback do sistema, descartando as alterações feitas na raiz
@@ -63,7 +64,8 @@ pkg:
   failedGettingPkgManagerInstance: "Falha ao obter a instância do gerenciador de pacotes:
     %s\n"
   noChanges: Nenhuma alteração a ser aplicada.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Comando desconhecido '%s'. Execute "abroot pkg --help" para obter
+    exemplos de uso.
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
