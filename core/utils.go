@@ -14,10 +14,14 @@ package core
 */
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 )
 
 var abrootDir = "/etc/abroot"
@@ -121,4 +125,31 @@ func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// getDirSize calculates the total size of a directory recursively.
+// FIXME: find a way to avoid using du and any other external command
+//
+//	the walk function in the os package can be used to calculate the size
+//	of a directory but it needs a solid implementation for links
+func getDirSize(path string) (int64, error) {
+	cmd := exec.Command("du", "-s", "-b", path)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		return 0, err
+	}
+
+	output := strings.Fields(out.String())
+	if len(output) == 0 {
+		return 0, errors.New("failed to get directory size")
+	}
+
+	size, err := strconv.ParseInt(output[0], 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return size, nil
 }

@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/containers/buildah"
@@ -134,6 +135,39 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	mountDir, err := pt.MountImage(imageBuild.TopLayer)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 8, err)
+		return err
+	}
+
+	// check if there is enough space in dest to copy the image
+	mountDirStat, err := os.Stat(mountDir)
+	if err != nil {
+		PrintVerboseErr("OciExportRootFs", 8.1, err)
+		return err
+	}
+
+	var mountDirSize int64
+	if mountDirStat.IsDir() {
+		mountDirSize, err = getDirSize(mountDir)
+		if err != nil {
+			PrintVerboseErr("OciExportRootFs", 8.2, err)
+			return err
+		}
+	} else {
+		mountDirSize = mountDirStat.Size()
+	}
+
+	var stat syscall.Statfs_t
+	err = syscall.Statfs(dest, &stat)
+	if err != nil {
+		PrintVerboseErr("OciExportRootFs", 8.3, err)
+		return err
+	}
+
+	availableSpace := stat.Bavail * uint64(stat.Bsize)
+
+	if uint64(mountDirSize) > availableSpace {
+		err := errors.New("not enough space in disk")
+		PrintVerboseErr("OciExportRootFs", 8.4, err)
 		return err
 	}
 
