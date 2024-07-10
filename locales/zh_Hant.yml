@@ -49,7 +49,7 @@ status:
     unstaged: '未套用變更：%s%s'
     title: '軟體包：'
     added: '已新增：%s'
-  kargs: '作業系統核心參數：%s'
+  kargs: '作業系統核心參數：'
   abimage:
     timestamp: '時戳：%s'
     title: 'ABImage：'

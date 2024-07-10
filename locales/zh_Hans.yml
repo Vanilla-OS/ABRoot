@@ -77,7 +77,7 @@ status:
     future: '将来分区：%s%s'
     present: '当前分区：%s%s'
     title: 'ABRoot 分区：'
-  kargs: '内核参数：%s'
+  kargs: '内核参数：'
   abimage:
     timestamp: '时间戳：%s'
     title: 'ABImage：'
