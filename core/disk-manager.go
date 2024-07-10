@@ -82,7 +82,7 @@ func NewDiskManager() *DiskManager {
 func (d *DiskManager) GetPartitionByLabel(label string) (Partition, error) {
 	PrintVerboseInfo("DiskManager.GetPartitionByLabel", "retrieving partitions")
 
-	partitions, err := d.getPartitions("")
+	partitions, err := d.GetPartitions("")
 	if err != nil {
 		PrintVerboseErr("DiskManager.GetPartitionByLabel", 0, err)
 		return Partition{}, err
@@ -128,7 +128,7 @@ func iterChildren(childs *[]Children, result *[]Partition) {
 
 // getPartitions gets a disk's partitions. If device is an empty string, gets
 // all partitions from all disks
-func (d *DiskManager) getPartitions(device string) ([]Partition, error) {
+func (d *DiskManager) GetPartitions(device string) ([]Partition, error) {
 	PrintVerboseInfo("DiskManager.getPartitions", "running...")
 
 	output, err := exec.Command("lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID").Output()
