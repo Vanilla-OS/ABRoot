@@ -94,7 +94,7 @@ status:
     unstaged: 'Не применено: %s%s'
     title: 'Пакеты:'
     added: 'Добавлено: %s'
-  kargs: 'Аргументы ядра: %s'
+  kargs: 'Аргументы ядра:'
   agreementStatus: 'Пакетное соглашение:'
 upgrade:
   use: upgrade
