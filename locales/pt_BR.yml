@@ -91,7 +91,7 @@ status:
     future: 'Futura(s): %s%s'
     present: 'Presente(s): %s%s'
     title: 'Partições ABRoot:'
-  kargs: 'Argumentos do Kernel: %s'
+  kargs: 'Argumentos do Kernel:'
   abimage:
     timestamp: 'Carimbo de Data/Hora: %s'
     title: 'ABImage:'
