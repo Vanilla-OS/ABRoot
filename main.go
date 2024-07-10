@@ -80,6 +80,9 @@ func main() {
 	unlockVar := cmd.NewUnlockVarCommand()
 	root.AddCommand(unlockVar)
 
+	mntSys := cmd.NewMountSysCommand()
+	root.AddCommand(mntSys)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {
