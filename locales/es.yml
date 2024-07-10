@@ -92,7 +92,7 @@ status:
     future: 'Futuro(s): %s%s'
     present: 'Actual(es): %s%s'
     title: 'Particiones ABRoot:'
-  kargs: 'Parámetros del núcleo: %s'
+  kargs: 'Parámetros del núcleo:'
   abimage:
     timestamp: 'Marca de tiempo: %s'
     title: 'ABImage:'
