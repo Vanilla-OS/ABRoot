@@ -86,7 +86,7 @@ status:
     future: 'Future: %s%s'
     present: 'Present: %s%s'
     title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+  kargs: 'Kernel Arguments:'
   abimage:
     timestamp: 'Timestamp: %s'
     title: 'ABImage:'
