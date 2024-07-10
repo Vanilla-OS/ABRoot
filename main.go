@@ -77,6 +77,9 @@ func main() {
 	cnf := cmd.NewConfCommand()
 	root.AddCommand(cnf)
 
+	unlockVar := cmd.NewUnlockVarCommand()
+	root.AddCommand(unlockVar)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {
