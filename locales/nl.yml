@@ -88,7 +88,7 @@ status:
     future: 'Toekomstig: %s%s'
     present: 'Huidig: %s%s'
     title: 'ABRoot-partities:'
-  kargs: 'Kernel­argumenten: %s'
+  kargs: 'Kernel­argumenten:'
   abimage:
     timestamp: 'Tĳdstempel: %s'
     title: 'ABImage:'
