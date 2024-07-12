@@ -130,3 +130,8 @@ func init() {
 
 	Cnf.FullImageName = fmt.Sprintf("%s/%s:%s", Cnf.Registry, Cnf.Name, Cnf.Tag)
 }
+
+// WriteConfigToFile writes the current configuration to a file
+func WriteConfigToFile(file string) error {
+	return viper.WriteConfigAs(file)
+}
