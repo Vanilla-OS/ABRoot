@@ -1,6 +1,8 @@
-name: Go
+name: Go Build
 
 on:
+  workflow_call:
+  workflow_dispatch:
   push:
   pull_request:
     branches: [ "main" ]
@@ -12,49 +14,23 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
         go-version: 1.21
-
     - name: Install build dependencies
       run: |
           apt-get update
           apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
-
-    - name: Build
-      run: go build -o abrootv2
-
-    - name: Test
-      run: go test -v ./tests/...
-
-    - name: Check for missing strings
-      uses: vanilla-os/missing-strings-golang-action@v0.1.0
-
     - name: Compress
       run: tar -czvf abrootv2.tar.gz abrootv2
-
     - name: Compress-manpage
       run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
-
     - uses: actions/upload-artifact@v4
       with:
-        name: abrootv2
+        name: abroot
         path: |
-          abrootv2.tar.gz
-          abroot-man.tar.gz
-
-    - uses: softprops/action-gh-release@v2
-      if: github.repository == 'vanilla-os/ABRoot' && github.ref == 'refs/heads/main'
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
-        tag_name: "continuous"
-        prerelease: true
-        name: "Continuous Build"
-        files: |
           abrootv2.tar.gz
           abroot-man.tar.gz

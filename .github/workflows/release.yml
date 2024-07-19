@@ -6,35 +6,22 @@ on:
       - '*'
 
 jobs:
+  go-build:
+    uses: ./.github/workflows/go-build.yaml
   release:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
-
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/download-artifact@v3
         with:
-          go-version: 1.21
-
-      - name: Install build dependencies
-        run: |
-            apt-get update
-            apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
-
-      - name: Build
-        run: go build -o abrootv2
-
-      - name: Compress
-        run: tar -czvf abrootv2.tar.gz abrootv2
-
-      - name: Compress-manpage
-        run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
-
+          name: abroot
       - uses: softprops/action-gh-release@v2
+        if: github.repository == 'vanilla-os/ABRoot' && github.ref == 'refs/heads/main'
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
+          tag_name: ${{ github.event.release.tag_name }}
+          name: ABRoot-${{ github.event.release.tag_name }}
           files: |
             abrootv2.tar.gz
             abroot-man.tar.gz
