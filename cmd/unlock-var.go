@@ -76,6 +76,7 @@ func unlockVarCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		cmdr.Error.Println(err)
 		os.Exit(1)
+		return nil
 	}
 	return nil
 }
@@ -83,6 +84,7 @@ func unlockVarCmd(cmd *cobra.Command, args []string) error {
 func unlockVar(cmd *cobra.Command, _ []string) error {
 	if !core.RootCheck(false) {
 		cmdr.Error.Println("You must be root to run this command.")
+		os.Exit(2)
 		return nil
 	}
 
