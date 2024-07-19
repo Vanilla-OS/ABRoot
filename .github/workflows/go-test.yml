@@ -11,6 +11,7 @@ jobs:
     uses: ./.github/workflows/go-build.yaml
   go-tests:
     name: Go Test
+    needs: [go-build]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
