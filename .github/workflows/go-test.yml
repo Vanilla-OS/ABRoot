@@ -23,6 +23,8 @@ jobs:
     - uses: actions/download-artifact@v3
         with:
           name: abroot
+    - name: Untar
+      run: tar xvf abrootv2.tar.gz
     - name: Test
       run: go test -v ./tests/...
   missing-strings:
