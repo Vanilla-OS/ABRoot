@@ -24,6 +24,8 @@ jobs:
       run: |
           apt-get update
           apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
+    - name: Build
+      run: go build -o abrootv2
     - name: Compress
       run: tar -czvf abrootv2.tar.gz abrootv2
     - name: Compress-manpage
