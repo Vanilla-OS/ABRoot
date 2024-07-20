@@ -8,16 +8,16 @@ abroot:
 
   msg:
     additionalCommands: Additional Commands
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
+    version: Hiển thị phiên bản của abroot.
+    moreInfo: Sử dụng %s để biết thêm thông tin về một câu lệnh
     aliases: Aliases
     flags: Flags
     additionalHelpTopics: Additional help topics
     availableCommands: Available Commands
     globalFlags: Global Flags
-    examples: Examples
+    examples: Các ví dụ
     usage: Usage
-    help: Show help for abroot.
+    help: Hiển thị trợ giúp cho abroot.
 kargs:
   use: "kargs"
   long: "Quản lí các thông số của kernel."
@@ -30,10 +30,10 @@ kargs:
     ví dụ về cách sử dụng.
 cnf:
   use: "cnf"
-  long: "Mở một trình chỉnh sửa để điều chỉnh cấu hình ABRoot."
+  long: "Mở một trình biên soạn để điều chỉnh cấu hình ABRoot."
   short: "Điều chỉnh cấu hình ABRoot"
   rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
-  editorFailed: "Mở trình chỉnh sửa thất bại: %s\n"
+  editorFailed: "Mở trình biên soạn thất bại: %s\n"
   changed: "Cấu hình đã được thay đổi."
   unchanged: "Chưa có thay đổi nào được thực hiện trên cấu hình."
   failed: "Có một lỗi đã xảy ra khi thao tác với cấu hình: %s\n"
