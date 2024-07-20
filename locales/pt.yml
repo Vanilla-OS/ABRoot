@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "mostrar uma saída mais detalhada"
 
   msg:
-    moreInfo: Use %s for more information about a command
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
+    moreInfo: Use %s para mais informações sobre um comando
+    additionalHelpTopics: Tópicos de ajuda adicional
+    availableCommands: Comandos Disponíveis
     globalFlags: Global Flags
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    aliases: Aliases
+    help: Mostrar ajuda do abroot.
+    usage: Uso
+    additionalCommands: Comandos adicionais
+    version: Exibir a versão do abroot.
+    aliases: Apelidos
     flags: Flags
-    examples: Examples
+    examples: Exemplos
 kargs:
   use: "kargs"
   long: "Gerir parâmetros do kernel."
@@ -110,12 +110,12 @@ status:
     future: 'Futuro: %s%s'
     present: 'Presente: %s%s'
     title: 'Partições ABRoot:'
-  kargs: 'Kernel Arguments: %s'
+  kargs: 'Argumentos do Kernel: %s'
   abimage:
     timestamp: 'Timestamp: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
-    image: 'Image: %s'
+    image: 'Imagem: %s'
   agreementStatus: 'Acordo de pacote:'
 updateInitramfs:
   short: Atualize o initramfs
