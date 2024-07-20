@@ -77,6 +77,7 @@ The configuration file is a JSON file with the following structure:
     "partLabelB": "vos-b",
     "partLabelBoot": "vos-boot",
     "partLabelEfi": "vos-efi",
+    "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
     "thinInitVolume": "",
@@ -108,6 +109,7 @@ The following table describes each of the configuration options:
 | `partLabelB` | The label of the partition dedicated to the system's `B` root. |
 | `partLabelBoot` | The label of the partition dedicated to the master boot. |
 | `partLabelEfi` | The label of the partition dedicated to the EFI boot. |
+| `PartCryptVar` | The encrypted partition to unlock during boot. On a non-lvm setup this would be something like `/dev/nvme1n1p3`. |
 | `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
 | `thinInitVolume` | The init volume of the thin provisioning setup. |
 | `libPathStates` | NOT_IMPLEMENTED |

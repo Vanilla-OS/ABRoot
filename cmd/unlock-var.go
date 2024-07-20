@@ -26,12 +26,6 @@ import (
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
-type VarConfigError struct{}
-
-func (e *VarConfigError) Error() string {
-	return "reading the var disk from config is not implemented yet"
-}
-
 type VarInvalidError struct {
 	passedDisk string
 }
@@ -63,6 +57,7 @@ func NewUnlockVarCommand() *cmdr.Command {
 		),
 	)
 
+	// this is just meant for compatability with old Installations
 	cmd.WithStringFlag(
 		cmdr.NewStringFlag(
 			"var-disk",
@@ -126,7 +121,13 @@ func unlockVar(cmd *cobra.Command, _ []string) error {
 	}
 
 	if varDisk == "" {
-		return &VarConfigError{}
+		if settings.Cnf.PartCryptVar == "" {
+			cmdr.Error.Println("Encrypted var partition not found in configuration.")
+			os.Exit(3)
+			return nil
+		}
+
+		varDisk = settings.Cnf.PartCryptVar
 	}
 
 	dryRun, err := cmd.Flags().GetBool("dry-run")

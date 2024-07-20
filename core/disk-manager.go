@@ -220,5 +220,5 @@ func (p *Partition) IsDevMapper() bool {
 
 // IsEncrypted returns whether the partition is encrypted
 func (p *Partition) IsEncrypted() bool {
-	return strings.HasPrefix(p.Device, "luks-")
+	return strings.HasPrefix(p.FsType, "crypto_")
 }
