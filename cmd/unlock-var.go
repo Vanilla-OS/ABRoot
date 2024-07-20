@@ -14,12 +14,15 @@ package cmd
 */
 
 import (
+	"errors"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
+	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
@@ -35,6 +38,12 @@ type VarInvalidError struct {
 
 func (e *VarInvalidError) Error() string {
 	return "the /var disk " + e.passedDisk + " does not exist"
+}
+
+type NotEncryptedError struct{}
+
+func (e *NotEncryptedError) Error() string {
+	return "the var partition is not encrypted"
 }
 
 func NewUnlockVarCommand() *cmdr.Command {
@@ -60,6 +69,15 @@ func NewUnlockVarCommand() *cmdr.Command {
 			"m",
 			"pass /var disk directly instead of reading from configuration",
 			"",
+		),
+	)
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"check-encrypted",
+			"c",
+			"check if drive is encrypted and return",
+			false,
 		),
 	)
 
@@ -91,6 +109,20 @@ func unlockVar(cmd *cobra.Command, _ []string) error {
 	varDisk, err := cmd.Flags().GetString("var-disk")
 	if err != nil {
 		return err
+	}
+
+	check_only, err := cmd.Flags().GetBool("check-encrypted")
+	if err != nil {
+		return err
+	}
+
+	_, err = os.Stat(filepath.Join("/dev/disk/by-label/", settings.Cnf.PartLabelVar))
+	if err == nil || !errors.Is(err, os.ErrNotExist) {
+		return &NotEncryptedError{}
+	}
+	if check_only {
+		cmdr.Info.Println("The var partition is encrypted.")
+		return nil
 	}
 
 	if varDisk == "" {
