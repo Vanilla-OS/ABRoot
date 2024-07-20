@@ -1,23 +1,23 @@
 abroot:
   use: "abroot"
-  long: "ABRoot bietet vollständige Immutability und Atomizität, indem es Transaktionen
+  long: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen
     zwischen 2 Root-Partitionen (A<->B) durchführt"
   short: "ABRoot bietet vollständige Unveränderlichkeit und Atomizität, indem es Transaktionen
     zwischen 2 Root-Partitionen (A<->B) durchführt"
   verboseFlag: "Detailliertere Ausgabe anzeigen"
 
   msg:
-    version: Show version for abroot.
-    aliases: Aliases
-    availableCommands: Available Commands
-    examples: Examples
-    usage: Usage
-    help: Show help for abroot.
-    additionalCommands: Additional Commands
-    moreInfo: Use %s for more information about a command
+    version: Zeige Version für ABRoot an.
+    aliases: Aliase
+    availableCommands: Verfügbare Befehle
+    examples: Beispiele
+    usage: Verwendung
+    help: Zeige Hilfe für ABRoot an.
+    additionalCommands: Weitere Befehle
+    moreInfo: Verwende %s für weitere Informationen zu einem Befehl
     flags: Flags
-    additionalHelpTopics: Additional help topics
-    globalFlags: Global Flags
+    additionalHelpTopics: Weitere Hilfethemen
+    globalFlags: Globale Flags
 kargs:
   use: "kargs"
   long: "Kernel-Parameter verwalten."
@@ -111,7 +111,7 @@ status:
     future: 'Zukunft: %s%s'
     present: 'Gegenwart: %s%s'
     title: 'ABRoot Partitionen:'
-  kargs: 'Kernel Argumente: %s'
+  kargs: 'Kernel Argumente:'
   abimage:
     timestamp: 'Zeitstempel: %s'
     title: 'ABImage:'
