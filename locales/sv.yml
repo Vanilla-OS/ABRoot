@@ -64,7 +64,7 @@ status:
     future: 'Framtida: %s%s'
     present: 'Nuvarande: %s%s'
     title: 'ABRoot Partitioner:'
-  kargs: 'Kärnargument: %s'
+  kargs: 'Kärnargument:'
   abimage:
     timestamp: 'Tidsstämpel: %s'
     title: 'ABAvbild:'
