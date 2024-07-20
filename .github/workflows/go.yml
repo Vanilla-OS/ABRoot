@@ -27,7 +27,7 @@ jobs:
           apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
 
     - name: Build
-      run: go build -o abrootv2
+      run: go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.sha }}'"
 
     - name: Test
       run: go test -v ./tests/...

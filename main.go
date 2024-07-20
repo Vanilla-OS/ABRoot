@@ -22,7 +22,7 @@ import (
 	"github.com/vanilla-os/orchid/cmdr"
 )
 
-var Version = "2.0.1"
+var Version = "development"
 
 //go:embed locales/*.yml
 var fs embed.FS
