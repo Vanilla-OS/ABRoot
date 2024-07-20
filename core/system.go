@@ -430,6 +430,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	varParent := s.RootM.VarPartition.Parent
+	if varParent != nil && varParent.IsEncrypted() {
+		device := varParent.Device
+		if varParent.IsDevMapper() {
+			device = "/dev/mapper/" + device
+		} else {
+			device = "/dev/" + device
+		}
+
+		settings.Cnf.PartCryptVar = device
+	}
+
 	err = settings.WriteConfigToFile(filepath.Join(systemNew, "/usr/share/abroot/abroot.json"))
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 5.25, err)

@@ -50,6 +50,7 @@ type Config struct {
 	PartLabelB    string `json:"partLabelB"`
 	PartLabelBoot string `json:"partLabelBoot"`
 	PartLabelEfi  string `json:"partLabelEfivar"`
+	PartCryptVar  string `json:"PartCryptVar"`
 
 	// Structure
 	ThinProvisioning bool   `json:"thinProvisioning"`
@@ -117,6 +118,7 @@ func init() {
 		PartLabelB:    viper.GetString("partLabelB"),
 		PartLabelBoot: viper.GetString("partLabelBoot"),
 		PartLabelEfi:  viper.GetString("partLabelEfi"),
+		PartCryptVar:  viper.GetString("PartCryptVar"),
 
 		// Structure
 		ThinProvisioning: viper.GetBool("thinProvisioning"),

@@ -22,6 +22,7 @@
     "partLabelB": "vos-b",
     "partLabelBoot": "vos-boot",
     "partLabelEfi": "vos-efi",
+    "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
     "thinInitVolume": "",
