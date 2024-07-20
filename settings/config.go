@@ -14,6 +14,7 @@ package settings
 */
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -133,5 +134,17 @@ func init() {
 
 // WriteConfigToFile writes the current configuration to a file
 func WriteConfigToFile(file string) error {
-	return viper.WriteConfigAs(file)
+	jsonOutput, err := json.MarshalIndent(Cnf, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	outputFile, err := os.OpenFile(file, os.O_WRONLY|os.O_TRUNC, 0o644)
+	if err != nil {
+		return err
+	}
+
+	_, err = outputFile.Write(jsonOutput)
+
+	return err
 }
