@@ -24,7 +24,7 @@ jobs:
             apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential
 
       - name: Build
-        run: go build -o abrootv2
+        run: go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.ref_name }}'"
 
       - name: Compress
         run: tar -czvf abrootv2.tar.gz abrootv2
