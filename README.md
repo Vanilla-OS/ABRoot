@@ -1,7 +1,7 @@
 <div align="center">
   <img src="abroot-logo.svg" height="120">
   <h1 align="center">ABRoot v2</h1>
-  <p align="center">ABRoot is utility which provides full immutability and
+  <p align="center">ABRoot is a utility that provides full immutability and
     atomicity to a Linux system, by transacting between two root filesystems.
     Updates are performed using OCI images, to ensure that the system is always
     in a consistent state. It also allows for local atomic changes thanks to
@@ -9,9 +9,6 @@
     with the user's changes, and then applies them on top of the system's
     default image.</p>
 </div>
-
-> **NOTE**: ABRoot v2 is currently in development. The current stable release
-> is v1, which is available in the `v1` branch.
 
 ## Help output
 
@@ -109,7 +106,7 @@ The following table describes each of the configuration options:
 | `partLabelB` | The label of the partition dedicated to the system's `B` root. |
 | `partLabelBoot` | The label of the partition dedicated to the master boot. |
 | `partLabelEfi` | The label of the partition dedicated to the EFI boot. |
-| `PartCryptVar` | The encrypted partition to unlock during boot. On a non-lvm setup this would be something like `/dev/nvme1n1p3`. |
+| `PartCryptVar` | The encrypted partition to unlock during boot. On a non-lvm setup, this would be something like `/dev/nvme1n1p3`. |
 | `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
 | `thinInitVolume` | The init volume of the thin provisioning setup. |
 | `libPathStates` | NOT_IMPLEMENTED |
@@ -187,10 +184,10 @@ to have that amount of physical storage. This way, they can provide customers
 with adequate storage limits and only buy more storage when it's actually
 needed.
 
-The following schema shows how an ABRoot compatible disk layout would look like
+The following schema shows how an ABRoot-compatible disk layout would look like
 with thin provisioning enabled:
 
 ![Thin provisioning schema](assets/lvm-partitioning-structure.png)
 
-To follow-up, have a read at our [blog post](https://vanillaos.org/blog/article/2023-11-22/vanilla-os-orchid---devlog-22-nov)
+To follow up, have a read at our [blog post](https://vanillaos.org/blog/article/2023-11-22/vanilla-os-orchid---devlog-22-nov)
 about thin provisioning in ABRoot.
