@@ -19,9 +19,9 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: 1.21
+        go-version: 1.22
 
-    - name: Install build dependencies
+    - name: Install Build Dependencies
       run: |
           apt-get update
           apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
@@ -29,17 +29,22 @@ jobs:
     - name: Build
       run: go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.sha }}'"
 
-    - name: Test
+    - name: Run Tests
       run: go test -v ./tests/...
 
-    - name: Check for missing strings
+    - name: Check for Missing Strings
       uses: vanilla-os/missing-strings-golang-action@v0.1.0
 
-    - name: Compress
+    - name: Compress Package
       run: tar -czvf abrootv2.tar.gz abrootv2
 
-    - name: Compress-manpage
+    - name: Compress Manpage
       run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
+    
+    - name: Calculate and Save Checksums
+      run: |
+        sha256sum abrootv2.tar.gz >> checksums.txt
+        sha256sum abroot-man.tar.gz >> checksums.txt
 
     - uses: actions/upload-artifact@v4
       with:
@@ -47,6 +52,7 @@ jobs:
         path: |
           abrootv2.tar.gz
           abroot-man.tar.gz
+          checksums.txt
 
     - uses: softprops/action-gh-release@v2
       if: github.repository == 'vanilla-os/ABRoot' && github.ref == 'refs/heads/main'
@@ -58,3 +64,4 @@ jobs:
         files: |
           abrootv2.tar.gz
           abroot-man.tar.gz
+          checksums.txt

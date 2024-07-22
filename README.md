@@ -128,10 +128,11 @@ ABRoot works by performing transactions between two root partitions, `A` and `B`
   started, preventing the system from being left in an inconsistent state.
 
 ### Boot process
-The system manages those root partitions by assigning them the `current` or 
-`future` roles. The `current` partition is the one that is currently being used 
-by the system (runtime), while the `future` partition is the one that will be 
-used after a successful transaction, by performing a reboot, and switching the 
+
+The system manages those root partitions by assigning them the `current` or
+`future` roles. The `current` partition is the one that is currently being used
+by the system (runtime), while the `future` partition is the one that will be
+used after a successful transaction, by performing a reboot, and switching the
 roles of the partitions.
 
 The boot process is composed of 2 entities:
