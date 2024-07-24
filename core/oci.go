@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/containers/buildah"
@@ -30,6 +31,12 @@ import (
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
 )
+
+type NotEnoughSpaceError struct{}
+
+func (v *NotEnoughSpaceError) Error() string {
+	return "not enough space in disk"
+}
 
 var Progressbar = pterm.ProgressbarPrinter{
 	Total:                     100,
@@ -137,6 +144,12 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		return err
 	}
 
+	err = checkImageSize(mountDir, dest)
+	if err != nil {
+		PrintVerboseErr("OciExportRootFs", 8.5, err)
+		return err
+	}
+
 	// copy mount dir contents to dest
 	err = rsyncCmd(mountDir+"/", dest, []string{"--delete", "--checksum"}, false)
 	if err != nil {
@@ -148,6 +161,48 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	_, err = pt.UnMountImage(imageBuild.TopLayer, true)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 10, err)
+		return err
+	}
+
+	return nil
+}
+
+// returns nil if there's enough space in the filesystem for the image
+// returns NotEnoughSpaceError if there is not enough space
+// returns other error if the sizes were not calculated correctly
+func checkImageSize(imageDir string, filesystemMount string) error {
+	imageDirStat, err := os.Stat(imageDir)
+	if err != nil {
+		PrintVerboseErr("OciExportRootFs", 8.1, err)
+		return err
+	}
+
+	var imageDirSize int64
+	if imageDirStat.IsDir() {
+		imageDirSize, err = getDirSize(imageDir)
+		if err != nil {
+			PrintVerboseErr("OciExportRootFs", 8.2, err)
+			return err
+		}
+	} else {
+		imageDirSize = imageDirStat.Size()
+	}
+
+	var stat syscall.Statfs_t
+	err = syscall.Statfs(filesystemMount, &stat)
+	if err != nil {
+		PrintVerboseErr("OciExportRootFs", 8.3, err)
+		return err
+	}
+
+	availableSpace := stat.Blocks * uint64(stat.Bsize)
+	if settings.Cnf.ThinProvisioning {
+		availableSpace /= 2
+	}
+
+	if uint64(imageDirSize) > availableSpace {
+		err := &NotEnoughSpaceError{}
+		PrintVerboseErr("OciExportRootFs", 8.4, err)
 		return err
 	}
 
