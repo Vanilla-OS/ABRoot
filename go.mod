@@ -1,10 +1,12 @@
 module github.com/vanilla-os/abroot
 
-go 1.22
+go 1.22.0
+
+toolchain go1.22.5
 
 require (
-	github.com/containers/buildah v1.35.1
-	github.com/containers/image/v5 v5.30.0
+	github.com/containers/buildah v1.35.4
+	github.com/containers/image/v5 v5.30.1
 	github.com/containers/storage v1.53.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/uuid v1.6.0
@@ -16,7 +18,7 @@ require (
 	github.com/spf13/viper v1.18.2
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
 	github.com/vanilla-os/orchid v0.6.0
-	github.com/vanilla-os/prometheus v1.0.0
+	github.com/vanilla-os/prometheus v1.0.2
 	github.com/vanilla-os/sdk v0.0.0-20240424182549-7fbf2ce02046
 	golang.org/x/sys v0.22.0
 )
@@ -44,10 +46,10 @@ require (
 	github.com/containerd/typeurl/v2 v2.1.1 // indirect
 	github.com/containernetworking/cni v1.1.2 // indirect
 	github.com/containernetworking/plugins v1.4.0 // indirect
-	github.com/containers/common v0.58.0 // indirect
+	github.com/containers/common v0.58.3 // indirect
 	github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 // indirect
 	github.com/containers/luksy v0.0.0-20240212203526-ceb12d4fd50c // indirect
-	github.com/containers/ocicrypt v1.1.9 // indirect
+	github.com/containers/ocicrypt v1.1.10 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
 	github.com/cyberphone/json-canonicalization v0.0.0-20231217050601-ba74d44ecf5f // indirect
@@ -56,7 +58,7 @@ require (
 	github.com/disiqueira/gotree/v3 v3.0.2 // indirect
 	github.com/distribution/reference v0.5.0 // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
-	github.com/docker/docker v25.0.3+incompatible // indirect
+	github.com/docker/docker v25.0.5+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.1 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
