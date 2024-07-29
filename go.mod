@@ -14,7 +14,7 @@ require (
 	github.com/linux-immutability-tools/EtcBuilder v1.3.0
 	github.com/pterm/pterm v0.12.79
 	github.com/shirou/gopsutil v3.21.11+incompatible
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.18.2
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
 	github.com/vanilla-os/orchid v0.6.0
@@ -51,7 +51,7 @@ require (
 	github.com/containers/luksy v0.0.0-20240212203526-ceb12d4fd50c // indirect
 	github.com/containers/ocicrypt v1.1.10 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/cyberphone/json-canonicalization v0.0.0-20231217050601-ba74d44ecf5f // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
