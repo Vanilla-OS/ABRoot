@@ -14,14 +14,11 @@ package core
 */
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
-	"strconv"
-	"strings"
 )
 
 var abrootDir = "/etc/abroot"
@@ -128,26 +125,36 @@ func isDeviceLUKSEncrypted(devicePath string) (bool, error) {
 }
 
 // getDirSize calculates the total size of a directory recursively.
-//
-// FIXME: find a way to avoid using du and any other external command
 func getDirSize(path string) (int64, error) {
-	cmd := exec.Command("du", "-s", "-b", path)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
+	ds, err := os.Stat(path)
+	if err != nil {
+		return 0, err
+	}
+	if !ds.IsDir() {
+		return 0, fmt.Errorf("%s is not a directory", path)
+	}
+
+	var totalSize int64 = 0
+
+	dfs := os.DirFS(path)
+	err = fs.WalkDir(dfs, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !d.IsDir() {
+			fileInfo, err := d.Info()
+			if err != nil {
+				return err
+			}
+			totalSize += fileInfo.Size()
+		}
+
+		return nil
+	})
 	if err != nil {
 		return 0, err
 	}
 
-	output := strings.Fields(out.String())
-	if len(output) == 0 {
-		return 0, errors.New("failed to get directory size")
-	}
-
-	size, err := strconv.ParseInt(output[0], 10, 64)
-	if err != nil {
-		return 0, err
-	}
-
-	return size, nil
+	return totalSize, nil
 }
