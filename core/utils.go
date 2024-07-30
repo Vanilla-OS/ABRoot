@@ -19,6 +19,7 @@ import (
 	"io/fs"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 var abrootDir = "/etc/abroot"
@@ -134,6 +135,7 @@ func getDirSize(path string) (int64, error) {
 		return 0, fmt.Errorf("%s is not a directory", path)
 	}
 
+	inodes := map[uint64]bool{}
 	var totalSize int64 = 0
 
 	dfs := os.DirFS(path)
@@ -143,11 +145,21 @@ func getDirSize(path string) (int64, error) {
 		}
 
 		if !d.IsDir() {
-			fileInfo, err := d.Info()
+			fileinfo, err := d.Info()
 			if err != nil {
 				return err
 			}
-			totalSize += fileInfo.Size()
+
+			fileinfoSys := fileinfo.Sys().(*syscall.Stat_t)
+			if fileinfoSys.Nlink > 1 {
+				if _, ok := inodes[fileinfoSys.Ino]; !ok {
+					totalSize += fileinfo.Size()
+					inodes[fileinfoSys.Ino] = true
+				}
+			} else {
+				totalSize += fileinfo.Size()
+				inodes[fileinfoSys.Ino] = true
+			}
 		}
 
 		return nil
