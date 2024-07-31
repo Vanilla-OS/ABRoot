@@ -6,125 +6,122 @@ abroot:
   verboseFlag: "إظهار إخراج أكثر تفصيلاً"
 
   msg:
-    examples: Examples
-    version: Show version for abroot.
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
-    aliases: Aliases
-    flags: Flags
-    moreInfo: Use %s for more information about a command
+    examples: أمثلة
+    version: إظهار إصدار لـabroot.
+    additionalHelpTopics: مواضيع مساعدة إضافية
+    availableCommands: الأوامر المتاحة
+    globalFlags: الأعلام العالمية
+    help: عرض المساعدة لـabroot.
+    usage: الاستخدام
+    additionalCommands: أوامر إضافية
+    aliases: الأسماء المستعارة
+    flags: الأعلام
+    moreInfo: استخدم %s لمزيد من المعلومات حول الأمر
 kargs:
   use: "kargs"
-  long: "إدارة معلمات kernel."
-  short: "إدارة معلمات kernel."
+  long: "إدارة معلمات النواة."
+  short: "إدارة معلمات النواة."
   rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
   notChanged: لم يتم التعديل في معلمات النواة
   applyFailed: "فشل تطبيق الأمر: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: أمر غير معروف '%s'. شغّل 'abroot kargs --help' للحصول على أمثلة
+    الاستخدام.
 rollback:
   use: "تراجع"
-  long: "ينفذ تراجعًا عن النظام ، متجاهلًا التغييرات التي تم إجراؤها على الجذر الحالي."
+  long: "ينفذ تراجعًا عن النظام، متجاهلًا التغييرات التي تم إجراؤها على الجذر الحالي."
   short: "إعادة النظام إلى حالته السابقة."
   rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
   rollbackFailed: "فشل التراجع: %s\n"
   rollbackSuccess: تم التراجع بنجاح.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackUnnecessary: التراجع غير ضروري، الجذر الحالي هو الجذر الحالي بالفعل.
   canRollback: يمكن التراجع للجذر السابق.
   cannotRollback: لا يمكن التراجع للجذر السابق.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: تحقق مما إذا كان التراجع إلى الجذر السابق ممكنًا
 status:
-  use: status
-  dumpMsg: "Dumped ABRoot status to %s\n"
-  long: Display the current ABRoot status.
-  jsonFlag: Show output in JSON format
-  dumpFlag: Dump the ABRoot status to an archive
-  rootRequired: You must be root to run this command.
-  short: Display status
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
+  use: الحالة
+  dumpMsg: "تم تفريغ حالة ABRoot إلى %s\n"
+  long: عرض حالة ABRoot الحالية.
+  jsonFlag: عرض الإخراج بتنسيق JSON
+  dumpFlag: تفريغ حالة ABRoot إلى أرشيف
+  rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
+  short: عرض الحالة
+  unstagedFoundMsg: "\n\t\tهناك %d حزمة غير جاهزة. يرجى تشغيل 'abroot pkg apply' لتطبيقها."
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    cpu: 'المعالج: %s'
+    gpu: 'معالج الرسومات: %s'
+    title: 'مواصفات الجهاز:'
+    memory: 'الذاكرة: %s'
+  loadedConfig: 'التكوين المحمل:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'تمت الإزالة: %s'
+    unstaged: 'غير جاهزة: %s%s'
+    title: 'الحزم:'
+    added: 'أضيفت: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: 'مستقبلي: %s%s'
+    present: 'حالي: %s%s'
+    title: 'أقسام ABRoot:'
+  kargs: 'معلمات النواة: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
-    title: 'ABImage:'
-    digest: 'Digest: %s'
-    image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+    timestamp: 'الطابع الزمني: %s'
+    title: 'صورة AB:'
+    digest: 'التجزئة: %s'
+    image: 'الصورة: %s'
+  agreementStatus: 'اتفاقية الحزمة:'
 pkg:
-  use: pkg
-  long: تثبيت و أدارة الحزم.
+  use: الحزمة
+  long: تثبيت وإدارة الحزم.
   short: إدارة الحزم
-  rootRequired: يجب أن تكون مستخدم الجزر لتشغيل هذا الأمر.
-  noPackageNameProvided: You must provide at least one package name for this operation.
-  addedMsg: "أضيفت حزم(ة) %s.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  rootRequired: يجب أن تكون مستخدم الجذر لتشغيل هذا الأمر.
+  noPackageNameProvided: يجب توفير اسم حزمة واحد على الأقل لهذه العملية.
+  addedMsg: "أضيفت الحزمة(ات) %s.\n"
+  applyFailed: "فشل تطبيق الأمر: %s\n"
+  removedMsg: "تمت إزالة الحزمة(ات) %s.\n"
+  listMsg: "الحزم المضافة:\n%s\nالحزم المزالة:\n%s\n"
+  dryRunFlag: إجراء تجربة جافة للعملية
+  agreementDeclined: لقد رفضت الاتفاقية. ستبقى الميزة معطلة حتى توافق عليها.
+  agreementMsg: "لاستخدام أمر abroot pkg في ABRoot، يتطلب الأمر موافقة صريحة من المستخدم.
+    يتيح هذا الأمر تثبيت الحزم ولكنه يقدم عناصر غير حتمية، مما يؤثر على موثوقية النظام.
+    من خلال الموافقة، فإنك تقر وتقبل هذه التداعيات، مؤكدًا وعيك بالتأثير المحتمل للأمر
+    على سلوك النظام. [y/N]: "
+  agreementSignFailed: "فشل في توقيع الاتفاقية: %s\n"
+  forceEnableUserAgreementFlag: فرض تمكين اتفاقية المستخدم، للأنظمة المدمجة
+  failedGettingPkgManagerInstance: "فشل في الحصول على مثيل مدير الحزم: %s\n"
+  noChanges: لا توجد تغييرات لتطبيقها.
+  unknownCommand: أمر غير معروف '%s'. شغّل 'abroot pkg --help' للحصول على أمثلة الاستخدام.
 upgrade:
-  use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
-  forceFlag: force update the boot partition without asking for confirmation
-  rootRequired: You must be root to run this command.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
-  success: Upgrade completed successfully.
+  use: الترقية
+  long: تحديث قسم الإقلاع لأغراض الصيانة (للمستخدمين المتقدمين فقط)
+  short: تحديث قسم الإقلاع
+  forceFlag: فرض تحديث قسم الإقلاع دون طلب تأكيد
+  rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
+  noUpdateAvailable: لا يوجد تحديث متاح لنظامك.
+  checkOnlyFlag: تحقق من وجود تحديثات ولكن لا تطبقها
+  removed: تمت الإزالة
+  downgraded: تم تخفيض النسخة
+  packageUpdateAvailable: هناك %d تحديثات للحزم.
+  systemUpdateAvailable: هناك تحديث لنظامك.
+  upgraded: تم الترقية
+  added: تمت الإضافة
+  checkingPackageUpdate: جارٍ التحقق من تحديثات الحزم...
+  checkingSystemUpdate: جارٍ التحقق من تحديثات النظام...
+  dryRunFlag: إجراء تجربة جافة للعملية
+  dryRunSuccess: تم إكمال التجربة الجافة بنجاح.
+  success: تم إكمال الترقية بنجاح.
 updateInitramfs:
-  short: Update the initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
-  use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  short: تحديث initramfs
+  updateFailed: "فشل في تحديث initramfs للجذر المستقبلي.\n"
+  rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
+  updateSuccess: تم تحديث initramfs للجذر المستقبلي.
+  long: تحديث initramfs للجذر المستقبلي.
+  use: تحديث-initramfs
+  dryRunFlag: إجراء تجربة جافة للعملية
 cnf:
   use: cnf
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
+  unchanged: لم يتم إجراء أي تغييرات على التكوين.
+  editorFailed: "فشل في فتح المحرر: %s\n"
   long: افتح محررًا لتحرير تكوين ABRoot.
-  short: Edit ABRoot configuration
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  short: تحرير تكوين ABRoot
+  changed: تم تغيير التكوين.
+  failed: "حدث خطأ أثناء التفاعل مع التكوين: %s\n"
+  rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
