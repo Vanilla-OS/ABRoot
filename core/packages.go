@@ -566,6 +566,76 @@ func (p *PackageManager) GetFinalCmd(operation ABSystemOperation) string {
 	return cmd
 }
 
+func (p *PackageManager) getSummary() (string, error) {
+	if p.CheckStatus() != nil {
+		return "", nil
+	}
+
+	addPkgs, err := p.GetAddPackages()
+	if err != nil {
+		if errors.Is(err, &os.PathError{}) {
+			addPkgs = []string{}
+		} else {
+			return "", err
+		}
+	}
+	removePkgs, err := p.GetRemovePackages()
+	if err != nil {
+		if errors.Is(err, &os.PathError{}) {
+			removePkgs = []string{}
+		} else {
+			return "", err
+		}
+	}
+
+	// GetPackages returns slices with one empty element if there are no packages
+	if len(addPkgs) == 1 && addPkgs[0] == "" {
+		addPkgs = []string{}
+	}
+	if len(removePkgs) == 1 && removePkgs[0] == "" {
+		removePkgs = []string{}
+	}
+
+	summary := ""
+
+	for _, pkg := range addPkgs {
+		summary += "+ " + pkg + "\n"
+	}
+	for _, pkg := range removePkgs {
+		summary += "- " + pkg + "\n"
+	}
+
+	return summary, nil
+}
+
+// WriteSummaryToFile writes added and removed packages to summaryFilePath
+//
+// added packages get the + prefix, while removed packages get the - prefix
+func (p *PackageManager) WriteSummaryToFile(summaryFilePath string) error {
+	summary, err := p.getSummary()
+	if err != nil {
+		return err
+	}
+	if summary == "" {
+		return nil
+	}
+	summaryFile, err := os.Create(summaryFilePath)
+	if err != nil {
+		return err
+	}
+	defer summaryFile.Close()
+	err = summaryFile.Chmod(0o644)
+	if err != nil {
+		return err
+	}
+	_, err = summaryFile.WriteString(summary)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // assertPkgMngApiSetUp checks whether the repo API is properly configured.
 // If a configuration exists but is malformed, returns an error.
 func assertPkgMngApiSetUp() (bool, error) {

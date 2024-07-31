@@ -448,6 +448,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
+	err = pkgM.WriteSummaryToFile(filepath.Join(systemNew, "/usr/share/abroot/package-summary"))
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 5.26, err)
+		return err
+	}
+
 	// from this point on, it is not possible to stop the upgrade
 	// so we remove the stage file. Note that interrupting the upgrade
 	// from this point on will not leave the system in an inconsistent
