@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "daha ayrıntılı çıktı göster"
 
   msg:
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    additionalCommands: Additional Commands
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
+    version: Abroot için sürüm göster.
+    moreInfo: Komutla ilgili daha çok bilgi için %s kullan
+    aliases: Diğer Adlar
+    additionalCommands: Ek Komutlar
+    flags: İmler
+    additionalHelpTopics: Ek yardım konuları
+    availableCommands: Uygun Komutlar
+    globalFlags: Küresel İmler
+    examples: Örnekler
+    help: Abroot için yardım göster.
+    usage: Kullanım
 kargs:
   use: "kargs"
   long: "Çekirdek parametrelerini yönet."
@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Bu komutu çalıştırmak için kök olmanız gerekir."
   notChanged: Çekirdek parametrelerinde herhangi bir değişiklik yapılmadı.
   applyFailed: "Komut uygulanamadı: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot kargs --help'
+    çalıştırın.
 rollback:
   use: "rollback"
   long: "Şu anki kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
@@ -58,8 +59,9 @@ pkg:
   forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, gömülü
     sistemler için
   failedGettingPkgManagerInstance: "Paket yönetici örneği alınamadı: %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Uygulanacak değişiklik yok.
+  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot pkg --help'
+    çalıştırın.
 status:
   use: status
   long: Şu anki ABRoot durumunu görüntüle.
@@ -91,7 +93,7 @@ status:
     unstaged: 'Provasız: %s%s'
     title: 'Paketler:'
     added: 'Eklendi: %s'
-  kargs: 'Çekirdek Argümanları: %s'
+  kargs: 'Çekirdek Argümanları:'
 upgrade:
   use: upgrade
   long: Yeni sistem kalıbını denetle ve uygula.
