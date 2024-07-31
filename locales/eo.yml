@@ -7,21 +7,21 @@ abroot:
   verboseFlag: "show more detailed output"
 
   msg:
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    aliases: Aliases
-    flags: Flags
+    globalFlags: Mallokaj flagoj
+    examples: Ekzemploj
+    help: Montri helpon pri abroot.
+    usage: Uzado
+    additionalCommands: Pliaj komandoj
+    version: Montri la version de abroot.
+    aliases: Sinonimoj
+    flags: Flagoj
     additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
+    availableCommands: Haveblaj komandoj
     moreInfo: Use %s for more information about a command
 kargs:
   use: "kargs"
-  long: "Administr parametrojn por la kerno."
-  short: "Administr parametrojn por la kerno"
+  long: "Administri parametrojn por la kerno."
+  short: "Administri parametrojn por la kerno"
   rootRequired: "Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon."
   applyFailed: "Apply command failed: %s\n"
   notChanged: No changes were made to kernel parameters.
@@ -31,12 +31,12 @@ rollback:
   long: "Executes a system rollback, discarding changes made to the present root."
   short: "Return the system to a previous state."
   rootRequired: "Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
+  rollbackFailed: "Restaŭrado malsukcesis: %s\n"
+  rollbackSuccess: Restaŭro finiĝis sukcese.
   rollbackUnnecessary: Rollback is not necessary, current root is already the present
     one.
   cannotRollback: It is not possible to rollback to the previous root.
-  canRollback: It is possible to rollback to the previous root.
+  canRollback: Eblas restaŭri la estintan radikon.
   checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   use: pkg
@@ -68,52 +68,52 @@ status:
   use: status
   long: Montri la aktualan staton de ABRoot.
   short: Montri staton
-  jsonFlag: Montri la rezulton kiel JSON
+  jsonFlag: montri la rezulton kiel JSON
   dumpFlag: Dump the ABRoot status to an archive
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
   specs:
-    cpu: 'CPU: %s'
-    gpu: 'GPU: %s'
+    cpu: 'Ĉefprocesoro: %s'
+    gpu: 'Grafika procesoro: %s'
     title: 'Device Specifications:'
-    memory: 'Memory: %s'
+    memory: 'Memoro: %s'
   loadedConfig: 'Loaded Configuration:'
   packages:
-    removed: 'Removed: %s'
+    removed: 'Forigita: %s'
     unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    title: 'Pakoj:'
+    added: 'Aldonita: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
+    future: 'Estonteco: %s%s'
+    present: 'Estanteco: %s%s'
     title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+  kargs: 'Argumentoj por kerno: %s'
   abimage:
     timestamp: 'Timestamp: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
-    image: 'Image: %s'
+    image: 'Bildo: %s'
   agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
   long: Update the boot partition for maintenance purposes (for advanced users only)
-  short: Update the boot partition
+  short: Ĝisdatigi la sistemon
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
   noUpdateAvailable: No update is available for your system.
   checkOnlyFlag: check for updates but do not apply them
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
+  removed: Forigita
+  downgraded: Malĝisdatigita
+  packageUpdateAvailable: Ekzistas %d ĝisdatigoj por pakoj.
+  systemUpdateAvailable: Ekzistas ĝisdatigo por via sistemo.
+  upgraded: Ĝisdatigita
+  added: Aldonita
+  checkingPackageUpdate: Kontrolante pakajn ĝisdatigojn…
+  checkingSystemUpdate: Kontrolante sistemajn ĝisdatigojn…
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
-  success: Upgrade completed successfully.
+  success: Ĝisdatigo finiĝis sukcese.
 updateInitramfs:
-  short: Update the initramfs
+  short: Ĝisdatigi la initramfs
   updateFailed: "Failed to update initramfs of future root.\n"
   rootRequired: You must be root to run this command.
   updateSuccess: Updated initramfs of future root.
@@ -124,8 +124,8 @@ cnf:
   unchanged: No changes were made to the configuration.
   editorFailed: "Failed to open the editor: %s\n"
   long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  short: Modifi agordojn pri ABRoot
   use: cnf
-  changed: Configuration changed.
-  rootRequired: You must be root to run this command.
+  changed: Agordoj ŝanĝiĝis.
+  rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
   failed: "An error occurred while interacting with the configuration: %s\n"
