@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "afișează o ieșire mai detaliată"
 
   msg:
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
+    additionalCommands: Comenzi Suplimentare
+    version: Afișați versiunea pentru ABRoot.
+    moreInfo: Utilizați %s pentru mai multe informații despre o comandă
+    aliases: Aliasuri
+    flags: Parametri
+    additionalHelpTopics: Alte subiecte de ajutor
+    availableCommands: Comenzi Disponibile
+    globalFlags: Parametri Globali
+    examples: Exemple
+    help: Arată ajutor pentru abroot.
+    usage: Utilizare
 kargs:
   use: "kargs"
   long: "Gestionați parametrii nucleului."
@@ -25,9 +25,10 @@ kargs:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   applyFailed: "A eșuat comanda de aplicare: %s\n"
   notChanged: Nu au fost făcute schimbări la parametrii kernel-ului.
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot kargs --help” pentru exemple
+    de utilizare.
 rollback:
-  use: "revenire"
+  use: "rollback"
   long: "Execută o revenire a sistemului, eliminând modificările făcute la rădăcina
     actuală."
   short: "Readuceți sistemul la o stare anterioară"
@@ -64,8 +65,9 @@ pkg:
     sisteme încorporate
   failedGettingPkgManagerInstance: "Preluarea instanței managerului de pachete eșuată:
     %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Nu se aplică nicio modificare.
+  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot pkg --help” pentru exemple
+    de utilizare.
 status:
   use: status
   long: Afișați starea ABRoot curentă.
@@ -78,7 +80,7 @@ status:
   dumpMsg: "Starea ABRoot descărcată în %s\n"
   abimage:
     image: 'Imagine: %s'
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Marcaj temporal: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
   specs:
@@ -88,16 +90,16 @@ status:
     title: 'Specificațiile computerului:'
   partitions:
     title: 'Partiții ABRoot:'
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
+    future: 'Viitor: %s%s'
+    present: 'Prezent: %s%s'
   loadedConfig: 'Configurație încărcată:'
   packages:
     removed: 'Șterse: %s'
-    unstaged: 'Unstaged: %s%s'
+    unstaged: 'Nestabilite: %s%s'
     title: 'Pachete:'
     added: 'Adăugate: %s'
-  kargs: 'Argumente kernel: %s'
-  agreementStatus: 'Package agreement:'
+  kargs: 'Argumente Kernel:'
+  agreementStatus: 'Acord cu privire la pachet:'
 upgrade:
   use: upgrade
   long: Verifică dacă există o nouă imagine de sistem și aplic-o.
