@@ -7,14 +7,14 @@ abroot:
   verboseFlag: "mostra un output più dettagliato"
 
   msg:
-    usage: Usage
+    usage: Utilizzo
     help: Show help for abroot.
-    additionalCommands: Additional Commands
+    additionalCommands: Comandi Aggiuntivi
     version: Show version for abroot.
     aliases: Aliases
-    availableCommands: Available Commands
-    examples: Examples
-    moreInfo: Use %s for more information about a command
+    availableCommands: Comandi Disponibili
+    examples: Esempi
+    moreInfo: Utilizza %s per avere maggiori informazioni sul comando
     flags: Flags
     additionalHelpTopics: Additional help topics
     globalFlags: Global Flags
@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Per eseguire questo comando è necessario essere root."
   notChanged: Non sono stati effettuati cambiamenti ai parametri del kernel.
   applyFailed: "Applicazione del comando fallita: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Comando sconosciuto '%s'. Esegui 'abroot kargs --help' per esempi
+    di utilizzo.
 rollback:
   use: "rollback"
   long: "Esegue un rollback del sistema, scartando le modifiche apportate al root
@@ -97,8 +98,7 @@ status:
   agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
-  long: Aggiorna la partizione di boot per scopi di manutenzione (solo per utenti
-    avanzati)
+  long: Verifica la nuova immagine di sistema ed applicala
   short: Aggiorna la partizione di boot
   forceFlag: forza l'aggiornamento della partizione di boot senza chiedere per una
     conferma
@@ -125,11 +125,12 @@ updateInitramfs:
   use: update-initramfs
   dryRunFlag: perform a dry run of the operation
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  short: Edit ABRoot configuration
+  unchanged: Nessuna modifica è stata fatta nella configurazione.
+  editorFailed: "Errore nell'apertura dell'editor: %s\n"
+  short: Modifica la Configurazione di ABRoot
   use: cnf
-  changed: Configuration changed.
-  rootRequired: You must be root to run this command.
-  long: Open an editor to edit the ABRoot configuration.
-  failed: "An error occurred while interacting with the configuration: %s\n"
+  changed: Configurazione modificata.
+  rootRequired: Devi essere root per eseguire questo comando.
+  long: Apri un editor per modificare la configurazione di ABRoot.
+  failed: "Si è verificato un errore durante l'interazione con la configurazione::
+    %s\n"
