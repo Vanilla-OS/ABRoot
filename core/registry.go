@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/vanilla-os/abroot/settings"
 )
@@ -71,13 +72,43 @@ func (r *Registry) HasUpdate(digest string) (string, bool) {
 	return manifest.Digest, true
 }
 
+func getRegistryAuthUrl() (string, string, error) {
+	requestUrl := fmt.Sprintf(
+		"https://%s/%s/",
+		settings.Cnf.Registry,
+		settings.Cnf.RegistryAPIVersion,
+	)
+
+	resp, err := http.Get(requestUrl)
+	if err != nil {
+		return "", "", err
+	}
+	if resp.StatusCode == 401 {
+		authUrl := resp.Header["www-authenticate"]
+		if len(authUrl) == 0 {
+			authUrl = resp.Header["Www-Authenticate"]
+			if len(authUrl) == 0 {
+				return "", "", fmt.Errorf("unable to find authentication url for registry")
+			}
+		}
+		return strings.Split(strings.Split(authUrl[0], "realm=\"")[1], "\",")[0], strings.Split(strings.Split(authUrl[0], "service=\"")[1], "\"")[0], nil
+	} else {
+		PrintVerboseInfo("Registry.getRegistryAuthUrl", "registry does not require authentication")
+		return fmt.Sprintf("https://%s/", settings.Cnf.Registry), settings.Cnf.RegistryService, nil
+	}
+}
+
 // GetToken generates a token using the provided tokenURL and returns it
 func GetToken() (string, error) {
+	authUrl, serviceUrl, err := getRegistryAuthUrl()
+	if err != nil {
+		return "", err
+	}
 	requestUrl := fmt.Sprintf(
-		"https://%s/token?scope=repository:%s:pull&service=%s",
-		settings.Cnf.Registry,
+		"%s?scope=repository:%s:pull&service=%s",
+		authUrl,
 		settings.Cnf.Name,
-		settings.Cnf.RegistryService,
+		serviceUrl,
 	)
 	PrintVerboseInfo("Registry.GetToken", "call URI is", requestUrl)
 
@@ -162,14 +193,22 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 	digest := resp.Header.Get("Docker-Content-Digest")
 
 	// we need to parse the layers to get the digests
-	if m["layers"] == nil {
+	var layerDigests []string
+	if m["layers"] == nil && m["fsLayers"] == nil {
 		PrintVerboseErr("Registry.GetManifest", 4, err)
 		return nil, fmt.Errorf("Manifest does not contain layer property")
-	}
-	layers := m["layers"].([]interface{})
-	var layerDigests []string
-	for _, layer := range layers {
-		layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
+	} else if m["layers"] == nil && m["fsLayers"] != nil {
+		PrintVerboseWarn("Registry.GetManifest", 4, "layers property not found, using fsLayers")
+		layers := m["fsLayers"].([]interface{})
+		for _, layer := range layers {
+			layerDigests = append(layerDigests, layer.(map[string]interface{})["blobSum"].(string))
+		}
+	} else {
+		layers := m["layers"].([]interface{})
+		var layerDigests []string
+		for _, layer := range layers {
+			layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
+		}
 	}
 
 	PrintVerboseInfo("Registry.GetManifest", "success")
