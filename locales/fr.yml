@@ -8,7 +8,7 @@ abroot:
 
   msg:
     version: Affiche la version pour abroot.
-    aliases: Aliases
+    aliases: Alias
     availableCommands: Commandes disponibles
     additionalCommands: Commandes additionnelles
     globalFlags: Drapeaux globaux
@@ -17,7 +17,7 @@ abroot:
     usage: Utilisation
     moreInfo: Utilisez %s pour plus d'informations sur une commande
     flags: Drapeaux
-    additionalHelpTopics: Additional help topics
+    additionalHelpTopics: Autres sujets d'aide
 kargs:
   use: "kargs"
   long: "Gérer les paramètres du noyau."
@@ -39,13 +39,14 @@ rollback:
     celle présente.
   canRollback: Il est possible de revenir à la racine précédente.
   cannotRollback: Il n'est pas possible de revenir à la racine précédente.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: vérifier si le retour à l'état précédent du système de fichier racine
+    est possible
 status:
   use: status
   long: Affiche l'état actuel d'ABRoot.
   short: État de l'affichage
   jsonFlag: Afficher la sortie au format JSON
-  dumpFlag: Décharger l'état d'ABRoot dans une archive
+  dumpFlag: Exporter l'état d'ABRoot dans une archive
   rootRequired: Vous devez être root pour exécuter cette commande.
   unstagedFoundMsg: "\n\t\tIl y a %d paquets non stabilisés. Veuillez exécuter 'abroot
     pkg apply' pour les appliquer."
@@ -53,25 +54,25 @@ status:
   specs:
     cpu: 'CPU: %s'
     gpu: 'GPU: %s'
-    title: 'Device Specifications:'
-    memory: 'Memory: %s'
-  loadedConfig: 'Loaded Configuration:'
+    title: 'Specifications de l''appareil:'
+    memory: 'Mémoire: %s'
+  loadedConfig: 'Configuration Chargée:'
   packages:
-    removed: 'Removed: %s'
-    unstaged: 'Unstaged: %s%s'
-    title: 'Packages:'
-    added: 'Added: %s'
+    removed: 'Enlevés: %s'
+    unstaged: 'Dégelés: %s%s'
+    title: 'Paquets:'
+    added: 'Ajoutés: %s'
   partitions:
-    future: 'Future: %s%s'
-    present: 'Present: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Kernel Arguments: %s'
+    future: 'Futur: %s%s'
+    present: 'Présent: %s%s'
+    title: 'Partitions ABRoot:'
+  kargs: 'Arguments du noyau: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Fuseau horaire: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
     image: 'Image: %s'
-  agreementStatus: 'Package agreement:'
+  agreementStatus: 'Accords de paquets:'
 pkg:
   use: pkg
   long: Installer et gérer les paquets.
@@ -96,8 +97,9 @@ pkg:
     pour les systèmes embarqués
   failedGettingPkgManagerInstance: "Échec de l'obtention de l'instance du gestionnaire
     de paquets: %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Aucun changement à appliquer.
+  unknownCommand: Commande '%s' non reconnue. Exécutez 'abroot pkg --help' pour obtenir
+    des exemples d'utilisation.
 upgrade:
   use: upgrade
   long: Vérifier la présence d'une nouvelle image système et l'appliquer.
@@ -124,7 +126,7 @@ updateInitramfs:
   updateSuccess: Mise à jour de l'initramfs de la future racine terminée.
   long: Mettre à jour l'initramfs de la future racine.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: effectuer une simulation de l'exécution de l'opération
 cnf:
   unchanged: Aucune modification n'a été faite à la configuration.
   editorFailed: "Impossible d’ouvrir l’éditeur: %s\n"
