@@ -63,12 +63,12 @@ status:
     title: 'Paquets:'
     added: 'Ajoutés: %s'
   partitions:
-    future: 'Futur: %s%s'
-    present: 'Présent: %s%s'
+    future: 'Future: %s%s'
+    present: 'Présente: %s%s'
     title: 'Partitions ABRoot:'
   kargs: 'Arguments du noyau: %s'
   abimage:
-    timestamp: 'Fuseau horaire: %s'
+    timestamp: 'Horaire de création: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
     image: 'Image: %s'
