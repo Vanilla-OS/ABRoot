@@ -1,10 +1,10 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot provizas plenajn neŝanĝeblecon kaj atomecon farante transakciojn inter
+    2 radikaj subdiskoj (A↔B)"
+  short: "ABRoot provizas plenajn neŝanĝeblecon kaj atomecon farante transakciojn
+    inter 2 radikaj subdiskoj (A↔B)"
+  verboseFlag: "montri detalan eligon"
 
   msg:
     globalFlags: Mallokaj flagoj
@@ -15,68 +15,70 @@ abroot:
     version: Montri la version de abroot.
     aliases: Sinonimoj
     flags: Flagoj
-    additionalHelpTopics: Additional help topics
+    additionalHelpTopics: Pliaj helpaj temoj
     availableCommands: Haveblaj komandoj
-    moreInfo: Use %s for more information about a command
+    moreInfo: Uzu %s por pliaj informoj pri komando
 kargs:
   use: "kargs"
   long: "Administri parametrojn por la kerno."
   short: "Administri parametrojn por la kerno"
-  rootRequired: "Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon."
-  applyFailed: "Apply command failed: %s\n"
-  notChanged: No changes were made to kernel parameters.
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  rootRequired: "Por ruli ĉi tiun komandon, vi devas esti la ĉefuzanto."
+  applyFailed: "Malsukcesis ruli komandon: %s\n"
+  notChanged: La kernaj parametroj restis nemodifitaj.
+  unknownCommand: Nekonata komando «%s». Rulu «abroot kargs --help» por ekzemploj
+    pri uzado.
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
+  long: "Restaŭri la sistemon, forĵetante ŝanĝojn faritajn al la estanta radiko."
+  short: "Restaŭri estintan staton de la sistemo"
   rootRequired: "Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon."
   rollbackFailed: "Restaŭrado malsukcesis: %s\n"
   rollbackSuccess: Restaŭro finiĝis sukcese.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  cannotRollback: It is not possible to rollback to the previous root.
+  rollbackUnnecessary: Restaŭrado ne necesas, ĉar la aktuala radiko estas jam la nuna
+    radiko.
+  cannotRollback: Ne eblas restaŭri la estintan radikon.
   canRollback: Eblas restaŭri la estintan radikon.
-  checkOnlyFlag: check if rollback to previous root is possible
+  checkOnlyFlag: kontroli, ĉu eblas restaŭri la estintan radikon
 pkg:
   use: pkg
   long: Instali kaj administri pakojn.
   short: Administri pakojn
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
-  noPackageNameProvided: You must provide at least one package name for this operation.
+  noPackageNameProvided: Por ĉi tiu operacio, oni devas provizi la nomon de almenaŭ
+    unu pako.
   addedMsg: "Aldonis pako(j)n %s.\n"
-  applyFailed: "Apply command failed: %s\n"
+  applyFailed: "Malsukcesis ruli komandon: %s\n"
   removedMsg: "Forigis pako(j)n %s.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  dryRunFlag: perform a dry run of the operation
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
+  listMsg: "Instalis la jenajn pakojn:\n%s\nMalinstalis la jenajn pakojn:\n%s\n"
+  dryRunFlag: nur simuli la operacion
+  agreementDeclined: Vi malkonsentis. Tiu funkcio restos malŝaltita ĝis vi konsentos.
   agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
     required. This command facilitates package installations but introduces non-deterministic
     elements, impacting system trustworthiness. By consenting, you acknowledge and
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  agreementSignFailed: "Malsukcesis konsentado: %s\n"
+  forceEnableUserAgreementFlag: devigi konsenton de la uzanto, por enkorpigita sistemo
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  noChanges: Neniu ŝanĝo efektivigota.
+  unknownCommand: Nekonata komando «%s». Rulu «abroot pkg --help» por ekzemploj pri
+    uzado.
 status:
   unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
     apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+  dumpMsg: "Ŝutis la staton de ABRoot al %s\n"
   use: status
   long: Montri la aktualan staton de ABRoot.
   short: Montri staton
   jsonFlag: montri la rezulton kiel JSON
-  dumpFlag: Dump the ABRoot status to an archive
+  dumpFlag: ŝuti la staton de ABRoot en arĥivon
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
   specs:
     cpu: 'Ĉefprocesoro: %s'
     gpu: 'Grafika procesoro: %s'
-    title: 'Device Specifications:'
+    title: 'Aparataj specifoj:'
     memory: 'Memoro: %s'
-  loadedConfig: 'Loaded Configuration:'
+  loadedConfig: 'Efektivigis agordojn:'
   packages:
     removed: 'Forigita: %s'
     unstaged: 'Unstaged: %s%s'
@@ -85,22 +87,22 @@ status:
   partitions:
     future: 'Estonteco: %s%s'
     present: 'Estanteco: %s%s'
-    title: 'ABRoot Partitions:'
-  kargs: 'Argumentoj por kerno: %s'
+    title: 'Subdiskoj de ABRoot:'
+  kargs: 'Argumentoj por kerno:'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Tempo: %s'
     title: 'ABImage:'
-    digest: 'Digest: %s'
+    digest: 'Haketaĵo: %s'
     image: 'Bildo: %s'
-  agreementStatus: 'Package agreement:'
+  agreementStatus: 'Konsento pri pako:'
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
+  long: Kontroli, ĉu ekzistas nova sistema diskokopio, kaj efektivigi ĝin
   short: Ĝisdatigi la sistemon
-  forceFlag: force update the boot partition without asking for confirmation
+  forceFlag: devigi ĝisdatigadon, eĉ se la sistemo estas jam ĝisdata
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
-  noUpdateAvailable: No update is available for your system.
-  checkOnlyFlag: check for updates but do not apply them
+  noUpdateAvailable: Neniu ĝisdatigo estas disponebla por via sistemo.
+  checkOnlyFlag: kontroli sed ne efektivigi ĝisdatigojn
   removed: Forigita
   downgraded: Malĝisdatigita
   packageUpdateAvailable: Ekzistas %d ĝisdatigoj por pakoj.
@@ -109,23 +111,23 @@ upgrade:
   added: Aldonita
   checkingPackageUpdate: Kontrolante pakajn ĝisdatigojn…
   checkingSystemUpdate: Kontrolante sistemajn ĝisdatigojn…
-  dryRunFlag: perform a dry run of the operation
-  dryRunSuccess: Dry run completed successfully.
+  dryRunFlag: nur simuli la operacion
+  dryRunSuccess: Simulado finiĝis sukcese.
   success: Ĝisdatigo finiĝis sukcese.
 updateInitramfs:
   short: Ĝisdatigi la initramfs
-  updateFailed: "Failed to update initramfs of future root.\n"
-  rootRequired: You must be root to run this command.
-  updateSuccess: Updated initramfs of future root.
-  long: Update the initramfs of the future root.
+  updateFailed: "Malsukcesis ĝisdatigi la initramfs de la estonta radiko.\n"
+  rootRequired: Por ruli ĉi tiun komandon, vi devas esti la ĉefuzanto.
+  updateSuccess: Ĝisdatigis la initramfs de la estonta radiko.
+  long: Ĝisdatigi la initramfs de la estonta radiko.
   use: update-initramfs
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: nur simuli la operacion
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
+  unchanged: La agordoj restis nemodifitaj.
+  editorFailed: "Malsukcesis malfermi la redaktilon: %s\n"
+  long: Lanĉi redaktilon por modifi la agordojn pri ABRoot.
   short: Modifi agordojn pri ABRoot
   use: cnf
   changed: Agordoj ŝanĝiĝis.
   rootRequired: Vi devas esti la ĉefuzanto por ruli ĉi tiun komandon.
-  failed: "An error occurred while interacting with the configuration: %s\n"
+  failed: "Okazis eraro interagante kun la agordoj: %s\n"
