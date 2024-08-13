@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-[#202020] text-white;
+}
+
+.material-symbols-outlined {
+  @apply inline-block align-middle select-none;
+}
