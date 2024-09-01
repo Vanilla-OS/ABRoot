@@ -124,6 +124,12 @@ func mountSys(cmd *cobra.Command, _ []string) error {
 		os.Exit(8)
 	}
 
+	err = makeSymlinks(dryRun)
+	if err != nil {
+		cmdr.Error.Println(err)
+		os.Exit(9)
+	}
+
 	if dryRun {
 		cmdr.Info.Println("Dry run complete.")
 	} else {
@@ -157,7 +163,6 @@ func mountBindMounts(dryRun bool) error {
 	}
 
 	binds := []bindMount{
-		{"/var/home", "/home", 0},
 		{"/var/opt", "/opt", 0},
 		{"/.system/usr", "/.system/usr", syscall.MS_RDONLY},
 	}
@@ -201,6 +206,30 @@ func mountOverlayMounts(rootLabel string, dryRun bool) error {
 	}
 
 	return nil
+}
+
+func makeSymlinks(dryRun bool) error {
+	type symlink struct {
+		from string
+		to string
+	}
+
+	symlinks := []symlink{
+		{"/var/home", "/home"},
+	}
+
+	for _, symlink := range symlinks {
+		cmdr.FgDefault.Println("symliking " + symlink.from + " to " + symlink.to)
+		if !dryRun {
+			err := syscall.Symlink(symlink.from, symlink.to)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+
 }
 
 func adjustFstab(uuid string, dryRun bool) error {
