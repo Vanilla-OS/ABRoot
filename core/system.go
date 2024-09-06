@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/google/uuid"
@@ -180,9 +181,16 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	PrintVerboseSimple("[Stage 0] -------- ABSystemRunOperation")
 
 	if s.UpgradeLockExists() {
-		err := errors.New("upgrades are locked, another is running or need a reboot")
-		PrintVerboseErr("ABSystemRunOperation", 0, err)
-		return err
+		if isAbrootRunning() {
+			PrintVerboseWarn("ABSystemRunOperation", 0, "upgrades are locked, another is running")
+			return errors.New("upgrades are locked, another is running")
+		}
+
+		err := removeUpgradeLock()
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 0, err)
+			return err
+		}
 	}
 
 	err := s.LockUpgrade()
@@ -947,5 +955,43 @@ func (s *ABSystem) RemoveStageFile() error {
 	}
 
 	PrintVerboseInfo("ABSystem.RemoveStageFile", "stage file removed")
+	return nil
+}
+
+// isAbrootRunning checks if an instance of the `abroot` command is running
+// other than the current process
+func isAbrootRunning() bool {
+	pid := os.Getpid()
+	procs, err := os.ReadDir("/proc")
+	if err != nil {
+		return false
+	}
+
+	for _, file := range procs {
+		if file.IsDir() {
+			if _, err := strconv.Atoi(file.Name()); err == nil {
+				cmdline, err := os.ReadFile("/proc/" + file.Name() + "/cmdline")
+				exe, exeErr := os.Readlink("/proc/" + file.Name() + "/exe")
+				if (err == nil && strings.Contains(string(cmdline), "abroot")) || (exeErr == nil && strings.Contains(exe, "abroot")) {
+					procPid, _ := strconv.Atoi(file.Name())
+					if procPid != pid {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
+}
+
+// removeUpgradeLock removes the lock file, allowing upgrades to proceed
+func removeUpgradeLock() error {
+	err := os.Remove(lockFile)
+	if err != nil {
+		PrintVerboseErr("removeUpgradeLock", 0, err)
+		return err
+	}
+
+	PrintVerboseInfo("removeUpgradeLock", "upgrade lock removed")
 	return nil
 }
