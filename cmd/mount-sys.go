@@ -157,7 +157,6 @@ func mountBindMounts(dryRun bool) error {
 	}
 
 	binds := []bindMount{
-		{"/var/home", "/home", 0},
 		{"/var/opt", "/opt", 0},
 		{"/.system/usr", "/.system/usr", syscall.MS_RDONLY},
 	}

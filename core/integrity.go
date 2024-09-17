@@ -24,6 +24,8 @@ import (
 type IntegrityCheck struct {
 	rootPath      string
 	systemPath    string
+	varPath       string
+	homeLink      string
 	standardLinks []string
 	rootPaths     []string
 	etcPaths      []string
@@ -41,6 +43,8 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 	ic := &IntegrityCheck{
 		rootPath:   root.Partition.MountPoint,
 		systemPath: systemPath,
+		varPath: "/var",
+		homeLink: "/home",
 		standardLinks: []string{
 			"/bin",
 			"/etc",
@@ -88,6 +92,7 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	PrintVerboseInfo("IntegrityCheck.check", "Running...")
 	repairPaths := []string{}
 	repairLinks := []string{}
+	repairHomeLink := false
 
 	// check if system dir exists
 	if !fileExists(ic.systemPath) {
@@ -97,9 +102,16 @@ func (ic *IntegrityCheck) check(repair bool) error {
 	// check if standard links exist and are links
 	for _, link := range ic.standardLinks {
 		testPath := filepath.Join(ic.rootPath, link)
+		fmt.Println("This is a link: " + link)
 		if !isLink(testPath) {
+			fmt.Println("This is not a link:" + link)
 			repairLinks = append(repairLinks, link)
 		}
+	}
+
+	// check if home link exists and is a link
+	if !isLink(ic.homeLink) {
+		repairHomeLink = true
 	}
 
 	// check if root paths exist
@@ -124,6 +136,15 @@ func (ic *IntegrityCheck) check(repair bool) error {
 			if err != nil {
 				PrintVerboseErr("IntegrityCheck", 0, err)
 				return err
+			}
+		}
+
+		if repairHomeLink {
+			srcPath := filepath.Join(ic.varPath, "/home")
+			PrintVerboseInfo("IntegrityCheck", "Repairing link", srcPath, "->", ic.homeLink)
+			err := os.Symlink(srcPath, ic.homeLink)
+			if err != nil {
+				PrintVerboseErr("IntegrityCheck", 2, err)
 			}
 		}
 
