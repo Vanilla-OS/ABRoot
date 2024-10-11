@@ -7,15 +7,15 @@ abroot:
   msg:
     additionalCommands: 추가 명령
     moreInfo: 명령에 대한 자세한 정보를 보려면 %s를 사용합니다
-    aliases: Aliases
+    aliases: 별칭
     additionalHelpTopics: 추가 도움말 항목
     availableCommands: 사용 가능한 명령
-    globalFlags: Global Flags
+    globalFlags: 전역 플래그
     examples: 예시
     usage: 사용법
     version: abroot 버전 표시.
     help: abroot에 대한 도움말을 표시합니다.
-    flags: Flags
+    flags: 플래그
 kargs:
   use: "kargs"
   long: "커널 매개변수를 관리합니다."
@@ -72,7 +72,7 @@ status:
   loadedConfig: '로드된 구성:'
   packages:
     removed: '제거됨: %s'
-    unstaged: 'Unstaged: %s%s'
+    unstaged: '준비되지 않음: %s%s'
     title: '패키지:'
     added: '추가됨: %s'
   partitions:
@@ -91,7 +91,7 @@ upgrade:
   rootRequired: 이 명령을 실행하려면 루트여야 합니다.
   use: upgrade
   long: 유지 보수 목적으로 부트 파티션을 업데이트합니다 (고급 사용자 전용).
-  short: 부트 파티션을 업데이트합니다
+  short: 시스템을 업그레이드 합니다
   noUpdateAvailable: 시스템에 대한 업데이트가 없습니다.
   checkOnlyFlag: 업데이트를 적용하지 않고 오직 확인합니다
   removed: 제거된 항목
