@@ -60,9 +60,6 @@ type Config struct {
 	ThinProvisioning bool   `json:"thinProvisioning"`
 	ThinInitVolume   string `json:"thinInitVolume"`
 
-	// Lib
-	LibPathStates string `json:"libPathStates"`
-
 	// Virtual
 	FullImageName string
 }
@@ -135,9 +132,6 @@ func init() {
 		// Structure
 		ThinProvisioning: viper.GetBool("thinProvisioning"),
 		ThinInitVolume:   viper.GetString("thinInitVolume"),
-
-		// Lib
-		LibPathStates: viper.GetString("libPathStates"),
 
 		// Virtual
 		FullImageName: "",

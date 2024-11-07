@@ -17,8 +17,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/vanilla-os/abroot/settings"
 )
 
 type IntegrityCheck struct {
@@ -66,7 +64,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 			"/sys",
 			"/tmp",
 			"/var",
-			settings.Cnf.LibPathStates,
 		},
 		etcPaths: []string{
 			etcPath,

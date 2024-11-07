@@ -28,7 +28,5 @@
     "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
-    "thinInitVolume": "",
-
-    "libPathStates": "/var/lib/abroot/states"
+    "thinInitVolume": ""
 }
