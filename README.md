@@ -80,9 +80,7 @@ The configuration file is a JSON file with the following structure:
     "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
-    "thinInitVolume": "",
-
-    "libPathStates": "/var/lib/abroot/states"
+    "thinInitVolume": ""
 }
 ```
 
@@ -114,7 +112,6 @@ The following table describes each of the configuration options:
 | `PartCryptVar` | The encrypted partition to unlock during boot. On a non-lvm setup, this would be something like `/dev/nvme1n1p3`. |
 | `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
 | `thinInitVolume` | The init volume of the thin provisioning setup. |
-| `libPathStates` | NOT_IMPLEMENTED |
 
 ## How it works
 
