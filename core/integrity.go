@@ -29,6 +29,11 @@ var linksToRepair = [...][2]string{
 	{".system/libx32", "libx32"},
 	{".system/sbin", "sbin"},
 	{".system/usr", "usr"},
+	{"var/home", "home"},
+	{"var/media", "media"},
+	{"var/mnt", "mnt"},
+	{"var/opt", "opt"},
+	{"var/root", "root"},
 }
 
 // paths that must exist in the root partition
@@ -36,18 +41,18 @@ var pathsToRepair = [...]string{
 	".system",
 	"boot",
 	"dev",
-	"home",
-	"media",
-	"mnt",
-	"opt",
 	"part-future",
 	"proc",
-	"root",
 	"run",
 	"srv",
 	"sys",
 	"tmp",
 	"var",
+	"var/home",
+	"var/media",
+	"var/mnt",
+	"var/opt",
+	"var/root",
 }
 
 func RepairRootIntegrity(rootPath string) (err error) {
