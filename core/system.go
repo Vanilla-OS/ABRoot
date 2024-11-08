@@ -614,6 +614,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
 	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
 
+	// make sure the future etc directories exist, ignoring errors
+	newWorkEtc := fmt.Sprintf("/var/lib/abroot/etc/%s-work", futureEtc.Label)
+	os.MkdirAll(newUpperEtc, 0o755)
+	os.MkdirAll(newWorkEtc, 0o755)
+
 	err = EtcBuilder.ExtBuildCommand(oldEtc, systemNew+"/sysconf", oldUpperEtc, newUpperEtc)
 	if err != nil {
 		PrintVerboseErr("AbSystem.RunOperation", 8.2, err)

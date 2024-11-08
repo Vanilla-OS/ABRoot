@@ -14,7 +14,6 @@ package core
 */
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -24,18 +23,12 @@ type IntegrityCheck struct {
 	systemPath    string
 	standardLinks []string
 	rootPaths     []string
-	etcPaths      []string
 }
 
 // NewIntegrityCheck creates a new IntegrityCheck instance for the given root
 // partition, and returns a pointer to it or an error if something went wrong
 func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
 	systemPath := filepath.Join(root.Partition.MountPoint, "/.system")
-	etcPath := filepath.Join("/var/lib/abroot/etc", root.Label)
-	etcWorkPath := filepath.Join(
-		"/var/lib/abroot/etc",
-		fmt.Sprintf("%s-work", root.Label),
-	)
 	ic := &IntegrityCheck{
 		rootPath:   root.Partition.MountPoint,
 		systemPath: systemPath,
@@ -64,10 +57,6 @@ func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, erro
 			"/sys",
 			"/tmp",
 			"/var",
-		},
-		etcPaths: []string{
-			etcPath,
-			etcWorkPath,
 		},
 	}
 
@@ -104,13 +93,6 @@ func (ic *IntegrityCheck) check(repair bool) error {
 		finalPath := filepath.Join(ic.rootPath, path)
 		if !fileExists(finalPath) {
 			repairPaths = append(repairPaths, finalPath)
-		}
-	}
-
-	// check if etc paths exist
-	for _, path := range ic.etcPaths {
-		if !fileExists(path) {
-			repairPaths = append(repairPaths, path)
 		}
 	}
 
