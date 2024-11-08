@@ -280,7 +280,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return partFuture.Partition.Unmount()
 	}, nil, 90, &goodies.NoErrorHandler{}, false)
 
-	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
+	err = RepairRootIntegrity(partFuture.Partition.MountPoint)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 2.4, err)
 		return err
