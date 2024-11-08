@@ -63,7 +63,7 @@ func fileExists(path string) bool {
 
 // isLink checks if a path is a link
 func isLink(path string) bool {
-	if _, err := os.Lstat(path); err == nil {
+	if fileInfo, err := os.Lstat(path); err == nil && fileInfo.Mode().Type() == os.ModeSymlink {
 		PrintVerboseInfo("isLink", "Path is a link:", path)
 		return true
 	}

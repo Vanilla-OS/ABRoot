@@ -51,7 +51,6 @@ The configuration file is a JSON file with the following structure:
 
 ```json
 {
-    "autoRepair": true,
     "maxParallelDownloads": 2,
 
     "registry": "ghcr.io",
@@ -88,7 +87,6 @@ The following table describes each of the configuration options:
 
 | Option | Description |
 | --- | --- |
-| `autoRepair` | If set to `true`, ABRoot will automatically try to repair the system if a broken structure is detected during a transaction. |
 | `maxParallelDownloads` | The maximum number of parallel downloads to perform when updating the system. |
 | `registry` | The registry to use when pulling OCI images. |
 | `registryService` | The registry service to use when pulling OCI images. |

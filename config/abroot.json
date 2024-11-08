@@ -1,5 +1,4 @@
 {
-    "autoRepair": true,
     "maxParallelDownloads": 2,
 
     "registry": "ghcr.io",
