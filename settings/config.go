@@ -41,6 +41,10 @@ type Config struct {
 	IPkgMngApi    string `json:"iPkgMngApi"`
 	IPkgMngStatus int    `json:"iPkgMngStatus"`
 
+	// Boot configuration commands
+	UpdateInitramfsCmd string `json:"updateInitramfsCmd"`
+	UpdateGrubCmd      string `json:"updateGrubCmd"`
+
 	// Package diff API (Differ)
 	DifferURL string `json:"differURL"`
 
@@ -82,6 +86,10 @@ func init() {
 	viper.SetConfigName("abroot")
 	viper.SetConfigType("json")
 
+	// VanillaOS specific defaults for backwards compatibility
+	viper.SetDefault("updateInitramfsCmd", "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock")
+	viper.SetDefault("updateGrubCmd", "/usr/sbin/grub-mkconfig -o '%s'")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		return
@@ -108,6 +116,10 @@ func init() {
 		IPkgMngRm:     viper.GetString("iPkgMngRm"),
 		IPkgMngApi:    viper.GetString("iPkgMngApi"),
 		IPkgMngStatus: viper.GetInt("iPkgMngStatus"),
+
+		// Boot configuration commands
+		UpdateInitramfsCmd: viper.GetString("updateInitramfsCmd"),
+		UpdateGrubCmd:      viper.GetString("updateGrubCmd"),
 
 		// Package diff API (Differ)
 		DifferURL: viper.GetString("differURL"),

@@ -15,6 +15,9 @@
     "iPkgMngApi": "https://packages.vanillaos.org/api/pkg/{packageName}",
     "iPkgMngStatus": 1,
 
+    "updateInitramfsCmd": "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock",
+    "updateGrubCmd": "/usr/sbin/grub-mkconfig -o '%s'",
+
     "differURL": "https://differ.vanillaos.org",
 
     "partLabelVar": "vos-var",
