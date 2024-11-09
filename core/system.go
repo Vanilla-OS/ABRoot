@@ -504,28 +504,14 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 
 	generatedGrubConfigPath := "/boot/grub/grub.cfg"
 
-	err = chroot.ExecuteCmds(
-		[]string{
-			"grub-mkconfig -o " + generatedGrubConfigPath,
-		},
-	)
+	grubCommand := fmt.Sprintf(settings.Cnf.UpdateGrubCmd, generatedGrubConfigPath)
+	err = chroot.Execute(grubCommand)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 7.1, err)
 		return err
 	}
 
-	preExec := settings.Cnf.IPkgMngPre
-	postExec := settings.Cnf.IPkgMngPost
-	initramfsArgs := []string{}
-	if preExec != "" {
-		initramfsArgs = append(initramfsArgs, preExec)
-	}
-	initramfsArgs = append(initramfsArgs, "update-initramfs -u")
-	if postExec != "" {
-		initramfsArgs = append(initramfsArgs, postExec)
-	}
-	initramfsArgs = append(initramfsArgs, "exit")
-	err = chroot.ExecuteCmds(initramfsArgs) // ensure initramfs is updated
+	err = chroot.Execute(settings.Cnf.UpdateInitramfsCmd) // ensure initramfs is updated
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 7.2, err)
 		return err

@@ -64,7 +64,7 @@ func TestChroot(t *testing.T) {
 	}
 
 	// chroot test
-	err = chroot.Execute("touch", []string{"/test"})
+	err = chroot.Execute("touch /test")
 	if err != nil {
 		t.Fatal(err)
 	}
