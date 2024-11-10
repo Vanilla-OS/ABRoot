@@ -32,7 +32,6 @@ var linksToRepair = [...][2]string{
 	{"var/home", "home"},
 	{"var/media", "media"},
 	{"var/mnt", "mnt"},
-	{"var/opt", "opt"},
 	{"var/root", "root"},
 }
 
@@ -41,6 +40,7 @@ var pathsToRepair = [...]string{
 	".system",
 	"boot",
 	"dev",
+	"opt",
 	"part-future",
 	"proc",
 	"run",

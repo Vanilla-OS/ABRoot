@@ -188,9 +188,16 @@ func mountOverlayMounts(rootLabel string, dryRun bool) error {
 
 	overlays := []overlayMount{
 		{"/.system/etc", []string{"/.system/etc"}, "/var/lib/abroot/etc/" + rootLabel, "/var/lib/abroot/etc/" + rootLabel + "-work"},
+		{"/opt", []string{"/.system/opt"}, "/var/opt", "/var/opt-work"},
 	}
 
 	for _, overlay := range overlays {
+		if _, err := os.Lstat(overlay.workdir); os.IsNotExist(err) {
+			err := os.MkdirAll(overlay.workdir, 0o755)
+			cmdr.Warning.Println(err)
+			// failing the boot here won't help so ingore any error
+		}
+
 		lowerCombined := strings.Join(overlay.lowerdirs, ":")
 		options := "lowerdir=" + lowerCombined + ",upperdir=" + overlay.upperdir + ",workdir=" + overlay.workdir
 
@@ -278,7 +285,7 @@ func adjustFstab(uuid string, dryRun bool) error {
 }
 
 // this is here to keep compatibility with older systems
-// e.g. /home was a bind mount instead of a symlink to /var/home
+// /home was a bind mount instead of a symlink to /var/home
 func compatBindMounts(dryRun bool) (err error) {
 	type bindMount struct {
 		from, to string
@@ -287,7 +294,6 @@ func compatBindMounts(dryRun bool) (err error) {
 
 	binds := []bindMount{
 		{"/var/home", "/home", 0},
-		{"/var/opt", "/opt", 0},
 	}
 
 	for _, bind := range binds {
