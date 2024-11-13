@@ -23,7 +23,6 @@ import (
 
 type Config struct {
 	// Common
-	AutoRepair           bool `json:"autoRepair"`
 	MaxParallelDownloads uint `json:"maxParallelDownloads"`
 
 	// Registry
@@ -59,9 +58,6 @@ type Config struct {
 	// Structure
 	ThinProvisioning bool   `json:"thinProvisioning"`
 	ThinInitVolume   string `json:"thinInitVolume"`
-
-	// Lib
-	LibPathStates string `json:"libPathStates"`
 
 	// Virtual
 	FullImageName string
@@ -99,7 +95,6 @@ func init() {
 
 	Cnf = &Config{
 		// Common
-		AutoRepair:           viper.GetBool("autoRepair"),
 		MaxParallelDownloads: viper.GetUint("maxParallelDownloads"),
 
 		// Registry
@@ -135,9 +130,6 @@ func init() {
 		// Structure
 		ThinProvisioning: viper.GetBool("thinProvisioning"),
 		ThinInitVolume:   viper.GetString("thinInitVolume"),
-
-		// Lib
-		LibPathStates: viper.GetString("libPathStates"),
 
 		// Virtual
 		FullImageName: "",

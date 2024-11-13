@@ -100,6 +100,12 @@ func mountSys(cmd *cobra.Command, _ []string) error {
 		os.Exit(5)
 	}
 
+	err = compatBindMounts(dryRun)
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
 	err = mountBindMounts(dryRun)
 	if err != nil {
 		cmdr.Error.Println(err)
@@ -157,8 +163,6 @@ func mountBindMounts(dryRun bool) error {
 	}
 
 	binds := []bindMount{
-		{"/var/home", "/home", 0},
-		{"/var/opt", "/opt", 0},
 		{"/.system/usr", "/.system/usr", syscall.MS_RDONLY},
 	}
 
@@ -184,9 +188,16 @@ func mountOverlayMounts(rootLabel string, dryRun bool) error {
 
 	overlays := []overlayMount{
 		{"/.system/etc", []string{"/.system/etc"}, "/var/lib/abroot/etc/" + rootLabel, "/var/lib/abroot/etc/" + rootLabel + "-work"},
+		{"/opt", []string{"/.system/opt"}, "/var/opt", "/var/opt-work"},
 	}
 
 	for _, overlay := range overlays {
+		if _, err := os.Lstat(overlay.workdir); os.IsNotExist(err) {
+			err := os.MkdirAll(overlay.workdir, 0o755)
+			cmdr.Warning.Println(err)
+			// failing the boot here won't help so ingore any error
+		}
+
 		lowerCombined := strings.Join(overlay.lowerdirs, ":")
 		options := "lowerdir=" + lowerCombined + ",upperdir=" + overlay.upperdir + ",workdir=" + overlay.workdir
 
@@ -267,6 +278,36 @@ func adjustFstab(uuid string, dryRun bool) error {
 		if err != nil {
 			cmdr.Warning.Println("Old Fstab file will keep .new suffix")
 			// ignore, backup is not neccessary to boot
+		}
+	}
+
+	return nil
+}
+
+// this is here to keep compatibility with older systems
+// /home was a bind mount instead of a symlink to /var/home
+func compatBindMounts(dryRun bool) (err error) {
+	type bindMount struct {
+		from, to string
+		options  uintptr
+	}
+
+	binds := []bindMount{
+		{"/var/home", "/home", 0},
+	}
+
+	for _, bind := range binds {
+		if info, err := os.Lstat(bind.to); err == nil && !info.IsDir() {
+			// path has been migrated already
+			continue
+		}
+
+		cmdr.FgDefault.Println("bind-mounting " + bind.from + " to " + bind.to)
+		if !dryRun {
+			err := syscall.Mount(bind.from, bind.to, "", syscall.MS_BIND|bind.options, "")
+			if err != nil {
+				return err
+			}
 		}
 	}
 

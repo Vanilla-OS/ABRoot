@@ -51,7 +51,6 @@ The configuration file is a JSON file with the following structure:
 
 ```json
 {
-    "autoRepair": true,
     "maxParallelDownloads": 2,
 
     "registry": "ghcr.io",
@@ -80,9 +79,7 @@ The configuration file is a JSON file with the following structure:
     "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
-    "thinInitVolume": "",
-
-    "libPathStates": "/var/lib/abroot/states"
+    "thinInitVolume": ""
 }
 ```
 
@@ -90,7 +87,6 @@ The following table describes each of the configuration options:
 
 | Option | Description |
 | --- | --- |
-| `autoRepair` | If set to `true`, ABRoot will automatically try to repair the system if a broken structure is detected during a transaction. |
 | `maxParallelDownloads` | The maximum number of parallel downloads to perform when updating the system. |
 | `registry` | The registry to use when pulling OCI images. |
 | `registryService` | The registry service to use when pulling OCI images. |
@@ -114,7 +110,6 @@ The following table describes each of the configuration options:
 | `PartCryptVar` | The encrypted partition to unlock during boot. On a non-lvm setup, this would be something like `/dev/nvme1n1p3`. |
 | `thinProvisioning` | If set to `true`, ABRoot will use and look for a thin provisioning setup. Check the section about [thin provisioning](#thin-provisioning) for more information. |
 | `thinInitVolume` | The init volume of the thin provisioning setup. |
-| `libPathStates` | NOT_IMPLEMENTED |
 
 ## How it works
 
