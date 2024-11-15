@@ -1,7 +1,7 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
+  long: "ABRoot giver fuld uforanderlighed og atomicity ved at udføre transaktioner
+    mellem 2 root partitioner (A->B)"
   short: "ABRoot provides full immutability and atomicity by performing transactions
     between 2 root partitions (A<->B)"
   verboseFlag: "show more detailed output"
