@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "ukáž viac detailný výstup"
 
   msg:
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    moreInfo: Use %s for more information about a command
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    aliases: Aliases
-    flags: Flags
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
+    additionalCommands: Ďalšie príkazy
+    version: Ukázať verziu abroot.
+    moreInfo: Použite %s pre viac informácií o príkazu
+    additionalHelpTopics: Ďalšie témy pomoci
+    availableCommands: Dostupné príkazy
+    aliases: Pseudonymy
+    flags: Vlajky
+    globalFlags: Globálne Vlajky
+    examples: Príklady
+    help: Ukázať pomoc pre abroot.
+    usage: Použitie
 kargs:
   use: "kargs"
   long: "Správa parametrov kernelu."
@@ -28,19 +28,20 @@ kargs:
   unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state."
-  rootRequired: "You must be root to run this command."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
-  canRollback: It is possible to rollback to the previous root.
-  cannotRollback: It is not possible to rollback to the previous root.
-  checkOnlyFlag: check if rollback to previous root is possible
+  long: "Vykoná vrátenie systému späť, pričom zruší zmeny vykonané v súčasnom koreňovom
+    adresári."
+  short: "Návrat systému do predchádzajúceho stavu."
+  rootRequired: "Na spustenie tohto príkazu musíte byť root používateľ."
+  rollbackFailed: "Vrátenie späť zlyhalo: %s\n"
+  rollbackSuccess: Vrátenie späť sa úspešne dokončilo.
+  rollbackUnnecessary: Vrátenie späť nie je potrebné, aktuálny koreň už je ten súčasný.
+  canRollback: Je možné sa vrátiť k predchádzajúcemu koreňovému adresáru.
+  cannotRollback: Nie je možné vrátiť sa k predchádzajúcemu koreňovému adresáru.
+  checkOnlyFlag: skontrolovať, či je možné sa vrátiť k predchádzajúcemu koreňovému
+    adresáru
 pkg:
-  long: Install and manage packages.
-  short: Manage packages
+  long: Inštalácia a manažment balíkov.
+  short: Manažment balíkov
   rootRequired: You must be root to run this command.
   addedMsg: "Package(s) %s added.\n"
   use: pkg
@@ -121,11 +122,11 @@ updateInitramfs:
   use: update-initramfs
   dryRunFlag: perform a dry run of the operation
 cnf:
-  unchanged: No changes were made to the configuration.
-  editorFailed: "Failed to open the editor: %s\n"
-  long: Open an editor to edit the ABRoot configuration.
-  short: Edit ABRoot configuration
+  unchanged: V konfigurácii neboli vykonané žiadne zmeny.
+  editorFailed: "Nepodarilo sa otvoriť editor textu: %s\n"
+  long: Otvorte editor textu pre úpravu ABRoot konfigurácie.
+  short: Upraviť ABRoot konfiguráciu
   use: cnf
-  changed: Configuration changed.
-  failed: "An error occurred while interacting with the configuration: %s\n"
-  rootRequired: You must be root to run this command.
+  changed: Konfigurácia sa zmenila.
+  failed: "Pri interakcii s konfiguráciou došlo k chybe: %s\n"
+  rootRequired: Pre použitie tohto príkazu musíte byť root používateľ.
