@@ -1,5 +1,4 @@
 {
-    "autoRepair": true,
     "maxParallelDownloads": 2,
 
     "registry": "ghcr.io",
@@ -28,7 +27,5 @@
     "PartCryptVar": "/dev/mapper/vos--var-var",
 
     "thinProvisioning": false,
-    "thinInitVolume": "",
-
-    "libPathStates": "/var/lib/abroot/states"
+    "thinInitVolume": ""
 }

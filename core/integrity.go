@@ -14,141 +14,156 @@ package core
 */
 
 import (
-	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
-
-	"github.com/vanilla-os/abroot/settings"
 )
 
-type IntegrityCheck struct {
-	rootPath      string
-	systemPath    string
-	standardLinks []string
-	rootPaths     []string
-	etcPaths      []string
+// links that must exist in the root partition
+var linksToRepair = [...][2]string{
+	{".system/bin", "bin"},
+	{".system/etc", "etc"},
+	{".system/lib", "lib"},
+	{".system/lib32", "lib32"},
+	{".system/lib64", "lib64"},
+	{".system/libx32", "libx32"},
+	{".system/sbin", "sbin"},
+	{".system/usr", "usr"},
+	{"var/home", "home"},
+	{"var/media", "media"},
+	{"var/mnt", "mnt"},
+	{"var/opt", "opt"},
+	{"var/root", "root"},
 }
 
-// NewIntegrityCheck creates a new IntegrityCheck instance for the given root
-// partition, and returns a pointer to it or an error if something went wrong
-func NewIntegrityCheck(root ABRootPartition, repair bool) (*IntegrityCheck, error) {
-	systemPath := filepath.Join(root.Partition.MountPoint, "/.system")
-	etcPath := filepath.Join("/var/lib/abroot/etc", root.Label)
-	etcWorkPath := filepath.Join(
-		"/var/lib/abroot/etc",
-		fmt.Sprintf("%s-work", root.Label),
-	)
-	ic := &IntegrityCheck{
-		rootPath:   root.Partition.MountPoint,
-		systemPath: systemPath,
-		standardLinks: []string{
-			"/bin",
-			"/etc",
-			"/lib",
-			"/lib32",
-			"/lib64",
-			"/libx32",
-			"/sbin",
-			"/usr",
-		},
-		rootPaths: []string{ // those paths must be present in the root partition
-			"/boot",
-			"/dev",
-			"/home",
-			"/media",
-			"/mnt",
-			"/opt",
-			"/part-future",
-			"/proc",
-			"/root",
-			"/run",
-			"/srv",
-			"/sys",
-			"/tmp",
-			"/var",
-			settings.Cnf.LibPathStates,
-		},
-		etcPaths: []string{
-			etcPath,
-			etcWorkPath,
-		},
-	}
-
-	if err := ic.check(repair); err != nil {
-		return nil, err
-	}
-
-	return ic, nil
+// paths that must exist in the root partition
+var pathsToRepair = [...]string{
+	".system",
+	"boot",
+	"dev",
+	"part-future",
+	"proc",
+	"run",
+	"srv",
+	"sys",
+	"tmp",
+	"var",
+	"var/home",
+	"var/media",
+	"var/mnt",
+	"var/opt",
+	"var/root",
 }
 
-// check performs an integrity check on the system by checking if all the
-// required paths and links are present. If repair is true, it will also
-// try to repair the system by creating missing resources
-func (ic *IntegrityCheck) check(repair bool) error {
-	PrintVerboseInfo("IntegrityCheck.check", "Running...")
-	repairPaths := []string{}
-	repairLinks := []string{}
-
-	// check if system dir exists
-	if !fileExists(ic.systemPath) {
-		repairPaths = append(repairPaths, ic.systemPath)
+func RepairRootIntegrity(rootPath string) (err error) {
+	err = fixupOlderSystems(rootPath)
+	if err != nil {
+		return err
 	}
 
-	// check if standard links exist and are links
-	for _, link := range ic.standardLinks {
-		testPath := filepath.Join(ic.rootPath, link)
-		if !isLink(testPath) {
-			repairLinks = append(repairLinks, link)
-		}
+	err = repairLinks(rootPath)
+	if err != nil {
+		return err
 	}
 
-	// check if root paths exist
-	for _, path := range ic.rootPaths {
-		finalPath := filepath.Join(ic.rootPath, path)
-		if !fileExists(finalPath) {
-			repairPaths = append(repairPaths, finalPath)
-		}
+	err = repairPaths(rootPath)
+	if err != nil {
+		return err
 	}
 
-	// check if etc paths exist
-	for _, path := range ic.etcPaths {
-		if !fileExists(path) {
-			repairPaths = append(repairPaths, path)
+	return nil
+}
+
+func repairLinks(rootPath string) (err error) {
+	for _, link := range linksToRepair {
+		sourceAbs := filepath.Join(rootPath, link[0])
+		targetAbs := filepath.Join(rootPath, link[1])
+
+		err = repairLink(sourceAbs, targetAbs)
+		if err != nil {
+			return err
 		}
 	}
+	return nil
+}
 
-	if repair {
-		for _, path := range repairPaths {
-			PrintVerboseInfo("IntegrityCheck", "Repairing path", path)
-			err := os.MkdirAll(path, 0755)
-			if err != nil {
-				PrintVerboseErr("IntegrityCheck", 0, err)
-				return err
-			}
+func repairLink(sourceAbs, targetAbs string) (err error) {
+	target := targetAbs
+	source, err := filepath.Rel(filepath.Dir(target), sourceAbs)
+	if err != nil {
+		PrintVerboseErr("repairLink", 1, "Can't make ", source, " relative to ", target, " : ", err)
+		return err
+	}
+
+	if !isLink(target) {
+		err = os.Remove(target)
+		if err != nil && !os.IsNotExist(err) {
+			PrintVerboseErr("repairLink", 2, "Can't remove ", target, " : ", err)
+			return err
 		}
 
-		for _, link := range repairLinks {
-			srcPath := filepath.Join(ic.systemPath, link)
-			dstPath := filepath.Join(ic.rootPath, link)
-			relSrcPath, err := filepath.Rel(filepath.Dir(dstPath), srcPath)
-			if err != nil {
-				PrintVerboseErr("IntegrityCheck", 1, err)
-				return err
-			}
-
-			PrintVerboseInfo("IntegrityCheck", "Repairing link", relSrcPath, "->", dstPath)
-			err = os.Symlink(relSrcPath, dstPath)
-			if err != nil {
-				PrintVerboseErr("IntegrityCheck", 2, err)
-				return err
-			}
+		PrintVerboseInfo("repairLink", "Repairing ", target, " -> ", source)
+		err = os.Symlink(source, target)
+		if err != nil {
+			return err
 		}
 	}
 
 	return nil
 }
 
-// Repair repairs the system
-func (ic *IntegrityCheck) Repair() error {
-	return ic.check(true)
+func repairPaths(rootPath string) (err error) {
+	for _, path := range pathsToRepair {
+		err = repairPath(filepath.Join(rootPath, path))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func repairPath(path string) (err error) {
+	if info, err := os.Lstat(path); err == nil && info.IsDir() {
+		return nil
+	}
+
+	err = os.Remove(path)
+	if err != nil && !os.IsNotExist(err) {
+		PrintVerboseErr("repairPath", 1, "Can't remove ", path, " : ", err)
+		return err
+	}
+
+	PrintVerboseInfo("repairPath", "Repairing ", path)
+	err = os.MkdirAll(path, 0o755)
+	if err != nil {
+		PrintVerboseErr("repairPath", 2, "Can't create ", path, " : ", err)
+		return err
+	}
+
+	return nil
+}
+
+// this is here to keep compatibility with older systems
+// e.g. /media was a folder instead of a symlink to /var/media
+func fixupOlderSystems(rootPath string) (err error) {
+	paths := []string{
+		"media",
+		"mnt",
+		"root",
+	}
+
+	for _, path := range paths {
+		legacyPath := filepath.Join(rootPath, path)
+		newPath := filepath.Join("/var", path)
+
+		if info, err := os.Lstat(legacyPath); err != nil || info.IsDir() {
+			err = exec.Command("mv", legacyPath, newPath).Run()
+			if err != nil {
+				PrintVerboseErr("fixupOlderSystems", 1, "could not move ", legacyPath, " to ", newPath, " : ", err)
+				return err
+			}
+		}
+	}
+
+	return nil
 }

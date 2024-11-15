@@ -280,7 +280,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return partFuture.Partition.Unmount()
 	}, nil, 90, &goodies.NoErrorHandler{}, false)
 
-	_, err = NewIntegrityCheck(partFuture, settings.Cnf.AutoRepair)
+	err = RepairRootIntegrity(partFuture.Partition.MountPoint)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 2.4, err)
 		return err
@@ -613,6 +613,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 	oldUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", presentEtc.Label)
 	newUpperEtc := fmt.Sprintf("/var/lib/abroot/etc/%s", futureEtc.Label)
+
+	// make sure the future etc directories exist, ignoring errors
+	newWorkEtc := fmt.Sprintf("/var/lib/abroot/etc/%s-work", futureEtc.Label)
+	os.MkdirAll(newUpperEtc, 0o755)
+	os.MkdirAll(newWorkEtc, 0o755)
 
 	err = EtcBuilder.ExtBuildCommand(oldEtc, systemNew+"/sysconf", oldUpperEtc, newUpperEtc)
 	if err != nil {
