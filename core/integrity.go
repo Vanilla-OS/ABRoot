@@ -156,7 +156,7 @@ func fixupOlderSystems(rootPath string) (err error) {
 		legacyPath := filepath.Join(rootPath, path)
 		newPath := filepath.Join("/var", path)
 
-		if info, err := os.Lstat(legacyPath); err != nil || info.IsDir() {
+		if info, err := os.Lstat(legacyPath); err == nil && info.IsDir() {
 			err = exec.Command("mv", legacyPath, newPath).Run()
 			if err != nil {
 				PrintVerboseErr("fixupOlderSystems", 1, "could not move ", legacyPath, " to ", newPath, " : ", err)
