@@ -56,10 +56,7 @@ var pathsToRepair = [...]string{
 }
 
 func RepairRootIntegrity(rootPath string) (err error) {
-	err = fixupOlderSystems(rootPath)
-	if err != nil {
-		return err
-	}
+	fixupOlderSystems(rootPath)
 
 	err = repairLinks(rootPath)
 	if err != nil {
@@ -145,7 +142,7 @@ func repairPath(path string) (err error) {
 
 // this is here to keep compatibility with older systems
 // e.g. /media was a folder instead of a symlink to /var/media
-func fixupOlderSystems(rootPath string) (err error) {
+func fixupOlderSystems(rootPath string) {
 	paths := []string{
 		"media",
 		"mnt",
@@ -160,10 +157,9 @@ func fixupOlderSystems(rootPath string) (err error) {
 			err = exec.Command("mv", legacyPath, newPath).Run()
 			if err != nil {
 				PrintVerboseErr("fixupOlderSystems", 1, "could not move ", legacyPath, " to ", newPath, " : ", err)
-				return err
+				// if moving failed it probably means that it migrated successfully in the past
+				// so it's safe to ignore errors
 			}
 		}
 	}
-
-	return nil
 }
