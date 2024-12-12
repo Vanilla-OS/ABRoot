@@ -61,6 +61,11 @@ func rollback(cmd *cobra.Command, args []string) error {
 	}
 
 	response, err := aBsys.Rollback(checkOnly)
+	if err != nil {
+		cmdr.Error.Println(err)
+		os.Exit(2)
+		return err
+	}
 	switch response {
 	case core.ROLLBACK_RES_YES:
 		// NOTE: the following strings could lead to misinterpretation, with
@@ -77,10 +82,6 @@ func rollback(cmd *cobra.Command, args []string) error {
 	case core.ROLLBACK_SUCCESS:
 		cmdr.Info.Println(abroot.Trans("rollback.rollbackSuccess"))
 		os.Exit(0)
-	case core.ROLLBACK_FAILED:
-		cmdr.Info.Println(abroot.Trans("rollback.rollbackFailed", err))
-		os.Exit(1)
-		return err
 	}
 
 	return nil
