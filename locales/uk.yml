@@ -7,17 +7,17 @@ abroot:
   verboseFlag: "показати більш детальний висновок"
 
   msg:
-    additionalCommands: Additional Commands
-    version: Show version for abroot.
-    aliases: Aliases
-    flags: Flags
-    moreInfo: Use %s for more information about a command
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
-    examples: Examples
-    help: Show help for abroot.
-    usage: Usage
+    additionalCommands: Додаткові команди
+    version: Показати версію для abroot.
+    aliases: Псевдоніми
+    flags: Прапорці
+    moreInfo: Використовуйте %s для отримання додаткової інформації про команду
+    additionalHelpTopics: Додаткові довідкові теми
+    availableCommands: Доступні команди
+    globalFlags: Глобальні прапорці
+    examples: Приклади
+    help: Показати довідку для abroot.
+    usage: Використання
 kargs:
   use: "kargs"
   long: "Керування параметрами ядра."
@@ -91,7 +91,7 @@ status:
     future: 'Майбутній: %s%s'
     present: 'Поточний: %s%s'
     title: 'Розділи ABRoot:'
-  kargs: 'Аргументи ядра: %s'
+  kargs: 'Аргументи ядра:'
   abimage:
     timestamp: 'Часова мітка: %s'
     title: 'ABОбраз:'

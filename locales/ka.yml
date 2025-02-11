@@ -4,7 +4,7 @@ abroot:
     2 root დანაყოფს შორის (A<->B)"
   short: "ABRoot უზრუნველყოფს სრულ უცვლელობას და ატომურობას ტრანზაქციების შესრულებით
     2 root დანაყოფს შორის (A<->B)"
-  verboseFlag: "show more detailed output"
+  verboseFlag: "ინფორმაციის მეტი დეტალის გამოტანა"
 
   msg:
     aliases: Aliases
