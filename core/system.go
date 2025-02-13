@@ -552,9 +552,20 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 			return initPartition.Unmount()
 		}, nil, 80, &goodies.NoErrorHandler{}, false)
 
+		futureInitDir := filepath.Join(initMountpoint, partFuture.Label)
+
+		err = os.RemoveAll(futureInitDir)
+		if err != nil {
+			PrintVerboseWarn("ABSystem.RunOperation", 7.44)
+		}
+		err = os.MkdirAll(futureInitDir, 0o755)
+		if err != nil {
+			PrintVerboseWarn("ABSystem.RunOperation", 7.47, err)
+		}
+
 		err = CopyFile(
 			filepath.Join(systemNew, "boot", "vmlinuz-"+newKernelVer),
-			filepath.Join(initMountpoint, partFuture.Label, "vmlinuz-"+newKernelVer),
+			filepath.Join(futureInitDir, "vmlinuz-"+newKernelVer),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.5, err)
@@ -562,7 +573,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		}
 		err = CopyFile(
 			filepath.Join(systemNew, "boot", "initrd.img-"+newKernelVer),
-			filepath.Join(initMountpoint, partFuture.Label, "initrd.img-"+newKernelVer),
+			filepath.Join(futureInitDir, "initrd.img-"+newKernelVer),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.6, err)
@@ -733,32 +744,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 11.3, err)
 			return err
-		}
-	}
-
-	// Stage 11: Cleanup old kernel images
-	// ------------------------------------------------
-	// If Thin-Provisioning set, we have to remove the old kernel images
-	// from the init partition since it is too small to hold multiple kernels.
-	// This step runs as the last one to ensure the whole transaction is
-	// successful before removing the old kernels.
-	if settings.Cnf.ThinProvisioning {
-		switch operation {
-		case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
-		default:
-			PrintVerboseSimple("[Stage 11] -------- ABSystemRunOperation")
-
-			// since we did the swap, the init partition is now mounted in
-			// .system instead of .system.new, so we need to update the path
-			// before proceeding
-			systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system")
-			initMountpoint = filepath.Join(systemNew, "boot", "init")
-
-			err = cleanupOldKernels(newKernelVer, initMountpoint, partFuture.Label)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 12, err)
-				return err
-			}
 		}
 	}
 

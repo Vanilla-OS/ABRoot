@@ -15,11 +15,7 @@ package core
 
 import (
 	"errors"
-	"fmt"
-	"os"
-	"path"
 	"path/filepath"
-	"strings"
 
 	"github.com/hashicorp/go-version"
 )
@@ -57,37 +53,4 @@ func getKernelVersion(bootPath string) string {
 	}
 
 	return ""
-}
-
-// cleanupOldKernels removes kernels not used by future root from the
-// init partition.
-//
-// NOTE: this only works with LVM Think Provisioning turned on in ABRoot. Also
-// note that this function explicitly removes all kernels except the
-// one passed as argument, we can't just remove older versions because
-// the kernel versioning is not guaranteed to be incremental, e.g. an
-// update could introduce an older kernel version.
-func cleanupOldKernels(newKernelVer string, initMountpoint string, partFuture string) (err error) {
-	fmt.Println(path.Join(initMountpoint, partFuture))
-	files, err := os.ReadDir(path.Join(initMountpoint, partFuture))
-	if err != nil {
-		return
-	}
-
-	for _, file := range files {
-		if strings.HasPrefix(file.Name(), "vmlinuz-") && file.Name() != "vmlinuz-"+newKernelVer {
-			err = os.Remove(path.Join(initMountpoint, partFuture, file.Name()))
-			if err != nil {
-				return
-			}
-		}
-		if strings.HasPrefix(file.Name(), "initrd.img-") && file.Name() != "initrd.img-"+newKernelVer {
-			err = os.Remove(path.Join(initMountpoint, partFuture, file.Name()))
-			if err != nil {
-				return
-			}
-		}
-	}
-
-	return nil
 }
