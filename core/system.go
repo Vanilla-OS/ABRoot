@@ -855,6 +855,13 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 		return ROLLBACK_FAILED, err
 	}
 
+	// allow upgrades after rolling back
+	err = s.UnlockUpgrade()
+	if err != nil {
+		PrintVerboseErr("ABSystem.Rollback", 9, err)
+		PrintVerboseInfo("ABSystem.Rollback", "rollback completed with unlock failure")
+	}
+
 	PrintVerboseInfo("ABSystem.Rollback", "rollback completed")
 	return ROLLBACK_SUCCESS, nil
 }
