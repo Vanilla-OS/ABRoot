@@ -361,7 +361,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		content,
 	)
 
-	// Stage 4: Extract the rootfs
+	// Stage 4: Extract the rootfs and use new abroot config
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 4] -------- ABSystemRunOperation")
 
@@ -410,6 +410,13 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 4.2, err)
 		return err
+	}
+
+	// Load system-wide abroot.json from the new root
+	newConfigFile := filepath.Join(systemNew, "usr", "share", "abroot", "abroot.json")
+	if _, err := os.Stat(newConfigFile); err == nil {
+		settings.AddConfigFile(newConfigFile)
+		PrintVerboseInfo("ABSystem.RunOperation", "Successfully loaded new abroot.json")
 	}
 
 	cq.Add(func(args ...interface{}) error {
