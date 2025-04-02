@@ -43,6 +43,7 @@ type Config struct {
 	// Boot configuration commands
 	UpdateInitramfsCmd string `json:"updateInitramfsCmd"`
 	UpdateGrubCmd      string `json:"updateGrubCmd"`
+	InitramfsFormat    string `json:"initramfsFormat"`
 
 	// Package diff API (Differ)
 	DifferURL string `json:"differURL"`
@@ -85,6 +86,7 @@ func init() {
 	// VanillaOS specific defaults for backwards compatibility
 	viper.SetDefault("updateInitramfsCmd", "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock")
 	viper.SetDefault("updateGrubCmd", "/usr/sbin/grub-mkconfig -o '%s'")
+	viper.SetDefault("initramfsFormat", "initrd.img-%s")
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -115,7 +117,7 @@ func init() {
 		// Boot configuration commands
 		UpdateInitramfsCmd: viper.GetString("updateInitramfsCmd"),
 		UpdateGrubCmd:      viper.GetString("updateGrubCmd"),
-
+		InitramfsFormat:    viper.GetString("initramfsFormat"),
 		// Package diff API (Differ)
 		DifferURL: viper.GetString("differURL"),
 

@@ -101,6 +101,7 @@ The following table describes each of the configuration options:
 | `iPkgMngStatus` | The status of the package manager feature. The value '0' means that the feature is disabled, the value '1' means enabled and the value '2' means that it will require user agreement the first time it is used. If the feature is disabled, it will not appear in the commands list. |
 | `updateInitramfsCmd` | Command that should be run to update the initramfs in /boot. |
 | `updateGrubCmd` | Command that should be run to update the grub config. %s needs to be included as a placeholder for the generated config file. |
+| `initramfsFormat` | The format string for the initramfs filename. This should include a `%s` placeholder for the kernel version. For example, `initrd.img-%s` or `initramfs-%s.img`. |
 | `differURL` | The URL of the [Differ API](https://github.com/Vanilla-OS/Differ) service to use when comparing two OCI images. |
 | `partLabelVar` | The label of the partition dedicated to the system's `/var` directory. |
 | `partLabelA` | The label of the partition dedicated to the system's `A` root. |

@@ -523,9 +523,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		return err
 	}
 
-	newKernelVer := getKernelVersion(filepath.Join(systemNew, "boot"))
-	if newKernelVer == "" {
-		err := errors.New("could not get kernel version")
+	newKernelName := getKernelName(filepath.Join(systemNew, "boot"))
+	if newKernelName == "" {
+		err := errors.New("could not get kernel name")
 		PrintVerboseErr("ABSystem.RunOperation", 7.26, err)
 		return err
 	}
@@ -564,24 +564,24 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 		}
 
 		err = CopyFile(
-			filepath.Join(systemNew, "boot", "vmlinuz-"+newKernelVer),
-			filepath.Join(futureInitDir, "vmlinuz-"+newKernelVer),
+			filepath.Join(systemNew, "boot", fmt.Sprintf("vmlinuz-%s", newKernelName)),
+			filepath.Join(futureInitDir, fmt.Sprintf("vmlinuz-%s", newKernelName)),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.5, err)
 			return err
 		}
 		err = CopyFile(
-			filepath.Join(systemNew, "boot", "initrd.img-"+newKernelVer),
-			filepath.Join(futureInitDir, "initrd.img-"+newKernelVer),
+			filepath.Join(systemNew, "boot", fmt.Sprintf(settings.Cnf.InitramfsFormat, newKernelName)),
+			filepath.Join(futureInitDir, fmt.Sprintf(settings.Cnf.InitramfsFormat, newKernelName)),
 		)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 7.6, err)
 			return err
 		}
 
-		os.Remove(filepath.Join(systemNew, "boot", "vmlinuz-"+newKernelVer))
-		os.Remove(filepath.Join(systemNew, "boot", "initrd.img-"+newKernelVer))
+		os.Remove(filepath.Join(systemNew, "boot", fmt.Sprintf("vmlinuz-%s", newKernelName)))
+		os.Remove(filepath.Join(systemNew, "boot", fmt.Sprintf(settings.Cnf.InitramfsFormat, newKernelName)))
 
 		rootUuid = initPartition.Uuid
 	} else {
@@ -589,7 +589,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	}
 
 	err = generateABGrubConf(
-		newKernelVer,
+		newKernelName,
 		systemNew,
 		rootUuid,
 		partFuture.Label,
