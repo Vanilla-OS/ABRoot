@@ -68,6 +68,7 @@ The configuration file is a JSON file with the following structure:
 
     "updateInitramfsCmd": "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock",
     "updateGrubCmd": "/usr/sbin/grub-mkconfig -o '%s'",
+    "initramfsFormat": "initrd.img-%s"
 
     "differURL": "https://differ.vanillaos.org",
 

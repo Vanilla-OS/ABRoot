@@ -32,7 +32,7 @@ type Grub struct {
 }
 
 // generateABGrubConf generates a new grub config with the given details
-func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
+func generateABGrubConf(kernelName string, rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
 	PrintVerboseInfo("generateABGrubConf", "generating grub config for ABRoot")
 
 	kargs, err := KargsRead()
@@ -62,7 +62,7 @@ func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, 
 	confPath := filepath.Join(grubPath, "abroot.cfg")
 	template := `  search --no-floppy --fs-uuid --set=root %s
   linux   %s/vmlinuz-%s root=%s %s
-  initrd  %s/initrd.img-%s
+  initrd  %s/%s
 `
 
 	err = os.MkdirAll(grubPath, 0755)
@@ -71,7 +71,9 @@ func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, 
 		return err
 	}
 
-	abrootBootConfig := fmt.Sprintf(template, rootUuid, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)
+	initramfsName := fmt.Sprintf(settings.Cnf.InitramfsFormat, kernelName)
+
+	abrootBootConfig := fmt.Sprintf(template, rootUuid, bootPrefix, kernelName, systemRoot, kargs, bootPrefix, initramfsName)
 
 	generatedGrubConfigContents, err := os.ReadFile(filepath.Join(rootPath, generatedGrubConfigPath))
 	if err != nil {
