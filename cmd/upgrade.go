@@ -55,6 +55,13 @@ func NewUpgradeCommand() *cmdr.Command {
 			abroot.Trans("upgrade.forceFlag"),
 			false))
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"delete-old-system",
+			"",
+			abroot.Trans("upgrade.deleteOld"),
+			false))
+
 	cmd.Example = "abroot upgrade"
 
 	return cmd
@@ -68,6 +75,12 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	dryRun, err := cmd.Flags().GetBool("dry-run")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	freeSpace, err := cmd.Flags().GetBool("delete-old-system")
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
@@ -185,7 +198,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
-	err = aBsys.RunOperation(operation)
+	err = aBsys.RunOperation(operation, freeSpace)
 	if err != nil {
 		if err == core.ErrNoUpdate {
 			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))

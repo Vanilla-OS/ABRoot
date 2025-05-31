@@ -106,6 +106,7 @@ upgrade:
   long: "Check for a new system image and apply it."
   short: "Upgrade the system"
   forceFlag: "force update even if the system is up to date"
+  deleteOld: "Delete old image to free up space, will make future root temporarily unusable."
   rootRequired: "You must be root to run this command."
   checkingSystemUpdate: "Checking for system updates..."
   checkingPackageUpdate: "Checking for package updates..."
