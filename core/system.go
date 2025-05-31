@@ -170,7 +170,7 @@ func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
 //		Applies package changes, but doesn't update the system.
 //	INITRAMFS:
 //		Updates the initramfs for the future root, but doesn't update the system.
-func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
+func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) error {
 	PrintVerboseInfo("ABSystem.RunOperation", "starting", operation)
 
 	cq := goodies.NewCleanupQueue()
@@ -374,8 +374,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation) error {
 	abrootTrans := filepath.Join(partFuture.Partition.MountPoint, "abroot-trans")
 	systemOld := filepath.Join(partFuture.Partition.MountPoint, ".system")
 	systemNew := filepath.Join(partFuture.Partition.MountPoint, ".system.new")
-	if os.Getenv("ABROOT_FREE_SPACE") != "" {
-		PrintVerboseInfo("ABSystemRunOperation", "ABROOT_FREE_SPACE is set, deleting future system to free space, this is potentially harmful, assuming we are in a test environment")
+	if freeSpace || os.Getenv("ABROOT_FREE_SPACE") != "" {
+		PrintVerboseInfo("ABSystemRunOperation", "Deleting future system to free space, this will render the future root temporarily unavailable")
 		err := os.RemoveAll(systemOld)
 		if err != nil {
 			PrintVerboseErr("ABSystemRunOperation", 4, err)

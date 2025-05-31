@@ -35,6 +35,13 @@ func NewUpdateInitfsCommand() *cmdr.Command {
 			abroot.Trans("updateInitramfs.dryRunFlag"),
 			false))
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"delete-old-system",
+			"",
+			abroot.Trans("upgrade.deleteOld"),
+			false))
+
 	cmd.Example = "abroot update-initramfs"
 
 	return cmd
@@ -52,6 +59,12 @@ func updateInitramfs(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	freeSpace, err := cmd.Flags().GetBool("delete-old-system")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
 	aBsys, err := core.NewABSystem()
 	if err != nil {
 		cmdr.Error.Println(err)
@@ -59,9 +72,9 @@ func updateInitramfs(cmd *cobra.Command, args []string) error {
 	}
 
 	if dryRun {
-		err = aBsys.RunOperation(core.DRY_RUN_INITRAMFS)
+		err = aBsys.RunOperation(core.DRY_RUN_INITRAMFS, freeSpace)
 	} else {
-		err = aBsys.RunOperation(core.INITRAMFS)
+		err = aBsys.RunOperation(core.INITRAMFS, freeSpace)
 	}
 	if err != nil {
 		cmdr.Error.Printf(abroot.Trans("updateInitramfs.updateFailed"), err)
