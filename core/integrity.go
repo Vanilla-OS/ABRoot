@@ -14,6 +14,7 @@ package core
 */
 
 import (
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -29,10 +30,6 @@ var linksToRepair = [...][2]string{
 	{".system/libx32", "libx32"},
 	{".system/sbin", "sbin"},
 	{".system/usr", "usr"},
-	{"var/home", "home"},
-	{"var/media", "media"},
-	{"var/mnt", "mnt"},
-	{"var/root", "root"},
 }
 
 // paths that must exist in the root partition
@@ -47,6 +44,10 @@ var pathsToRepair = [...]string{
 	"srv",
 	"sys",
 	"tmp",
+	"home",
+	"media",
+	"mnt",
+	"root",
 	"var",
 	"var/home",
 	"var/media",
@@ -141,7 +142,7 @@ func repairPath(path string) (err error) {
 }
 
 // this is here to keep compatibility with older systems
-// e.g. /media was a folder instead of a symlink to /var/media
+// e.g. /media was a folder instead of a mountpoint for /var/media
 func fixupOlderSystems(rootPath string) {
 	paths := []string{
 		"media",
@@ -153,7 +154,7 @@ func fixupOlderSystems(rootPath string) {
 		legacyPath := filepath.Join(rootPath, path)
 		newPath := filepath.Join("/var", path)
 
-		if info, err := os.Lstat(legacyPath); err == nil && info.IsDir() {
+		if _, err := os.Lstat(newPath); errors.Is(err, os.ErrNotExist) {
 			err = exec.Command("mv", legacyPath, newPath).Run()
 			if err != nil {
 				PrintVerboseErr("fixupOlderSystems", 1, "could not move ", legacyPath, " to ", newPath, " : ", err)
