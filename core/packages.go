@@ -242,6 +242,12 @@ func (p *PackageManager) Remove(pkg string) error {
 		return err
 	}
 
+	err = p.ExistsOnSystem(pkg)
+	if err != nil {
+		PrintVerboseErr("PackageManager.Remove", 1, err)
+		return err
+	}
+
 	// Add to unstaged packages first
 	upkgs, err := p.GetUnstagedPackages()
 	if err != nil {
@@ -683,6 +689,26 @@ func (p *PackageManager) ExistsInRepo(pkg string) error {
 	}
 
 	PrintVerboseInfo("PackageManager.ExistsInRepo", "package exists in repo")
+	return nil
+}
+
+func (p *PackageManager) ExistsOnSystem(pkg string) error {
+	PrintVerboseInfo("PackageManager.ExistsOnSystem", "running...")
+
+	PrintVerboseInfo("PackageManager.ExistsInRepo", "checking if package "+pkg+" exists on system: ")
+
+	packageListFile, err := os.ReadFile("/var/lib/dpkg/status")
+	if err != nil {
+		PrintVerboseErr("PackageManager.ExistsOnSystem", 0, err)
+		return err
+	}
+
+	if !strings.Contains(string(packageListFile), "Package: "+pkg) {
+		PrintVerboseInfo("PackageManager.ExistsInRepo", "package does not exist on system")
+		return fmt.Errorf("package does not exist on system: %s", pkg)
+	}
+
+	PrintVerboseInfo("PackageManager.ExistsInRepo", "package exists on system")
 	return nil
 }
 
