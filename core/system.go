@@ -160,6 +160,31 @@ func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
 	return nil
 }
 
+func (s *ABSystem) Rebase(name string, dryRun bool) error {
+
+	if strings.Contains(name, ".") {
+		registrySplit := strings.SplitN(name, "/", 2)
+		settings.Cnf.Registry = registrySplit[0]
+		name = registrySplit[1]
+	}
+	nameTagSplit := strings.Split(name, ":")
+	name = nameTagSplit[0]
+	if len(nameTagSplit) > 1 {
+		settings.Cnf.Tag = nameTagSplit[1]
+	}
+	settings.Cnf.Name = name
+
+	if !dryRun {
+		err := settings.WriteConfigToFile(settings.CnfPathAdmin)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+
+}
+
 // RunOperation executes a root-switching operation from the options below:
 //
 //	UPGRADE:
