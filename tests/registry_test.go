@@ -16,7 +16,10 @@ func TestRegistryHasUpdate(t *testing.T) {
 		t.Fatal("TestRegistryHasUpdate: registry is nil")
 	}
 
-	digest, update := registry.HasUpdate("impossible_digest")
+	digest, update, err := registry.HasUpdate("impossible_digest")
+	if err != nil {
+		t.Fatal(err)
+	}
 	if digest == "" && update == false {
 		t.Fatal("TestRegistryHasUpdate: digest and update are empty")
 	}
