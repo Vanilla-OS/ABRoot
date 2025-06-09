@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/spf13/viper"
 	"github.com/vanilla-os/abroot/settings"
 )
 
@@ -49,8 +50,16 @@ func ConfEdit() (ConfEditResult, error) {
 		return CONF_FAILED, err
 	}
 
+	tmpFilePath := settings.CnfPathAdmin + ".tmp.json"
+
+	err = os.WriteFile(tmpFilePath, cnfContent, 0o755)
+	if err != nil {
+		return CONF_FAILED, err
+	}
+	defer os.Remove(tmpFilePath)
+
 	// open the editor
-	cmd := exec.Command(editor, settings.CnfPathAdmin)
+	cmd := exec.Command(editor, tmpFilePath)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -60,15 +69,26 @@ func ConfEdit() (ConfEditResult, error) {
 	}
 
 	// getting the new content
-	newCnfContent, err := os.ReadFile(settings.CnfPathAdmin)
+	newCnfContent, err := os.ReadFile(tmpFilePath)
 	if err != nil {
 		return CONF_FAILED, err
 	}
 
 	// we compare the old and new content to return the proper result
-	if string(cnfContent) != string(newCnfContent) {
-		return CONF_CHANGED, nil
+	if string(cnfContent) == string(newCnfContent) {
+		return CONF_UNCHANGED, nil
 	}
 
-	return CONF_UNCHANGED, nil
+	viper.SetConfigFile(tmpFilePath)
+	err = viper.ReadInConfig()
+	if err != nil {
+		return CONF_FAILED, err
+	}
+
+	err = AtomicSwap(settings.CnfPathAdmin, tmpFilePath)
+	if err != nil {
+		return CONF_FAILED, err
+	}
+
+	return CONF_CHANGED, nil
 }
