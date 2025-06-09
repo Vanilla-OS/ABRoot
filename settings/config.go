@@ -58,9 +58,6 @@ type Config struct {
 	// Structure
 	ThinProvisioning bool   `json:"thinProvisioning"`
 	ThinInitVolume   string `json:"thinInitVolume"`
-
-	// Virtual
-	FullImageName string
 }
 
 var Cnf *Config
@@ -130,12 +127,15 @@ func init() {
 		// Structure
 		ThinProvisioning: viper.GetBool("thinProvisioning"),
 		ThinInitVolume:   viper.GetString("thinInitVolume"),
-
-		// Virtual
-		FullImageName: "",
 	}
+}
 
-	Cnf.FullImageName = fmt.Sprintf("%s/%s:%s", Cnf.Registry, Cnf.Name, Cnf.Tag)
+func GetFullImageName() string {
+	return fmt.Sprintf("%s/%s", Cnf.Registry, Cnf.Name)
+}
+
+func GetFullImageNameWithTag() string {
+	return fmt.Sprintf("%s:%s", GetFullImageName(), Cnf.Tag)
 }
 
 // WriteConfigToFile writes the current configuration to a file
