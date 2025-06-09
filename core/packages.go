@@ -232,20 +232,29 @@ func (p *PackageManager) Remove(pkg string) error {
 		return err
 	}
 
-	// Check if package exists in repo
-	// FIXME: this should also check if the package is actually installed
-	// in the system, not just if it exists in the repo. Since this is a distro
-	// specific feature, I'm leaving it as is for now.
-	err = p.ExistsInRepo(pkg)
+	// Check if package exists in packages.add
+	pkgsAddList, err := p.GetAddPackagesString(" ")
 	if err != nil {
 		PrintVerboseErr("PackageManager.Remove", 1, err)
 		return err
 	}
+	if !strings.Contains(pkgsAddList, pkg) {
 
-	err = p.ExistsOnSystem(pkg)
-	if err != nil {
-		PrintVerboseErr("PackageManager.Remove", 1, err)
-		return err
+		// Check if package exists in repo
+		// FIXME: this should also check if the package is installed in
+		// different systems, not just debian-based ditros.. Since this is a
+		// distro specific feature, I'm leaving it as is for now.
+		err = p.ExistsInRepo(pkg)
+		if err != nil {
+			PrintVerboseErr("PackageManager.Remove", 1, err)
+			return err
+		}
+
+		err = p.ExistsOnSystem(pkg)
+		if err != nil {
+			PrintVerboseErr("PackageManager.Remove", 1, err)
+			return err
+		}
 	}
 
 	// Add to unstaged packages first
