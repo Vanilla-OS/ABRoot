@@ -39,13 +39,13 @@ func ConfEdit() (ConfEditResult, error) {
 
 	// getting the configuration content so as we can compare it later
 	// to see if it has been changed
-	cnfContent, err := os.ReadFile(settings.CnfFileUsed)
+	cnfContent, err := os.ReadFile(settings.CnfPathAdmin)
 	if err != nil {
 		return CONF_FAILED, err
 	}
 
 	// open the editor
-	cmd := exec.Command(editor, settings.CnfFileUsed)
+	cmd := exec.Command(editor, settings.CnfPathAdmin)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -55,7 +55,7 @@ func ConfEdit() (ConfEditResult, error) {
 	}
 
 	// getting the new content
-	newCnfContent, err := os.ReadFile(settings.CnfFileUsed)
+	newCnfContent, err := os.ReadFile(settings.CnfPathAdmin)
 	if err != nil {
 		return CONF_FAILED, err
 	}
