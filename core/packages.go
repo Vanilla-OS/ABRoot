@@ -700,7 +700,7 @@ func (p *PackageManager) ExistsOnSystem(pkg string) error {
 	packageListFile, err := os.ReadFile("/var/lib/dpkg/status")
 	if err != nil {
 		PrintVerboseErr("PackageManager.ExistsOnSystem", 0, err)
-		return err
+		return nil
 	}
 
 	if !strings.Contains(string(packageListFile), "Package: "+pkg) {
