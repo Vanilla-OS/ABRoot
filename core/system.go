@@ -335,10 +335,10 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		// Handle case where an image for the current root may not exist
 		// in storage
 		if imageName == "" {
-			imageName = settings.Cnf.FullImageName
+			imageName = settings.GetFullImageNameWithTag()
 		}
 	default:
-		imageName = strings.Split(settings.Cnf.FullImageName, ":")[0]
+		imageName = settings.GetFullImageName()
 		imageName += "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = imageDigest
 	}
@@ -426,7 +426,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		return err
 	}
 
-	abimage, err := NewABImage(imageDigest, settings.Cnf.FullImageName)
+	abimage, err := NewABImage(imageDigest, settings.GetFullImageNameWithTag())
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 5.1, err)
 		return err
