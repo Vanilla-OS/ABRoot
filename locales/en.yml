@@ -112,6 +112,8 @@ upgrade:
   checkingPackageUpdate: "Checking for package updates..."
   systemUpdateAvailable: "There is an update for your system."
   packageUpdateAvailable: "There are %d package updates."
+  systemUpdateCheckFailed: "Failed to check for system updates: %s\n"
+  packageUpdateCheckFailed: "Failed to check for package updates: %s\n"
   noUpdateAvailable: "No update available."
   checkOnlyFlag: "check for updates but do not apply them"
   dryRunFlag: "perform a dry run of the operation"

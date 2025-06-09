@@ -93,84 +93,12 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	}
 
 	if checkOnly {
-		_, raw := os.LookupEnv("ABROOT_JSON_OUTPUT")
-		if !raw {
-			cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
-		}
-
-		// Check for image updates
-		newDigest, res := aBsys.CheckUpdate()
-		sysAdded, sysUpgraded, sysDowngraded, sysRemoved := []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}
-		if res {
-			if !raw {
-				cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
-			}
-
-			sysAdded, sysUpgraded, sysDowngraded, sysRemoved, err = core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
-			if err != nil {
-				return err
-			}
-			if !raw {
-				err = renderPackageDiff(sysAdded, sysUpgraded, sysDowngraded, sysRemoved)
-				if err != nil {
-					return err
-				}
-			}
-		} else if !raw {
-			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
-		}
-
-		// Check for package updates
-		if !raw {
-			cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
-		}
-		ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved, err := core.OverlayPackageDiff()
+		hasUpdate, err := upgradeCheck(aBsys)
 		if err != nil {
 			return err
 		}
 
-		sumChanges := len(ovlAdded) + len(ovlUpgraded) + len(ovlDowngraded) + len(ovlRemoved)
-		if sumChanges == 0 && !raw {
-			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
-		} else if !raw {
-			cmdr.Info.Sprintf(abroot.Trans("upgrade.packageUpdateAvailable"), sumChanges)
-
-			err = renderPackageDiff(ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved)
-			if err != nil {
-				return err
-			}
-		}
-
-		if raw {
-			newDigestIfHasUpdate := ""
-			if res {
-				newDigestIfHasUpdate = newDigest
-			}
-
-			out, err := json.Marshal(map[string]any{
-				"hasUpdate": res,
-				"newDigest": newDigestIfHasUpdate,
-				"systemPackageDiff": map[string][]diff.PackageDiff{
-					"added":      sysAdded,
-					"upgraded":   sysUpgraded,
-					"downgraded": sysDowngraded,
-					"removed":    sysRemoved,
-				},
-				"overlayPackageDiff": map[string][]diff.PackageDiff{
-					"added":      ovlAdded,
-					"upgraded":   ovlUpgraded,
-					"downgraded": ovlDowngraded,
-					"removed":    ovlRemoved,
-				},
-			})
-			if err != nil {
-				cmdr.Error.Println(err)
-			}
-
-			fmt.Println(string(out))
-		}
-
-		if !res && sumChanges == 0 {
+		if !hasUpdate {
 			os.Exit(1) // No update available
 		} else {
 			os.Exit(0) // Update available
@@ -216,6 +144,92 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	cmdr.Info.Println(abroot.Trans("upgrade.success"))
 	os.Exit(0)
 	return nil
+}
+
+func upgradeCheck(aBsys *core.ABSystem) (bool, error) {
+	_, raw := os.LookupEnv("ABROOT_JSON_OUTPUT")
+	if !raw {
+		cmdr.Info.Println(abroot.Trans("upgrade.checkingSystemUpdate"))
+	}
+
+	sysAdded := []diff.PackageDiff{}
+	sysUpgraded := []diff.PackageDiff{}
+	sysDowngraded := []diff.PackageDiff{}
+	sysRemoved := []diff.PackageDiff{}
+	var err error
+
+	// Check for image updates
+	newDigest, res := aBsys.CheckUpdate()
+	if res {
+		if !raw {
+			cmdr.Info.Println(abroot.Trans("upgrade.systemUpdateAvailable"))
+		}
+
+		sysAdded, sysUpgraded, sysDowngraded, sysRemoved, err = core.BaseImagePackageDiff(aBsys.CurImage.Digest, newDigest)
+		if err != nil {
+			cmdr.Warning.Printf(abroot.Trans("upgrade.systemUpdateCheckFailed"), err)
+		} else if !raw {
+			err = renderPackageDiff(sysAdded, sysUpgraded, sysDowngraded, sysRemoved)
+			if err != nil {
+				return false, err
+			}
+		}
+	} else if !raw {
+		cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
+	}
+
+	// Check for package updates
+	sumChanges := 0
+	if !raw {
+		cmdr.Info.Println(abroot.Trans("upgrade.checkingPackageUpdate"))
+	}
+	ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved, err := core.OverlayPackageDiff()
+	if err != nil {
+		cmdr.Warning.Printf(abroot.Trans("upgrade.packageUpdateCheckFailed"), err)
+	} else {
+		sumChanges = len(ovlAdded) + len(ovlUpgraded) + len(ovlDowngraded) + len(ovlRemoved)
+		if sumChanges == 0 && !raw {
+			cmdr.Info.Println(abroot.Trans("upgrade.noUpdateAvailable"))
+		} else if !raw {
+			cmdr.Info.Sprintf(abroot.Trans("upgrade.packageUpdateAvailable"), sumChanges)
+
+			err = renderPackageDiff(ovlAdded, ovlUpgraded, ovlDowngraded, ovlRemoved)
+			if err != nil {
+				return false, err
+			}
+		}
+	}
+
+	if raw {
+		newDigestIfHasUpdate := ""
+		if res {
+			newDigestIfHasUpdate = newDigest
+		}
+
+		out, err := json.Marshal(map[string]any{
+			"hasUpdate": res,
+			"newDigest": newDigestIfHasUpdate,
+			"systemPackageDiff": map[string][]diff.PackageDiff{
+				"added":      sysAdded,
+				"upgraded":   sysUpgraded,
+				"downgraded": sysDowngraded,
+				"removed":    sysRemoved,
+			},
+			"overlayPackageDiff": map[string][]diff.PackageDiff{
+				"added":      ovlAdded,
+				"upgraded":   ovlUpgraded,
+				"downgraded": ovlDowngraded,
+				"removed":    ovlRemoved,
+			},
+		})
+		if err != nil {
+			cmdr.Error.Println(err)
+		}
+
+		fmt.Println(string(out))
+	}
+
+	return res || sumChanges > 0, nil
 }
 
 func renderPackageDiff(added, upgraded, downgraded, removed []diff.PackageDiff) error {
