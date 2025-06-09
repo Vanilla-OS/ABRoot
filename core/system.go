@@ -130,7 +130,7 @@ func (s *ABSystem) CheckAll() error {
 }
 
 // CheckUpdate checks if there is an update available
-func (s *ABSystem) CheckUpdate() (string, bool) {
+func (s *ABSystem) CheckUpdate() (string, bool, error) {
 	PrintVerboseInfo("ABSystem.CheckUpdate", "running...")
 	return s.Registry.HasUpdate(s.CurImage.Digest)
 }
@@ -224,7 +224,11 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	var imageDigest string
 	if operation != APPLY && operation != INITRAMFS {
 		var res bool
-		imageDigest, res = s.CheckUpdate()
+		imageDigest, res, err = s.CheckUpdate()
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 1, err)
+			return err
+		}
 		if !res {
 			if operation != FORCE_UPGRADE {
 				PrintVerboseErr("ABSystemRunOperation", 1.1, err)

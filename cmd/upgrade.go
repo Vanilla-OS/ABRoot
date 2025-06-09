@@ -99,7 +99,11 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		}
 
 		// Check for image updates
-		newDigest, res := aBsys.CheckUpdate()
+		newDigest, res, err := aBsys.CheckUpdate()
+		if err != nil {
+			cmdr.Error.Println(err)
+			return err
+		}
 		sysAdded, sysUpgraded, sysDowngraded, sysRemoved := []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}, []diff.PackageDiff{}
 		if res {
 			if !raw {

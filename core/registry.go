@@ -48,28 +48,28 @@ func NewRegistry() *Registry {
 
 // HasUpdate checks if the image/tag from the registry has a different digest
 // it returns the new digest and a boolean indicating if an update is available
-func (r *Registry) HasUpdate(digest string) (string, bool) {
+func (r *Registry) HasUpdate(digest string) (string, bool, error) {
 	PrintVerboseInfo("Registry.HasUpdate", "Checking for updates ...")
 
 	token, err := GetToken()
 	if err != nil {
 		PrintVerboseErr("Registry.HasUpdate", 0, err)
-		return "", false
+		return "", false, err
 	}
 
 	manifest, err := r.GetManifest(token)
 	if err != nil {
 		PrintVerboseErr("Registry.HasUpdate", 1, err)
-		return "", false
+		return "", false, err
 	}
 
 	if manifest.Digest == digest {
 		PrintVerboseInfo("Registry.HasUpdate", "no update available")
-		return "", false
+		return "", false, nil
 	}
 
 	PrintVerboseInfo("Registry.HasUpdate", "update available. Old digest", digest, "new digest", manifest.Digest)
-	return manifest.Digest, true
+	return manifest.Digest, true, nil
 }
 
 func getRegistryAuthUrl() (string, string, error) {
@@ -117,6 +117,10 @@ func GetToken() (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusForbidden {
+		return "", fmt.Errorf("configured image cannot be found")
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("token request failed with status code: %d", resp.StatusCode)
