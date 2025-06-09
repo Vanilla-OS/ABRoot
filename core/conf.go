@@ -32,6 +32,11 @@ func ConfEdit() (ConfEditResult, error) {
 			editor = viBin
 		}
 
+		editorBin, err := exec.LookPath("editor")
+		if err == nil {
+			editor = editorBin
+		}
+
 		if editor == "" {
 			return CONF_FAILED, fmt.Errorf("no editor found in $EDITOR, nano or vi")
 		}
