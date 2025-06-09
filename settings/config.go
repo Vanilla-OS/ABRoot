@@ -64,10 +64,6 @@ var Cnf *Config
 var CnfFileUsed string
 
 func init() {
-	// user paths
-	homedir, _ := os.UserHomeDir()
-	viper.AddConfigPath(homedir + "/.config/abroot/")
-
 	// dev paths
 	viper.AddConfigPath("config/")
 	viper.AddConfigPath("../config/")
