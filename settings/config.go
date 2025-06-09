@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -61,30 +62,41 @@ type Config struct {
 }
 
 var Cnf *Config
-var CnfFileUsed string
+
+const CnfFileName = "abroot.json"
+
+var (
+	CnfPathSystem = filepath.Join("/usr/share/abroot/", CnfFileName)
+	CnfPathAdmin  = filepath.Join("/etc/abroot/", CnfFileName)
+	CnfPathDev1   = filepath.Join("../config/", CnfFileName)
+	CnfPathDev2   = filepath.Join("./config/", CnfFileName)
+)
 
 func init() {
+
+	// system path
+	viper.SetConfigFile(CnfPathSystem)
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "could not read config file in /usr", err)
+	}
+
+	// admin path
+	viper.SetConfigFile(CnfPathAdmin)
+	err = viper.MergeInConfig()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "could not read config file in /usr", err)
+	}
+
 	// dev paths
-	viper.AddConfigPath("config/")
-	viper.AddConfigPath("../config/")
-
-	// prod paths
-	viper.AddConfigPath("/etc/abroot/")
-	viper.AddConfigPath("/usr/share/abroot/")
-
-	viper.SetConfigName("abroot")
-	viper.SetConfigType("json")
+	viper.SetConfigFile(CnfPathDev1)
+	viper.MergeInConfig()
+	viper.SetConfigFile(CnfPathDev2)
+	viper.MergeInConfig()
 
 	// VanillaOS specific defaults for backwards compatibility
 	viper.SetDefault("updateInitramfsCmd", "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock")
 	viper.SetDefault("updateGrubCmd", "/usr/sbin/grub-mkconfig -o '%s'")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		return
-	}
-
-	CnfFileUsed = viper.ConfigFileUsed()
 
 	Cnf = &Config{
 		// Common
