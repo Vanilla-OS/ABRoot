@@ -113,10 +113,11 @@ func status(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	pkgsUnstg, err := pkgMng.GetUnstagedPackagesPlain()
+	unstagedAdded, unstagedRemoved, err := pkgMng.GetUnstagedPackages("/")
 	if err != nil {
 		return err
 	}
+	pkgsUnstg := append(unstagedAdded, unstagedRemoved...)
 
 	if jsonFlag || dumpFlag {
 		type status struct {

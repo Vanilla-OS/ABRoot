@@ -168,13 +168,13 @@ func pkg(cmd *cobra.Command, args []string) error {
 		cmdr.Info.Printf(abroot.Trans("pkg.listMsg"), added, removed)
 		return nil
 	case "apply":
-		unstaged, err := pkgM.GetUnstagedPackages()
+		unstagedAdded, unstagedRemoved, err := pkgM.GetUnstagedPackages("/")
 		if err != nil {
 			cmdr.Error.Println(err)
 			return err
 		}
 
-		if len(unstaged) == 0 {
+		if len(unstagedAdded) == 0 && len(unstagedRemoved) == 0 {
 			cmdr.Info.Println(abroot.Trans("pkg.noChanges"))
 			return nil
 		}
