@@ -44,25 +44,9 @@ func TestPackageManager(t *testing.T) {
 	}
 
 	// Get final cmd
-	cmd := pm.GetFinalCmd(core.APPLY)
-	if len(cmd) == 0 {
+	cmd, err := pm.GetFinalCmd()
+	if len(cmd) == 0 || err != nil {
 		t.Error("final cmd is empty")
-	}
-
-	// Clear unstaged packages
-	err = pm.ClearUnstagedPackages()
-	if err != nil {
-		t.Error(err)
-	}
-
-	// Check if packages.unstaged is empty
-	upkgs, err := pm.GetUnstagedPackages()
-	if err != nil {
-		t.Error(err)
-	}
-
-	if len(upkgs) != 0 {
-		t.Error("packages.unstaged was not cleared")
 	}
 
 	// Check if package exists in repo
