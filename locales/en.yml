@@ -61,6 +61,7 @@ pkg:
   applyFailed: "Apply command failed: %s\n"
   removedMsg: "Package(s) %s removed.\n"
   listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
+  applySuccess: "Successfully applied packages."
   noChanges: "No changes to apply."
   dryRunFlag: "perform a dry run of the operation"
   forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
