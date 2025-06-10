@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -175,6 +176,16 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 
 	cq := goodies.NewCleanupQueue()
 	defer cq.Run()
+
+	interruptSignal := make(chan os.Signal, 1)
+	signal.Notify(interruptSignal, os.Interrupt)
+	go func() {
+		for _ = range interruptSignal {
+			PrintVerboseInfo("Interrupt received, cleaning up")
+			cq.Run()
+			os.Exit(0)
+		}
+	}()
 
 	// Stage 0: Check if upgrade is possible
 	// -------------------------------------
