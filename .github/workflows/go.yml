@@ -54,7 +54,7 @@ jobs:
           abroot-man.tar.gz
           checksums.txt
 
-    - uses: softprops/action-gh-release@v2
+    - uses: softprops/action-gh-release@v2.2.2
       if: github.repository == 'vanilla-os/ABRoot' && github.ref == 'refs/heads/main'
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
