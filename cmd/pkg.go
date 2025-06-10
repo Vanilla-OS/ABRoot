@@ -45,7 +45,7 @@ func NewPkgCommand() *cmdr.Command {
 	cmd.WithBoolFlag(
 		cmdr.NewBoolFlag(
 			"force-enable-user-agreement",
-			"f",
+			"F",
 			abroot.Trans("pkg.forceEnableUserAgreementFlag"),
 			false))
 
@@ -55,6 +55,14 @@ func NewPkgCommand() *cmdr.Command {
 			"",
 			abroot.Trans("upgrade.deleteOld"),
 			false))
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"force",
+			"f",
+			abroot.Trans("pkg.force"),
+			false,
+		))
 
 	cmd.Args = cobra.MinimumNArgs(1)
 	cmd.ValidArgs = validPkgArgs
@@ -82,6 +90,12 @@ func pkg(cmd *cobra.Command, args []string) error {
 	}
 
 	forceEnableUserAgreement, err := cmd.Flags().GetBool("force-enable-user-agreement")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	force, err := cmd.Flags().GetBool("force")
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
@@ -174,7 +188,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if len(unstaged) == 0 {
+		if len(unstaged) == 0 && !force {
 			cmdr.Info.Println(abroot.Trans("pkg.noChanges"))
 			return nil
 		}
