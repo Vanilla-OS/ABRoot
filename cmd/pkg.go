@@ -51,6 +51,13 @@ func NewPkgCommand() *cmdr.Command {
 
 	cmd.WithBoolFlag(
 		cmdr.NewBoolFlag(
+			"force-apply",
+			"",
+			abroot.Trans("pkg.forceApply"),
+			false))
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
 			"delete-old-system",
 			"",
 			abroot.Trans("upgrade.deleteOld"),
@@ -82,6 +89,12 @@ func pkg(cmd *cobra.Command, args []string) error {
 	}
 
 	forceEnableUserAgreement, err := cmd.Flags().GetBool("force-enable-user-agreement")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	forceApply, err := cmd.Flags().GetBool("force-apply")
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
@@ -174,7 +187,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if len(unstagedAdded) == 0 && len(unstagedRemoved) == 0 {
+		if !forceApply && len(unstagedAdded) == 0 && len(unstagedRemoved) == 0 {
 			cmdr.Info.Println(abroot.Trans("pkg.noChanges"))
 			return nil
 		}
