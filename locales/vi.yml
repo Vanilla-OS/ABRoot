@@ -7,16 +7,16 @@ abroot:
   verboseFlag: "hiển thị kết quả chi tiết hơn"
 
   msg:
-    additionalCommands: Additional Commands
+    additionalCommands: Các lệnh bổ sung
     version: Hiển thị phiên bản của abroot.
     moreInfo: Sử dụng %s để biết thêm thông tin về một câu lệnh
-    aliases: Aliases
-    flags: Flags
-    additionalHelpTopics: Additional help topics
-    availableCommands: Available Commands
-    globalFlags: Global Flags
+    aliases: Bí danh
+    flags: Cờ
+    additionalHelpTopics: Các chủ đề trợ giúp bổ sung
+    availableCommands: Các lệnh có sẵn
+    globalFlags: Cờ chung
     examples: Các ví dụ
-    usage: Usage
+    usage: Cách sử dụng
     help: Hiển thị trợ giúp cho abroot.
 kargs:
   use: "kargs"
@@ -57,83 +57,86 @@ pkg:
   long: "Cài đặt và quản lí gói."
   short: "Quản lí gói"
   rootRequired: "Bạn phải có quyền quản trị để thực thi câu lệnh này."
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noPackageNameProvided: "You must provide at least one package name for this operation."
+  failedGettingPkgManagerInstance: "Không thể lấy được phiên bản trình quản lý gói:
+    %s\n"
+  noPackageNameProvided: "Bạn phải cung cấp ít nhất một tên gói cho hoạt động này."
   addedMsg: "Gói %s đã được thêm vào.\n"
   applyFailed: "Áp dụng câu lệnh thất bại: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  noChanges: "No changes to apply."
-  dryRunFlag: "perform a dry run of the operation"
-  forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
+  removedMsg: "Gói %s đã bị xóa.\n"
+  listMsg: "Các gói đã thêm:\n%s\nCác gói đã xóa:\n%s\n"
+  noChanges: "Không có thay đổi nào được áp dụng."
+  dryRunFlag: "thực hiện hoạt động chạy thử"
+  forceEnableUserAgreementFlag: "buộc cho phép thỏa thuận người dùng, cho các hệ thống
+    nhúng"
+  agreementMsg: "Để sử dụng lệnh abroot pkg của ABRoot, cần có sự đồng ý rõ ràng của
+    người dùng. Lệnh này tạo điều kiện cho việc cài đặt gói nhưng đưa vào các thành
+    phần không xác định, ảnh hưởng đến độ tin cậy của hệ thống. Bằng cách đồng ý,
+    bạn thừa nhận và chấp nhận những hàm ý này, xác nhận nhận thức của bạn về tác
+    động tiềm tàng của lệnh đối với hành vi của hệ thống. [y/N]: "
+  agreementSignFailed: "Không thể ký thỏa thuận: %s\n"
   agreementDeclined: "Bạn đã từ chối bản hợp đồng. Tính năng này sẽ được vô hiệu hoá
     cho đến khi bạn đồng ý với nó."
 
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Lệnh không xác định '%s'. Chạy 'abroot pkg --help' để biết ví dụ
+    sử dụng.
 status:
   use: "status"
   long: "Hiển thị trạng thái ABRoot hiện tại."
   short: "Hiển thị trạng thái"
   jsonFlag: "hiển thị kết quả ở dạng JSON"
-  dumpFlag: "dump the ABRoot status to an archive"
+  dumpFlag: "đổ trạng thái ABRoot vào một kho lưu trữ"
   rootRequired: "Bạn phải có quyền quản trị để thực hiện câu lệnh này."
   partitions:
     title: "Phân vùng ABRoot:"
-    present: "Present: %s%s"
-    future: "Future: %s%s"
-  loadedConfig: "Loaded Configuration:"
+    present: "Hiện tại: %s%s"
+    future: "Tương lai: %s%s"
+  loadedConfig: "Cấu hình đã tải:"
   specs:
-    title: "Device Specifications:"
+    title: "Thông số kỹ thuật của thiết bị:"
     cpu: "CPU: %s"
     gpu: "GPU: %s"
-    memory: "Memory: %s"
+    memory: "Bộ nhớ: %s"
   abimage:
     title: "ABImage:"
     digest: "Digest: %s"
     timestamp: "Timestamp: %s"
-    image: "Image: %s"
-  kargs: "Kernel Arguments: %s"
+    image: "Hình ảnh: %s"
+  kargs: "Kernel Arguments:"
   packages:
-    title: "Packages:"
-    added: "Added: %s"
-    removed: "Removed: %s"
-    unstaged: "Unstaged: %s%s"
-  agreementStatus: "Package agreement:"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+    title: "Gói:"
+    added: "Đã thêm: %s"
+    removed: "Đã xóa: %s"
+    unstaged: "Chưa được staged: %s%s"
+  agreementStatus: "Thỏa thuận gói:"
+  unstagedFoundMsg: "\n\t\tdưới đây là %d gói chưa được staged. Vui lòng chạy 'abroot
+    pkg apply' để áp dụng chúng."
+  dumpMsg: "Đã đổ trạng thái ABRoot vào %s\n"
 
 upgrade:
   use: "upgrade"
-  long: "Check for a new system image and apply it."
-  short: "Upgrade the system"
-  forceFlag: "force update even if the system is up to date"
-  rootRequired: "You must be root to run this command."
-  checkingSystemUpdate: "Checking for system updates..."
-  checkingPackageUpdate: "Checking for package updates..."
-  systemUpdateAvailable: "There is an update for your system."
-  packageUpdateAvailable: "There are %d package updates."
-  noUpdateAvailable: "No update available."
-  checkOnlyFlag: "check for updates but do not apply them"
-  dryRunFlag: "perform a dry run of the operation"
-  dryRunSuccess: "Dry run completed successfully."
-  success: "Upgrade completed successfully."
-  added: "Added"
-  upgraded: "Upgraded"
-  downgraded: "Downgraded"
-  removed: "Removed"
+  long: "Kiểm tra ảnh hệ thống mới và áp dụng."
+  short: "Nâng cấp hệ thống"
+  forceFlag: "buộc cập nhật ngay cả khi hệ thống đã được cập nhật"
+  rootRequired: "Bạn phải là root để chạy lệnh này."
+  checkingSystemUpdate: "Đang kiểm tra bản cập nhật hệ thống..."
+  checkingPackageUpdate: "Đang kiểm tra bản cập nhật gói..."
+  systemUpdateAvailable: "Có bản cập nhật cho hệ thống của bạn."
+  packageUpdateAvailable: "Có %d bản cập nhật gói."
+  noUpdateAvailable: "Không có bản cập nhật nào."
+  checkOnlyFlag: "kiểm tra các bản cập nhật nhưng không áp dụng chúng"
+  dryRunFlag: "thực hiện hoạt động chạy thử"
+  dryRunSuccess: "Quá trình chạy thử hoàn tất."
+  success: "Nâng cấp hoàn tất."
+  added: "Đã thêm"
+  upgraded: "Đã nâng cấp"
+  downgraded: "Đã hạ cấp"
+  removed: "Đã xóa"
 
 updateInitramfs:
   use: "update-initramfs"
-  long: "Update the initramfs of the future root."
-  short: "Update the initramfs"
-  rootRequired: "You must be root to run this command."
-  updateSuccess: "Updated initramfs of future root."
-  updateFailed: "Failed to update initramfs of future root.\n"
-  dryRunFlag: "perform a dry run of the operation"
+  long: "Cập nhật initramfs của root trong tương lai."
+  short: "Cập nhật initramfs"
+  rootRequired: "Bạn phải là root để chạy lệnh này."
+  updateSuccess: "Cập nhật initramfs của root trong tương lai."
+  updateFailed: "Không cập nhật được initramfs của root trong tương lai.\n"
+  dryRunFlag: "thực hiện hoạt động chạy thử"
