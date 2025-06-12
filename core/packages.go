@@ -244,12 +244,6 @@ func (p *PackageManager) Remove(pkg string) error {
 		// FIXME: this should also check if the package is installed in
 		// different systems, not just debian-based ditros.. Since this is a
 		// distro specific feature, I'm leaving it as is for now.
-		err = p.ExistsInRepo(pkg)
-		if err != nil {
-			PrintVerboseErr("PackageManager.Remove", 1, err)
-			return err
-		}
-
 		err = p.ExistsOnSystem(pkg)
 		if err != nil {
 			PrintVerboseErr("PackageManager.Remove", 1, err)
@@ -709,7 +703,7 @@ func (p *PackageManager) ExistsOnSystem(pkg string) error {
 	packageListFile, err := os.ReadFile("/var/lib/dpkg/status")
 	if err != nil {
 		PrintVerboseErr("PackageManager.ExistsOnSystem", 0, err)
-		return nil
+		return p.ExistsInRepo(pkg)
 	}
 
 	if !strings.Contains(string(packageListFile), "Package: "+pkg) {
