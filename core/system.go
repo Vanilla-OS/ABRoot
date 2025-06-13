@@ -161,7 +161,6 @@ func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
 }
 
 func (s *ABSystem) Rebase(name string, dryRun bool) error {
-
 	if strings.Contains(name, ".") {
 		registrySplit := strings.SplitN(name, "/", 2)
 		settings.Cnf.Registry = registrySplit[0]
@@ -173,6 +172,11 @@ func (s *ABSystem) Rebase(name string, dryRun bool) error {
 		settings.Cnf.Tag = nameTagSplit[1]
 	}
 	settings.Cnf.Name = name
+
+	_, _, err := s.CheckUpdate()
+	if errors.Is(err, ErrImageNotFound) {
+		return fmt.Errorf("provided image cannot be found")
+	}
 
 	if !dryRun {
 		err := settings.WriteConfigToFile(settings.CnfPathAdmin)
