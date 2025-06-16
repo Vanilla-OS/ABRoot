@@ -32,7 +32,13 @@ func NewPkgCommand() *cmdr.Command {
 		"pkg add|remove|list|apply",
 		abroot.Trans("pkg.long"),
 		abroot.Trans("pkg.short"),
-		pkg,
+		func(cmd *cobra.Command, args []string) error {
+			err := pkg(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.WithBoolFlag(
