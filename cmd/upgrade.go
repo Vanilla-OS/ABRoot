@@ -62,6 +62,20 @@ func NewUpgradeCommand() *cmdr.Command {
 			abroot.Trans("upgrade.deleteOld"),
 			false))
 
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"cancel",
+			"",
+			abroot.Trans("upgrade.cancel"),
+			false))
+
+	cmd.WithBoolFlag(
+		cmdr.NewBoolFlag(
+			"unblock",
+			"",
+			abroot.Trans("upgrade.unblock"),
+			false))
+
 	cmd.Example = "abroot upgrade"
 
 	return cmd
@@ -84,6 +98,43 @@ func upgrade(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
+	}
+
+	block, err := cmd.Flags().GetBool("cancel")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	unblock, err := cmd.Flags().GetBool("unblock")
+	if err != nil {
+		cmdr.Error.Println(err)
+		return err
+	}
+
+	if block {
+		if dryRun {
+			cmdr.Info.Println("skipped blocking due to dry run")
+			return nil
+		}
+
+		err := core.MakeStopRequest()
+		if err != nil {
+			cmdr.Error.Println(err)
+		}
+		return err
+	}
+
+	if unblock {
+		if dryRun {
+			cmdr.Info.Println("can't use unblock and dryrun together")
+			return nil
+		}
+
+		err = core.CancelStopRequest()
+		if err != nil {
+			cmdr.Warning.Println("could not unblock operations:", err)
+		}
 	}
 
 	aBsys, err := core.NewABSystem()
