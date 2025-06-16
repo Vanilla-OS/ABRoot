@@ -22,7 +22,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 	"time"
 
@@ -281,17 +280,11 @@ func (p *PackageManager) GetUnstagedPackages(rootPath string) (toBeAdded, toBeRe
 		return toBeAdded, toBeRemoved, err
 	}
 
-	for _, shouldBeAddedItem := range shouldBeAdded {
-		if !slices.Contains(alreadyAdded, shouldBeAddedItem) {
-			toBeAdded = append(toBeAdded, shouldBeAddedItem)
-		}
-	}
+	addNew, removeAdded := sliceDifference(shouldBeAdded, alreadyAdded)
+	removeNew, addRemoved := sliceDifference(shouldBeRemoved, alreadyRemoved)
 
-	for _, shouldBeRemovedItem := range shouldBeRemoved {
-		if !slices.Contains(alreadyRemoved, shouldBeRemovedItem) {
-			toBeRemoved = append(toBeRemoved, shouldBeRemovedItem)
-		}
-	}
+	toBeAdded = append(addNew, addRemoved...)
+	toBeRemoved = append(removeNew, removeAdded...)
 
 	return toBeAdded, toBeRemoved, nil
 }
@@ -719,4 +712,30 @@ func (p *PackageManager) CheckStatus() error {
 
 	PrintVerboseInfo("PackageManager.CheckStatus", "package manager is enabled")
 	return nil
+}
+
+func sliceDifference(a, b []string) (onlyInA, onlyInB []string) {
+	inA := make(map[string]struct{})
+	inB := make(map[string]struct{})
+
+	for _, item := range a {
+		inA[item] = struct{}{}
+	}
+	for _, item := range b {
+		inB[item] = struct{}{}
+	}
+
+	for _, item := range a {
+		if _, found := inB[item]; !found {
+			onlyInA = append(onlyInA, item)
+		}
+	}
+
+	for _, item := range b {
+		if _, found := inA[item]; !found {
+			onlyInB = append(onlyInB, item)
+		}
+	}
+
+	return onlyInA, onlyInB
 }
