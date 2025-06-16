@@ -123,6 +123,8 @@ upgrade:
   upgraded: "Upgraded"
   downgraded: "Downgraded"
   removed: "Removed"
+  cancel: "Temporarily block or cancel any abroot operation."
+  unblock: "Remove temporary user block."
 
 updateInitramfs:
   use: "update-initramfs"

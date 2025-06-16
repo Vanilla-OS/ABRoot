@@ -83,12 +83,15 @@ type ABRollbackResponse string
 
 // Common variables and errors used by the ABSystem
 var (
-	lockFile     string = filepath.Join("/tmp", "ABSystem.Upgrade.lock")
-	stageFile    string = filepath.Join("/tmp", "ABSystem.Upgrade.stage")
-	userLockFile string = filepath.Join("/tmp", "ABSystem.Upgrade.user.lock")
+	operationLockFile     string = filepath.Join("/run", "abroot", "operation.lock")
+	finalizingFile        string = filepath.Join("/run", "abroot", "finalizing")
+	userStopFile          string = filepath.Join("/run", "abroot", "userStop")
+	finishedOperationFile string = filepath.Join("/run", "abroot", "finished")
 
 	// Errors
-	ErrNoUpdate error = errors.New("no update available")
+	ErrNoUpdate        error = errors.New("no update available")
+	ErrUserStopped     error = errors.New("operation stopped per user request")
+	ErrOperationLocked error = errors.New("another operation is currently running")
 )
 
 // NewABSystem initializes a new ABSystem, which contains all the functions
@@ -180,44 +183,35 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// -------------------------------------
 	PrintVerboseSimple("[Stage 0] -------- ABSystemRunOperation")
 
-	if s.UpgradeLockExists() {
-		if isAbrootRunning() {
-			PrintVerboseWarn("ABSystemRunOperation", 0, "upgrades are locked, another is running")
-			return errors.New("upgrades are locked, another is running")
-		}
-
-		err := removeUpgradeLock()
-		if err != nil {
-			PrintVerboseErr("ABSystemRunOperation", 0, err)
-			return err
-		}
+	if s.finishedFileExists() {
+		PrintVerboseWarn("ABSystemRunOperation", 0, "reboot required")
+		return errors.New("another operation finished successfully, a reboot is required")
 	}
 
-	err := s.LockUpgrade()
+	err := s.LockOperation()
 	if err != nil {
-		PrintVerboseErr("ABSystemRunOperation", 0.1, err)
-		return err
+		PrintVerboseErr("ABSystemRunOperation", 0.1, "could not create lock file:", err)
+		return fmt.Errorf("could not create lock file: %w", err)
 	}
 
-	// here we create the stage file to indicate that the upgrade is in progress
-	// and the process can safely be stopped
-	err = s.CreateStageFile()
+	cq.Add(func(args ...interface{}) error {
+		return s.UnlockOperation()
+	}, nil, 100, &goodies.NoErrorHandler{}, false)
+
+	// removes the finalizing file if it exists
+	err = s.removeFinalizingFile()
 	if err != nil {
 		PrintVerboseErr("ABSystemRunOperation", 0.2, err)
 		return err
 	}
 
-	cq.Add(func(args ...interface{}) error {
-		return s.UnlockUpgrade()
-	}, nil, 100, &goodies.NoErrorHandler{}, false)
-
 	// Stage 1: Check if there is an update available
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 1] -------- ABSystemRunOperation")
 
-	if s.UserLockRequested() {
-		err := errors.New("upgrade locked per user request")
-		PrintVerboseErr("ABSystemRunOperation", 1, err)
+	if UserStopRequested() {
+		err = ErrUserStopped
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
 
@@ -252,8 +246,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 2] -------- ABSystemRunOperation")
 
-	if s.UserLockRequested() {
-		err := errors.New("upgrade locked per user request")
+	if UserStopRequested() {
+		err = ErrUserStopped
 		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
@@ -296,9 +290,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 3] -------- ABSystemRunOperation")
 
-	if s.UserLockRequested() {
-		err := errors.New("upgrade locked per user request")
-		PrintVerboseErr("ABSystemRunOperation", 3, err)
+	if UserStopRequested() {
+		err = ErrUserStopped
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
 
@@ -374,9 +368,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 4] -------- ABSystemRunOperation")
 
-	if s.UserLockRequested() {
-		err := errors.New("upgrade locked per user request")
-		PrintVerboseErr("ABSystemRunOperation", 4, err)
+	if UserStopRequested() {
+		err = ErrUserStopped
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
 
@@ -425,9 +419,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 5] -------- ABSystemRunOperation")
 
-	if s.UserLockRequested() {
-		err := errors.New("upgrade locked per user request")
-		PrintVerboseErr("ABSystemRunOperation", 5, err)
+	if UserStopRequested() {
+		err = ErrUserStopped
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
 		return err
 	}
 
@@ -467,12 +461,18 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		return err
 	}
 
+	if UserStopRequested() {
+		err = ErrUserStopped
+		PrintVerboseErr("ABSystemRunOperation", 2, err)
+		return err
+	}
+
 	// from this point on, it is not possible to stop the upgrade
-	// so we remove the stage file. Note that interrupting the upgrade
+	// so we create the finalizing file. Note that interrupting the upgrade
 	// from this point on will not leave the system in an inconsistent
 	// state, but it could leave the future partition in a dirty state
 	// preventing it from booting.
-	err = s.RemoveStageFile()
+	err = s.createFinalizingFile()
 	if err != nil {
 		PrintVerboseErr("ABSystemRunOperation", 5.3, err)
 		return err
@@ -645,9 +645,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 8] -------- ABSystemRunOperation")
 
-	uuid := uuid.New().String()
-	tmpBootMount := filepath.Join("/tmp", uuid)
-	err = os.Mkdir(tmpBootMount, 0o755)
+	tmpBootMount := "/run/abroot/tmp-boot-mount-1/"
+	err = os.MkdirAll(tmpBootMount, 0o755)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 9, err)
 		return err
@@ -752,6 +751,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		}
 	}
 
+	err = s.createFinishedFile()
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 11.4, err)
+		return fmt.Errorf("could not write finished file: %w", err)
+	}
+
 	PrintVerboseInfo("ABSystem.RunOperation", "upgrade completed")
 	return nil
 }
@@ -763,12 +768,19 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 	cq := goodies.NewCleanupQueue()
 	defer cq.Run()
 
+	if s.finishedFileExists() {
+		if checkOnly {
+			return ROLLBACK_RES_NO, nil
+		}
+		return ROLLBACK_FAILED, errors.New("an operation finished successfully, can't roll back until reboot")
+	}
+
 	// we won't allow upgrades while rolling back
 	if !checkOnly {
-		err = s.LockUpgrade()
+		err = s.LockOperation()
 		if err != nil {
 			PrintVerboseErr("ABSystem.Rollback", 0, err)
-			return ROLLBACK_FAILED, err
+			return ROLLBACK_FAILED, fmt.Errorf("can't lock operation: %w", err)
 		}
 	}
 
@@ -778,9 +790,8 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 		return ROLLBACK_FAILED, err
 	}
 
-	uuid := uuid.New().String()
-	tmpBootMount := filepath.Join("/tmp", uuid)
-	err = os.Mkdir(tmpBootMount, 0o755)
+	tmpBootMount := "/run/abroot/tmp-boot-mount-2/"
+	err = os.MkdirAll(tmpBootMount, 0o755)
 	if err != nil {
 		PrintVerboseErr("ABSystem.Rollback", 2, err)
 		return ROLLBACK_FAILED, err
@@ -861,7 +872,7 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 	}
 
 	// allow upgrades after rolling back
-	err = s.UnlockUpgrade()
+	err = s.UnlockOperation()
 	if err != nil {
 		PrintVerboseErr("ABSystem.Rollback", 9, err)
 		PrintVerboseInfo("ABSystem.Rollback", "rollback completed with unlock failure")
@@ -871,115 +882,136 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 	return ROLLBACK_SUCCESS, nil
 }
 
-// UserLockRequested checks if the user lock file exists and returns a boolean
-// note that if the user lock file exists, it means that the user explicitly
-// requested the upgrade to be locked (using an update manager for example)
-func (s *ABSystem) UserLockRequested() bool {
-	if _, err := os.Stat(userLockFile); os.IsNotExist(err) {
-		return false
-	}
-
-	PrintVerboseInfo("ABSystem.UserLockRequested", "lock file exists")
-	return true
-}
-
-// UpgradeLockExists checks if the lock file exists and returns a boolean
-func (s *ABSystem) UpgradeLockExists() bool {
-	if _, err := os.Stat(lockFile); os.IsNotExist(err) {
-		return false
-	}
-
-	PrintVerboseInfo("ABSystem.UpgradeLockExists", "lock file exists")
-	return true
-}
-
-// LockUpgrade creates a lock file, preventing upgrades from proceeding
-func (s *ABSystem) LockUpgrade() error {
-	_, err := os.Create(lockFile)
-	if err != nil {
-		PrintVerboseErr("ABSystem.LockUpgrade", 0, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.LockUpgrade", "lock file created")
-	return nil
-}
-
-// UnlockUpgrade removes the lock file, allowing upgrades to proceed
-func (s *ABSystem) UnlockUpgrade() error {
-	err := os.Remove(lockFile)
-	if err != nil {
-		PrintVerboseErr("ABSystem.UnlockUpgrade", 0, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.UnlockUpgrade", "lock file removed")
-	return nil
-}
-
-// CreateStageFile creates the stage file, which is used to determine if
-// the upgrade can be interrupted or not. If the stage file is present, it
-// means that the upgrade is in a state where it is still possible to
-// interrupt it, otherwise it is not. This is useful for third-party
-// applications like update managers.
-func (s *ABSystem) CreateStageFile() error {
-	_, err := os.Create(stageFile)
-	if err != nil {
-		PrintVerboseErr("ABSystem.CreateStageFile", 0, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.CreateStageFile", "stage file created")
-	return nil
-}
-
-// RemoveStageFile removes the stage file disabling the ability to interrupt
-// the upgrade process
-func (s *ABSystem) RemoveStageFile() error {
-	err := os.Remove(stageFile)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RemoveStageFile", 0, err)
-		return err
-	}
-
-	PrintVerboseInfo("ABSystem.RemoveStageFile", "stage file removed")
-	return nil
-}
-
-// isAbrootRunning checks if an instance of the `abroot` command is running
-// other than the current process
-func isAbrootRunning() bool {
+// LockOperation creates a lock file, preventing upgrades from proceeding
+//
+// Returns ErrOperationLocked if the operation is already locked by a running abroot instance
+func (s *ABSystem) LockOperation() error {
 	pid := os.Getpid()
-	procs, err := os.ReadDir("/proc")
+	pidData := []byte(strconv.Itoa(pid))
+
+	err := os.MkdirAll(filepath.Dir(operationLockFile), 0o755)
 	if err != nil {
-		return false
+		PrintVerboseWarn("ABSystem.LockOperation", 1, err)
 	}
 
-	for _, file := range procs {
-		if file.IsDir() {
-			if _, err := strconv.Atoi(file.Name()); err == nil {
-				cmdline, err := os.ReadFile("/proc/" + file.Name() + "/cmdline")
-				exe, exeErr := os.Readlink("/proc/" + file.Name() + "/exe")
-				if (err == nil && strings.Contains(string(cmdline), "abroot")) || (exeErr == nil && strings.Contains(exe, "abroot")) {
-					procPid, _ := strconv.Atoi(file.Name())
-					if procPid != pid {
-						return true
-					}
-				}
-			}
+	if _, err = os.Stat(operationLockFile); err == nil {
+		if s.isLockfilePidActive() {
+			return ErrOperationLocked
 		}
 	}
-	return false
+
+	err = os.WriteFile(operationLockFile, pidData, 0o644)
+	if err != nil {
+		os.Remove(operationLockFile)
+		return fmt.Errorf("can't write lockfile: %w", err)
+	}
+
+	PrintVerboseInfo("ABSystem.LockOperation", "lock file created")
+	return nil
 }
 
-// removeUpgradeLock removes the lock file, allowing upgrades to proceed
-func removeUpgradeLock() error {
-	err := os.Remove(lockFile)
+// UnlockOperation removes the lock file, allowing upgrades to proceed
+func (s *ABSystem) UnlockOperation() error {
+	err := os.Remove(operationLockFile)
 	if err != nil {
-		PrintVerboseErr("removeUpgradeLock", 0, err)
+		PrintVerboseErr("ABSystem.UnlockOperation", 0, err)
 		return err
 	}
 
-	PrintVerboseInfo("removeUpgradeLock", "upgrade lock removed")
+	PrintVerboseInfo("ABSystem.UnlockOperation", "lock file removed")
+	return nil
+}
+
+func (s *ABSystem) finishedFileExists() bool {
+	_, err := os.Stat(finishedOperationFile)
+	return !errors.Is(err, os.ErrNotExist)
+}
+
+func (s *ABSystem) createFinishedFile() error {
+	os.MkdirAll(filepath.Dir(finishedOperationFile), 0o755)
+
+	_, err := os.Create(finishedOperationFile)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *ABSystem) isLockfilePidActive() bool {
+	runningPid, err := os.ReadFile(operationLockFile)
+
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	if err != nil {
+		PrintVerboseErr("ABSystem.RemoveStageFile", 0, err)
+		return true
+	}
+
+	if string(runningPid) == "" {
+		PrintVerboseWarn("ABSystem.isLockfilePidActive", 1, "lock file does not contain PID")
+		return true
+	}
+
+	if _, err := os.Stat(filepath.Join("/proc", string(runningPid))); errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	return true
+}
+
+func (s *ABSystem) createFinalizingFile() error {
+	os.MkdirAll(filepath.Dir(finalizingFile), 0o755)
+
+	_, err := os.Create(finalizingFile)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *ABSystem) removeFinalizingFile() error {
+	err := os.Remove(finalizingFile)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+	return nil
+}
+
+// UserStopRequested checks if the user lock file exists and returns a boolean
+// note that if the user lock file exists, it means that the user explicitly
+// requested the upgrade to be locked (using an update manager for example)
+func UserStopRequested() bool {
+	if _, err := os.Stat(userStopFile); os.IsNotExist(err) {
+		return false
+	}
+
+	PrintVerboseInfo("ABSystem.UserStopRequested", "lock file exists")
+	return true
+}
+
+// MakeStopRequest requests all other abroot operations to stop
+//
+// It also prevents any new operations from running.
+func MakeStopRequest() error {
+	os.MkdirAll(filepath.Dir(userStopFile), 0o755)
+	err := os.WriteFile(userStopFile, []byte{}, 0o644)
+	if err != nil {
+		return fmt.Errorf("could not write stop file: %w", err)
+	}
+	return nil
+}
+
+// CancelStopRequest removes the stop request
+func CancelStopRequest() error {
+	if !UserStopRequested() {
+		return nil
+	}
+
+	err := os.Remove(userStopFile)
+	if err != nil {
+		return fmt.Errorf("could remove stop file: %w", err)
+	}
 	return nil
 }
