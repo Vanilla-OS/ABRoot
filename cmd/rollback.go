@@ -27,7 +27,13 @@ func NewRollbackCommand() *cmdr.Command {
 		"rollback",
 		abroot.Trans("rollback.long"),
 		abroot.Trans("rollback.short"),
-		rollback,
+		func(cmd *cobra.Command, args []string) error {
+			err := rollback(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.WithBoolFlag(

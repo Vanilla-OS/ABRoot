@@ -31,7 +31,13 @@ func NewUpgradeCommand() *cmdr.Command {
 		"upgrade",
 		abroot.Trans("upgrade.long"),
 		abroot.Trans("upgrade.short"),
-		upgrade,
+		func(cmd *cobra.Command, args []string) error {
+			err := upgrade(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.WithBoolFlag(

@@ -36,7 +36,13 @@ func NewStatusCommand() *cmdr.Command {
 		"status",
 		abroot.Trans("status.long"),
 		abroot.Trans("status.short"),
-		status,
+		func(cmd *cobra.Command, args []string) error {
+			err := status(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.WithBoolFlag(

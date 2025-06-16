@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -25,7 +27,13 @@ func NewConfCommand() *cmdr.Command {
 		"config-editor",
 		abroot.Trans("cnf.long"),
 		abroot.Trans("cnf.short"),
-		cnf,
+		func(cmd *cobra.Command, args []string) error {
+			err := cnf(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	return cmd

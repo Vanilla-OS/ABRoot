@@ -14,6 +14,8 @@ package cmd
 */
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -25,7 +27,13 @@ func NewUpdateInitfsCommand() *cmdr.Command {
 		"update-initramfs",
 		abroot.Trans("updateInitramfs.long"),
 		abroot.Trans("updateInitramfs.short"),
-		updateInitramfs,
+		func(cmd *cobra.Command, args []string) error {
+			err := updateInitramfs(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.WithBoolFlag(

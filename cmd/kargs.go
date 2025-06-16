@@ -15,6 +15,7 @@ package cmd
 
 import (
 	"errors"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -29,7 +30,13 @@ func NewKargsCommand() *cmdr.Command {
 		"kargs edit|show",
 		abroot.Trans("kargs.long"),
 		abroot.Trans("kargs.short"),
-		kargs,
+		func(cmd *cobra.Command, args []string) error {
+			err := kargs(cmd, args)
+			if err != nil {
+				os.Exit(1)
+			}
+			return nil
+		},
 	)
 
 	cmd.Args = cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs)
