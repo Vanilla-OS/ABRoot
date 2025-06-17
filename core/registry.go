@@ -14,6 +14,7 @@ package core
 */
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -36,6 +37,8 @@ type Manifest struct {
 	Digest   string
 	Layers   []string
 }
+
+var ErrImageNotFound error = errors.New("configured image cannot be found")
 
 // NewRegistry returns a new Registry instance, exposing functions to
 // interact with the configured Docker registry
@@ -119,7 +122,7 @@ func GetToken() (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusForbidden {
-		return "", fmt.Errorf("configured image cannot be found")
+		return "", ErrImageNotFound
 	}
 
 	if resp.StatusCode != http.StatusOK {
