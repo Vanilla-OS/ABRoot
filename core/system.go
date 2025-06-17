@@ -296,6 +296,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		return err
 	}
 
+	// Stage 3.1: Delete old images
+	switch operation {
+	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
+	default:
+		err = DeleteAllButLatestImage()
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 3.05, err)
+			return err
+		}
+	}
+
 	futurePartition, err := s.RootM.GetFuture()
 	if err != nil {
 		PrintVerboseErr("ABSystemRunOperation", 3.1, err)
@@ -344,17 +355,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		imageName = settings.GetFullImageName()
 		imageName += "@" + imageDigest
 		labels["ABRoot.BaseImageDigest"] = imageDigest
-	}
-
-	// Stage 3.1: Delete old image
-	switch operation {
-	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
-	default:
-		err = DeleteImageForRoot(futurePartition.Label)
-		if err != nil {
-			PrintVerboseErr("ABSystemRunOperation", 3.5, err)
-			return err
-		}
 	}
 
 	imageRecipe := NewImageRecipe(
@@ -413,6 +413,17 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 4.2, err)
 		return err
+	}
+
+	// Stage 4.1: Delete old images
+	switch operation {
+	case DRY_RUN_UPGRADE, DRY_RUN_APPLY, DRY_RUN_INITRAMFS:
+	default:
+		err = DeleteAllButLatestImage()
+		if err != nil {
+			PrintVerboseErr("ABSystemRunOperation", 3.05, err)
+			return err
+		}
 	}
 
 	// Stage 5: Write abimage.abr.new and config to future/

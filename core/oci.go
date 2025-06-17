@@ -25,7 +25,7 @@ import (
 
 	"github.com/containers/buildah"
 	"github.com/containers/image/v5/types"
-	cstypes "github.com/containers/storage/types"
+	"github.com/containers/storage"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/pterm/pterm"
 	"github.com/vanilla-os/abroot/settings"
@@ -320,28 +320,42 @@ func RetrieveImageForRoot(root string) (string, error) {
 	return image, nil
 }
 
-// DeleteImageForRoot deletes the image created for the provided root
-func DeleteImageForRoot(root string) error {
-	image, err := RetrieveImageForRoot(root)
-	if err != nil {
-		PrintVerboseErr("DeleteImageForRoot", 0, err)
-		return err
-	}
-
+// DeleteAllButLatestImage deletes all images
+func DeleteAllButLatestImage() error {
 	pt, err := prometheus.NewPrometheus(
 		"/var/lib/abroot/storage",
 		"overlay",
 		settings.Cnf.MaxParallelDownloads,
 	)
 	if err != nil {
-		PrintVerboseErr("DeleteImageForRoot", 1, err)
+		PrintVerboseErr("DeleteAllImagesButLatest", 1, err)
 		return err
 	}
 
-	_, err = pt.Store.DeleteImage(image, true)
-	if err != nil && err != cstypes.ErrNotAnImage {
-		PrintVerboseErr("DeleteImageForRoot", 2, err)
-		return err
+	allImages, err := pt.Store.Images()
+	if err != nil {
+		PrintVerboseErr("DeleteAllImagesButLatest", 2, err)
+		return fmt.Errorf("could not retrieve all images: %w", err)
+	}
+
+	if len(allImages) == 0 {
+		return nil
+	}
+
+	var latestImage *storage.Image
+	for _, image := range allImages {
+		if latestImage == nil || image.Created.After(latestImage.Created) {
+			latestImage = &image
+		}
+	}
+
+	for _, image := range allImages {
+		if image.ID != latestImage.ID {
+			_, err := pt.Store.DeleteImage(image.ID, true)
+			if err != nil {
+				PrintVerboseErr("DeleteAllImagesButLatest", 3, "failed to remove image: ", err)
+			}
+		}
 	}
 
 	return nil
