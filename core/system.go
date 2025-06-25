@@ -161,6 +161,11 @@ func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
 }
 
 func (s *ABSystem) Rebase(name string, dryRun bool) error {
+
+	if name == "" {
+		return fmt.Errorf("no image provided")
+	}
+
 	if strings.Contains(name, ".") {
 		registrySplit := strings.SplitN(name, "/", 2)
 		settings.Cnf.Registry = registrySplit[0]
@@ -168,10 +173,13 @@ func (s *ABSystem) Rebase(name string, dryRun bool) error {
 	}
 	nameTagSplit := strings.Split(name, ":")
 	name = nameTagSplit[0]
-	if len(nameTagSplit) > 1 {
-		settings.Cnf.Tag = nameTagSplit[1]
+	if len(nameTagSplit) < 1 {
+		fmt.Errorf("No tag provided")
 	}
-	settings.Cnf.Name = name
+	settings.Cnf.Tag = nameTagSplit[1]
+	if name != "" {
+		settings.Cnf.Name = name
+	}
 
 	_, _, err := s.CheckUpdate()
 	if errors.Is(err, ErrImageNotFound) {

@@ -51,7 +51,7 @@ func NewRebaseCommand() *cmdr.Command {
 		))
 
 	cmd.Args = cobra.ExactArgs(1)
-	cmd.Example = "abroot rebase vanilla-os/desktop:main"
+	cmd.Example = "abroot rebase ghcr.io/vanilla-os/desktop:main"
 
 	return cmd
 }
