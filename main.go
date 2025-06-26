@@ -83,6 +83,9 @@ func main() {
 	mntSys := cmd.NewMountSysCommand()
 	root.AddCommand(mntSys)
 
+	rebase := cmd.NewRebaseCommand()
+	root.AddCommand(rebase)
+
 	// run the app
 	err := abroot.Run()
 	if err != nil {

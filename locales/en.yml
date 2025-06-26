@@ -134,3 +134,18 @@ updateInitramfs:
   updateSuccess: "Updated initramfs of future root."
   updateFailed: "Failed to update initramfs of future root.\n"
   dryRunFlag: "perform a dry run of the operation"
+
+rebase:
+  long: "Change the OCI image the system is using"
+  short: "Rebase to new image"
+  removePackagesShort: "Remove all layered packages while rebasing to prevent issues caused by a change in repositories."
+  keepPackages: "Keep layered packages while rebasing the system"
+  rootRequired: "You must be root to run this command."
+  removePackagesLong: "The new image may use a different software repository, making some installed packages inaccessible. If this is the case, the next upgrade will fail.\nWould you like to remove your added packages to resolve this issue?"
+  pkgRemoveSuccess: "All added packages have been removed successfully"
+  dryRunFlag: "perform a dry run of the operation"
+  dryRunSuccess: "Dry run completed successfully"
+  success: "Rebase completed successfully. Your next update will use the new image." 
+  successUpdate: "Rebase completed successfully. The system will update in a moment." 
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and cannot be used together."
+  rebaseOnly: "Do not update the system after chaning the configured image"

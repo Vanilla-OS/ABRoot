@@ -163,6 +163,43 @@ func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
 	return nil
 }
 
+func (s *ABSystem) Rebase(name string, dryRun bool) error {
+
+	if name == "" {
+		return fmt.Errorf("no image provided")
+	}
+
+	if strings.Contains(name, ".") {
+		registrySplit := strings.SplitN(name, "/", 2)
+		settings.Cnf.Registry = registrySplit[0]
+		name = registrySplit[1]
+	}
+	nameTagSplit := strings.Split(name, ":")
+	name = nameTagSplit[0]
+	if len(nameTagSplit) < 1 {
+		fmt.Errorf("No tag provided")
+	}
+	settings.Cnf.Tag = nameTagSplit[1]
+	if name != "" {
+		settings.Cnf.Name = name
+	}
+
+	_, _, err := s.CheckUpdate()
+	if errors.Is(err, ErrImageNotFound) {
+		return fmt.Errorf("provided image cannot be found")
+	}
+
+	if !dryRun {
+		err := settings.WriteConfigToFile(settings.CnfPathAdmin)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+
+}
+
 // RunOperation executes a root-switching operation from the options below:
 //
 //	UPGRADE:
