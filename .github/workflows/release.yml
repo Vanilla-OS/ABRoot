@@ -23,28 +23,29 @@ jobs:
 
       - name: Install Build Dependencies
         run: |
+          dpkg --add-architecture arm64
           apt-get update
-          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config build-essential libdpkg-dev
+          apt-get install -y libbtrfs-dev libdevmapper-dev libgpgme-dev libdpkg-dev gcc patch pkgconf libdevmapper-dev:arm64 libdpkg-dev:arm64 gcc-aarch64-linux-gnu
 
       - name: Build
-        run: go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.ref_name }}'"
-
-      - name: Compress Package
-        run: tar -czvf abrootv2.tar.gz abrootv2
-
-      - name: Compress Manpage
-        run: tar -czvf abroot-man.tar.gz man/man1/abroot.1
+        run: |
+          go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.ref_name }}'"
+          tar -czvf abrootv2-amd64.tar.gz abrootv2
+          apt-get install -y libgpgme-dev:arm64
+          GOARCH=arm64 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig go build -o abrootv2 -ldflags="-X 'main.Version=${{ github.ref_name }}'"
+          tar -czvf abrootv2-arm64.tar.gz abrootv2
+          tar -czvf abroot-man.tar.gz man/man1/abroot.1
 
       - name: Calculate and Save Checksums
         run: |
-          sha256sum abrootv2.tar.gz >> checksums.txt
+          sha256sum abrootv2*.tar.gz >> checksums.txt
           sha256sum abroot-man.tar.gz >> checksums.txt
 
       - uses: actions/upload-artifact@v6
         with:
           name: abroot
           path: |
-            abrootv2.tar.gz
+            abrootv2*.tar.gz
             abroot-man.tar.gz
             checksums.txt
 
