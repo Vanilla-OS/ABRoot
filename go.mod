@@ -1,6 +1,6 @@
 module github.com/vanilla-os/abroot
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/containers/buildah v1.38.1
@@ -18,7 +18,7 @@ require (
 	github.com/vanilla-os/orchid v0.6.0
 	github.com/vanilla-os/prometheus v1.0.2
 	github.com/vanilla-os/sdk v0.0.0-20240424182549-7fbf2ce02046
-	golang.org/x/sys v0.30.0
+	golang.org/x/sys v0.36.0
 )
 
 require (
