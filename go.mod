@@ -12,7 +12,7 @@ require (
 	github.com/linux-immutability-tools/EtcBuilder v1.3.0
 	github.com/pterm/pterm v0.12.79
 	github.com/shirou/gopsutil v3.21.11+incompatible
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.19.0
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
 	github.com/vanilla-os/orchid v0.6.0
@@ -50,7 +50,7 @@ require (
 	github.com/containers/luksy v0.0.0-20241007190014-e2530d691420 // indirect
 	github.com/containers/ocicrypt v1.2.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/cyberphone/json-canonicalization v0.0.0-20231217050601-ba74d44ecf5f // indirect
 	github.com/cyphar/filepath-securejoin v0.3.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -146,7 +146,7 @@ require (
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/stefanberger/go-pkcs11uri v0.0.0-20230803200340-78284954bff6 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/sylabs/sif/v2 v2.19.1 // indirect
