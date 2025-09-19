@@ -34,7 +34,7 @@ rollback:
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
   rollbackFailed: "Не удалось выполнить откат: %s\n"
   rollbackSuccess: Откат успешно выполнен.
-  rollbackUnnecessary: Откат не требуется, текущий корень уже является настоящим.
+  rollbackUnnecessary: Откат не требуется, текущий корневой раздел уже является актуальным.
   canRollback: Откат к предыдущему корню возможен.
   cannotRollback: Откат к предыдущему корню невозможен.
   checkOnlyFlag: проверять, возможен ли откат к предыдущему корню
@@ -73,7 +73,7 @@ status:
   dumpFlag: сохранить состояние ABRoot в архив
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
   unstagedFoundMsg: "\n\t\tЕсть %d неиндексированных пакетов. Используйте 'abroot
-    pkg apply' чтобы применить их."
+    pkg apply', чтобы применить их."
   specs:
     cpu: 'Процессор: %s'
     gpu: 'Графический процессор: %s'
@@ -102,12 +102,12 @@ upgrade:
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
   short: Выполнить обновление системы
   forceFlag: принудительное обновление, даже если система уже обновлена
-  noUpdateAvailable: Для Вашей системы нет доступных обновлений.
+  noUpdateAvailable: Для вашей системы нет доступных обновлений.
   checkOnlyFlag: проверить наличие обновлений, но не применять их
   removed: Удалено
   downgraded: Произведён откат
   packageUpdateAvailable: Обновлений пакетов доступно %d.
-  systemUpdateAvailable: Для Вашей системы доступно обновление.
+  systemUpdateAvailable: Для вашей системы доступно обновление.
   upgraded: Обновлено
   added: Добавлено
   checkingPackageUpdate: Проверка обновлений пакетов...
@@ -117,10 +117,10 @@ upgrade:
   success: Обновление успешно завершено.
 updateInitramfs:
   short: Обновить initramfs
-  updateFailed: "Не удалось обновить initramfs будущего корня.\n"
+  updateFailed: "Не удалось обновить initramfs будущего корневого раздела.\n"
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
-  updateSuccess: Обновлён initramfs будущего корня.
-  long: Обновить initramfs будущего корня.
+  updateSuccess: Обновлён initramfs будущего корневого раздела.
+  long: Обновить initramfs будущего корневого раздела.
   use: update-initramfs
   dryRunFlag: выполнить пробный запуск операции
 cnf:
