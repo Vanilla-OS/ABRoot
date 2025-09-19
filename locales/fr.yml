@@ -65,7 +65,7 @@ status:
     future: 'Future : %s%s'
     present: 'Présente : %s%s'
     title: 'Partitions ABRoot :'
-  kargs: 'Arguments du noyau : %s'
+  kargs: 'Arguments du noyau:'
   abimage:
     timestamp: 'Horaire de création : %s'
     title: 'ABImage :'
