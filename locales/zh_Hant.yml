@@ -84,6 +84,8 @@ pkg:
   failedGettingPkgManagerInstance: "無法取得軟體包管理器實例：%s\n"
   noChanges: 沒有變更需要套用。
   unknownCommand: 未知的命令 '%s'。執行 'abroot pkg --help' 查看用法示例。
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 upgrade:
   use: upgrade
   long: 檢查是否有新的系統映像並套用。
@@ -103,6 +105,10 @@ upgrade:
   dryRunFlag: 為操作執行事先嘗試（dry run）
   dryRunSuccess: 事先嘗試（dry run）成功完成。
   success: 升級成功完成。
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: 更新 initramfs
   updateFailed: "無法更新將來 Root 分割區的 initramfs。\n"
@@ -120,3 +126,23 @@ cnf:
   changed: 已變更組態。
   failed: "操作組態時發生錯誤：%s\n"
   rootRequired: 必須是 root 使用者才能執行此命令。
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

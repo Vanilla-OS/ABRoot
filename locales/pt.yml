@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Tens que ser root para executar este comando."
   notChanged: Não foram feitas alterações nos parâmetros do kernel.
   applyFailed: "Comando de aplicar falhou: %s\n"
-  unknownCommand: Comando desconhecido '%s'. Execute 'abroot kargs --help' para ver
-    exemplos de uso.
+  unknownCommand: Comando desconhecido '%s'. Execute 'abroot kargs --help' para 
+    ver exemplos de uso.
 rollback:
   use: "rollback"
   long: "Executa um rollback do sistema, descartando as alterações feitas no atual
@@ -35,7 +35,8 @@ rollback:
   rootRequired: "Tens que ser root para executar este comando."
   rollbackFailed: "Rollback falhou: %s\n"
   rollbackSuccess: Rollback concluído com sucesso.
-  rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a utilizada.
+  rollbackUnnecessary: O Rollback não é necessário, a raiz atual já é a 
+    utilizada.
   canRollback: É possível voltar à raiz anterior.
   cannotRollback: Não é possível reverter para a raiz anterior.
   checkOnlyFlag: verificar se um rollback para a raiz anterior é possível
@@ -58,6 +59,10 @@ upgrade:
   dryRunFlag: executar um teste da operação
   dryRunSuccess: Teste concluído com sucesso.
   success: Atualização concluída com sucesso.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 pkg:
   removedMsg: "Pacote(s) %s removido(s).\n"
   listMsg: "Pacotes adicionados:\n%s\nPacotes removidos:\n%s\n"
@@ -65,26 +70,28 @@ pkg:
   long: Instalar e gerir pacotes.
   short: Gerir pacotes
   rootRequired: Tens que ser root para executar este comando.
-  noPackageNameProvided: Tens de fornecer pelo menos um nome de um pacote para esta
-    operação.
+  noPackageNameProvided: Tens de fornecer pelo menos um nome de um pacote para 
+    esta operação.
   addedMsg: "Pacote(s) %s adicionado(s).\n"
   applyFailed: "Comando de aplicar falhou: %s\n"
   dryRunFlag: executar um teste da operação
   agreementSignFailed: "Falha ao assinar o acordo: %s\n"
-  agreementDeclined: Recusou o acordo. O recurso permanecerá desativado até que concorde
-    com ele.
+  agreementDeclined: Recusou o acordo. O recurso permanecerá desativado até que 
+    concorde com ele.
   agreementMsg: "Para utilizar o comando abroot pkg do ABRoot, é necessário um acordo
     explícito do utilizador. Esse comando facilita as instalações do pacote, mas introduz
     elementos não determinísticos, afetando a confiabilidade do sistema. Ao consentir,
     reconhece e aceita essas implicações e confirma a sua consciência do impacto potencial
     do comando no comportamento do sistema. [y/N]: "
-  forceEnableUserAgreementFlag: forçar habilitação de contrato de utilizador, para
-    sistemas embarcados
+  forceEnableUserAgreementFlag: forçar habilitação de contrato de utilizador, 
+    para sistemas embarcados
   failedGettingPkgManagerInstance: "Falha ao obter a instância do gestor de pacotes:
     %s\n"
   noChanges: Sem mudanças para aplicar.
-  unknownCommand: Comando desconhecido '%s'. Execute 'abroot pkg --help' para ver
-    exemplos de uso.
+  unknownCommand: Comando desconhecido '%s'. Execute 'abroot pkg --help' para 
+    ver exemplos de uso.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
@@ -134,3 +141,23 @@ cnf:
   changed: Configuração alterada.
   failed: "Ocorreu um erro ao interagir com a configuração: %s\n"
   rootRequired: Deve ser root para executar este comando.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

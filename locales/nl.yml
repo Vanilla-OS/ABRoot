@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Deze opdracht moet als root worden uitgevoerd."
   notChanged: Er zĳn geen veranderingen gemaakt aan kernel-parameters.
   applyFailed: "Toepasopdracht mislukt: %s\n"
-  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot kargs --help’ uit voor gebruiks­voorbeelden.
+  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot kargs --help’ uit voor 
+    gebruiks­voorbeelden.
 rollback:
   use: "rollback"
   long: "Voert een systeem-rollback uit, waarbĳ wĳzigingen in de huidige root worden
@@ -47,10 +48,11 @@ pkg:
   removedMsg: "Pakket(ten) %s verwĳderd.\n"
   listMsg: "Toegevoegde pakketten:\n%s\nVerwĳderde pakketten:\n%s\n"
   use: pkg
-  noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze handeling.
+  noPackageNameProvided: U moet ten minste één pakketnaam opgeven voor deze 
+    handeling.
   dryRunFlag: uitvoering van handeling testen
-  agreementDeclined: U heeft de overeenkomst geweigerd. De functie blĳft uitgeschakeld
-    totdat u ermee akkoord gaat.
+  agreementDeclined: U heeft de overeenkomst geweigerd. De functie blĳft 
+    uitgeschakeld totdat u ermee akkoord gaat.
   agreementMsg: "Om de pkg-opdracht van ABRoot te gebruiken is expliciete toestemming
     van de gebruiker vereist. Deze opdracht vergemakkelĳkt het installeren van pakketten,
     maar introduceert niet-deterministische elementen, die de betrouwbaarheid van
@@ -58,11 +60,15 @@ pkg:
     implicaties en bevestigt u dat u zich bewust bent van de mogelĳke impact van de
     opdracht op het systeem­gedrag. [y/N]: "
   agreementSignFailed: "Overeenkomst tekenen mislukt: %s\n"
-  forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten systemen
+  forceEnableUserAgreementFlag: gebruikersovereenkomst forceren, voor ingesloten
+    systemen
   failedGettingPkgManagerInstance: "Instantie van pakketbeheerder ophalen mislukt:
     %s\n"
   noChanges: Geen wĳzigingen om toe te passen.
-  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot pkg --help’ uit voor gebruiks­voorbeelden.
+  unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot pkg --help’ uit voor 
+    gebruiks­voorbeelden.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Toont de huidige status van ABRoot.
@@ -114,6 +120,10 @@ upgrade:
   dryRunFlag: uitvoering van handeling testen
   dryRunSuccess: Testuitvoering succesvol voltooid.
   success: Upgrade succesvol afgerond.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Initramfs bĳwerken
   updateFailed: "Kon initramfs van toekomstige root niet bĳwerken.\n"
@@ -131,3 +141,23 @@ cnf:
   changed: Configuratie gewĳzigd.
   failed: "Er is een fout opgetreden tĳdens de interactie met de configuratie: %s\n"
   rootRequired: Deze opdracht moet als root worden uitgevoerd.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

@@ -25,7 +25,8 @@ kargs:
   rootRequired: "A parancs futtatásához root felhasználónak kell lennie."
   notChanged: A kernel paramétereiben nem történt módosítás.
   applyFailed: "Az alkalmazási parancs sikertelen: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage 
+    examples.
 rollback:
   use: "rollback"
   long: "Rendszer-visszaállítás végrehajtása, a jelenlegi gyökérben végrehajtott változtatások
@@ -34,7 +35,8 @@ rollback:
   rootRequired: "A parancs futtatásához root felhasználónak kell lennie."
   rollbackFailed: "Visszaállítás sikertelen: %s\n"
   rollbackSuccess: A visszaállítás sikeresen befejeződött.
-  rollbackUnnecessary: A visszaállítás nem szükséges, a jelenlegi root már a jelenlegi.
+  rollbackUnnecessary: A visszaállítás nem szükséges, a jelenlegi root már a 
+    jelenlegi.
   canRollback: Lehetőség van az előző root-ra való visszaállításra.
   cannotRollback: Az előző root-ra való visszaállítás nem lehetséges.
   checkOnlyFlag: ellenőrizze, hogy lehetséges-e a visszaállítás az előző root-ra
@@ -57,6 +59,10 @@ upgrade:
   dryRunFlag: végezze el a műveletet szárazon
   dryRunSuccess: A szárazon futtatás sikeresen befejeződött.
   success: A frissítés sikeresen befejeződött.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 pkg:
   removedMsg: "%s csomag(ok) eltávolítva.\n"
   listMsg: "Hozzáadott csomagok:\n %s\n Eltávolított csomagok:\n %s\n"
@@ -64,24 +70,28 @@ pkg:
   long: Csomagok telepítése és kezelése.
   short: Csomagok kezelése
   rootRequired: A parancs futtatásához root felhasználónak kell lennie.
-  noPackageNameProvided: Ehhez a művelethez legalább egy csomagnevet meg kell adni.
+  noPackageNameProvided: Ehhez a művelethez legalább egy csomagnevet meg kell 
+    adni.
   addedMsg: "%s csomag(ok) hozzáadva.\n"
   applyFailed: "Az alkalmazási parancs sikertelen: %s\n"
   dryRunFlag: a műveletet próbafuttatása
-  agreementDeclined: Ön elutasította az engedélyt. A funkció mindaddig letiltva marad,
-    amíg el nem fogadja.
+  agreementDeclined: Ön elutasította az engedélyt. A funkció mindaddig letiltva 
+    marad, amíg el nem fogadja.
   agreementMsg: "Az ABRoot, abroot pkg parancsának használatához kifejezett felhasználói
     hozzájárulás szükséges. Ez a parancs megkönnyíti a csomagok telepítését, de nemdeterminisztikus
     elemeket vezet be, ami befolyásolja a rendszer megbízhatóságát. A hozzájárulással
     Ön tudomásul veszi és elfogadja ezeket a következményeket, megerősítve, hogy tudatában
     van a parancsnak a rendszer viselkedésére gyakorolt lehetséges hatásaival. [y/N]: "
   agreementSignFailed: "Nem sikerült aláírni a megállapodást: %s\n"
-  forceEnableUserAgreementFlag: felhasználói engedély, kényszerített engedélyezése
-    a beágyazott rendszerek számára
+  forceEnableUserAgreementFlag: felhasználói engedély, kényszerített 
+    engedélyezése a beágyazott rendszerek számára
   failedGettingPkgManagerInstance: "Nem sikerült letölteni a csomagkezelő példányt:
     %s\n"
   noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage 
+    examples.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: 'status'
   long: Az aktuális ABRoot állapot megjelenítése.
@@ -131,3 +141,23 @@ cnf:
   failed: "Hiba történt a következő konfigurációval való interakció közben: %s\n"
   rootRequired: A parancs futtatásához root felhasználónak kell lennie.
   unchanged: Nem történt módosítás a konfigurációban.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"
