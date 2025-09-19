@@ -81,6 +81,8 @@ pkg:
   agreementDeclined: "Dhiúltaigh tú don chomhaontú. Fanfaidh an ghné díchumasaithe
     go dtí go n-aontaíonn tú leis."
 
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: "status"
   long: "Taispeáin an stádas ABroot reatha."
@@ -134,6 +136,10 @@ upgrade:
   downgraded: "Íosghrádaithe"
   removed: "Bainte"
 
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   use: "update-initramfs"
   long: "Nuashonraigh initramfs an fhréamh todhchaí."
@@ -142,3 +148,23 @@ updateInitramfs:
   updateSuccess: "Initramfs nuashonraithe de fhréamh na todhchaí."
   updateFailed: "Theip ar initramfs an fhréamh amach anseo a nuashonrú.\n"
   dryRunFlag: "rith tirim na hoibríochta a dhéanamh"
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"
