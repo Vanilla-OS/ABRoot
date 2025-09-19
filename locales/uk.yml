@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Щоб запустити цю команду, ви повинні мати права користувача root."
   notChanged: До параметрів ядра не було внесено жодних змін.
   applyFailed: "Не вдалося застосувати команду: %s\n"
-  unknownCommand: Невідома команда «%s». Запустіть команду «abroot kargs --help» для
-    прикладів використання.
+  unknownCommand: Невідома команда «%s». Запустіть команду «abroot kargs --help»
+    для прикладів використання.
 rollback:
   use: "rollback"
   long: "Виконує відкат системи, відкидаючи зміни, внесені до поточного кореневого
@@ -45,27 +45,30 @@ pkg:
   use: pkg
   long: Встановлення та керування пакунками.
   short: Керування пакунками
-  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
-  noPackageNameProvided: Ви повинні вказати принаймні одну назву пакунка для цієї
-    операції.
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача 
+    root.
+  noPackageNameProvided: Ви повинні вказати принаймні одну назву пакунка для 
+    цієї операції.
   listMsg: "Додано пакунків:\n%s\nВидалено пакунків:\n%s\n"
   addedMsg: "Додано пакунків: %s.\n"
   dryRunFlag: провести пробний запуск операції
-  agreementDeclined: Ви відхилили угоду. Функція залишиться вимкненою, доки ви не
-    надасте згоду.
+  agreementDeclined: Ви відхилили угоду. Функція залишиться вимкненою, доки ви 
+    не надасте згоду.
   agreementMsg: "Щоб використовувати команду abroot pkg, необхідна явна угода користувача.
     Ця команда полегшує встановлення пакунків, але вводить недетерміновані елементи,
     що впливають на надійність системи. Погоджуючись, ви визнаєте і приймаєте ці наслідки,
     підтверджуючи своє розуміння про потенційний вплив команди на поведінку системи.
     [y/N]: "
   agreementSignFailed: "Не вдалося підписати угоду: %s\n"
-  forceEnableUserAgreementFlag: примусово ввімкнути угоду користувача для вбудованих
-    систем
+  forceEnableUserAgreementFlag: примусово ввімкнути угоду користувача для 
+    вбудованих систем
   failedGettingPkgManagerInstance: "Не вдалося отримати екземпляр менеджера пакунків:
     %s\n"
   noChanges: Немає змін для застосування.
-  unknownCommand: Невідома команда «%s». Запустіть команду «abroot pkg --help» для
-    прикладів використання.
+  unknownCommand: Невідома команда «%s». Запустіть команду «abroot pkg --help» 
+    для прикладів використання.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Показати поточний стан ABRoot.
@@ -74,7 +77,8 @@ status:
   unstagedFoundMsg: "\n\t\tЄ %d пакунків, які ще не застосовані. Щоб застосувати їх,
     будь ласка, виконайте 'abroot pkg apply'."
   jsonFlag: показати результат у форматі JSON
-  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача 
+    root.
   dumpMsg: "Стан ABRoot збережено у %s\n"
   specs:
     cpu: 'Процесор: %s'
@@ -103,7 +107,8 @@ upgrade:
   short: Оновити систему
   long: Перевірте наявність нового образу системи та застосуйте його.
   forceFlag: примусове оновлення, навіть якщо система на останній версії
-  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача root.
+  rootRequired: Щоб запустити цю команду, ви повинні мати права користувача 
+    root.
   noUpdateAvailable: Немає доступних оновлень.
   checkOnlyFlag: перевіряти оновлення, але не застосовувати їх
   removed: Видалено
@@ -117,6 +122,10 @@ upgrade:
   dryRunFlag: провести пробний запуск операції
   dryRunSuccess: Пробний запуск успішно завершено.
   success: Оновлення виконано успішно.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Оновити initramfs
   updateFailed: "Не вдалось оновити initramfs майбутнього кореня.\n"
@@ -134,3 +143,23 @@ cnf:
   changed: Конфігурацію змінено.
   failed: "Під час взаємодії з конфігурацією виникла помилка: %s\n"
   rootRequired: Щоб запустити цю команду, ви повинні мати root права.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

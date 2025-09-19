@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
   applyFailed: "Не удалось применить команду: %s\n"
   notChanged: Никаких изменений в параметры ядра не вносилось.
-  unknownCommand: Неизвестная команда '%s'. Выполните команду 'abroot kargs --help'
-    для получения примеров использования.
+  unknownCommand: Неизвестная команда '%s'. Выполните команду 'abroot kargs 
+    --help' для получения примеров использования.
 rollback:
   use: "rollback"
   long: "Выполнить откат, отменив все изменения в текущем корневом разделе."
@@ -34,7 +34,8 @@ rollback:
   rootRequired: "Для выполнения этой команды вы должны быть пользователем root."
   rollbackFailed: "Не удалось выполнить откат: %s\n"
   rollbackSuccess: Откат успешно выполнен.
-  rollbackUnnecessary: Откат не требуется, текущий корневой раздел уже является актуальным.
+  rollbackUnnecessary: Откат не требуется, текущий корневой раздел уже является 
+    актуальным.
   canRollback: Откат к предыдущему корню возможен.
   cannotRollback: Откат к предыдущему корню невозможен.
   checkOnlyFlag: проверять, возможен ли откат к предыдущему корню
@@ -42,28 +43,31 @@ pkg:
   long: Установка и управление пакетами.
   short: Управление пакетами
   rootRequired: Для выполнения этой команды вы должны быть пользователем root.
-  noPackageNameProvided: Для этой операции необходимо указать хотя бы одно имя пакета.
+  noPackageNameProvided: Для этой операции необходимо указать хотя бы одно имя 
+    пакета.
   use: pkg
   addedMsg: "Добавлено пакетов: %s.\n"
   applyFailed: "Не удалось применить команду: %s\n"
   removedMsg: "Пакетов удалено: %s.\n"
   listMsg: "Пакетов добавлено:\n%s\nИ удалено:\n%s\n"
   dryRunFlag: выполнить пробный запуск операции
-  agreementDeclined: Вы отказались от соглашения. Функция будет отключена до тех пор,
-    пока вы не согласитесь на неё.
+  agreementDeclined: Вы отказались от соглашения. Функция будет отключена до тех
+    пор, пока вы не согласитесь на неё.
   agreementMsg: "Для использования команды ABRoot «abroot pkg» требуется явное согласие
     пользователя. Эта команда облегчает установку пакетов, но вносит недетерминированные
     элементы, влияющие на надежность системы. Соглашаясь, вы признаете и принимаете
     эти последствия, подтверждая свою осведомленность о потенциальном влиянии команды
     на поведение системы. [y/N]: "
   agreementSignFailed: "Не удалось подписать соглашение: %s\n"
-  forceEnableUserAgreementFlag: принудительное включение пользовательского соглашения,
-    для встраиваемых систем
+  forceEnableUserAgreementFlag: принудительное включение пользовательского 
+    соглашения, для встраиваемых систем
   failedGettingPkgManagerInstance: "Не удалось получить экземпляр менеджера пакетов:
     %s\n"
   noChanges: Нет изменений для применения.
-  unknownCommand: Неизвестная команда '%s'. Выполните команду 'abroot pkg --help'
-    для получения примеров использования.
+  unknownCommand: Неизвестная команда '%s'. Выполните команду 'abroot pkg 
+    --help' для получения примеров использования.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
@@ -115,6 +119,10 @@ upgrade:
   dryRunFlag: выполнить пробный запуск операции
   dryRunSuccess: Пробный запуск успешно завершен.
   success: Обновление успешно завершено.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Обновить initramfs
   updateFailed: "Не удалось обновить initramfs будущего корневого раздела.\n"
@@ -132,3 +140,23 @@ cnf:
   changed: Конфигурация изменена.
   failed: "При взаимодействии с конфигурацией произошла ошибка: %s\n"
   rootRequired: Вы должны быть пользователем root для выполнения этой команды.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Bu komutu çalıştırmak için kök olmanız gerekir."
   notChanged: Çekirdek parametrelerinde herhangi bir değişiklik yapılmadı.
   applyFailed: "Komut uygulanamadı: %s\n"
-  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot kargs --help'
-    çalıştırın.
+  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot kargs 
+    --help' çalıştırın.
 rollback:
   use: "rollback"
   long: "Şu anki kökte yapılan değişiklikleri iptal ederek, sistemi geri alır."
@@ -49,19 +49,22 @@ pkg:
   applyFailed: "Komut uygulanamadı: %s\n"
   removedMsg: "Paketler %s kaldırıldı.\n"
   dryRunFlag: işlemin provasını gerçekleştir
-  agreementDeclined: Anlaşmayı reddettiniz. Kabul edene dek özellik devre dışı kalacak.
+  agreementDeclined: Anlaşmayı reddettiniz. Kabul edene dek özellik devre dışı 
+    kalacak.
   agreementMsg: "ABRoot'un abroot pkg komutundan yararlanmak için kullanıcının açık
     anlaşması gereklidir. Bu komut, paket kurulumlarını kolaylaştırır ancak sistem
     güvenirliğini etkileyen gerekirci olmayan ögeler açığa çıkarır. Uygun bularak,
     komutun sistem davranışında olası etkilerini bildiğinizi onaylayarak bu etkileri
     kabul edersiniz. [y/N]: "
   agreementSignFailed: "Anlaşma imzalanamadı: %s\n"
-  forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, gömülü
-    sistemler için
+  forceEnableUserAgreementFlag: kullanıcı anlaşmasını etkinleştirmeye zorla, 
+    gömülü sistemler için
   failedGettingPkgManagerInstance: "Paket yönetici örneği alınamadı: %s\n"
   noChanges: Uygulanacak değişiklik yok.
-  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot pkg --help'
-    çalıştırın.
+  unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot pkg 
+    --help' çalıştırın.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Şu anki ABRoot durumunu görüntüle.
@@ -113,6 +116,10 @@ upgrade:
   dryRunFlag: işlemin provasını gerçekleştir
   dryRunSuccess: Prova başarıyla tamamlandı.
   success: Yükseltme başarıyla tamamlandı.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: initramfs'i güncelle
   updateFailed: "Gelecek kökün initramfs'i güncellenemedi.\n"
@@ -130,3 +137,23 @@ cnf:
   changed: Yapılandırma değiştirildi.
   failed: "Yapılandırmayla etkileşime geçilirken hata oluştu: %s\n"
   rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

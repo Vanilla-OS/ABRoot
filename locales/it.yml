@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Per eseguire questo comando è necessario essere root."
   notChanged: Non sono stati effettuati cambiamenti ai parametri del kernel.
   applyFailed: "Applicazione del comando fallita: %s\n"
-  unknownCommand: Comando sconosciuto '%s'. Esegui 'abroot kargs --help' per esempi
-    di utilizzo.
+  unknownCommand: Comando sconosciuto '%s'. Esegui 'abroot kargs --help' per 
+    esempi di utilizzo.
 rollback:
   use: "rollback"
   long: "Esegue un rollback del sistema, scartando le modifiche apportate al root
@@ -35,16 +35,16 @@ rollback:
   rootRequired: "Per eseguire questo comando è necessario essere root."
   rollbackFailed: "Rollback failed: %s\n"
   rollbackSuccess: Rollback completato con successo.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the 
+    present one.
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
   checkOnlyFlag: check if rollback to previous root is possible
 pkg:
   short: Gestisci pacchetti
   rootRequired: Per eseguire questo comando è necessario essere root.
-  noPackageNameProvided: Per questa operazione è necessario provvedere un nome di
-    un pacchetto.
+  noPackageNameProvided: Per questa operazione è necessario provvedere un nome 
+    di un pacchetto.
   use: pkg
   long: Installa e gestisci pacchetti.
   addedMsg: "Aggiunto(i) %s pacchetto(i).\n"
@@ -53,17 +53,21 @@ pkg:
   listMsg: "Pacchetti aggiunti:\n%s\nPacchetti rimossi:\n%s\n"
   dryRunFlag: perform a dry run of the operation
   agreementSignFailed: "Failed to sign the agreement: %s\n"
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
+  agreementDeclined: You declined the agreement. The feature will stay disabled 
+    until you agree to it.
   agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
     required. This command facilitates package installations but introduces non-deterministic
     elements, impacting system trustworthiness. By consenting, you acknowledge and
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded 
+    systems
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage 
+    examples.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Mostra lo stato attuale di ABRoot.
@@ -100,8 +104,8 @@ upgrade:
   use: upgrade
   long: Verifica la nuova immagine di sistema ed applicala
   short: Aggiorna la partizione di boot
-  forceFlag: forza l'aggiornamento della partizione di boot senza chiedere per una
-    conferma
+  forceFlag: forza l'aggiornamento della partizione di boot senza chiedere per 
+    una conferma
   rootRequired: Per eseguire questo comando è necessario essere root.
   noUpdateAvailable: Non è disponibile nessun aggiornamento per il tuo sistema.
   checkOnlyFlag: controlla per aggiornamenti ma non applicarli
@@ -116,6 +120,10 @@ upgrade:
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
   success: Upgrade completed successfully.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"
@@ -134,3 +142,23 @@ cnf:
   long: Apri un editor per modificare la configurazione di ABRoot.
   failed: "Si è verificato un errore durante l'interazione con la configurazione::
     %s\n"
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

@@ -25,8 +25,8 @@ kargs:
   rootRequired: "Trebuie să fiți utilizatorul root pentru a executa această comandă."
   applyFailed: "A eșuat comanda de aplicare: %s\n"
   notChanged: Nu au fost făcute schimbări la parametrii kernel-ului.
-  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot kargs --help” pentru exemple
-    de utilizare.
+  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot kargs --help” pentru 
+    exemple de utilizare.
 rollback:
   use: "rollback"
   long: "Execută o revenire a sistemului, eliminând modificările făcute la rădăcina
@@ -36,7 +36,8 @@ rollback:
 
   rollbackFailed: "Revenirea a eșuat: %s\n"
   rollbackSuccess: Revenire efectuată cu succes.
-  rollbackUnnecessary: Revenirea nu este necesară, rădăcina curentă este cea prezentă.
+  rollbackUnnecessary: Revenirea nu este necesară, rădăcina curentă este cea 
+    prezentă.
   canRollback: Revenirea la rădăcina anterioară este posibilă.
   cannotRollback: Revenirea la rădăcina anterioară nu este posibilă.
   checkOnlyFlag: verifică dacă este posibilă revenirea la rădăcina anterioară
@@ -52,8 +53,8 @@ pkg:
   long: Instalați și gestionați pachete.
   short: Gestionați pachete
   dryRunFlag: efectuează un test al operației
-  agreementDeclined: Ai refuzat acordul. Această caracteristică va rămâne dezactivată
-    până când o să acceptați acordul.
+  agreementDeclined: Ai refuzat acordul. Această caracteristică va rămâne 
+    dezactivată până când o să acceptați acordul.
   agreementMsg: "Pentru a utiliza comanda abroot pkg a ABRoot, este necesar acordul
     explicit al utilizatorului. Aceasta comandă facilitează instalarea pachetelor
     însă introduce elemente non-deterministe, având impact asupra încrederii sistemului.
@@ -61,13 +62,15 @@ pkg:
     înțelegerea ta pentru potențialului impact al comenzii asupra comportamenului
     sistemului. [y/N]: "
   agreementSignFailed: "Semnarea acordului eșuată: %s\n"
-  forceEnableUserAgreementFlag: forțează activarea acordului utilizatorului, pentru
-    sisteme încorporate
+  forceEnableUserAgreementFlag: forțează activarea acordului utilizatorului, 
+    pentru sisteme încorporate
   failedGettingPkgManagerInstance: "Preluarea instanței managerului de pachete eșuată:
     %s\n"
   noChanges: Nu se aplică nicio modificare.
-  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot pkg --help” pentru exemple
-    de utilizare.
+  unknownCommand: Comandă necunoscută „%s”. Rulați „abroot pkg --help” pentru 
+    exemple de utilizare.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: status
   long: Afișați starea ABRoot curentă.
@@ -119,6 +122,10 @@ upgrade:
   dryRunFlag: efectuează un test al operației
   dryRunSuccess: Test efectuat cu succes.
   success: Upgrade efectuat cu succes.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Actualizează initramfs
   updateFailed: "Actualizare initramfs a viitorului root nereușită.\n"
@@ -136,3 +143,23 @@ cnf:
   changed: Configurație schimbată.
   failed: "A apărut o eroare în timpul interacțiunii cu configurația: %s\n"
   rootRequired: Trebuie să fii root pentru a rula această comandă.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

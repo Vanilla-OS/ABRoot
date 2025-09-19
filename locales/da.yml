@@ -26,7 +26,8 @@ kargs:
   notChanged: "No changes were made to kernel parameters."
   applyFailed: "Apply command failed: %s\n"
 
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage 
+    examples.
 cnf:
   use: "cnf"
   long: "Open an editor to edit the ABRoot configuration."
@@ -74,7 +75,10 @@ pkg:
     you agree to it."
 
   noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage 
+    examples.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: "status"
   long: "Display the current ABRoot status."
@@ -128,6 +132,10 @@ upgrade:
   downgraded: "Downgraded"
   removed: "Removed"
 
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   use: "update-initramfs"
   long: "Opdater initramfs'et af den fremtidige oot."
@@ -136,3 +144,23 @@ updateInitramfs:
   updateSuccess: "Updated initramfs of future root."
   updateFailed: "Failed to update initramfs of future root.\n"
   dryRunFlag: perform a dry run of the operation
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

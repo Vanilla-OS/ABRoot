@@ -25,7 +25,8 @@ kargs:
   rootRequired: "Вы павінны быць root, каб выканаць гэтую каманду."
   notChanged: Змены параметраў ядра не рабіліся.
   applyFailed: "Не атрымалася ўжыць каманду: %s\n"
-  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot kargs --help' for usage 
+    examples.
 rollback:
   use: "адкат"
   long: "Выконвае адкат сістэмы, адмяняючы змены, унесеныя ў цяперашні корань."
@@ -33,8 +34,8 @@ rollback:
   rootRequired: "Вы павінны быць root, каб выканаць гэтую каманду."
   rollbackFailed: "Rollback failed: %s\n"
   rollbackSuccess: Rollback completed successfully.
-  rollbackUnnecessary: Rollback is not necessary, current root is already the present
-    one.
+  rollbackUnnecessary: Rollback is not necessary, current root is already the 
+    present one.
   canRollback: It is possible to rollback to the previous root.
   cannotRollback: It is not possible to rollback to the previous root.
   checkOnlyFlag: check if rollback to previous root is possible
@@ -44,7 +45,8 @@ pkg:
   listMsg: "Дададзены пакеты:\n%s\nВыдаленыя пакеты:\n%s\n"
   short: Кіраванне пакетамі
   rootRequired: Вы павінны быць root, каб выканаць гэтую каманду.
-  noPackageNameProvided: Вы павінны ўказаць хаця б адно імя пакета для гэтай аперацыі.
+  noPackageNameProvided: Вы павінны ўказаць хаця б адно імя пакета для гэтай 
+    аперацыі.
   addedMsg: "Пакет(-ы) %s дададзены.\n"
   applyFailed: "Збой прымянення каманды: %s\n"
   removedMsg: "Пакет(ы) %s выдалены.\n"
@@ -55,12 +57,16 @@ pkg:
     accept these implications, confirming your awareness of the command's potential
     impact on system behavior. [y/N]: "
   agreementSignFailed: "Failed to sign the agreement: %s\n"
-  forceEnableUserAgreementFlag: force enable user agreement, for embedded systems
-  agreementDeclined: You declined the agreement. The feature will stay disabled until
-    you agree to it.
+  forceEnableUserAgreementFlag: force enable user agreement, for embedded 
+    systems
+  agreementDeclined: You declined the agreement. The feature will stay disabled 
+    until you agree to it.
   failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
   noChanges: No changes to apply.
-  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage examples.
+  unknownCommand: Unknown command '%s'. Run 'abroot pkg --help' for usage 
+    examples.
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   use: Статус
   long: Адлюстраванне бягучага стану ABRoot.
@@ -95,7 +101,8 @@ status:
   agreementStatus: 'Package agreement:'
 upgrade:
   use: upgrade
-  long: Update the boot partition for maintenance purposes (for advanced users only)
+  long: Update the boot partition for maintenance purposes (for advanced users 
+    only)
   short: Update the boot partition
   forceFlag: force update the boot partition without asking for confirmation
   rootRequired: You must be root to run this command.
@@ -112,6 +119,10 @@ upgrade:
   dryRunFlag: perform a dry run of the operation
   dryRunSuccess: Dry run completed successfully.
   success: Upgrade completed successfully.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Update the initramfs
   updateFailed: "Failed to update initramfs of future root.\n"
@@ -129,3 +140,23 @@ cnf:
   changed: Configuration changed.
   failed: "An error occurred while interacting with the configuration: %s\n"
   rootRequired: You must be root to run this command.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"

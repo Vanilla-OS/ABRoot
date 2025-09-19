@@ -35,15 +35,16 @@ rollback:
   rootRequired: "Debes tener acceso como superusuario para ejecutar este comando."
   rollbackFailed: "Error en la reversión: %s\n"
   rollbackSuccess: La reversión ha sido completada exitosamente.
-  rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la actual.
+  rollbackUnnecessary: La reversión no es necesaria, la raíz actual ya es la 
+    actual.
   canRollback: Es posible volver a la raíz anterior.
   cannotRollback: No es posible volver a la raíz anterior.
   checkOnlyFlag: comprobar si es posible volver al root anterior
 pkg:
   use: pkg
   rootRequired: Debes tener acceso como superusuario para ejecutar este comando.
-  noPackageNameProvided: Debes proporcionar al menos un nombre de un paquete para
-    esta operación.
+  noPackageNameProvided: Debes proporcionar al menos un nombre de un paquete 
+    para esta operación.
   long: Instalar y gestionar paquetes.
   short: Gestionar paquetes
   addedMsg: "%s Paquete(s) añadido(s).\n"
@@ -51,10 +52,10 @@ pkg:
   removedMsg: "%s Paquete(s) eliminado(s).\n"
   listMsg: "Paquetes añadidos:\n%s\nPaquetes eliminados:\n%s\n"
   dryRunFlag: simular la operación
-  forceEnableUserAgreementFlag: forzar habilitar acuerdo de usuario, para sistemas
-    integrados
-  agreementDeclined: Has rechazado el acuerdo. La función permanecerá desactivada
-    hasta que la aceptes.
+  forceEnableUserAgreementFlag: forzar habilitar acuerdo de usuario, para 
+    sistemas integrados
+  agreementDeclined: Has rechazado el acuerdo. La función permanecerá 
+    desactivada hasta que la aceptes.
   agreementSignFailed: "No se ha podido firmar el acuerdo: %s\n"
   agreementMsg: "Para utilizar el comando \"abroot pkg\" de ABRoot, se requiere el
     total consentimiento del usuario. Este comando facilita la instalación de paquetes,
@@ -67,6 +68,8 @@ pkg:
   noChanges: No se aplican cambios.
   unknownCommand: "'%s' comando desconocido. Ejecuta 'abroot pkg --help' para ver
     ejemplos de uso."
+  forceApply: force apply changes even if they've already been applied
+  applySuccess: Successfully applied packages.
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin aplicar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."
@@ -104,7 +107,8 @@ upgrade:
   long: Busca una nueva imagen del sistema y aplícala.
   short: Actualizar el Sistema
   forceFlag: forzar la actualización aunque el sistema esté actualizado
-  rootRequired: Debes ser tener acceso como superusuario para ejecutar este comando.
+  rootRequired: Debes ser tener acceso como superusuario para ejecutar este 
+    comando.
   noUpdateAvailable: No hay actualizaciones disponibles.
   checkOnlyFlag: buscar las actualizaciones pero no aplicarlas
   removed: Eliminado
@@ -118,6 +122,10 @@ upgrade:
   dryRunFlag: simular la operación
   dryRunSuccess: Simulación completada con éxito.
   success: Actualización completada con éxito.
+  cancel: Temporarily block or cancel any abroot operation.
+  deleteOld: Delete old image to free up space, will make future root 
+    temporarily unusable.
+  unblock: Remove temporary user block.
 updateInitramfs:
   short: Actualizar el initramfs
   updateFailed: "Error al actualizar el initramfs de la futura raíz.\n"
@@ -135,3 +143,23 @@ cnf:
   changed: Configuración modificada.
   failed: "Se ha producido un error al interactuar con la configuración: %s\n"
   rootRequired: Debes ser root para ejecutar este comando.
+rebase:
+  short: Rebase to new image
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rootRequired: You must be root to run this command.
+  rebaseOnly: Do not update the system after chaning the configured image
+  pkgRemoveSuccess: All added packages have been removed successfully
+  successUpdate: Rebase completed successfully. The system will update in a 
+    moment.
+  success: Rebase completed successfully. Your next update will use the new 
+    image.
+  dryRunSuccess: Dry run completed successfully
+  dryRunFlag: perform a dry run of the operation
+  long: Change the OCI image the system is using
+  keepPackages: Keep layered packages while rebasing the system
+  removePackagesShort: Remove all layered packages while rebasing to prevent 
+    issues caused by a change in repositories.
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"
