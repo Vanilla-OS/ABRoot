@@ -81,8 +81,9 @@ pkg:
   agreementDeclined: "Dhiúltaigh tú don chomhaontú. Fanfaidh an ghné díchumasaithe
     go dtí go n-aontaíonn tú leis."
 
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: athruithe a chur i bhfeidhm go fórsúil fiú má tá siad curtha i 
+    bhfeidhm cheana féin
+  applySuccess: Earráid agus logaí stáitse á n-aisghabháil.
 status:
   use: "status"
   long: "Taispeáin an stádas ABroot reatha."
@@ -136,10 +137,10 @@ upgrade:
   downgraded: "Íosghrádaithe"
   removed: "Bainte"
 
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Aon oibríocht fréimhe a bhlocáil nó a chealú go sealadach.
+  deleteOld: Scrios an seaníomhá chun spás a shaoradh, rud a fhágfaidh nach 
+    mbeidh tú in ann fréamhacha amach anseo a úsáid go sealadach.
+  unblock: Bain bloc úsáideora sealadach.
 updateInitramfs:
   use: "update-initramfs"
   long: "Nuashonraigh initramfs an fhréamh todhchaí."
@@ -149,22 +150,24 @@ updateInitramfs:
   updateFailed: "Theip ar initramfs an fhréamh amach anseo a nuashonrú.\n"
   dryRunFlag: "rith tirim na hoibríochta a dhéanamh"
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: Athbhunú chuig íomhá nua
+  flagError: "Is bratacha contrártha iad '--keep-packages' agus '--remove-packages'
+    agus ní féidir iad a úsáid le chéile."
+  rootRequired: Ní mór duit a bheith i do fhréamh úsáideora chun an t-ordú seo a
+    rith.
+  rebaseOnly: Ná nuashonraigh an córas tar éis an íomhá chumraithe a athrú
+  pkgRemoveSuccess: Baineadh na pacáistí uile a cuireadh leis go rathúil
+  successUpdate: Críochnaíodh an t-athbhunú go rathúil. Nuashonrófar an córas i 
+    gceann nóiméid.
+  success: Athbhunú críochnaithe go rathúil. Úsáidfidh do chéad nuashonrú eile 
+    an íomhá nua.
+  dryRunSuccess: Rith tirim críochnaithe go rathúil
+  dryRunFlag: déan tástáil thrialach den oibríocht
+  long: Athraigh an íomhá OCI atá á húsáid ag an gcóras
+  keepPackages: Coinnigh pacáistí srathacha agus an córas á athbhunú
+  removePackagesShort: Bain na pacáistí srathacha go léir agus athbhunú á 
+    dhéanamh chun fadhbanna de bharr athrú i stórtha a chosc.
+  removePackagesLong: "D’fhéadfadh an íomhá nua stór bogearraí difriúil a úsáid, rud
+    a fhágfaidh nach mbeidh rochtain ar roinnt pacáistí suiteáilte. Más amhlaidh atá,
+    teipfidh ar an gcéad uasghrádú eile.\nAr mhaith leat na pacáistí breise a bhaint
+    chun an fhadhb seo a réiteach?"
