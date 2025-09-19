@@ -67,8 +67,8 @@ pkg:
   noChanges: Geen wĳzigingen om toe te passen.
   unknownCommand: Onbekende opdracht ‘%s’. Voer ‘abroot pkg --help’ uit voor 
     gebruiks­voorbeelden.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: wĳzigingen geforceerd toepassen, zelfs als ze al zĳn toegepast
+  applySuccess: Pakketten zĳn succesvol toegepast.
 status:
   use: status
   long: Toont de huidige status van ABRoot.
