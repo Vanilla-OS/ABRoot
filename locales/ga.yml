@@ -82,7 +82,7 @@ pkg:
     go dtí go n-aontaíonn tú leis."
 
 status:
-  use: "stádas"
+  use: "status"
   long: "Taispeáin an stádas ABroot reatha."
   short: "Stádas taispeána"
   jsonFlag: "taispeáin an t-aschur i bhformáid JSON"
@@ -100,7 +100,7 @@ status:
     memory: "Cuimhne: %s"
   abimage:
     title: "ABImage:"
-    digest: "Achoimre: %s"
+    digest: "Achoimriú: %s"
     timestamp: "Stampa ama: %s"
     image: "Íomhá: %s"
   kargs: "Argóintí Eithne:"
@@ -115,14 +115,14 @@ status:
   dumpMsg: "Dumpáil stádas ABRoot go %s\n"
 
 upgrade:
-  use: "uasghrádú"
+  use: "upgrade"
   long: "Seiceáil le haghaidh íomhá córais nua agus cuir i bhfeidhm é."
   short: "Uasghrádaigh an córas"
   forceFlag: "nuashonrú bhfeidhm fiú má tá an córas cothrom le dáta"
   rootRequired: "Ní mór duit a bheith fréamhaithe chun an t-ordú seo a rith."
   checkingSystemUpdate: "Ag seiceáil le haghaidh nuashonruithe córais..."
   checkingPackageUpdate: "Ag seiceáil le haghaidh nuashonruithe pacáiste..."
-  systemUpdateAvailable: "Tá nuashonrú ann do do chóras."
+  systemUpdateAvailable: "Tá nuashonrú ann le haghaidh do chórais."
   packageUpdateAvailable: "Tá %d nuashonruithe pacáiste ann."
   noUpdateAvailable: "Níl nuashonrú ar fáil."
   checkOnlyFlag: "seiceáil le haghaidh nuashonruithe ach ná cuir i bhfeidhm iad"
