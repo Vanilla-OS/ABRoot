@@ -15,7 +15,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
-	github.com/vanilla-os/orchid v0.6.0
+	github.com/vanilla-os/orchid v0.6.1
 	github.com/vanilla-os/prometheus v1.0.2
 	github.com/vanilla-os/sdk v0.0.0-20240424182549-7fbf2ce02046
 	golang.org/x/sys v0.34.0
