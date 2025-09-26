@@ -99,8 +99,8 @@ pkg:
   noChanges: Inga ändringar att applicera.
   unknownCommand: Okänt kommando '%s'. Kör 'abroot pkg --help' för 
     användningsexempel.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: tvinga fram ändringar även om de redan har tillämpats
+  applySuccess: Framgångsrikt tillämpade paket.
 upgrade:
   use: upgrade
   long: Sök efter en ny systemavbildning och använd den.
@@ -120,10 +120,10 @@ upgrade:
   dryRunFlag: genomför en torrkörning av operationen
   dryRunSuccess: Torrkörningen slutfördes framgångsrikt.
   success: Uppgradering slutförts framgångsrikt.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Blockera eller avbryt tillfälligt alla abroot-åtgärder.
+  deleteOld: Ta bort gammal avbild för att frigöra utrymme, kommer att göra 
+    framtida root tillfälligt obrukbar.
+  unblock: Ta bort tillfällig användarblockering.
 updateInitramfs:
   short: Uppdatera initramfs
   updateFailed: "Misslyckades att uppdatera initramfs för framtida root.\n"
@@ -142,22 +142,22 @@ cnf:
   failed: "Ett fel uppstod under interaktion med konfigurationen: %s\n"
   rootRequired: Du måste vara root för att köra detta kommando.
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: Basera om till ny avbild
+  flagError: "'--keep-packages' och '--remove-packages' är motstridiga flaggor och
+    kan inte användas tillsammans."
+  rootRequired: Du måste vara root för att köra det här kommandot.
+  rebaseOnly: Uppdatera inte systemet efter att den konfigurerade avbilden har 
+    ändrats
+  pkgRemoveSuccess: Alla tillagda paket har tagits bort framgångsrikt
+  successUpdate: Ombasen har slutförts. Systemet uppdateras snart.
+  success: Ombasen har slutförts. Din nästa uppdatering kommer att använda den 
+    nya avbilden.
+  dryRunSuccess: Torrkörning slutfördes framgångsrikt
+  dryRunFlag: utför en torrkörning av åtgärden
+  long: Ändra OCI-avbild som systemet använder
+  keepPackages: Behåll lagerpaket medan du ombaserar systemet
+  removePackagesShort: Ta bort alla lagerpaket vid ombasering för att förhindra 
+    problem som orsakas av en ändring i arkiven.
+  removePackagesLong: "Den nya avbilden kan använda ett annat programvarulager, vilket
+    gör vissa installerade paket oåtkomliga. Om så är fallet kommer nästa uppgradering
+    att misslyckas.\nVill du ta bort dina tillagda paket för att lösa problemet?"
