@@ -3,7 +3,7 @@ module github.com/vanilla-os/abroot
 go 1.24
 
 require (
-	github.com/containers/buildah v1.41.4
+	github.com/containers/buildah v1.41.5
 	github.com/containers/image/v5 v5.36.2
 	github.com/containers/storage v1.59.1
 	github.com/dustin/go-humanize v1.0.1
