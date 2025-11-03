@@ -19,6 +19,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"runtime"
 
 	"github.com/vanilla-os/abroot/settings"
 )
@@ -33,7 +34,7 @@ type Registry struct {
 // it contains the manifest itself, the digest and the list of layers. This
 // should be compatible with most registries, but it's not guaranteed
 type Manifest struct {
-	Manifest []byte
+	Manifest map[string]interface{}
 	Digest   string
 	Layers   []string
 }
@@ -71,7 +72,7 @@ func (r *Registry) HasUpdate(digest string) (string, bool, error) {
 		return "", false, nil
 	}
 
-	PrintVerboseInfo("Registry.HasUpdate", "update available. Old digest", digest, "new digest", manifest.Digest)
+	PrintVerboseInfo("Registry.HasUpdate", "update available. Old digest: ", digest, ", new digest: ", manifest.Digest)
 	return manifest.Digest, true, nil
 }
 
@@ -113,7 +114,7 @@ func GetToken() (string, error) {
 		settings.Cnf.Name,
 		serviceUrl,
 	)
-	PrintVerboseInfo("Registry.GetToken", "call URI is", requestUrl)
+	PrintVerboseInfo("Registry.GetToken", "call URI is ", requestUrl)
 
 	resp, err := http.Get(requestUrl)
 	if err != nil {
@@ -147,18 +148,15 @@ func GetToken() (string, error) {
 	return token, nil
 }
 
-// GetManifest returns the manifest of the image, a token is required
-// to perform the request and is generated using GetToken()
-func (r *Registry) GetManifest(token string) (*Manifest, error) {
-	PrintVerboseInfo("Registry.GetManifest", "running...")
+// getManifestJSON makes an HTTP request to fetch a manifest JSON from the given API URL
+// a token is required to perform the request and is generated using GetToken()
+func (r *Registry) getManifestJSON(url string, token string) (map[string]interface{}, string, error) {
+	PrintVerboseInfo("Registry.GetManifestJSON", "call URI is ", url)
 
-	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
-	PrintVerboseInfo("Registry.GetManifest", "call URI is", manifestAPIUrl)
-
-	req, err := http.NewRequest("GET", manifestAPIUrl, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		PrintVerboseErr("Registry.GetManifest", 0, err)
-		return nil, err
+		PrintVerboseErr("Registry.GetManifestJSON", 0, err)
+		return nil, "", err
 	}
 
 	req.Header.Set("User-Agent", "abroot")
@@ -167,52 +165,100 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		PrintVerboseErr("Registry.GetManifest", 1, err)
-		return nil, err
+		PrintVerboseErr("Registry.GetManifestJSON", 1, err)
+		return nil, "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		PrintVerboseErr("Registry.GetManifest", 2, err)
-		return nil, err
+		PrintVerboseErr("Registry.GetManifestJSON", 2, err)
+		return nil, "", err
 	}
 
-	m := make(map[string]interface{})
-	err = json.Unmarshal(body, &m)
+	digest := resp.Header.Get("Docker-Content-Digest")
+
+	requestBody := make(map[string]interface{})
+	err = json.Unmarshal(body, &requestBody)
 	if err != nil {
-		PrintVerboseErr("Registry.GetManifest", 3, err)
+		PrintVerboseErr("Registry.GetManifestJSON", 3, err)
+		return nil, "", err
+	}
+
+	return requestBody, digest, nil
+}
+
+// GetManifest returns the manifest of the image, a token is required
+// to perform the request and is generated using GetToken()
+func (r *Registry) GetManifest(token string) (*Manifest, error) {
+	PrintVerboseInfo("Registry.GetManifest", "running...")
+
+	manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, settings.Cnf.Tag)
+
+	requestBody, digest, err := r.getManifestJSON(manifestAPIUrl, token)
+	if err != nil {
+		PrintVerboseErr("Registry.GetManifest", 0, fmt.Errorf("failed to fetch manifest"))
 		return nil, err
 	}
 
 	// If the manifest contains an errors property, it means that the
 	// request failed. Ref: https://github.com/Vanilla-OS/ABRoot/issues/285
-	if m["errors"] != nil {
-		errors := m["errors"].([]interface{})
+	if requestBody["errors"] != nil {
+		errors := requestBody["errors"].([]interface{})
 		for _, e := range errors {
 			err := e.(map[string]interface{})
-			PrintVerboseErr("Registry.GetManifest", 3.5, err)
+			PrintVerboseErr("Registry.GetManifest", 1, err)
 			return nil, fmt.Errorf("Registry error: %s", err["code"])
 		}
 	}
 
-	// digest is stored in the header
-	digest := resp.Header.Get("Docker-Content-Digest")
+	// Check if this is a multi-architecture manifest list
+	if requestBody["manifests"] != nil {
+		PrintVerboseInfo("Registry.GetManifest", "detected multi-architecture manifest list")
+
+		manifests := requestBody["manifests"].([]interface{})
+		arch := runtime.GOARCH
+
+		// Find the manifest for the current architecture
+		var selectedDigest string
+		for _, m := range manifests {
+			manifest := m.(map[string]interface{})
+			platform := manifest["platform"].(map[string]interface{})
+			if platform["architecture"] == arch && platform["os"] == "linux" {
+				selectedDigest = manifest["digest"].(string)
+				PrintVerboseInfo("Registry.GetManifest", "selected manifest for architecture ", arch, ", digest: ", selectedDigest)
+				break
+			}
+		}
+
+		if selectedDigest == "" {
+			PrintVerboseErr("Registry.GetManifest", 2, fmt.Errorf("no manifest found for architecture %s", arch))
+			return nil, fmt.Errorf("no manifest found for architecture %s", arch)
+		}
+
+		// Fetch the actual manifest using the selected digest
+		manifestAPIUrl := fmt.Sprintf("%s/%s/manifests/%s", r.API, settings.Cnf.Name, selectedDigest)
+
+		requestBody, digest, err = r.getManifestJSON(manifestAPIUrl, token)
+		if err != nil {
+			PrintVerboseErr("Registry.GetManifest", 3, fmt.Errorf("failed to fetch manifest"))
+			return nil, err
+		}
+	}
 
 	// we need to parse the layers to get the digests
 	var layerDigests []string
-	if m["layers"] == nil && m["fsLayers"] == nil {
+	if requestBody["layers"] == nil && requestBody["fsLayers"] == nil {
 		PrintVerboseErr("Registry.GetManifest", 4, err)
 		return nil, fmt.Errorf("Manifest does not contain layer property")
-	} else if m["layers"] == nil && m["fsLayers"] != nil {
+	} else if requestBody["layers"] == nil && requestBody["fsLayers"] != nil {
 		PrintVerboseWarn("Registry.GetManifest", 4, "layers property not found, using fsLayers")
-		layers := m["fsLayers"].([]interface{})
+		layers := requestBody["fsLayers"].([]interface{})
 		for _, layer := range layers {
 			layerDigests = append(layerDigests, layer.(map[string]interface{})["blobSum"].(string))
 		}
 	} else {
-		layers := m["layers"].([]interface{})
-		var layerDigests []string
+		layers := requestBody["layers"].([]interface{})
 		for _, layer := range layers {
 			layerDigests = append(layerDigests, layer.(map[string]interface{})["digest"].(string))
 		}
@@ -220,7 +266,7 @@ func (r *Registry) GetManifest(token string) (*Manifest, error) {
 
 	PrintVerboseInfo("Registry.GetManifest", "success")
 	manifest := &Manifest{
-		Manifest: body,
+		Manifest: requestBody,
 		Digest:   digest,
 		Layers:   layerDigests,
 	}
