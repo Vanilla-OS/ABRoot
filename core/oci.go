@@ -218,11 +218,13 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *Ima
 
 	progressCh := make(chan types.ProgressProperties)
 	manifestCh := make(chan prometheus.OciManifest)
+	errorCh := make(chan error)
 
 	defer close(progressCh)
 	defer close(manifestCh)
+	defer close(errorCh)
 
-	err := pt.PullImageAsync(image.From, name, progressCh, manifestCh)
+	err := pt.PullImageAsync(image.From, name, progressCh, manifestCh, errorCh)
 	if err != nil {
 		PrintVerboseErr("pullImageWithProgressbar", 0, err)
 		return err
