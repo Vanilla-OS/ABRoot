@@ -19,6 +19,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	digest "github.com/opencontainers/go-digest"
 )
 
 // The ABImage is the representation of an OCI image used by ABRoot, it
@@ -26,14 +28,14 @@ import (
 // investigate the current ABImage on an ABRoot system, you can find it
 // at /abimage.abr
 type ABImage struct {
-	Digest    string    `json:"digest"`
-	Timestamp time.Time `json:"timestamp"`
-	Image     string    `json:"image"`
+	Digest    digest.Digest `json:"digest"`
+	Timestamp time.Time     `json:"timestamp"`
+	Image     string        `json:"image"`
 }
 
 // NewABImage creates a new ABImage instance and returns a pointer to it,
 // if the digest is empty, it returns an error
-func NewABImage(digest string, image string) (*ABImage, error) {
+func NewABImage(digest digest.Digest, image string) (*ABImage, error) {
 	if digest == "" {
 		return nil, fmt.Errorf("NewABImage: digest is empty")
 	}

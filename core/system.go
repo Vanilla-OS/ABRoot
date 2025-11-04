@@ -24,6 +24,7 @@ import (
 
 	"github.com/google/uuid"
 	EtcBuilder "github.com/linux-immutability-tools/EtcBuilder/cmd"
+	digest "github.com/opencontainers/go-digest"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/sdk/pkg/v1/goodies"
 )
@@ -39,10 +40,6 @@ type ABSystem struct {
 	// RootM contains an instance of the ABRootManager which allows to
 	// manage the ABRoot partition scheme.
 	RootM *ABRootManager
-
-	// Registry contains an instance of the Registry used to retrieve resources
-	// from the configured Docker registry.
-	Registry *Registry
 
 	// CurImage contains an instance of ABImage which represents the current
 	// image used by the system (abimage.abr).
@@ -107,13 +104,11 @@ func NewABSystem() (*ABSystem, error) {
 	}
 
 	c := NewChecks()
-	r := NewRegistry()
 	rm := NewABRootManager()
 
 	return &ABSystem{
 		Checks:   c,
 		RootM:    rm,
-		Registry: r,
 		CurImage: i,
 	}, nil
 }
@@ -133,9 +128,9 @@ func (s *ABSystem) CheckAll() error {
 }
 
 // CheckUpdate checks if there is an update available
-func (s *ABSystem) CheckUpdate() (string, bool, error) {
+func (s *ABSystem) CheckUpdate() (digest.Digest, bool, error) {
 	PrintVerboseInfo("ABSystem.CheckUpdate", "running...")
-	return s.Registry.HasUpdate(s.CurImage.Digest)
+	return HasUpdate(s.CurImage.Digest)
 }
 
 func (s *ABSystem) CreateRootSymlinks(systemNewPath string) error {
@@ -185,8 +180,8 @@ func (s *ABSystem) Rebase(name string, dryRun bool) error {
 	}
 
 	_, _, err := s.CheckUpdate()
-	if errors.Is(err, ErrImageNotFound) {
-		return fmt.Errorf("provided image cannot be found")
+	if err != nil {
+		return err
 	}
 
 	if !dryRun {
@@ -252,7 +247,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		return err
 	}
 
-	var imageDigest string
+	var imageDigest digest.Digest
 	if operation != INITRAMFS {
 		var res bool
 		imageDigest, res, err = s.CheckUpdate()
@@ -390,8 +385,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		}
 	default:
 		imageName = settings.GetFullImageName()
-		imageName += "@" + imageDigest
-		labels["ABRoot.BaseImageDigest"] = imageDigest
+		imageName += "@" + imageDigest.String()
+		labels["ABRoot.BaseImageDigest"] = imageDigest.String()
 	}
 
 	imageRecipe := NewImageRecipe(

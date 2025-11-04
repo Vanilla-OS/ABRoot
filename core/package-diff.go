@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"strings"
 
+	digest "github.com/opencontainers/go-digest"
 	"github.com/vanilla-os/abroot/extras/dpkg"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/differ/diff"
@@ -27,7 +28,7 @@ import (
 
 // BaseImagePackageDiff retrieves the added, removed, upgraded and downgraded
 // base packages (the ones bundled with the image).
-func BaseImagePackageDiff(currentDigest, newDigest string) (
+func BaseImagePackageDiff(currentDigest, newDigest digest.Digest) (
 	added, upgraded, downgraded, removed []diff.PackageDiff,
 	err error,
 ) {

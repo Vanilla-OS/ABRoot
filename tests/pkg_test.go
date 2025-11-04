@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	digest "github.com/opencontainers/go-digest"
 	"github.com/vanilla-os/abroot/core"
 	"github.com/vanilla-os/abroot/settings"
 )
@@ -65,8 +66,8 @@ func TestPackageManager(t *testing.T) {
 func TestBaseImagePackageDiff(t *testing.T) {
 	settings.Cnf.Name = "vanilla-os/core"
 
-	oldDigest := "sha256:eac5693376d75cee2e676a83a67f4ce5db17d21e30bbde6a752480928719c842"
-	newDigest := "sha256:eaa30f5a907f6f7785936a31f94fe291c6ce00943dcd1d3a8a6e40f1fc890346"
+	oldDigest := digest.FromString("sha256:eac5693376d75cee2e676a83a67f4ce5db17d21e30bbde6a752480928719c842")
+	newDigest := digest.FromString("sha256:eaa30f5a907f6f7785936a31f94fe291c6ce00943dcd1d3a8a6e40f1fc890346")
 
 	added, upgraded, downgraded, removed, err := core.BaseImagePackageDiff(oldDigest, newDigest)
 	if err != nil {

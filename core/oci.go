@@ -27,6 +27,7 @@ import (
 	"github.com/containers/image/v5/types"
 	"github.com/containers/storage"
 	humanize "github.com/dustin/go-humanize"
+	digest "github.com/opencontainers/go-digest"
 	"github.com/pterm/pterm"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
@@ -361,4 +362,37 @@ func DeleteAllButLatestImage() error {
 	}
 
 	return nil
+}
+
+// HasUpdate checks if the image/tag from the registry has a different digest
+// it returns the new digest and a boolean indicating if an update is available
+func HasUpdate(oldDigest digest.Digest) (digest.Digest, bool, error) {
+	PrintVerboseInfo("OCI.HasUpdate", "Checking for updates ...")
+
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerboseErr("OCI.HasUpdate", 0, err)
+		return "", false, err
+	}
+
+	imageName := fmt.Sprintf("%s/%s:%s", settings.Cnf.Registry, settings.Cnf.Name, settings.Cnf.Tag)
+	PrintVerboseInfo("OCI.HasUpdate", "checking image: ", imageName)
+
+	_, newDigest, err := pt.PullManifestOnly(imageName)
+	if err != nil {
+		PrintVerboseErr("OCI.HasUpdate", 1, err)
+		return "", false, err
+	}
+
+	if newDigest == oldDigest {
+		PrintVerboseInfo("OCI.HasUpdate", "no update available")
+		return "", false, nil
+	}
+
+	PrintVerboseInfo("OCI.HasUpdate", "update available. Old digest: ", oldDigest, ", new digest: ", newDigest)
+	return newDigest, true, nil
 }
