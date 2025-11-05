@@ -19,7 +19,7 @@ require (
 	github.com/vanilla-os/orchid v0.6.1
 	github.com/vanilla-os/prometheus v1.2.0
 	github.com/vanilla-os/sdk v0.0.0-20240424182549-7fbf2ce02046
-	golang.org/x/sys v0.34.0
+	golang.org/x/sys v0.37.0
 )
 
 require (
