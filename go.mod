@@ -1,22 +1,23 @@
 module github.com/vanilla-os/abroot
 
-go 1.24
+go 1.24.4
 
 require (
-	github.com/containers/buildah v1.41.4
+	github.com/containers/buildah v1.41.5
 	github.com/containers/image/v5 v5.36.2
 	github.com/containers/storage v1.59.1
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-version v1.7.0
 	github.com/linux-immutability-tools/EtcBuilder v1.3.0
+	github.com/opencontainers/go-digest v1.0.0
 	github.com/pterm/pterm v0.12.79
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/vanilla-os/differ/diff v0.0.0-20240202135932-673de99cc540
 	github.com/vanilla-os/orchid v0.6.1
-	github.com/vanilla-os/prometheus v1.0.2
+	github.com/vanilla-os/prometheus v1.2.0
 	github.com/vanilla-os/sdk v0.0.0-20240424182549-7fbf2ce02046
 	golang.org/x/sys v0.34.0
 )
@@ -108,7 +109,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/opencontainers/cgroups v0.0.4 // indirect
-	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runc v1.3.0 // indirect
 	github.com/opencontainers/runtime-spec v1.2.1 // indirect

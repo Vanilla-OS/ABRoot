@@ -19,6 +19,7 @@ import (
 	"os"
 	"strings"
 
+	digest "github.com/opencontainers/go-digest"
 	"github.com/spf13/cobra"
 
 	"github.com/vanilla-os/abroot/core"
@@ -203,7 +204,7 @@ func upgrade(cmd *cobra.Command, args []string) error {
 		}
 
 		if raw {
-			newDigestIfHasUpdate := ""
+			var newDigestIfHasUpdate digest.Digest = ""
 			if res {
 				newDigestIfHasUpdate = newDigest
 			}
