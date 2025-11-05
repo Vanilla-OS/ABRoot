@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-version v1.7.0
 	github.com/linux-immutability-tools/EtcBuilder v1.3.0
 	github.com/opencontainers/go-digest v1.0.0
-	github.com/pterm/pterm v0.12.79
+	github.com/pterm/pterm v0.12.82
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
