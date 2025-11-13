@@ -145,17 +145,17 @@ cnf:
   rootRequired: Debes ser root para ejecutar este comando.
 rebase:
   short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
+  flagError: "'--keep-packages' y '--remove-packages' son indicadores conflictivos
+    y no se pueden usar juntos."
   rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
+  rebaseOnly: No actualice el sistema después de cambiar la imagen configurada
+  pkgRemoveSuccess: Todos los paquetes añadidos se han eliminado correctamente
   successUpdate: Rebase completed successfully. The system will update in a 
     moment.
   success: Rebase completed successfully. Your next update will use the new 
     image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Ejecución del enseyo completado con éxito
+  dryRunFlag: realizar un ensayo de la operación
   long: Change the OCI image the system is using
   keepPackages: Keep layered packages while rebasing the system
   removePackagesShort: Remove all layered packages while rebasing to prevent 
