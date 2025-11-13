@@ -67,8 +67,8 @@ pkg:
   noChanges: Keine Änderungen anzuwenden.
   unknownCommand: Unbekannter Befehl '%s'. Führe 'abroot pkg --help' aus, um 
     Anwendungsbeispiele zu sehen.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: Erzwinge Änderung, selbst, wenn sie bereits angewendet wurden
+  applySuccess: Pakete erfolgreich angewendet.
 upgrade:
   long: Auf ein neues Systemabbild prüfen und es anwenden.
   short: 'Das System aktualisieren'
@@ -89,10 +89,10 @@ upgrade:
   dryRunFlag: Führe einen Probedurchlauf aus
   dryRunSuccess: Trockenlauf erfolgreich abgeschlossen.
   success: 'Upgrade erfolgreich abgeschlossen.'
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Blockiere oder lehne vorrübergehend alle abroot operationen ab
+  deleteOld: Lösche alte Abbilder um Speicher freizugeben, wird vorrübergehend 
+    den root-zugang blockieren
+  unblock: Entferne den vorrübergehenden Benutzerblock
 status:
   use: Status
   unstagedFoundMsg: "\n\t\tEs gibt %d nicht angewendete Pakete. Bitte führen Sie 'abroot
@@ -144,18 +144,17 @@ cnf:
   rootRequired: Sie müssen Root sein, um diesen Befehl auszuführen.
 rebase:
   short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
+  flagError: "'--keep-packages' und '--remove-packages' stehen in Konflikt  und können
+    nicht zusammen verwendet werden"
+  rootRequired: Sie müssen "root" sein, um diesen Befehl ausführen zu können
+  rebaseOnly: Aktualisieren sie nicht das System, nachdem sie das kofigurierte 
+    Abbild 'gechaned'  haben
+  pkgRemoveSuccess: Alle hinzugefügten Pakete wurden erfolgreich entfernt
+  successUpdate: Rebase erfolgreich. Das System wird gleich aktualisiert
+  success: Rebase erfolgreich. Nach dem nächsten Update wird es verwendet
+  dryRunSuccess: Trockenlauf erfolgreich beendet
+  dryRunFlag: Führe einen Trocklauf der Operation aus
+  long: Ändere das OCI-Abbild, welches das System benutzt
   keepPackages: Keep layered packages while rebasing the system
   removePackagesShort: Remove all layered packages while rebasing to prevent 
     issues caused by a change in repositories.
