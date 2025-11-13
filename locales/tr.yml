@@ -63,8 +63,9 @@ pkg:
   noChanges: Uygulanacak değişiklik yok.
   unknownCommand: Bilinmeyen komut '%s'. Kullanım örnekleri için 'abroot pkg 
     --help' çalıştırın.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: halihazırda uygulanmış olsalar bile değişiklikleri uygulamaya 
+    zorla
+  applySuccess: Paketler başarıyla uygulandı.
 status:
   use: status
   long: Şu anki ABRoot durumunu görüntüle.
@@ -99,7 +100,7 @@ status:
   kargs: 'Çekirdek Argümanları:'
 upgrade:
   use: upgrade
-  long: Yeni sistem kalıbını denetle ve uygula.
+  long: Yeni sistem görüntüsünü denetle ve uygula.
   short: Sistemi yükselt
   forceFlag: sistem güncel olsa da güncellemeye zorla
   rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
@@ -116,10 +117,10 @@ upgrade:
   dryRunFlag: işlemin provasını gerçekleştir
   dryRunSuccess: Prova başarıyla tamamlandı.
   success: Yükseltme başarıyla tamamlandı.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Herhangi bir abroot işlemini geçici olarak engelle ya da iptal et.
+  deleteOld: Alan açmak için eski görüntüyü sil, gelecek kökü geçici olarak 
+    kullanım dışı bırakacak.
+  unblock: Geçici kullanıcı engelini kaldır.
 updateInitramfs:
   short: initramfs'i güncelle
   updateFailed: "Gelecek kökün initramfs'i güncellenemedi.\n"
@@ -138,22 +139,21 @@ cnf:
   failed: "Yapılandırmayla etkileşime geçilirken hata oluştu: %s\n"
   rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: Yeni görüntüye yeniden tabanla
+  flagError: "'--keep-packages' ve '--remove-packages' çakışan bayraklardır ve birlikte
+    kullanılamaz."
+  rootRequired: Bu komutu çalıştırmak için kök olmalısınız.
+  rebaseOnly: Yapılandırılmış görüntüyü değiştirdikten sonra sistemi güncelleme
+  pkgRemoveSuccess: Tüm ekli paketler başarıyla kaldırıldı
+  successUpdate: Yeniden tabanlama başarılı. Sistem az sonra güncellenecek.
+  success: Yeniden tabanlama başarılı. Gelecek güncellemeniz yeni görüntüyü 
+    kullanacak.
+  dryRunSuccess: Prova başarıyla tamamlandı
+  dryRunFlag: işlemin provasını gerçekleştir
+  long: Sistemin kullandığı OCI görüntüsünü değiştir
+  keepPackages: Sistemi yeniden tabanlarken katmanlı paketleri tut
+  removePackagesShort: Yeniden tabanlarken depolardaki değişikliğin neden 
+    olabileceği sorunları önlemek için tüm katmanlı paketleri kaldır.
+  removePackagesLong: "Yeni görüntü başka yazılım deposu kullanabilir, kimi kurulu
+    paketleri erişilmez kılabilir. Eğer durum buysa, sonraki yükseltme başarısız olacaktır.\n\
+    Bu sorunu gidermek için ekli paketlerinizi kaldırmak ister misiniz?"
