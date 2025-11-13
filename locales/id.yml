@@ -1,163 +1,171 @@
 abroot:
   use: "abroot"
-  long: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  short: "ABRoot provides full immutability and atomicity by performing transactions
-    between 2 root partitions (A<->B)"
-  verboseFlag: "show more detailed output"
+  long: "ABRoot menyediakan keabadian dan atomisitas penuh dengan melakukan transaksi
+    antara 2 partisi root (A<->B)"
+  short: "ABRoot menyediakan keabadian dan atomisitas penuh dengan melakukan transaksi
+    antara 2 partisi root (A<->B)"
+  verboseFlag: "menampilkan output yang lebih rinci"
   msg:
-    help: "Show help for abroot."
-    version: "Show version for abroot."
-    usage: "Usage"
-    aliases: "Aliases"
-    examples: "Examples"
-    availableCommands: "Available Commands"
-    additionalCommands: "Additional Commands"
-    flags: "Flags"
-    globalFlags: "Global Flags"
-    additionalHelpTopics: "Additional help topics"
-    moreInfo: "Use %s for more information about a command"
+    help: "Tampilkan bantuan untuk abroot."
+    version: "Tampilkan versi untuk abroot."
+    usage: "Penggunaan"
+    aliases: "Alias"
+    examples: "Contoh"
+    availableCommands: "Perintah yang Tersedia"
+    additionalCommands: "Perintah Tambahan"
+    flags: "Bendera"
+    globalFlags: "Bendera Global"
+    additionalHelpTopics: "Topik bantuan tambahan"
+    moreInfo: "Gunakan %s untuk informasi lebih lanjut tentang perintah"
 
 kargs:
   use: "kargs"
-  long: "Manage kernel parameters."
-  short: "Manage kernel parameters"
-  unknownCommand: "Unknown command '%s'. Run 'abroot kargs --help' for usage examples."
-  rootRequired: "You must be root to run this command."
-  notChanged: "No changes were made to kernel parameters."
-  applyFailed: "Apply command failed: %s\n"
+  long: "Mengelola parameter kernel."
+  short: "Mengelola parameter kernel"
+  unknownCommand: "Perintah yang tidak dikenal ‘%s’. Jalankan ‘abroot kargs --help’
+    untuk contoh penggunaan."
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  notChanged: "Tidak ada perubahan yang dilakukan pada parameter kernel."
+  applyFailed: "Menerapkan perintah gagal: %s\n"
 
 cnf:
   use: "cnf"
-  long: "Open an editor to edit the ABRoot configuration."
-  short: "Edit ABRoot configuration"
-  rootRequired: "You must be root to run this command."
-  editorFailed: "Failed to open the editor: %s\n"
-  changed: "Configuration changed."
-  unchanged: "No changes were made to the configuration."
-  failed: "An error occurred while interacting with the configuration: %s\n"
+  long: "Buka editor untuk mengedit konfigurasi ABRoot."
+  short: "Mengedit konfigurasi ABRoot"
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  editorFailed: "Gagal membuka editor: %s\n"
+  changed: "Konfigurasi berubah."
+  unchanged: "Tidak ada perubahan yang dilakukan pada konfigurasi."
+  failed: "Terjadi kesalahan saat berinteraksi dengan konfigurasi: %s\n"
 
 rollback:
   use: "rollback"
-  long: "Executes a system rollback, discarding changes made to the present root."
-  short: "Return the system to a previous state"
-  rootRequired: "You must be root to run this command."
-  rollbackUnnecessary: "Rollback is not necessary, current root is already the present
-    one."
-  rollbackFailed: "Rollback failed: %s\n"
-  rollbackSuccess: "Rollback completed successfully."
-  canRollback: "It is possible to rollback to the previous root."
-  cannotRollback: "It is not possible to rollback to the previous root."
-  checkOnlyFlag: "check if rollback to previous root is possible"
+  long: "Menjalankan rollback sistem, membuang perubahan yang dibuat pada root saat
+    ini."
+  short: "Mengembalikan sistem ke kondisi sebelumnya"
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  rollbackUnnecessary: "Rollback tidak diperlukan, root saat ini sudah menjadi root
+    yang berlaku."
+  rollbackFailed: "Rollback gagal: %s\n"
+  rollbackSuccess: "Rollback berhasil diselesaikan."
+  canRollback: "Dimungkinkan untuk rollback ke root sebelumnya."
+  cannotRollback: "Tidak mungkin untuk rollback ke root sebelumnya."
+  checkOnlyFlag: "periksa apakah rollback ke root sebelumnya dapat dilakukan"
 
 pkg:
   use: "pkg"
-  long: "Install and manage packages."
-  short: "Manage packages"
-  unknownCommand: "Unknown command '%s'. Run 'abroot pkg --help' for usage examples."
-  rootRequired: "You must be root to run this command."
-  failedGettingPkgManagerInstance: "Failed to get package manager instance: %s\n"
-  noPackageNameProvided: "You must provide at least one package name for this operation."
-  addedMsg: "Package(s) %s added.\n"
-  applyFailed: "Apply command failed: %s\n"
-  removedMsg: "Package(s) %s removed.\n"
-  listMsg: "Added packages:\n%s\nRemoved packages:\n%s\n"
-  noChanges: "No changes to apply."
-  dryRunFlag: "perform a dry run of the operation"
-  forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
-  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
-    required. This command facilitates package installations but introduces non-deterministic
-    elements, impacting system trustworthiness. By consenting, you acknowledge and
-    accept these implications, confirming your awareness of the command's potential
-    impact on system behavior. [y/N]: "
-  agreementSignFailed: "Failed to sign the agreement: %s\n"
-  agreementDeclined: "You declined the agreement. The feature will stay disabled until
-    you agree to it."
+  long: "Menginstal dan mengelola paket."
+  short: "Mengelola paket"
+  unknownCommand: "Perintah yang tidak dikenal ‘%s’. Jalankan ‘abroot pkg --help’
+    untuk contoh penggunaan."
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
+  failedGettingPkgManagerInstance: "Gagal mendapatkan instans manajer paket: %s\n"
+  noPackageNameProvided: "Anda harus memberikan setidaknya satu nama paket untuk operasi
+    ini."
+  addedMsg: "Paket(-paket) %s ditambahkan.\n"
+  applyFailed: "Menerapkan perintah gagal: %s\n"
+  removedMsg: "Paket(-paket) %s dihapus.\n"
+  listMsg: "Menambahkan paket:\n%s\nPaket yang dihapus:\n%s\n"
+  noChanges: "Tidak ada perubahan yang berlaku."
+  dryRunFlag: "melakukan uji coba operasi"
+  forceEnableUserAgreementFlag: "memaksa mengaktifkan persetujuan pengguna, untuk
+    sistem tertanam"
+  agreementMsg: "Untuk menggunakan perintah abroot pkg dari ABRoot, diperlukan persetujuan
+    pengguna secara eksplisit. Perintah ini memfasilitasi instalasi paket tetapi memperkenalkan
+    elemen non-deterministik, yang berdampak pada kepercayaan sistem. Dengan menyetujui,
+    Anda mengakui dan menerima implikasi ini, mengonfirmasi kesadaran Anda akan potensi
+    dampak perintah pada perilaku sistem. [y/N]: "
+  agreementSignFailed: "Gagal menandatangani persetujuan: %s\n"
+  agreementDeclined: "Anda menolak persetujuan. Fitur ini akan tetap dinonaktifkan
+    sampai Anda menyetujuinya."
 
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: memaksa menerapkan perubahan meskipun sudah diterapkan
+  applySuccess: Paket yang berhasil diterapkan.
 status:
   use: "status"
-  long: "Display the current ABRoot status."
-  short: "Display status"
-  jsonFlag: "show output in JSON format"
-  dumpFlag: "dump the ABRoot status to an archive"
-  rootRequired: "You must be root to run this command."
+  long: "Menampilkan status ABRoot saat ini."
+  short: "Menampilkan status"
+  jsonFlag: "menampilkan keluaran dalam format JSON"
+  dumpFlag: "membuang status ABRoot ke arsip"
+  rootRequired: "Anda harus menjadi root untuk menjalankan perintah ini."
   partitions:
-    title: "ABRoot Partitions:"
-    present: "Present: %s%s"
-    future: "Future: %s%s"
-  loadedConfig: "Loaded Configuration:"
+    title: "Partisi ABRoot:"
+    present: "Sekarang: %s%s"
+    future: "Masa depan: %s%s"
+  loadedConfig: "Konfigurasi yang Dimuat:"
   specs:
-    title: "Device Specifications:"
+    title: "Spesifikasi Perangkat:"
     cpu: "CPU: %s"
     gpu: "GPU: %s"
-    memory: "Memory: %s"
+    memory: "Memori: %s"
   abimage:
     title: "ABImage:"
-    digest: "Digest: %s"
-    timestamp: "Timestamp: %s"
-    image: "Image: %s"
-  kargs: "Kernel Arguments:"
+    digest: "Intisari: %s"
+    timestamp: "Cap waktu: %s"
+    image: "Citra: %s"
+  kargs: "Argumen Kernel:"
   packages:
-    title: "Packages:"
-    added: "Added: %s"
-    removed: "Removed: %s"
-    unstaged: "Unstaged: %s%s"
-  agreementStatus: "Package agreement:"
-  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
-    apply' to apply them."
-  dumpMsg: "Dumped ABRoot status to %s\n"
+    title: "Paket:"
+    added: "Ditambah: %s"
+    removed: "Dihapus: %s"
+    unstaged: "Tidak ditata: %s%s"
+  agreementStatus: "Perjanjian paket:"
+  unstagedFoundMsg: "\n\t\tAda %d paket yang belum ditata. Silakan jalankan perintah
+    ‘abroot pkg apply’ untuk menerapkan paket-paket tersebut."
+  dumpMsg: "Status ABRoot telah diturunkan menjadi %s\n"
 
 upgrade:
-  use: "upgrade"
-  long: "Check for a new system image and apply it."
-  short: "Upgrade the system"
-  forceFlag: "force update even if the system is up to date"
-  rootRequired: "You must be root to run this command."
-  checkingSystemUpdate: "Checking for system updates..."
-  checkingPackageUpdate: "Checking for package updates..."
-  systemUpdateAvailable: "There is an update for your system."
-  packageUpdateAvailable: "There are %d package updates."
-  noUpdateAvailable: "No update available."
-  checkOnlyFlag: "check for updates but do not apply them"
-  dryRunFlag: "perform a dry run of the operation"
-  dryRunSuccess: "Dry run completed successfully."
-  success: "Upgrade completed successfully."
-  added: "Added"
-  upgraded: "Upgraded"
-  downgraded: "Downgraded"
-  removed: "Removed"
+  use: "pembaruan"
+  long: "Periksa apakah ada citra sistem baru dan terapkan."
+  short: "Perbarui sistem"
+  forceFlag: "paksa pembaruan meskipun sistem sudah diperbarui"
+  rootRequired: "Anda harus memiliki hak akses root untuk menjalankan perintah ini."
+  checkingSystemUpdate: "Memeriksa pembaruan sistem..."
+  checkingPackageUpdate: "Memeriksa pembaruan paket..."
+  systemUpdateAvailable: "Ada pembaruan untuk sistem Anda."
+  packageUpdateAvailable: "Ada %d pembaruan paket."
+  noUpdateAvailable: "Tidak ada pembaruan yang tersedia."
+  checkOnlyFlag: "periksa pembaruan tetapi jangan terapkan"
+  dryRunFlag: "melakukan uji coba operasional"
+  dryRunSuccess: "Uji coba telah selesai dengan sukses."
+  success: "Peningkatan telah selesai dengan sukses."
+  added: "Ditambahkan"
+  upgraded: "Ditingkatkan"
+  downgraded: "Diturunkan"
+  removed: "Dihapus"
 
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Blokir sementara atau batalkan semua operasi abroot.
+  deleteOld: Hapus citra lama untuk membebaskan ruang, hal ini akan membuat root
+    sementara tidak dapat digunakan.
+  unblock: Hapus pemblokiran pengguna sementara.
 updateInitramfs:
   use: "update-initramfs"
-  long: "Update the initramfs of the future root."
-  short: "Update the initramfs"
-  rootRequired: "You must be root to run this command."
-  updateSuccess: "Updated initramfs of future root."
-  updateFailed: "Failed to update initramfs of future root.\n"
-  dryRunFlag: "perform a dry run of the operation"
+  long: "Perbarui initramfs dari root yang akan datang."
+  short: "Perbarui initramfs"
+  rootRequired: "Anda harus memiliki hak akses root untuk menjalankan perintah ini."
+  updateSuccess: "Initramfs yang diperbarui untuk root masa depan."
+  updateFailed: "Gagal memperbarui initramfs dari root masa depan.\n"
+  dryRunFlag: "melakukan uji coba operasional"
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: Rebase ke citra baru
+  flagError: "‘--keep-packages’ dan ‘--remove-packages’ adalah opsi yang bertentangan
+    dan tidak dapat digunakan bersamaan."
+  rootRequired: Anda harus memiliki hak akses root untuk menjalankan perintah 
+    ini.
+  rebaseOnly: Jangan memperbarui sistem setelah mengubah citra yang telah 
+    dikonfigurasi
+  pkgRemoveSuccess: Semua paket yang ditambahkan telah dihapus dengan sukses
+  successUpdate: Rebase telah selesai dengan sukses. Sistem akan diperbarui 
+    dalam beberapa saat.
+  success: Rebase telah selesai dengan sukses. Pembaruan berikutnya Anda akan 
+    menggunakan citra baru.
+  dryRunSuccess: Uji coba telah selesai dengan sukses
+  dryRunFlag: melakukan uji coba operasional
+  long: Ganti citra OCI yang digunakan oleh sistem
+  keepPackages: Pertahankan paket berlapis saat melakukan rebase pada sistem
+  removePackagesShort: Hapus semua paket bertingkat saat melakukan rebase untuk 
+    mencegah masalah yang disebabkan oleh perubahan repositori.
+  removePackagesLong: "Citra baru mungkin menggunakan repositori perangkat lunak yang
+    berbeda, sehingga beberapa paket yang dipasang menjadi tidak dapat diakses. Jika
+    hal ini terjadi, pembaruan berikutnya akan gagal.\nApakah Anda ingin menghapus
+    paket yang telah ditambahkan untuk menyelesaikan masalah ini?"
