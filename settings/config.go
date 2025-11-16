@@ -74,25 +74,41 @@ var (
 
 func init() {
 
+	foundConfig := false
+
 	// system path
 	viper.SetConfigFile(CnfPathSystem)
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "could not read config file in /usr", err)
+	} else {
+		foundConfig = true
 	}
 
 	// admin path
 	viper.SetConfigFile(CnfPathAdmin)
 	err = viper.MergeInConfig()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "could not read config file in /usr", err)
+		fmt.Fprintln(os.Stderr, "could not read config file in /etc", err)
+	} else {
+		foundConfig = true
 	}
 
 	// dev paths
 	viper.SetConfigFile(CnfPathDev1)
-	viper.MergeInConfig()
+	err = viper.MergeInConfig()
+	if err == nil {
+		foundConfig = true
+	}
 	viper.SetConfigFile(CnfPathDev2)
-	viper.MergeInConfig()
+	err = viper.MergeInConfig()
+	if err == nil {
+		foundConfig = true
+	}
+
+	if !foundConfig {
+		panic("could not find an intact config")
+	}
 
 	// VanillaOS specific defaults for backwards compatibility
 	viper.SetDefault("updateInitramfsCmd", "lpkg --unlock && /usr/sbin/update-initramfs -u && lpkg --lock")
