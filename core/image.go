@@ -77,7 +77,7 @@ func NewABImageFromRoot() (*ABImage, error) {
 
 // WriteTo writes the json to a destination path, if the suffix is not empty,
 // it will be appended to the filename
-func (a *ABImage) WriteTo(dest string, suffix string) error {
+func (a *ABImage) WriteTo(dest string) error {
 	PrintVerboseInfo("ABImage.WriteTo", "running...")
 
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
@@ -88,11 +88,7 @@ func (a *ABImage) WriteTo(dest string, suffix string) error {
 		}
 	}
 
-	if suffix != "" {
-		suffix = "-" + suffix
-	}
-	imageName := "abimage" + suffix + ".abr"
-	imagePath := filepath.Join(dest, imageName)
+	imagePath := filepath.Join(dest, "abimage.abr")
 
 	abimage, err := json.Marshal(a)
 	if err != nil {
