@@ -19,6 +19,8 @@ import (
 	"io/fs"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"slices"
 	"syscall"
 )
 
@@ -96,6 +98,44 @@ func CopyFile(source, dest string) error {
 	if _, err := io.Copy(destFile, srcFile); err != nil {
 		PrintVerboseErr("CopyFile", 2, err)
 		return err
+	}
+
+	return nil
+}
+
+// MoveFile copies a file from source to dest, then remove the source file
+func MoveFile(source, dest string) error {
+	err := CopyFile(source, dest)
+	if err != nil {
+		return err
+	}
+
+	PrintVerboseInfo("MoveFile", "Removing source file")
+	err = os.Remove(source)
+	if err != nil {
+		PrintVerboseErr("MoveFile", 0, err)
+		return err
+	}
+
+	return nil
+}
+
+// ClearDirectory deletes all contents of a directory without removing the directory itself.
+// Skips files/directories specified in the skip list.
+func ClearDirectory(path string, skipList []string) error {
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if slices.Contains(skipList, file.Name()) {
+			continue
+		}
+		err = os.RemoveAll(filepath.Join(path, file.Name()))
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
