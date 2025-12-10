@@ -197,8 +197,8 @@ func mountOverlayMounts(rootLabel string, dryRun bool) error {
 	}
 
 	overlays := []overlayMount{
-		{"/.system/etc", []string{"/.system/etc"}, "/var/lib/abroot/etc/" + rootLabel, "/var/lib/abroot/etc/" + rootLabel + "-work"},
-		{"/opt", []string{"/.system/opt"}, "/var/opt", "/var/opt-work"},
+		{"/etc", []string{"/etc"}, "/var/lib/abroot/etc/" + rootLabel, "/var/lib/abroot/etc/" + rootLabel + "-work"},
+		{"/opt", []string{"/opt"}, "/var/opt", "/var/opt-work"},
 	}
 
 	for _, overlay := range overlays {
@@ -228,7 +228,7 @@ func adjustFstab(uuid string, dryRun bool) error {
 	cmdr.FgDefault.Println("switching the root in fstab")
 
 	const fstabFile = "/etc/fstab"
-	systemMounts := []string{"/", "/var", "/.system/usr", "/.system/etc"}
+	systemMounts := []string{"/", "/var", "/usr", "/etc"}
 	varBindMountExists := map[string]bool{
 		"/home":  false,
 		"/media": false,
