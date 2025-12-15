@@ -116,12 +116,6 @@ func mountSys(cmd *cobra.Command, _ []string) error {
 		}
 	}
 
-	err = mountBindMounts(dryRun)
-	if err != nil {
-		cmdr.Error.Println(err)
-		os.Exit(6)
-	}
-
 	if present.Label == "" {
 		return &PartNotFoundError{"current root"}
 	}
@@ -160,29 +154,6 @@ func mountVar(varPart core.Partition, dryRun bool) error {
 		err := varPart.Mount("/var")
 		if err != nil {
 			return err
-		}
-	}
-
-	return nil
-}
-
-func mountBindMounts(dryRun bool) error {
-	type bindMount struct {
-		from, to string
-		options  uintptr
-	}
-
-	binds := []bindMount{
-		{"/.system/usr", "/.system/usr", syscall.MS_RDONLY},
-	}
-
-	for _, bind := range binds {
-		cmdr.FgDefault.Println("bind-mounting " + bind.from + " to " + bind.to)
-		if !dryRun {
-			err := syscall.Mount(bind.from, bind.to, "", syscall.MS_BIND|bind.options, "")
-			if err != nil {
-				return err
-			}
 		}
 	}
 
@@ -229,12 +200,7 @@ func adjustFstab(uuid string, dryRun bool) error {
 
 	const fstabFile = "/etc/fstab"
 	systemMounts := []string{"/", "/var", "/usr", "/etc"}
-	varBindMountExists := map[string]bool{
-		"/home":  false,
-		"/media": false,
-		"/mnt":   false,
-		"/root":  false,
-	}
+	varBindMounts := []string{"/home", "/media", "/mnt", "/root"}
 
 	fstabContentsRaw, err := os.ReadFile(fstabFile)
 	if err != nil {
@@ -262,28 +228,9 @@ func adjustFstab(uuid string, dryRun bool) error {
 		}
 
 		mountpoint := words[1]
+		varBindMountLine := fmt.Sprintf("/var/%s %s none defaults,bind 0 0", mountpoint, mountpoint)
 
-		if _, ok := varBindMountExists[mountpoint]; ok {
-			varBindMountExists[mountpoint] = true
-			linesNew = append(linesNew, line)
-			continue
-		}
-
-		// mounting to /var/home for example worked in the past
-		// this migrates those lines to use /home instead
-		if mountpointWithoutVar, found := strings.CutPrefix(mountpoint, "/var"); found {
-			if _, ok := varBindMountExists[mountpointWithoutVar]; ok {
-				cmdr.FgDefault.Println("Removing /var prefix from mount", mountpoint)
-
-				varBindMountExists[mountpointWithoutVar] = true
-				words[1] = mountpointWithoutVar
-				lineNew := strings.Join(words, " ")
-				linesNew = append(linesNew, lineNew)
-				continue
-			}
-		}
-
-		if slices.Contains(systemMounts, mountpoint) {
+		if slices.Contains(systemMounts, mountpoint) || (slices.Contains(varBindMounts, mountpoint) && line == varBindMountLine) {
 			cmdr.FgDefault.Println("Deleting line: ", line)
 			continue
 		}
@@ -291,19 +238,7 @@ func adjustFstab(uuid string, dryRun bool) error {
 		linesNew = append(linesNew, line)
 	}
 
-	for varBindMount, existsAlready := range varBindMountExists {
-		if existsAlready {
-			continue
-		}
-
-		newVarBindMountLine := fmt.Sprintf("/var%s %s none defaults,bind 0 0", varBindMount, varBindMount)
-
-		cmdr.FgDefault.Println("Adding line: ", newVarBindMountLine)
-
-		linesNew = append([]string{newVarBindMountLine}, linesNew...)
-	}
-
-	currentRootLine := "UUID=" + uuid + " / btrfs defaults 0 0"
+	currentRootLine := "UUID=" + uuid + " / btrfs ro,defaults 0 0"
 
 	cmdr.FgDefault.Println("Adding line: ", currentRootLine)
 

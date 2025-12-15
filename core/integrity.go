@@ -22,10 +22,14 @@ import (
 
 // links that must exist in the root partition
 var linksToRepair = [...][2]string{
+	{"run/media", "media"},
 	{"usr/bin", "bin"},
 	{"usr/lib", "lib"},
 	{"usr/lib64", "lib64"},
 	{"usr/sbin", "sbin"},
+	{"var/home", "home"},
+	{"var/mnt", "mnt"},
+	{"var/root", "root"},
 	{"var/srv", "srv"},
 }
 
@@ -39,13 +43,8 @@ var pathsToRepair = [...]string{
 	"run",
 	"sys",
 	"tmp",
-	"home",
-	"media",
-	"mnt",
-	"root",
 	"var",
 	"var/home",
-	"var/media",
 	"var/mnt",
 	"var/opt",
 	"var/root",
@@ -139,10 +138,8 @@ func repairPath(path string) (err error) {
 }
 
 // this is here to keep compatibility with older systems
-// e.g. /media was a folder instead of a mountpoint for /var/media
 func fixupOlderSystems(rootPath string) {
 	paths := []string{
-		"media",
 		"mnt",
 		"root",
 	}
