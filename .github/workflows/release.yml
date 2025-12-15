@@ -63,7 +63,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: abroot
 
