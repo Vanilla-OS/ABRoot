@@ -89,7 +89,8 @@ func repairLink(sourceAbs, targetAbs string) (err error) {
 		return err
 	}
 
-	if !isLink(target) {
+	dest, err := os.Readlink(target)
+	if err != nil || dest != source {
 		err = os.RemoveAll(target)
 		if err != nil && !os.IsNotExist(err) {
 			PrintVerboseErr("repairLink", 2, "Can't remove ", target, " : ", err)
