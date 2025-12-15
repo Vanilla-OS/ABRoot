@@ -4,29 +4,28 @@
 
 - /
 - /abimage.abr
-- /bin -> .system/usr/bin
+- /bin -> usr/bin
 - /boot
 - /dev
-- /etc -> .system/etc
+- /etc
+- /FsGuard
 - /home -> var/home
-- /lib -> .system/usr/lib
-- /lib32 -> .system/usr/lib32
-- /lib64 -> .system/usr/lib64
-- /libx32 -> .system/usr/libx32
-- /media
-- /mnt
+- /lib -> usr/lib
+- /lib64 -> usr/lib64
+- /media -> run/media
+- /mnt -> var/mnt
 - /opt
 - /part-future
 - /proc
-- /root
+- /root -> var/root
 - /run
-- /sbin -> .system/usr/sbin
-- /srv
+- /sbin -> usr/sbin
+- /srv -> var/srv
 - /sys
+- /sysconf
 - /tmp
-- /usr -> .system/usr
-- /var -(mount)-> partData
-- /tmp -> var/tmp
+- /usr
+- /var
 
 ## abimage.abr Example
 
@@ -58,13 +57,15 @@ understandable for the user.
 
 After a successful update, `grub.cfg` and `grub.cfg.future` are swapped.
 
-## Root Boot Structure
+## Init Structure
 
-Each root has a `/.system/boot` folder with the following structure:
+Each root has a folder in init partition with the following structure:
 
-- /.system/boot
-- /.system/boot/grub
-- /.system/boot/grub/abroot.cfg
+- /vos-a/abroot.cfg
+- /vos-a/config-<version>
+- /vos-a/initrd.img-<version>
+- /vos-a/System.map-<version>
+- /vos-a/vmlinuz-<version>
 
 > Check the `/samples/grub` folder for examples.
 
