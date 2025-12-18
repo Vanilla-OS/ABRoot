@@ -24,8 +24,8 @@ import (
 	"time"
 
 	"github.com/containers/buildah"
-	"github.com/containers/image/v5/types"
-	"github.com/containers/storage"
+	"go.podman.io/image/v5/types"
+	"go.podman.io/storage"
 	humanize "github.com/dustin/go-humanize"
 	digest "github.com/opencontainers/go-digest"
 	"github.com/pterm/pterm"

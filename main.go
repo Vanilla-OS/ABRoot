@@ -16,7 +16,7 @@ package main
 import (
 	"embed"
 
-	"github.com/containers/storage/pkg/reexec"
+	"go.podman.io/storage/pkg/reexec"
 	"github.com/vanilla-os/abroot/cmd"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/orchid/cmdr"
