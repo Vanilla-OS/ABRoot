@@ -11,7 +11,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/vanilla-os/pico:main
+      image: ghcr.io/vanilla-os/pico:dev
 
     steps:
     - uses: actions/checkout@v5
