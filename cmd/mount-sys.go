@@ -228,7 +228,7 @@ func adjustFstab(uuid string, dryRun bool) error {
 		}
 
 		mountpoint := words[1]
-		varBindMountLine := fmt.Sprintf("/var/%s %s none defaults,bind 0 0", mountpoint, mountpoint)
+		varBindMountLine := fmt.Sprintf("/var%s %s none defaults,bind 0 0", mountpoint, mountpoint)
 
 		if slices.Contains(systemMounts, mountpoint) || (slices.Contains(varBindMounts, mountpoint) && line == varBindMountLine) {
 			cmdr.FgDefault.Println("Deleting line: ", line)
