@@ -24,13 +24,13 @@ import (
 	"time"
 
 	"github.com/containers/buildah"
-	"go.podman.io/image/v5/types"
-	"go.podman.io/storage"
 	humanize "github.com/dustin/go-humanize"
 	digest "github.com/opencontainers/go-digest"
 	"github.com/pterm/pterm"
 	"github.com/vanilla-os/abroot/settings"
 	"github.com/vanilla-os/prometheus"
+	"go.podman.io/image/v5/types"
+	"go.podman.io/storage"
 )
 
 type NotEnoughSpaceError struct{}
@@ -152,7 +152,7 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 	}
 
 	// copy mount dir contents to dest
-	err = rsyncCmd(mountDir+"/", dest, []string{"--delete", "--checksum"}, false)
+	err = rsyncCmd(mountDir+"/", dest, []string{"--delete", "--delete-before", "--checksum"}, false)
 	if err != nil {
 		PrintVerboseErr("OciExportRootFs", 9, err)
 		return err
