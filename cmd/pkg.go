@@ -88,7 +88,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	freeSpace, err := cmd.Flags().GetBool("delete-old-system")
+	deleteOldSystem, err := cmd.Flags().GetBool("delete-old-system")
 	if err != nil {
 		cmdr.Error.Println(err)
 		return err
@@ -204,11 +204,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if dryRun {
-			err = aBsys.RunOperation(core.DRY_RUN_APPLY, freeSpace)
-		} else {
-			err = aBsys.RunOperation(core.APPLY, freeSpace)
-		}
+		err = aBsys.RunOperation(core.APPLY, deleteOldSystem, dryRun)
 		if err != nil {
 			cmdr.Error.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err
