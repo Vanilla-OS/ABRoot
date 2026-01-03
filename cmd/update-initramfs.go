@@ -79,11 +79,7 @@ func updateInitramfs(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if dryRun {
-		err = aBsys.RunOperation(core.DRY_RUN_INITRAMFS, deleteOldSystem)
-	} else {
-		err = aBsys.RunOperation(core.INITRAMFS, deleteOldSystem)
-	}
+	err = aBsys.RunOperation(core.INITRAMFS, deleteOldSystem, dryRun)
 	if err != nil {
 		cmdr.Error.Printf(abroot.Trans("updateInitramfs.updateFailed"), err)
 		return err
