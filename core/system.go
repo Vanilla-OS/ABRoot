@@ -179,7 +179,7 @@ func (s *ABSystem) Rebase(name string, dryRun bool) error {
 //		Applies package changes, and updates the system if an update is available.
 //	INITRAMFS:
 //		Updates the initramfs for the future root, but doesn't update the system.
-func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) error {
+func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bool) error {
 	PrintVerboseInfo("ABSystem.RunOperation", "starting", operation)
 
 	cq := goodies.NewCleanupQueue()
@@ -366,8 +366,8 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, freeSpace bool) err
 		return err
 	}
 
-	if freeSpace || os.Getenv("ABROOT_FREE_SPACE") != "" {
-		PrintVerboseInfo("ABSystemRunOperation", "Deleting future system to free space, this will render the future root temporarily unavailable")
+	if deleteBeforeCopy || os.Getenv("ABROOT_DELETE_BEFORE_COPY") != "" {
+		PrintVerboseInfo("ABSystemRunOperation", "Deleting future system, this will render the future root temporarily unavailable")
 		err := ClearDirectory(partFuture.Partition.MountPoint, nil)
 		if err != nil {
 			PrintVerboseErr("ABSystem.RunOperation", 4, err)
