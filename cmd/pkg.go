@@ -204,11 +204,7 @@ func pkg(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		if dryRun {
-			err = aBsys.RunOperation(core.DRY_RUN_APPLY, deleteOldSystem)
-		} else {
-			err = aBsys.RunOperation(core.APPLY, deleteOldSystem)
-		}
+		err = aBsys.RunOperation(core.APPLY, deleteOldSystem, dryRun)
 		if err != nil {
 			cmdr.Error.Printf(abroot.Trans("pkg.applyFailed"), err)
 			return err

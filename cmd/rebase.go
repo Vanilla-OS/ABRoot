@@ -129,10 +129,6 @@ func rebase(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if dryRun {
-		cmdr.Info.Println(abroot.Trans("rebase.dryRunSuccess"))
-	}
-
 	rebaseOnly, err := cmd.Flags().GetBool("rebase-only")
 	if err != nil {
 		cmdr.Error.Println(err)
@@ -144,5 +140,5 @@ func rebase(cmd *cobra.Command, args []string) error {
 	}
 
 	cmdr.Info.Println(abroot.Trans("rebase.successUpdate"))
-	return abSys.RunOperation("UPGRADE", false)
+	return abSys.RunOperation("UPGRADE", false, dryRun)
 }
