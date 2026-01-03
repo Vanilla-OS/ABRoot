@@ -31,51 +31,83 @@ type Grub struct {
 	FutureRoot  string
 }
 
-// generateABGrubConf generates a new grub config with the given details
-func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, rootLabel string, generatedGrubConfigPath string) error {
-	PrintVerboseInfo("generateABGrubConf", "generating grub config for ABRoot")
+// createABSpecificGrub creates a directory that contains the root specific root information
+func createABSpecificGrub(kernelVersion string, rootUuid string, rootLabel string, generatedGrubConfigPath string, bootMountpoint string, filesDir string) error {
+	PrintVerboseInfo("createABSpecificGrub", "creating root specific grub info")
 
-	kargs, err := KargsRead()
+	bootPrefix := filepath.Join("/abroot", rootLabel)
+	configDir := filepath.Join(bootMountpoint, bootPrefix)
+
+	err := MoveFile(
+		filepath.Join(filesDir, "vmlinuz-"+kernelVersion),
+		filepath.Join(configDir, "vmlinuz-"+kernelVersion),
+	)
 	if err != nil {
-		PrintVerboseErr("generateABGrubConf", 0, err)
+		PrintVerboseErr("createABSpecificGrub", 1, err)
+		return err
+	}
+	err = MoveFile(
+		filepath.Join(filesDir, "initrd.img-"+kernelVersion),
+		filepath.Join(configDir, "initrd.img-"+kernelVersion),
+	)
+	if err != nil {
+		PrintVerboseErr("createABSpecificGrub", 2, err)
+		return err
+	}
+	err = MoveFile(
+		filepath.Join(filesDir, "config-"+kernelVersion),
+		filepath.Join(configDir, "config-"+kernelVersion),
+	)
+	if err != nil {
+		PrintVerboseErr("createABSpecificGrub", 3, err)
+		return err
+	}
+	err = MoveFile(
+		filepath.Join(filesDir, "System.map-"+kernelVersion),
+		filepath.Join(configDir, "System.map-"+kernelVersion),
+	)
+	if err != nil {
+		PrintVerboseErr("createABSpecificGrub", 4, err)
 		return err
 	}
 
-	var grubPath, bootPrefix, systemRoot string
-	if settings.Cnf.ThinProvisioning {
-		grubPath = filepath.Join(rootPath, "boot", "init", rootLabel)
-		bootPrefix = "/" + rootLabel
+	kargs, err := KargsRead()
+	if err != nil {
+		PrintVerboseErr("createABSpecificGrub", 5, err)
+		return err
+	}
 
+	var systemRoot string
+	if settings.Cnf.ThinProvisioning {
 		diskM := NewDiskManager()
 		sysRootPart, err := diskM.GetPartitionByLabel(rootLabel)
 		if err != nil {
-			PrintVerboseErr("generateABGrubConf", 3, err)
+			PrintVerboseErr("createABSpecificGrub", 6, err)
 			return err
 		}
 		systemRoot = "/dev/mapper/" + sysRootPart.Device
 	} else {
-		grubPath = filepath.Join(rootPath, "boot", "grub")
-		bootPrefix = "/.system/boot"
 		systemRoot = "UUID=" + rootUuid
 	}
 
-	confPath := filepath.Join(grubPath, "abroot.cfg")
-	template := `  search --no-floppy --fs-uuid --set=root %s
+	confPath := filepath.Join(configDir, "abroot.cfg")
+	template := `
   linux   %s/vmlinuz-%s root=%s %s
   initrd  %s/initrd.img-%s
 `
 
-	err = os.MkdirAll(grubPath, 0755)
+	_ = os.RemoveAll(confPath)
+	err = os.MkdirAll(configDir, 0755)
 	if err != nil {
-		PrintVerboseErr("generateABGrubConf", 2, err)
+		PrintVerboseErr("createABSpecificGrub", 7, err)
 		return err
 	}
 
-	abrootBootConfig := fmt.Sprintf(template, rootUuid, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)
+	abrootBootConfig := fmt.Sprintf(template, bootPrefix, kernelVersion, systemRoot, kargs, bootPrefix, kernelVersion)
 
-	generatedGrubConfigContents, err := os.ReadFile(filepath.Join(rootPath, generatedGrubConfigPath))
+	generatedGrubConfigContents, err := os.ReadFile(generatedGrubConfigPath)
 	if err != nil {
-		PrintVerboseErr("generateABGrubConf", 3, "could not read grub config", err)
+		PrintVerboseErr("createABSpecificGrub", 8, "could not read grub config", err)
 		return err
 	}
 
@@ -84,18 +116,18 @@ func generateABGrubConf(kernelVersion string, rootPath string, rootUuid string, 
 	replacementString := "REPLACED_BY_ABROOT"
 	if !strings.Contains(generatedGrubConfig, replacementString) {
 		err := errors.New("could not find replacement string \"" + replacementString + "\", check /etc/grub.d configuration")
-		PrintVerboseErr("generateABGrubConf", 3.1, err)
+		PrintVerboseErr("createABSpecificGrub", 9, err)
 		return err
 	}
 	grubConfigWithBootEntry := strings.Replace(generatedGrubConfig, "REPLACED_BY_ABROOT", abrootBootConfig, 1)
 
 	err = os.WriteFile(confPath, []byte(grubConfigWithBootEntry), 0644)
 	if err != nil {
-		PrintVerboseErr("generateABGrubConf", 4, "could not read grub config", err)
+		PrintVerboseErr("createABSpecificGrub", 10, "could not read grub config", err)
 		return err
 	}
 
-	PrintVerboseInfo("generateABGrubConf", "done")
+	PrintVerboseInfo("createABSpecificGrub", "done")
 	return nil
 }
 
