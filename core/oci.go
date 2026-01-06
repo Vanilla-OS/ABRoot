@@ -63,6 +63,31 @@ func padString(str string, size int) string {
 	}
 }
 
+// OciExportRootFs pulls an image from a registry
+func OciPullImage(imageName string) error {
+	pt, err := prometheus.NewPrometheus(
+		"/var/lib/abroot/storage",
+		"overlay",
+		settings.Cnf.MaxParallelDownloads,
+	)
+	if err != nil {
+		PrintVerboseErr("OciPullImage", 0, err)
+		return err
+	}
+
+	if strings.HasPrefix(imageName, "localhost/") {
+		return nil
+	}
+
+	err = pullImageWithProgressbar(pt, "remoteimage", imageName)
+	if err != nil {
+		PrintVerboseErr("OciPullImage", 1, err)
+		return err
+	}
+
+	return nil
+}
+
 // OciExportRootFs generates a rootfs from an image recipe file
 func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir string, dest string) error {
 	PrintVerboseInfo("OciExportRootFs", "running...")
@@ -111,17 +136,6 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		return err
 	}
 
-	pulledImage := false
-	// pull image
-	if !strings.HasPrefix(imageRecipe.From, "localhost/") {
-		err = pullImageWithProgressbar(pt, buildImageName, imageRecipe)
-		if err != nil {
-			PrintVerboseErr("OciExportRootFs", 6.1, err)
-			return err
-		}
-		pulledImage = true
-	}
-
 	// build image
 	imageBuild, err := pt.BuildContainerFile(imageRecipePath, buildImageName)
 	if err != nil {
@@ -129,14 +143,9 @@ func OciExportRootFs(buildImageName string, imageRecipe *ImageRecipe, transDir s
 		return err
 	}
 
-	if pulledImage {
-		// This is safe because BuildContainerFile layers on top of the base image
-		// So this won't delete the actual layers, only the image reference
-		_, err = pt.Store.DeleteImage(imageRecipe.From, true)
-		if err != nil {
-			PrintVerboseWarn("OciExportRootFs", 7.5, "could not delete downloaded image", err)
-		}
-	}
+	// This is safe because BuildContainerFile layers on top of the base image
+	// So this won't delete the actual layers, only the image reference
+	_, _ = pt.Store.DeleteImage(imageRecipe.From, true)
 
 	// mount image
 	mountDir, err := pt.MountImage(imageBuild.TopLayer)
@@ -214,7 +223,7 @@ func checkImageSize(imageDir string, filesystemMount string) error {
 // and reports the download progress using pterm progressbars. Each blob has
 // its own bar, similar to how docker and podman report downloads in their
 // respective CLIs
-func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *ImageRecipe) error {
+func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, imageName string) error {
 	PrintVerboseInfo("pullImageWithProgressbar", "running...")
 
 	progressCh := make(chan types.ProgressProperties)
@@ -225,7 +234,7 @@ func pullImageWithProgressbar(pt *prometheus.Prometheus, name string, image *Ima
 	defer close(manifestCh)
 	defer close(errorCh)
 
-	err := pt.PullImageAsync(image.From, name, progressCh, manifestCh, errorCh)
+	err := pt.PullImageAsync(imageName, name, progressCh, manifestCh, errorCh)
 	if err != nil {
 		PrintVerboseErr("pullImageWithProgressbar", 0, err)
 		return err
