@@ -361,6 +361,12 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		return err
 	}
 
+	err = s.createFinalizingFile()
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 5.3, err)
+		return err
+	}
+
 	if deleteBeforeCopy || os.Getenv("ABROOT_DELETE_BEFORE_COPY") != "" {
 		PrintVerboseInfo("ABSystemRunOperation", "Deleting future system, this will render the future root temporarily unavailable")
 		if !dryRun {
@@ -408,12 +414,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 5] -------- ABSystemRunOperation")
 
-	if UserStopRequested() {
-		err = ErrUserStopped
-		PrintVerboseErr("ABSystem.RunOperation", 2, err)
-		return err
-	}
-
 	abimage, err := NewABImage(imageDigest, settings.GetFullImageNameWithTag())
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 5.1, err)
@@ -454,18 +454,6 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 			PrintVerboseErr("ABSystem.RunOperation", 5.26, err)
 			return err
 		}
-	}
-
-	if UserStopRequested() {
-		err = ErrUserStopped
-		PrintVerboseErr("ABSystem.RunOperation", 2, err)
-		return err
-	}
-
-	err = s.createFinalizingFile()
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 5.3, err)
-		return err
 	}
 
 	// Stage 6: Update the bootloader
