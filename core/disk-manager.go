@@ -14,13 +14,16 @@ package core
 */
 
 import (
+	"bufio"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
 // DiskManager exposes functions to interact with the system's disks
@@ -192,27 +195,6 @@ func (p *Partition) Mount(destination string) error {
 	return nil
 }
 
-// Unmount unmounts a partition
-func (p *Partition) Unmount() error {
-	PrintVerboseInfo("Partition.Unmount", "running...")
-
-	if p.MountPoint == "" {
-		PrintVerboseErr("Partition.Unmount", 0, errors.New("no mount point"))
-		return errors.New("no mount point")
-	}
-
-	err := syscall.Unmount(p.MountPoint, 0)
-	if err != nil {
-		PrintVerboseErr("Partition.Unmount", 1, err)
-		return err
-	}
-
-	PrintVerboseInfo("Partition.Unmount", "successfully unmounted", p.MountPoint)
-	p.MountPoint = ""
-
-	return nil
-}
-
 // Returns whether the partition is a device-mapper virtual partition
 func (p *Partition) IsDevMapper() bool {
 	return p.Parent != nil
@@ -221,4 +203,89 @@ func (p *Partition) IsDevMapper() bool {
 // IsEncrypted returns whether the partition is encrypted
 func (p *Partition) IsEncrypted() bool {
 	return strings.HasPrefix(p.FsType, "crypto_")
+}
+
+func UnmountRecursive(mountPoint string, flags int) error {
+	mountPointOld := mountPoint
+	mountPoint, err := filepath.EvalSymlinks(mountPoint)
+	if err != nil {
+		return fmt.Errorf("could not find real path for %s: %w", mountPointOld, err)
+	}
+
+	systemMountpoints, err := readMountPoints()
+	if err != nil {
+		fmt.Errorf("Could not load system mounts: %w", err)
+	}
+
+	mountId := ""
+
+	for id, systemMount := range systemMountpoints {
+		if systemMount.mountPoint == mountPoint {
+			mountId = id
+		}
+	}
+
+	if mountId == "" {
+		err := unix.Unmount(mountPoint, flags)
+		return err
+	}
+
+	err = unmountRecursive(mountId, systemMountpoints, flags, 0)
+	if err != nil {
+		return fmt.Errorf("could not recursively unmount %s: %w", mountPoint, err)
+	}
+
+	return nil
+}
+
+func unmountRecursive(mountPointId string, systemMountpoints map[string]mount, flags int, depth int) error {
+	if depth >= 1000 {
+		return fmt.Errorf("too many layers when trying to recursively unmount")
+	}
+
+	mount, ok := systemMountpoints[mountPointId]
+	if !ok {
+		return fmt.Errorf("could not find mountpoint with id %s", mountPointId)
+	}
+
+	for childMountId, childMount := range systemMountpoints {
+		if childMount.parentId == mountPointId {
+			err := unmountRecursive(childMountId, systemMountpoints, flags, depth+1)
+			if err != nil {
+				fmt.Errorf("could not unmount %s: %w", childMount.mountPoint)
+			}
+		}
+	}
+
+	return unix.Unmount(mount.mountPoint, flags)
+}
+
+type mount struct {
+	id         string
+	parentId   string
+	mountPoint string
+}
+
+func readMountPoints() (map[string]mount, error) {
+	f, err := os.Open("/proc/self/mountinfo")
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	mounts := make(map[string]mount)
+	scanner := bufio.NewScanner(f)
+
+	for scanner.Scan() {
+		fields := strings.Fields(scanner.Text())
+		if len(fields) < 5 {
+			continue
+		}
+
+		id := fields[0]
+
+		mounts[id] = mount{id: id, parentId: fields[1], mountPoint: fields[4]}
+	}
+
+	return mounts, scanner.Err()
 }
