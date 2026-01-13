@@ -19,7 +19,7 @@ require (
 	github.com/vanilla-os/sdk v0.0.0-20250630142738-a0dc34362ed0
 	go.podman.io/image/v5 v5.38.0
 	go.podman.io/storage v1.61.0
-	golang.org/x/sys v0.39.0
+	golang.org/x/sys v0.40.0
 )
 
 require (
