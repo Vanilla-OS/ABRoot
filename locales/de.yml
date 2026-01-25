@@ -51,7 +51,7 @@ pkg:
     Operation zur Verfügung stellen.
   removedMsg: "Paket(e) % entfernt.\n"
   listMsg: "Pakete hinzugefügt:\n%\nEntfernte Pakete:\n%\n"
-  dryRunFlag: Führe einen Probedurchlauf aus
+  dryRunFlag: einen Probelauf des Vorgangs durchführen
   agreementDeclined: Sie haben die Zustimmung abgelehnt. Die Funktion bleibt 
     deaktiviert, bis Sie ihr zustimmen.
   agreementMsg: "Um ABRoots abroot pkg Befehl zu nutzen, ist eine ausdrückliche Benutzervereinbarung
@@ -77,17 +77,17 @@ upgrade:
   rootRequired: Sie müssen root sein, um diesen Befehl auszuführen.
   use: upgrade
   noUpdateAvailable: Kein Aktualisierung verfügbar.
-  checkOnlyFlag: Nach Updates prüfen, ohne sie anzuwenden
+  checkOnlyFlag: auf Aktualisierungen prüfen, ohne sie anzuwenden
   removed: Entfernt
   downgraded: Herabgestuft
-  packageUpdateAvailable: Es gibt %d Paket-Updates.
-  systemUpdateAvailable: Es gibt ein Update für Ihr System.
+  packageUpdateAvailable: Es gibt %d Paketaktualisierungen.
+  systemUpdateAvailable: Es gibt eine Aktualisierung für Ihr System.
   upgraded: Aktualisiert
   added: Hinzugefügt
   checkingPackageUpdate: Nach Paketaktualisierung suchen...
   checkingSystemUpdate: Nach Systemaktualisierung suchen...
-  dryRunFlag: Führe einen Probedurchlauf aus
-  dryRunSuccess: Trockenlauf erfolgreich abgeschlossen.
+  dryRunFlag: einen Probelauf des Vorgangs durchführen
+  dryRunSuccess: Probelauf erfolgreich abgeschlossen.
   success: 'Upgrade erfolgreich abgeschlossen.'
   cancel: Blockiere oder lehne vorrübergehend alle abroot operationen ab
   deleteOld: Lösche alte Abbilder um Speicher freizugeben, wird vorrübergehend 
@@ -132,7 +132,7 @@ updateInitramfs:
   updateSuccess: 'Aktualisierte Initramfs der zukünftigen Wurzel.'
   long: 'Aktualisieren Sie die Initramfs der zukünftigen Wurzel.'
   use: update-initramfs
-  dryRunFlag: einen Trockenlauf des Vorgangs durchführen
+  dryRunFlag: einen Probelauf des Vorgangs durchführen
 cnf:
   unchanged: Es wurden keine Änderungen an der Konfiguration vorgenommen.
   editorFailed: "Fehler beim Öffnen des Editors: %s\n"
@@ -143,21 +143,23 @@ cnf:
   failed: "Bei der Interaktion mit der Konfiguration ist ein Fehler aufgetreten: %s\n"
   rootRequired: Sie müssen Root sein, um diesen Befehl auszuführen.
 rebase:
-  short: Rebase to new image
+  short: Auf neues Abbild umbasieren
   flagError: "'--keep-packages' und '--remove-packages' stehen in Konflikt  und können
     nicht zusammen verwendet werden"
   rootRequired: Sie müssen "root" sein, um diesen Befehl ausführen zu können
-  rebaseOnly: Aktualisieren sie nicht das System, nachdem sie das kofigurierte 
-    Abbild 'gechaned'  haben
+  rebaseOnly: Aktualisieren Sie das System nicht, nachdem Sie das konfigurierte 
+    Abbild geändert haben
   pkgRemoveSuccess: Alle hinzugefügten Pakete wurden erfolgreich entfernt
   successUpdate: Rebase erfolgreich. Das System wird gleich aktualisiert
   success: Rebase erfolgreich. Nach dem nächsten Update wird es verwendet
-  dryRunSuccess: Trockenlauf erfolgreich beendet
-  dryRunFlag: Führe einen Trocklauf der Operation aus
+  dryRunSuccess: Trockenlauf erfolgreich abgeschlossen
+  dryRunFlag: einen Probelauf des Vorgangs durchführen
   long: Ändere das OCI-Abbild, welches das System benutzt
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
+  keepPackages: Geschichtete Pakete während des Umbasierens des Systems 
+    beibehalten
+  removePackagesShort: Alle geschichteten Pakete während des Umbasierens 
+    entfernen, um Probleme zu vermeiden, die durch eine Änderung in den 
+    Repositorien verursacht werden.
   removePackagesLong: "The new image may use a different software repository, making
     some installed packages inaccessible. If this is the case, the next upgrade will
     fail.\nWould you like to remove your added packages to resolve this issue?"
