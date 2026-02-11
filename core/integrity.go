@@ -31,6 +31,7 @@ var linksToRepair = [...][2]string{
 	{"var/mnt", "mnt"},
 	{"var/root", "root"},
 	{"var/srv", "srv"},
+	{"var/usrlocal", "usr/local"},
 }
 
 // paths that must exist in the root partition
@@ -49,6 +50,7 @@ var pathsToRepair = [...]string{
 	"var/opt",
 	"var/root",
 	"var/srv",
+	"var/usrlocal",
 }
 
 func RepairRootIntegrity(rootPath string) (err error) {

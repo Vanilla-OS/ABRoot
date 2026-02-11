@@ -25,6 +25,7 @@
 - /sysconf
 - /tmp
 - /usr
+- /usr/local -> var/usrlocal
 - /var
 
 ## abimage.abr Example
