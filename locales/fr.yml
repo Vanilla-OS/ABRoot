@@ -100,14 +100,15 @@ pkg:
   noChanges: Aucun changement à appliquer.
   unknownCommand: Commande '%s' non reconnue. Exécutez 'abroot pkg --help' pour 
     obtenir des exemples d'utilisation.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: Appliquer de force les changements. (même si ils ont déjà été 
+    appliqués)
+  applySuccess: Paquets appliqués avec succès.
 upgrade:
   use: upgrade
   long: Vérifier la présence d'une nouvelle image système et l'appliquer.
   short: Mise à jour du système
   forceFlag: forcer la mise à jour même si le système est à jour
-  rootRequired: Vous devez être root pour exécuter cette commande.
+  rootRequired: Vous devez être administrateur pour exécuter cette commande.
   noUpdateAvailable: Aucune mise à jour disponible.
   checkOnlyFlag: vérifie les mises à jour mais ne les applique pas
   removed: Supprimé
@@ -119,16 +120,16 @@ upgrade:
   checkingPackageUpdate: Vérification des mises à jour des paquets...
   checkingSystemUpdate: Vérification des mises à jour du système...
   dryRunFlag: simuler le lancement de l'opération
-  dryRunSuccess: Le lancement à sec s’est terminé avec succès.
+  dryRunSuccess: Le lancement à blanc réalisé avec succès
   success: La mise à jour a été effectuée avec succès.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Bloquer ou annuler temporairement toute opération "d'abroot".
+  deleteOld: Supprimer l'ancienne image pour libérer de l'espace, rendra le 
+    futur répertoire racine temporairement inutilisable.
+  unblock: Débloquer temporairement le blocage de l'utilisateur
 updateInitramfs:
   short: Mise à jour de l'initramfs
   updateFailed: "Échec de la mise à jour de l'initramfs de la future racine.\n"
-  rootRequired: Vous devez être root pour exécuter cette commande.
+  rootRequired: Vous devez être administrateur pour exécuter cette commande.
   updateSuccess: Mise à jour de l'initramfs de la future racine terminée.
   long: Mettre à jour l'initramfs de la future racine.
   use: update-initramfs
@@ -143,22 +144,26 @@ cnf:
   failed: "Une erreur s’est produite en interagissant avec la configuration : %s\n"
   rootRequired: Vous devez être root pour exécuter cette commande.
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: rebaser la nouvelle image
+  flagError: "Les options '--keep-packages' et '--remove-packages' sont contradictoires
+    et ne peuvent pas être utilisées simultanément."
+  rootRequired: Vous devez être administrateur pour exécuter cette commande.
+  rebaseOnly: Ne mettez pas à jour Vanilla après avoir changer l'image 
+    configurée
+  pkgRemoveSuccess: Tous les paquets ont été ajouté on était supprimé avec 
+    succès
+  successUpdate: La rebasage s'est terminée avec succès. Vanilla se mettras à 
+    jour dans quelques instants.
+  success: La mise à jour a été effectuée avec succès. Votre prochaine mise à 
+    jour utilisera la nouvelle image.
+  dryRunSuccess: essaie à blanc effectué avec succès
+  dryRunFlag: effectuer un essai à blanc de l'opération
+  long: Changer l'image O.C.I utilisée par Vanilla
+  keepPackages: Supprimez tous les paquets superposés lors du rebasage afin 
+    d'éviter les problèmes causés par une modification des dépôts.
+  removePackagesShort: Supprimez tous les paquets superposés lors du rebasage 
+    afin d'éviter les problèmes causés par une modification des dépôts.
+  removePackagesLong: "La nouvelle image peut utiliser un dépôt de logiciels différent,
+    rendant certains paquets installés inaccessibles. Dans ce cas, la prochaine mise
+    à niveau échouera.\n\nSouhaitez-vous supprimer les paquets ajoutés pour résoudre
+    ce problème ?"
