@@ -57,8 +57,7 @@ type Config struct {
 	PartCryptVar  string `json:"PartCryptVar"`
 
 	// Structure
-	ThinProvisioning bool   `json:"thinProvisioning"`
-	ThinInitVolume   string `json:"thinInitVolume"`
+	ThinProvisioning bool `json:"thinProvisioning"`
 }
 
 var Cnf *Config
@@ -150,7 +149,6 @@ func init() {
 
 		// Structure
 		ThinProvisioning: viper.GetBool("thinProvisioning"),
-		ThinInitVolume:   viper.GetString("thinInitVolume"),
 	}
 }
 
