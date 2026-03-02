@@ -3,7 +3,7 @@ module github.com/vanilla-os/abroot
 go 1.25.5
 
 require (
-	github.com/containers/buildah v1.42.2
+	github.com/containers/buildah v1.43.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-version v1.8.0
@@ -17,8 +17,8 @@ require (
 	github.com/vanilla-os/orchid v0.6.1
 	github.com/vanilla-os/prometheus v1.2.1
 	github.com/vanilla-os/sdk v0.0.0-20250630142738-a0dc34362ed0
-	go.podman.io/image/v5 v5.38.0
-	go.podman.io/storage v1.61.0
+	go.podman.io/image/v5 v5.39.1
+	go.podman.io/storage v1.62.0
 	golang.org/x/sys v0.39.0
 )
 
@@ -147,7 +147,7 @@ require (
 	go.opentelemetry.io/otel v1.39.0 // indirect
 	go.opentelemetry.io/otel/metric v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
-	go.podman.io/common v0.66.1 // indirect
+	go.podman.io/common v0.67.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
