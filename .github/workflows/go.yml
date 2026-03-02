@@ -47,7 +47,7 @@ jobs:
         sha256sum abrootv2*.tar.gz >> checksums.txt
         sha256sum abroot-man.tar.gz >> checksums.txt
 
-    - uses: actions/upload-artifact@v6
+    - uses: actions/upload-artifact@v7
       with:
         name: abrootv2
         path: |
