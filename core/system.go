@@ -272,10 +272,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		return err
 	}
 
-	partFuture.Partition.Unmount() // just in case
-	partBoot.Unmount()
-
 	futureRoot := "/part-future"
+
+	UnmountRecursive(futureRoot, 0)
 	err = partFuture.Partition.Mount(futureRoot)
 	if err != nil {
 		PrintVerboseErr("ABSystem.RunOperation", 2.3, err)
@@ -283,7 +282,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 	}
 
 	cq.Add(func(args ...interface{}) error {
-		return partFuture.Partition.Unmount()
+		return UnmountRecursive(futureRoot, 0)
 	}, nil, 90, &goodies.NoErrorHandler{}, false)
 
 	// Stage 3: Make a imageRecipe with user packages
@@ -537,7 +536,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		}
 
 		cq.Add(func(args ...interface{}) error {
-			return initPartition.Unmount()
+			return UnmountRecursive(initMountpoint, 0)
 		}, nil, 80, &goodies.NoErrorHandler{}, false)
 
 		futureInitDir := filepath.Join(initMountpoint, partFuture.Label)
@@ -645,7 +644,7 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 	}
 
 	cq.Add(func(args ...interface{}) error {
-		return partBoot.Unmount()
+		return UnmountRecursive(tmpBootMount, 0)
 	}, nil, 100, &goodies.NoErrorHandler{}, false)
 
 	// Stage 9: Atomic swap the bootloader
@@ -758,7 +757,7 @@ func (s *ABSystem) Rollback(checkOnly bool) (response ABRollbackResponse, err er
 	}
 
 	cq.Add(func(args ...interface{}) error {
-		return partBoot.Unmount()
+		return UnmountRecursive(tmpBootMount, 0)
 	}, nil, 100, &goodies.NoErrorHandler{}, false)
 
 	grub, err := NewGrub(partBoot)
