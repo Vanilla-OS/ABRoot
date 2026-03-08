@@ -1,0 +1,166 @@
+abroot:
+  use: "abroot"
+  long: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  short: "ABRoot provides full immutability and atomicity by performing transactions
+    between 2 root partitions (A<->B)"
+  verboseFlag: "sken ugar n tuffɣa s telqayt"
+  msg:
+    help: "Sken tallelt i abroot."
+    version: "Sken lqem i abroot."
+    usage: "Aseqdec"
+    aliases: "Tizeẓla"
+    examples: "Imedyaten"
+    availableCommands: "Tiludna yellan"
+    additionalCommands: "Tiludna timernanin"
+    flags: "Tikbabin"
+    globalFlags: "Tikbabin Imuta"
+    additionalHelpTopics: "Isental nniḍen n tallelt"
+    moreInfo: "Seqdec %s i wugar n isallan ɣef tladna"
+
+kargs:
+  use: "kargs"
+  long: "Sefrek iɣewwaṛen n yiɣes."
+  short: "Sefrek iɣewwaṛen n yiɣes"
+  unknownCommand: "Taladna tarussint '%s'. Selkem 'abroot kargs --help' i yimedyaten
+    n useqdec ."
+  rootRequired: "Yessefk ad tiliḍ d aẓar i uselkem n tladna-agi."
+  notChanged: "Ulac ibeddilen i yettwagen i yiɣwaṛen n yiɣes."
+  applyFailed: "Snes n tledna ur yeddi ara: %s\n"
+
+cnf:
+  use: "cnf"
+  long: "Ldi amaẓrag iwakken ad tẓergeḍ tawila n ABRoot."
+  short: "Ẓreg tawila n ABRoot"
+  rootRequired: "Yessefk ad tiliḍ d aẓar i uselkem tladna-agi"
+  editorFailed: "Yecceḍ ulday n umaẓrag: %s\n"
+  changed: "Tawila tettusnifel."
+  unchanged: "Ulac ibeddilen i yettwagan i twila."
+  failed: "Teḍra-d tuccḍa deg umyigaw akked twila: %s\n"
+
+rollback:
+  use: "rollback"
+  long: "Selkem tuɣalin ɣer deffir, anect-a ad yesefsex ibeddilen yettwagen i uẓar-agi
+    amiran."
+  short: "Err anagraw ɣer waddad yezrin"
+  rootRequired: "Yessefk ad tiliḍ d aẓar i uselkem n tladna-agi."
+  rollbackUnnecessary: "Ur d-yewwi ara tuɣalin ɣer deffir, aẓar amiran d win n tura
+    yakan."
+  rollbackFailed: "Tuɣalin ɣer deffir ur yeddi ara: %s\n"
+  rollbackSuccess: "Taɣalin ɣer deffir yemmed akken iwata."
+  canRollback: "Yella wamek i tuɣaleḍ ɣer deffir ɣer uẓar yezrin."
+  cannotRollback: "Ulamek tuɣaleḍ ɣer deffir ɣer uẓar yezrin."
+  checkOnlyFlag: "Selken ma yella tuɣalin ɣer deffir ɣer uẓar yezmer ad yili"
+
+pkg:
+  use: "pkg"
+  long: "Sbedd u sefrek ikemmusen."
+  short: "Sefrek ikemmusen"
+  unknownCommand: "Taladna tarussint ''%s'. Selkem 'abroot pkg --help' i yimedyaten
+    n useqdec."
+  rootRequired: "Yessefk ad tiliḍ d aẓar akken ad tselkmeḍ taladna-agi."
+  failedGettingPkgManagerInstance: "Yecceḍ wawway n tummant n umsefrak n ukemmus:
+    %s\n"
+  noPackageNameProvided: "Yessefk ad d-tefkeḍ ma drus yiwen n yisem n ukemmus i temhelt-a."
+  addedMsg: "Akemmus(i-en) %s yettwarnan.\n"
+  applyFailed: "Asnas n tladna ur yeddi ara: %s\n"
+  removedMsg: "Akemmus(i-en) %s yettwakksen.\n"
+  listMsg: "Ikemmusen yettwarnan:\n%s\nIkemmusen yettwakksen:\n%s\n"
+  applySuccess: "Ikemmusen ittusnesen akken iwata."
+  noChanges: "Ulac ibeddilen i usnas."
+  dryRunFlag: "serwes asenker n temhelt"
+  forceEnableUserAgreementFlag: "force enable user agreement, for embedded systems"
+  agreementMsg: "To utilize ABRoot's abroot pkg command, explicit user agreement is
+    required. This command facilitates package installations but introduces non-deterministic
+    elements, impacting system trustworthiness. By consenting, you acknowledge and
+    accept these implications, confirming your awareness of the command's potential
+    impact on system behavior. [y/N]: "
+  agreementSignFailed: "Ur izmir ara ad yezmel amtawa: %s\n"
+  agreementDeclined: "Tugiḍ amtawa-nni. Tamahilt-nni ad teqqim tensa arma tqebleḍ-tt."
+  forceApply: "ḥettem asnas n ibeddilen xas ma ttwasnesen yakan"
+
+status:
+  use: "status"
+  long: "Beqqeḍ addad amiran n ABRoot."
+  short: "Beqqeḍ addad"
+  jsonFlag: "sken tuffɣa deg umasal JSON"
+  dumpFlag: "sekles addad ABRoot ɣer uɣbaṛ"
+  rootRequired: "Yessefk ad tiliḍ d aẓar i uselkem n tladna-agi."
+  partitions:
+    title: "Iḥricen ABRoot:"
+    present: "Imir-a: %s%s"
+    future: "Imal:%s%s"
+  loadedConfig: "Tawila tettwaɛebbi:"
+  specs:
+    title: "Asefru n yibenk:"
+    cpu: "CPU: %s"
+    gpu: "GPU: %s"
+    memory: "Takatut: %s"
+  abimage:
+    title: "ABImage:"
+    digest: "Digest: %s"
+    timestamp: "Azemzakud: %s"
+    image: "Tugna: %s"
+  kargs: "Ifukal n yiɣes:"
+  packages:
+    title: "Ikemmusen:"
+    added: "Yettwarna: %s"
+    removed: "Yettwakkes: %s"
+    unstaged: "Unstaged: %s%s"
+  agreementStatus: "Amtawa ukemmus:"
+  unstagedFoundMsg: "\n\t\tThere are %d unstaged packages. Please run 'abroot pkg
+    apply' to apply them."
+  dumpMsg: "Addad ABRoot yettwasifeḍ ɣer %s\n"
+
+upgrade:
+  use: "upgrade"
+  long: "Selken ɣef tugna n unagraw tamaynut u snes-itt."
+  short: "Sali leqqem unagraw"
+  forceFlag: "ḥettem mucceḍ xas ma yella anagraw yettwaleqqem"
+  deleteOld: "Tukksa n tugna taqburt akken ad tili tallunt tilellit, anect-a ad yeglu
+    s uẓar ur itteddu ara s wudem askudan."
+  rootRequired: "Yessefk ad tiliḍ d aẓar i uselkem n tladna-agi."
+  checkingSystemUpdate: "Anadi n yileqman n unagraw…"
+  checkingPackageUpdate: "Anadi n yileqman n ukemmus…"
+  systemUpdateAvailable: "Yella mucceḍ i unagraw-ik·im."
+  packageUpdateAvailable: "Llan %d n imucceḍen n ukemmus."
+  noUpdateAvailable: "Ulac amucceḍ i yellan."
+  checkOnlyFlag: "nadi ileqman maca war asnas nsen"
+  dryRunFlag: "serwes asenker n tmahelt"
+  dryRunSuccess: "Aselkem s wudem aquran yemmed akken iwata."
+  success: "Asali leqqem yedda akken iwata."
+  added: "Yettwarna"
+  upgraded: "Yettwasali uleqqem"
+  downgraded: "Yettwaṣub uleqqem"
+  removed: "Ittwakkes"
+  cancel: "S wudem askudan sewḥel neɣ sefsex yal tamhelt n abroot."
+  unblock: "Kkes asewḥel askudan n useqdac."
+
+updateInitramfs:
+  use: "update-initramfs"
+  long: "Leqqem initramfs n uẓar n yimal."
+  short: "Aleqqem n initramfs"
+  rootRequired: "Yessefk ad tiliḍ d aẓar akken ad tselkmeḍ taladna-agi."
+  updateSuccess: "Yettwalqem initramfs n uẓar n yimal."
+  updateFailed: "Ur yeddi ara uleqqem n initramfs n uẓar n yimal.\n"
+  dryRunFlag: "serwes aselkem n temhelt"
+
+rebase:
+  long: "Snifel tugna OCI i yesseqdac unagraw"
+  short: "Alszadur ɣer tugna tamaynut"
+  removePackagesShort: "Kkes akk ikemmusen n tissi deg alszadur akken ur ttilin ara
+    wuguren ara d-yekkan seg kra n ikufan."
+  keepPackages: "Ḥrez ikemmusen n tissi deg alszadur n unagraw"
+  rootRequired: "Yessefk ad tiliḍ d aẓar akken ad tselkmeḍ taladna-agi."
+  removePackagesLong: "The new image may use a different software repository, making
+    some installed packages inaccessible. If this is the case, the next upgrade will
+    fail.\nWould you like to remove your added packages to resolve this issue?"
+  pkgRemoveSuccess: "Ikemmusen akk yettwarnan ttwakksen akken iwata"
+  dryRunFlag: "tteddu aselkem s wudem aquran n temhelt"
+  dryRunSuccess: "Aselkem s wudem aquran yedda akken iwata"
+  success: "Alszadur yedda akken iwata. Aleqqem-ik·im i d-iteddun ad iseqdec tugna
+    tamaynut."
+  successUpdate: "Alszadur yedda akken iwata. Anagraw ad yettwaleqqem akka tura."
+  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
+    cannot be used together."
+  rebaseOnly: "Ur tleqqmeḍ ara anagraw deffir usnifel n tugna yettusewlen"
