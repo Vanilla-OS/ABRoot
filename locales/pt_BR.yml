@@ -68,8 +68,9 @@ pkg:
   noChanges: Nenhuma alteração a ser aplicada.
   unknownCommand: Comando desconhecido '%s'. Execute "abroot pkg --help" para 
     obter exemplos de uso.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: forçar a aplicação das alterações mesmo que elas já tenham sido 
+    aplicadas
+  applySuccess: Pacotes aplicados com sucesso.
 status:
   long: Exibir o status atual do ABRoot.
   short: Exibir status
