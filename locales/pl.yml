@@ -15,7 +15,7 @@ abroot:
     globalFlags: Globalne flagi
     examples: Przykłady
     version: Wyświel wersję abroot.
-    help: Wyświetl pomoc dla abroot.
+    help: Pokaż pomocne informację dotyczące abrootu.
     usage: Użycie
     additionalCommands: Dodatkowe komendy
 kargs:
