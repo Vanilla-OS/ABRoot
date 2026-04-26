@@ -93,30 +93,10 @@ func NewChroot(root string, rootUuid string, rootDevice string, mountUserEtc boo
 func (c *Chroot) Close() error {
 	PrintVerboseInfo("Chroot.Close", "running...")
 
-	err := syscall.Unmount(filepath.Join(c.root, "/dev/pts"), 0)
+	err := UnmountRecursive(c.root, 0)
 	if err != nil {
 		PrintVerboseErr("Chroot.Close", 0, err)
 		return err
-	}
-
-	mountList := ReservedMounts
-	if c.etcMounted {
-		mountList = append(mountList, "/etc")
-	}
-	mountList = append(mountList, "")
-
-	for _, mount := range mountList {
-		if mount == "/dev/pts" {
-			continue
-		}
-
-		mountDir := filepath.Join(c.root, mount)
-		PrintVerboseInfo("Chroot.Close", "unmounting", mountDir)
-		err := syscall.Unmount(mountDir, 0)
-		if err != nil {
-			PrintVerboseErr("Chroot.Close", 1, err)
-			return err
-		}
 	}
 
 	PrintVerboseInfo("Chroot.Close", "successfully closed.")
