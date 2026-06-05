@@ -29,6 +29,7 @@ var linksToRepair = [...][2]string{
 	{"usr/sbin", "sbin"},
 	{"var/home", "home"},
 	{"var/mnt", "mnt"},
+	{"var/opt", "opt"},
 	{"var/root", "root"},
 	{"var/srv", "srv"},
 	{"var/usrlocal", "usr/local"},

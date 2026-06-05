@@ -14,7 +14,7 @@
 - /lib64 -> usr/lib64
 - /media -> run/media
 - /mnt -> var/mnt
-- /opt
+- /opt -> var/opt
 - /part-future
 - /proc
 - /root -> var/root

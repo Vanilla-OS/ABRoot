@@ -169,7 +169,6 @@ func mountOverlayMounts(rootLabel string, dryRun bool) error {
 
 	overlays := []overlayMount{
 		{"/etc", []string{"/etc"}, "/var/lib/abroot/etc/" + rootLabel, "/var/lib/abroot/etc/" + rootLabel + "-work"},
-		{"/opt", []string{"/opt"}, "/var/opt", "/var/opt-work"},
 	}
 
 	for _, overlay := range overlays {
