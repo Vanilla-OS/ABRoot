@@ -39,7 +39,6 @@ var linksToRepair = [...][2]string{
 var pathsToRepair = [...]string{
 	"boot",
 	"dev",
-	"opt",
 	"part-future",
 	"proc",
 	"run",
