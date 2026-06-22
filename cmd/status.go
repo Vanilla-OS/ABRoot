@@ -300,7 +300,7 @@ func getCurrentlyBootedPartition(a *core.ABRootManager) (string, string, error) 
 	if err != nil {
 		return "", "", err
 	}
-	defer bootPart.Unmount()
+	defer core.UnmountRecursive(tmpBootMount, 0)
 
 	g, err := core.NewGrub(bootPart)
 	if err != nil {
