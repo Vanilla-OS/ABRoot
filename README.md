@@ -19,18 +19,21 @@ Usage:
   abroot [command]
 
 Available Commands:
+  config-editor Open the ABRoot configuration in a command-line editor
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   kargs       Manage kernel parameters
   pkg         Manage packages
+  rebase      Change the OCI image used for future system states
   rollback    Return the system to a previous state
   status      Display status
+  update-initramfs Rebuild the initramfs in the future system state
   upgrade     Update the boot partition
 
 Flags:
   -h, --help      help for abroot
-  -v, --verbose   Show more detailed output
-      --version   version for abroot
+  -V, --verbose   Show more detailed output
+  -v, --version   version for abroot
 
 Use "abroot [command] --help" for more information about a command.
 ```
