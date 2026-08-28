@@ -518,92 +518,34 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		}
 	}
 
-	var rootUuid string
-	// If Thin-Provisioning set, mount init partition and move linux and initrd
-	// images to it.
-	var initMountpoint string
-	if settings.Cnf.ThinProvisioning {
-		initPartition, err := s.RootM.GetInit()
-		if err != nil {
-			PrintVerboseErr("ABSystem.RunOperation", 7.3, err)
-			return err
-		}
-
-		initMountpoint = filepath.Join(futureRoot, "boot", "init")
-		err = initPartition.Mount(initMountpoint)
-		if err != nil {
-			PrintVerboseErr("ABSystem.RunOperation", 7.4, err)
-			return err
-		}
-
-		cq.Add(func(args ...interface{}) error {
-			return initPartition.Unmount()
-		}, nil, 80, &goodies.NoErrorHandler{}, false)
-
-		futureInitDir := filepath.Join(initMountpoint, partFuture.Label)
-
-		if !dryRun {
-			err = os.RemoveAll(futureInitDir)
-			if err != nil {
-				PrintVerboseWarn("ABSystem.RunOperation", 7.44)
-			}
-			err = os.MkdirAll(futureInitDir, 0o755)
-			if err != nil {
-				PrintVerboseWarn("ABSystem.RunOperation", 7.47, err)
-			}
-
-			err = MoveFile(
-				filepath.Join(futureRoot, "boot", "vmlinuz-"+newKernelVer),
-				filepath.Join(futureInitDir, "vmlinuz-"+newKernelVer),
-			)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 7.5, err)
-				return err
-			}
-			err = MoveFile(
-				filepath.Join(futureRoot, "boot", "initrd.img-"+newKernelVer),
-				filepath.Join(futureInitDir, "initrd.img-"+newKernelVer),
-			)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 7.6, err)
-				return err
-			}
-			err = MoveFile(
-				filepath.Join(futureRoot, "boot", "config-"+newKernelVer),
-				filepath.Join(futureInitDir, "config-"+newKernelVer),
-			)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 7.7, err)
-				return err
-			}
-			err = MoveFile(
-				filepath.Join(futureRoot, "boot", "System.map-"+newKernelVer),
-				filepath.Join(futureInitDir, "System.map-"+newKernelVer),
-			)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 7.8, err)
-				return err
-			}
-
-		}
-
-		rootUuid = initPartition.Uuid
-	} else {
-		rootUuid = partFuture.Partition.Uuid
+	tmpBootMount := "/run/abroot/tmp-boot-mount-1/"
+	err = os.MkdirAll(tmpBootMount, 0o755)
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 9, err)
+		return err
 	}
 
-	if !dryRun {
-		err = generateABGrubConf(
-			newKernelVer,
-			futureRoot,
-			rootUuid,
-			partFuture.Label,
-			generatedGrubConfigPath,
-		)
-		if err != nil {
-			PrintVerboseErr("ABSystem.RunOperation", 7.9, err)
-			return err
-		}
+	err = partBoot.Mount(tmpBootMount)
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 9.1, err)
+		return err
+	}
+
+	cq.Add(func(args ...interface{}) error {
+		return partBoot.Unmount()
+	}, nil, 100, &goodies.NoErrorHandler{}, false)
+
+	err = createABSpecificGrub(
+		newKernelVer,
+		partFuture.Partition.Uuid,
+		partFuture.Label,
+		filepath.Join(futureRoot, generatedGrubConfigPath),
+		tmpBootMount,
+		filepath.Join(futureRoot, "/boot/"),
+	)
+	if err != nil {
+		PrintVerboseErr("ABSystem.RunOperation", 7.9, err)
+		return err
 	}
 
 	// Stage 7: Sync /etc
@@ -627,30 +569,9 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		}
 	}
 
-	// Stage 8: Mount boot partition
+	// Stage 8: Atomic swap the bootloader
 	// ------------------------------------------------
 	PrintVerboseSimple("[Stage 8] -------- ABSystemRunOperation")
-
-	tmpBootMount := "/run/abroot/tmp-boot-mount-1/"
-	err = os.MkdirAll(tmpBootMount, 0o755)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 9, err)
-		return err
-	}
-
-	err = partBoot.Mount(tmpBootMount)
-	if err != nil {
-		PrintVerboseErr("ABSystem.RunOperation", 9.1, err)
-		return err
-	}
-
-	cq.Add(func(args ...interface{}) error {
-		return partBoot.Unmount()
-	}, nil, 100, &goodies.NoErrorHandler{}, false)
-
-	// Stage 9: Atomic swap the bootloader
-	// ------------------------------------------------
-	PrintVerboseSimple("[Stage 9] -------- ABSystemRunOperation")
 
 	grub, err := NewGrub(partBoot)
 	if err != nil {
@@ -668,33 +589,52 @@ func (s *ABSystem) RunOperation(operation ABSystemOperation, deleteBeforeCopy bo
 		grubCfgCurrent := filepath.Join(tmpBootMount, "grub/grub.cfg")
 		grubCfgFuture := filepath.Join(tmpBootMount, "grub/grub.cfg.future")
 
-		// Just like in Stage 9, tmpBootMount/grub/grub.cfg.future may not exist.
-		if _, err = os.Stat(grubCfgFuture); os.IsNotExist(err) {
-			PrintVerboseInfo("ABSystem.RunOperation", "Creating grub.cfg.future")
+		_ = os.Remove(grubCfgFuture)
 
-			grubCfgContents, err := os.ReadFile(grubCfgCurrent)
-			if err != nil {
-				PrintVerboseErr("ABSystem.RunOperation", 11.2, err)
-			}
+		const preamble string = `set timeout=5
 
-			var replacerPairs []string
-			if grub.FutureRoot == "a" {
-				replacerPairs = []string{
-					"default=1", "default=0",
-					"Previous State (A)", "Current State (A)",
-					"Current State (B)", "Previous State (B)",
-				}
-			} else {
-				replacerPairs = []string{
-					"default=0", "default=1",
-					"Current State (A)", "Previous State (A)",
-					"Previous State (B)", "Current State (B)",
-				}
-			}
+# Load video support
+insmod gfxterm
+insmod all_video
 
-			replacer := strings.NewReplacer(replacerPairs...)
-			os.WriteFile(grubCfgFuture, []byte(replacer.Replace(string(grubCfgContents))), 0o644)
+# Set graphics mode
+set gfxmode=1024x768,auto
+terminal_output gfxterm
+
+        `
+
+		const state_a string = `
+set default=0
+
+menuentry "Current State (A)" --class abroot-a {
+    configfile "/abroot/%s/abroot.cfg"
+}
+
+menuentry "Previous State (B)" --class abroot-b {
+    configfile "/abroot/%s/abroot.cfg"
+}
+		`
+
+		const state_b string = `
+set default=1
+menuentry "Previous State (A)" --class abroot-a {
+    configfile "/abroot/%s/abroot.cfg"
+}
+
+menuentry "Current State (B)" --class abroot-b {
+    configfile "/abroot/%s/abroot.cfg"
+}
+		`
+
+		configFile := ""
+
+		if grub.FutureRoot == "a" {
+			configFile = preamble + fmt.Sprintf(state_a, partFuture.Label, partPresent.Label)
+		} else {
+			configFile = preamble + fmt.Sprintf(state_b, partFuture.Label, partPresent.Label)
 		}
+
+		os.WriteFile(grubCfgFuture, []byte(configFile), 0o644)
 
 		err = AtomicSwap(grubCfgCurrent, grubCfgFuture)
 		if err != nil {
