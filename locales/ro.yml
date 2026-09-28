@@ -69,8 +69,8 @@ pkg:
   noChanges: Nu se aplică nicio modificare.
   unknownCommand: Comandă necunoscută „%s”. Rulați „abroot pkg --help” pentru 
     exemple de utilizare.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: Forțează aplicarea schimbărilor chiar dacă au fost deja aplicate
+  applySuccess: Pachetele s-au aplicat cu succes.
 status:
   use: status
   long: Afișați starea ABRoot curentă.
@@ -122,10 +122,10 @@ upgrade:
   dryRunFlag: efectuează un test al operației
   dryRunSuccess: Test efectuat cu succes.
   success: Upgrade efectuat cu succes.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Blochează temporar sau oprește orice operație abroot.
+  deleteOld: Șterge imaginea veche pentru a elibera spațiu de stocare, va face 
+    root-ul viitor temporar nefolosibil.
+  unblock: Elimină blockul de utilizator temporar
 updateInitramfs:
   short: Actualizează initramfs
   updateFailed: "Actualizare initramfs a viitorului root nereușită.\n"
