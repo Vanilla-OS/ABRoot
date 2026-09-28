@@ -109,14 +109,14 @@ upgrade:
   rootRequired: Du måste vara root för att köra detta kommando.
   noUpdateAvailable: Ingen uppdatering är tillgänglig för ditt system.
   checkOnlyFlag: leta efter uppdateringar men tillämpa dem inte
-  removed: Removed
-  downgraded: Downgraded
-  packageUpdateAvailable: There are %d package updates.
-  systemUpdateAvailable: There is an update for your system.
-  upgraded: Upgraded
-  added: Added
-  checkingPackageUpdate: Checking for package updates...
-  checkingSystemUpdate: Checking for system updates...
+  removed: Borttagen
+  downgraded: Nedgraderad
+  packageUpdateAvailable: Det finns %d paketuppdateringar.
+  systemUpdateAvailable: Det finns en uppdatering för ditt system.
+  upgraded: Uppgraderad
+  added: Tillagd
+  checkingPackageUpdate: Söker efter paketuppdateringar...
+  checkingSystemUpdate: Söker efter systemuppdateringar...
   dryRunFlag: genomför en torrkörning av operationen
   dryRunSuccess: Torrkörningen slutfördes framgångsrikt.
   success: Uppgradering slutförts framgångsrikt.
