@@ -3,7 +3,7 @@ abroot:
   long: "يوفر ABRoot الثبات الكامل والذرية عن طريق إجراء المعاملات بين قسمين جذر (A<->B)"
   short: "يوفر ABRoot الثبات الكامل والذرية عن طريق إجراء المعاملات بين قسمين جذر
     (A<->B)"
-  verboseFlag: "إظهار إخراج أكثر تفصيلاً"
+  verboseFlag: "إظهار مخرجات أكثر تفصيلا"
 
   msg:
     examples: أمثلة
@@ -21,13 +21,13 @@ kargs:
   use: "kargs"
   long: "إدارة معلمات النواة."
   short: "إدارة معلمات النواة."
-  rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
-  notChanged: لم يتم التعديل في معلمات النواة
+  rootRequired: "يجب أن تكون root لتشغيل هذا الأمر."
+  notChanged: لم يتم التعديل في معلمات النواة.
   applyFailed: "فشل تطبيق الأمر: %s\n"
-  unknownCommand: أمر غير معروف '%s'. شغّل 'abroot kargs --help' للحصول على 
-    أمثلة الاستخدام.
+  unknownCommand: أمر غير معروف '%s'. شغل 'abroot kargs --help' للحصول على أمثلة
+    الاستخدام.
 rollback:
-  use: "تراجع"
+  use: "rollback"
   long: "ينفذ تراجعًا عن النظام، متجاهلًا التغييرات التي تم إجراؤها على الجذر الحالي."
   short: "إعادة النظام إلى حالته السابقة."
   rootRequired: "يجب أن تكون جذرًا لتشغيل هذا الأمر."
@@ -38,7 +38,7 @@ rollback:
   cannotRollback: لا يمكن التراجع للجذر السابق.
   checkOnlyFlag: تحقق مما إذا كان التراجع إلى الجذر السابق ممكنًا
 status:
-  use: الحالة
+  use: status
   dumpMsg: "تم تفريغ حالة ABRoot إلى %s\n"
   long: عرض حالة ABRoot الحالية.
   jsonFlag: عرض الإخراج بتنسيق JSON
@@ -69,7 +69,7 @@ status:
     image: 'الصورة: %s'
   agreementStatus: 'اتفاقية الحزمة:'
 pkg:
-  use: الحزمة
+  use: pkg
   long: تثبيت وإدارة الحزم.
   short: إدارة الحزم
   rootRequired: يجب أن تكون مستخدم الجذر لتشغيل هذا الأمر.
@@ -90,10 +90,10 @@ pkg:
   noChanges: لا توجد تغييرات لتطبيقها.
   unknownCommand: أمر غير معروف '%s'. شغّل 'abroot pkg --help' للحصول على أمثلة 
     الاستخدام.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: فرض تطبيق التغييرات حتى وإن كانت مطبقة مسبقا
+  applySuccess: تم تطبيق الحزم بنجاح.
 upgrade:
-  use: الترقية
+  use: upgrade
   long: تحديث قسم الإقلاع لأغراض الصيانة (للمستخدمين المتقدمين فقط)
   short: تحديث قسم الإقلاع
   forceFlag: فرض تحديث قسم الإقلاع دون طلب تأكيد
@@ -111,44 +111,42 @@ upgrade:
   dryRunFlag: إجراء تجربة جافة للعملية
   dryRunSuccess: تم إكمال التجربة الجافة بنجاح.
   success: تم إكمال الترقية بنجاح.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: إلغاء أو حضر أي عملية abroot مؤقتا.
+  deleteOld: حذف الصورة القديمة لتحرير المساحة،مما يجعل الجذر غير قابل للاستخدام
+    مؤقتا.
+  unblock: رفع الحظر المؤقت عن المستخدم.
 updateInitramfs:
   short: تحديث initramfs
   updateFailed: "فشل في تحديث initramfs للجذر المستقبلي.\n"
   rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
   updateSuccess: تم تحديث initramfs للجذر المستقبلي.
   long: تحديث initramfs للجذر المستقبلي.
-  use: تحديث-initramfs
+  use: update-initramfs
   dryRunFlag: إجراء تجربة جافة للعملية
 cnf:
   use: cnf
-  unchanged: لم يتم إجراء أي تغييرات على التكوين.
+  unchanged: لم يتم إجراء أي تغييرات على الاعدادات.
   editorFailed: "فشل في فتح المحرر: %s\n"
-  long: افتح محررًا لتحرير تكوين ABRoot.
-  short: تحرير تكوين ABRoot
-  changed: تم تغيير التكوين.
-  failed: "حدث خطأ أثناء التفاعل مع التكوين: %s\n"
-  rootRequired: يجب أن تكون جذرًا لتشغيل هذا الأمر.
+  long: افتح محررا لتحرير اعدادات ABRoot.
+  short: تحرير اعدادات ABRoot
+  changed: تم تغيير الاعدادات.
+  failed: "حدث خطأ أثناء التفاعل مع الاعدادات: %s\n"
+  rootRequired: يجب أن تكون root لتشغيل هذا الأمر.
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: إعادة الارتكاز إلى صورة جديدة
+  flagError: "الخياران '--keep-packages' و '--remove-packages' متعارضان ولا يمكن استخدامهما
+    معا."
+  rootRequired: يتطلب تشغيل هذا الأمر صلاحيات الجذر.
+  rebaseOnly: عدم تحديث النظام بعدتغيير الصورة المعدة
+  pkgRemoveSuccess: تم إزالة جميع الحزم المضافة بنجاح
+  successUpdate: تمت إعادة الارتكاز بنجاح.سيدأ تحديث النظام بعد لحظات.
+  success: تمت إعاة الارتكاز بنجاح.سيعتمد التحديث التالي على الصورة الجديدة.
+  dryRunSuccess: اكتمل التشغيل التجريبي بنجاح
+  dryRunFlag: إجراء تشغيل تجريبي للعملية
+  long: تغيير صورة OCI التي يستخدمها النظام
+  keepPackages: الاحتفاظ بالحزم المتراكبة أثناء إعادة ارتكاز النظام
+  removePackagesShort: إزالة جميع الحزم المتراكبة أثناء عملية إعادة الارتكاز 
+    لمنع المشاكل الناجمة عن تغير المستودعات.
+  removePackagesLong: "قد تستخدم الصورة الجديدة مستودع برنامج مختلف،مما يجعل بعض الحزم
+    المثبتة غير قابلة للوصول.في هذه الحالة،سيفشل التثبيت التالي.\nهل ترغب في إزالة
+    الحزم التي أضفتها لحل هذه المشكلة؟"
