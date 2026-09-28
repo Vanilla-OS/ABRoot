@@ -66,8 +66,9 @@ pkg:
   noChanges: Нет изменений для применения.
   unknownCommand: Неизвестная команда '%s'. Выполните команду 'abroot pkg 
     --help' для получения примеров использования.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: принудительно применить изменения, даже если они уже были 
+    применены
+  applySuccess: Пакеты успешно установлены.
 status:
   short: Показать состояние
   dumpMsg: "Состояние ABRoot сохранено в %s\n"
@@ -119,10 +120,10 @@ upgrade:
   dryRunFlag: выполнить пробный запуск операции
   dryRunSuccess: Пробный запуск успешно завершен.
   success: Обновление успешно завершено.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Временно заблокировать или отменить любую операцию abroot.
+  deleteOld: Удалите старый образ, чтобы освободить место; в результате корневой
+    раздел временно станет недоступен.
+  unblock: Снять временную блокировку пользователя.
 updateInitramfs:
   short: Обновить initramfs
   updateFailed: "Не удалось обновить initramfs будущего корневого раздела.\n"
@@ -141,22 +142,24 @@ cnf:
   failed: "При взаимодействии с конфигурацией произошла ошибка: %s\n"
   rootRequired: Вы должны быть пользователем root для выполнения этой команды.
 rebase:
-  short: Rebase to new image
-  flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
-    cannot be used together."
-  rootRequired: You must be root to run this command.
-  rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  short: Перебазировать на новый образ
+  flagError: "Флаги «--keep-packages» и «--remove-packages» противоречат друг другу
+    и не могут использоваться одновременно."
+  rootRequired: Для выполнения этой команды необходимо иметь права пользователя 
+    root.
+  rebaseOnly: Не обновлять систему после изменения настроенного образа
+  pkgRemoveSuccess: Все добавленные пакеты были успешно удалены
+  successUpdate: Перебазирование завершено успешно. Система обновится через 
+    несколько секунд.
+  success: Перебазирование завершено успешно. При следующем обновлении будет 
+    использоваться новый образ.
+  dryRunSuccess: Пробный запуск прошел успешно
+  dryRunFlag: провести пробное выполнение операции
+  long: Изменить образ OCI, используемый системой
+  keepPackages: Сохранять многоуровневые пакеты при ребейзинге системы
+  removePackagesShort: При перебазировании удалите все многоуровневые пакеты, 
+    чтобы избежать проблем, связанных с изменением репозиториев.
+  removePackagesLong: "Новый образ может использовать другой репозиторий программного
+    обеспечения, в результате чего некоторые установленные пакеты станут недоступны.
+    В таком случае следующее обновление завершится сбоем.\nХотите удалить добавленные
+    вами пакеты, чтобы устранить эту проблему?"
