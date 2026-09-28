@@ -10,13 +10,13 @@ abroot:
     moreInfo: Use %s para mais informações sobre um comando
     additionalHelpTopics: Tópicos de ajuda adicional
     availableCommands: Comandos Disponíveis
-    globalFlags: Global Flags
+    globalFlags: Sinalizadores globais
     help: Mostrar ajuda do abroot.
     usage: Uso
     additionalCommands: Comandos adicionais
     version: Exibir a versão do abroot.
     aliases: Apelidos
-    flags: Flags
+    flags: Sinalizadores
     examples: Exemplos
 kargs:
   use: "kargs"
@@ -90,8 +90,9 @@ pkg:
   noChanges: Sem mudanças para aplicar.
   unknownCommand: Comando desconhecido '%s'. Execute 'abroot pkg --help' para 
     ver exemplos de uso.
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: forçar a aplicação das alterações mesmo que elas já tenham sido 
+    aplicadas
+  applySuccess: Pacotes aplicados com sucesso.
 status:
   use: status
   long: Mostrar o status atual do ABRoot.
@@ -110,7 +111,7 @@ status:
   loadedConfig: 'Configuração Carregada:'
   packages:
     removed: 'Removido: %s'
-    unstaged: 'Unstaged: %s%s'
+    unstaged: 'Não Preparado(s): %s%s'
     title: 'Pacotes:'
     added: 'Adicionado: %s'
   partitions:
@@ -119,7 +120,7 @@ status:
     title: 'Partições ABRoot:'
   kargs: 'Argumentos do Kernel: %s'
   abimage:
-    timestamp: 'Timestamp: %s'
+    timestamp: 'Carimbo de Data/Hora: %s'
     title: 'ABImage:'
     digest: 'Digest: %s'
     image: 'Imagem: %s'
@@ -145,7 +146,7 @@ rebase:
   short: Rebase to new image
   flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
     cannot be used together."
-  rootRequired: You must be root to run this command.
+  rootRequired: Deve ser um administrador para executar este comando.
   rebaseOnly: Do not update the system after chaning the configured image
   pkgRemoveSuccess: All added packages have been removed successfully
   successUpdate: Rebase completed successfully. The system will update in a 
@@ -153,7 +154,7 @@ rebase:
   success: Rebase completed successfully. Your next update will use the new 
     image.
   dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
+  dryRunFlag: executar um teste da operação
   long: Change the OCI image the system is using
   keepPackages: Keep layered packages while rebasing the system
   removePackagesShort: Remove all layered packages while rebasing to prevent 

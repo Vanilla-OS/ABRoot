@@ -68,8 +68,8 @@ pkg:
   noChanges: No se aplican cambios.
   unknownCommand: "'%s' comando desconocido. Ejecuta 'abroot pkg --help' para ver
     ejemplos de uso."
-  forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  forceApply: aplicar cambios de forma forzada aunque ya se hayan aplicado
+  applySuccess: Paquetes instalados correctamente.
 status:
   unstagedFoundMsg: "\n\t\tHay %d paquetes sin aplicar. Por favor, ejecuta 'abroot
     pkg apply' para aplicarlos."
@@ -122,10 +122,10 @@ upgrade:
   dryRunFlag: simular la operación
   dryRunSuccess: Simulación completada con éxito.
   success: Actualización completada con éxito.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Bloquear temporalmente o cancelar cualquier operación de abroot.
+  deleteOld: Si borras la imagen antigua para liberar espacio, la raíz quedará 
+    temporalmente inutilizable.
+  unblock: Retira el bloqueo temporal del usuario.
 updateInitramfs:
   short: Actualizar el initramfs
   updateFailed: "Error al actualizar el initramfs de la futura raíz.\n"
@@ -144,22 +144,23 @@ cnf:
   failed: "Se ha producido un error al interactuar con la configuración: %s\n"
   rootRequired: Debes ser root para ejecutar este comando.
 rebase:
-  short: Rebase to new image
+  short: Actualizar a la nueva imagen
   flagError: "'--keep-packages' y '--remove-packages' son indicadores conflictivos
     y no se pueden usar juntos."
-  rootRequired: You must be root to run this command.
+  rootRequired: Debes tener privilegios de root para ejecutar este comando.
   rebaseOnly: No actualice el sistema después de cambiar la imagen configurada
   pkgRemoveSuccess: Todos los paquetes añadidos se han eliminado correctamente
-  successUpdate: Rebase completed successfully. The system will update in a 
-    moment.
-  success: Rebase completed successfully. Your next update will use the new 
-    image.
+  successUpdate: La actualización se ha completado correctamente. El sistema se 
+    actualizará en breve.
+  success: La actualización se ha completado correctamente. En la próxima 
+    actualización se utilizará la imagen nueva.
   dryRunSuccess: Ejecución del enseyo completado con éxito
   dryRunFlag: realizar un ensayo de la operación
-  long: Change the OCI image the system is using
-  keepPackages: Keep layered packages while rebasing the system
-  removePackagesShort: Remove all layered packages while rebasing to prevent 
-    issues caused by a change in repositories.
-  removePackagesLong: "The new image may use a different software repository, making
-    some installed packages inaccessible. If this is the case, the next upgrade will
-    fail.\nWould you like to remove your added packages to resolve this issue?"
+  long: Cambiar la imagen OCI que utiliza el sistema
+  keepPackages: Mantener los paquetes en capas al realizar el rebase del sistema
+  removePackagesShort: Retira todos los paquetes en capas mientras realizas el 
+    rebase para evitar problemas derivados de cambios en los repositorios.
+  removePackagesLong: "La nueva imagen podría usar un repositorio de software diferente,
+    lo que haría que algunos paquetes instalados fueran inaccesibles. En ese caso,
+    la próxima actualización fallará.\n¿Desea eliminar los paquetes que agregó para
+    solucionar este problema?"

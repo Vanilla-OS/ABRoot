@@ -15,8 +15,8 @@ abroot:
     globalFlags: Globalne flagi
     examples: Przykłady
     version: Wyświel wersję abroot.
-    help: Wyświetl pomoc dla abroot.
-    usage: Użycie
+    help: Pokaż pomocne informację dotyczące abrootu.
+    usage: Zużycie
     additionalCommands: Dodatkowe komendy
 kargs:
   use: "kargs"
@@ -63,11 +63,11 @@ pkg:
     wbudowanych systemów
   failedGettingPkgManagerInstance: "Nie udało się pobrać instancji menedżera pakietów:
     %s\n"
-  noChanges: Nie ma żadnych nowych zmian.
+  noChanges: Nie ma żadnych zmian do wprowadzenia.
   unknownCommand: Komenda '%s' jest nieznana. Wpisz 'abroot pkg --help', by 
     uzyskać przykłady użycia komendy.
   forceApply: force apply changes even if they've already been applied
-  applySuccess: Successfully applied packages.
+  applySuccess: Pomyślnie zainstalowane pakiety.
 upgrade:
   use: upgrade
   noUpdateAvailable: Brak dostępnych aktualizacji.
@@ -87,10 +87,10 @@ upgrade:
   dryRunFlag: przeprowadź operację na próbę
   dryRunSuccess: Próba zakończyła się powodzeniem.
   success: Zaktualizowano pomyślnie.
-  cancel: Temporarily block or cancel any abroot operation.
-  deleteOld: Delete old image to free up space, will make future root 
-    temporarily unusable.
-  unblock: Remove temporary user block.
+  cancel: Tymczasowo zablokuj lub anuluj dowolną operację abroot.
+  deleteOld: Usuń stare zdjęcie, aby zwolnić miejsce – spowoduje to tymczasową 
+    niedostępność katalogu głównego.
+  unblock: Zdejmij tymczasową blokadę użytkownika.
 status:
   use: status
   long: Wyświetl aktualny status ABRoota.
@@ -122,7 +122,7 @@ status:
     title: 'ABImage:'
     digest: 'Wykonano: %s'
     image: 'Obraz: %s'
-  agreementStatus: 'Package agreement:'
+  agreementStatus: 'Umowa pakietowa:'
 updateInitramfs:
   short: Zaktualizuj initramfs
   updateFailed: "Nie udało się zaktualizować initramfs przyszłego roota.\n"
@@ -144,15 +144,16 @@ rebase:
   short: Rebase to new image
   flagError: "'--keep-packages' and '--remove-packages' are conflicting flags and
     cannot be used together."
-  rootRequired: You must be root to run this command.
+  rootRequired: Aby uruchomić to polecenie, musisz mieć uprawnienia 
+    administratora.
   rebaseOnly: Do not update the system after chaning the configured image
-  pkgRemoveSuccess: All added packages have been removed successfully
+  pkgRemoveSuccess: Wszystkie dodane pakiety zostały pomyślnie usunięte
   successUpdate: Rebase completed successfully. The system will update in a 
     moment.
   success: Rebase completed successfully. Your next update will use the new 
     image.
-  dryRunSuccess: Dry run completed successfully
-  dryRunFlag: perform a dry run of the operation
+  dryRunSuccess: Próba generalna zakończyła się sukcesem
+  dryRunFlag: przeprowadzić próbę generalną tej operacji
   long: Change the OCI image the system is using
   keepPackages: Keep layered packages while rebasing the system
   removePackagesShort: Remove all layered packages while rebasing to prevent 
