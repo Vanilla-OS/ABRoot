@@ -115,7 +115,7 @@ status:
   dumpMsg: "Status ABRoot telah diturunkan menjadi %s\n"
 
 upgrade:
-  use: "pembaruan"
+  use: "upgrade"
   long: "Periksa apakah ada citra sistem baru dan terapkan."
   short: "Perbarui sistem"
   forceFlag: "paksa pembaruan meskipun sistem sudah diperbarui"
